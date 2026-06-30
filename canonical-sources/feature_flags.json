@@ -1,0 +1,103 @@
+{
+  "_schema_version": "1.0.0",
+  "_purpose": "Feature-flag registry for integrations that require OAuth, an API key, or other per-user setup. Everything here is DISABLED by default so the core cross-mapping pipeline runs for everyone with zero configuration. Individual users opt in by setting enabled=true (or the env override) once they have provisioned credentials.",
+  "_generated": "2026-06-30",
+  "_how_to_enable": {
+    "config": "Set the flag's enabled=true in this file (or a local override copy passed to FeatureFlags).",
+    "env_override": "Set DBZ_FF_<FLAG_ID_UPPERCASED>=1 to force-enable, or =0 to force-disable, without editing this file. Env always wins.",
+    "credentials": "Provide the credentials named in each flag's `requires.env`. A flag is only EFFECTIVE when it is both enabled AND its required credentials are present; otherwise the code degrades gracefully and logs what is missing."
+  },
+
+  "flags": {
+    "github_authenticated": {
+      "label": "Authenticated GitHub API",
+      "category": "external_api",
+      "enabled": false,
+      "description": "Use a GitHub token for the framework monitor's github_release checks. Without it, checks still work against public repos but are rate-limited (60 req/hr vs 5000).",
+      "requires": {"env": ["GITHUB_TOKEN"], "oauth": false, "setup_url": "https://github.com/settings/tokens"},
+      "degradation": "Falls back to unauthenticated public GitHub API (lower rate limit).",
+      "used_by": ["cross-mapping/engine/framework_monitor.py"]
+    },
+    "cloud_render": {
+      "label": "Cloud browser render (JS-heavy pages)",
+      "category": "crawler_enhancement",
+      "enabled": false,
+      "description": "Render JavaScript-required framework pages via a cloud render service so the crawler can extract download links from SPA pages.",
+      "requires": {"env": ["FIRECRAWL_API_KEY"], "oauth": false, "setup_url": "https://firecrawl.dev"},
+      "degradation": "Crawler reports js_required pages for manual review instead of rendering them.",
+      "used_by": ["cross-mapping/engine/framework_crawler.py"]
+    },
+    "nist_cprt_api": {
+      "label": "NIST CPRT structured API",
+      "category": "external_api",
+      "enabled": false,
+      "description": "Pull machine-readable framework structures from the NIST CPRT JSON API (no key required, but off by default to keep the pipeline fully offline-capable).",
+      "requires": {"env": [], "oauth": false, "setup_url": "https://csrc.nist.gov/projects/cprt"},
+      "degradation": "Use the bundled spreadsheets / OSCAL files pinned in source_manifest.json.",
+      "used_by": ["cross-mapping/engine/framework_monitor.py"]
+    },
+
+    "mcp_elicit": {
+      "label": "Elicit MCP server",
+      "category": "mcp_server",
+      "enabled": false,
+      "description": "Research-paper search/extraction via the Elicit MCP server. Requires interactive OAuth authorization, which cannot run headless.",
+      "requires": {"env": [], "oauth": true, "setup_url": "Authorize via claude.ai connector settings or `claude mcp` / /mcp in an interactive session."},
+      "degradation": "Skip Elicit-backed steps; note the gap in output.",
+      "used_by": []
+    },
+    "mcp_google_drive": {
+      "label": "Google Drive MCP server",
+      "category": "mcp_server",
+      "enabled": false,
+      "description": "Read/write source spreadsheets and reports from Google Drive. Requires Google OAuth.",
+      "requires": {"env": [], "oauth": true, "setup_url": "Authorize via claude.ai connector settings."},
+      "degradation": "Use local files under canonical-sources/ instead.",
+      "used_by": []
+    },
+
+    "connector_thoropass": {
+      "label": "Thoropass (GRC platform) connector",
+      "category": "grc_connector",
+      "enabled": false,
+      "description": "Pull live ER/local-control crosswalk data and evidence from a Thoropass tenant instead of the bundled CSVs.",
+      "requires": {"env": ["THOROPASS_API_KEY"], "oauth": false, "setup_url": "https://thoropass.com (tenant API settings)"},
+      "degradation": "Use bundled cross-mapping/core-audit/mappings/*.csv.",
+      "used_by": []
+    },
+    "connector_vanta": {
+      "label": "Vanta (GRC platform) connector",
+      "category": "grc_connector",
+      "enabled": false,
+      "description": "Pull control status and evidence from a Vanta tenant.",
+      "requires": {"env": ["VANTA_API_TOKEN"], "oauth": true, "setup_url": "https://developer.vanta.com"},
+      "degradation": "Use bundled crosswalk data; no live evidence.",
+      "used_by": []
+    },
+    "connector_drata": {
+      "label": "Drata (GRC platform) connector",
+      "category": "grc_connector",
+      "enabled": false,
+      "description": "Pull control status and evidence from a Drata tenant.",
+      "requires": {"env": ["DRATA_API_KEY"], "oauth": false, "setup_url": "https://developers.drata.com"},
+      "degradation": "Use bundled crosswalk data; no live evidence.",
+      "used_by": []
+    },
+    "connector_aws_audit_manager": {
+      "label": "AWS Audit Manager connector",
+      "category": "grc_connector",
+      "enabled": false,
+      "description": "Pull assessment evidence and control mappings from AWS Audit Manager.",
+      "requires": {"env": ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"], "oauth": false, "setup_url": "https://docs.aws.amazon.com/audit-manager/"},
+      "degradation": "Use bundled crosswalk data; no live cloud evidence.",
+      "used_by": []
+    }
+  },
+
+  "categories": {
+    "external_api": "Public or keyed HTTP APIs. Most work unauthenticated but a key raises limits or unlocks data.",
+    "crawler_enhancement": "Optional upgrades to the framework crawler (e.g. JS rendering).",
+    "mcp_server": "Model Context Protocol servers that require interactive OAuth — cannot be enabled headless.",
+    "grc_connector": "Live integrations to commercial GRC platforms; replace bundled sample data with a customer tenant."
+  }
+}

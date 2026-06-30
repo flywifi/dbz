@@ -25,6 +25,7 @@ Requirements: requests (standard; stdlib fallback via urllib for basic HEAD chec
 
 import hashlib
 import json
+import os
 import re
 import sys
 import urllib.request
@@ -36,6 +37,27 @@ from typing import Dict, List, Optional
 
 _HERE = Path(__file__).resolve().parent
 _REPO_ROOT = _HERE.parent.parent
+
+if str(_HERE) not in sys.path:
+    sys.path.insert(0, str(_HERE))
+
+
+def _github_auth_header() -> dict:
+    """
+    Return an Authorization header for the GitHub API only when the
+    'github_authenticated' feature flag is effective (enabled + GITHUB_TOKEN set).
+    Off by default → unauthenticated public access (lower rate limit).
+    """
+    try:
+        from feature_flags import FeatureFlags
+        flags = FeatureFlags.load()
+        if flags.effective("github_authenticated"):
+            token = os.environ.get("GITHUB_TOKEN", "")
+            if token:
+                return {"Authorization": f"Bearer {token}"}
+    except Exception:
+        pass
+    return {}
 
 DEFAULT_REGISTRY = _REPO_ROOT / "canonical-sources" / "feed_registry.json"
 DEFAULT_OUT = _HERE.parent / "output" / "framework_updates_feed.json"
@@ -110,6 +132,7 @@ def _github_latest_release(repo: str) -> dict:
                 "User-Agent": USER_AGENT,
                 "Accept": "application/vnd.github+json",
                 "X-GitHub-Api-Version": "2022-11-28",
+                **_github_auth_header(),  # opt-in via 'github_authenticated' flag
             },
         )
         with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
@@ -138,7 +161,8 @@ def _github_latest_tag(repo: str) -> dict:
     try:
         req = urllib.request.Request(
             url,
-            headers={"User-Agent": USER_AGENT, "Accept": "application/vnd.github+json"},
+            headers={"User-Agent": USER_AGENT, "Accept": "application/vnd.github+json",
+                     **_github_auth_header()},
         )
         with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
             tags = json.loads(resp.read())

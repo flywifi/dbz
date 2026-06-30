@@ -141,6 +141,35 @@ python cross-mapping/engine/oscal_diff.py
 python cross-mapping/engine/framework_monitor.py
 ```
 
+## Feature flags (opt-in integrations)
+
+Anything that needs OAuth, an API key, or other per-user setup is gated behind a
+feature flag and **disabled by default**, so the core pipeline runs for everyone
+with zero configuration. Registry: `canonical-sources/feature_flags.json`;
+loader: `cross-mapping/engine/feature_flags.py`.
+
+A flag is only **effective** when it is both *enabled* (config or env override
+`DBZ_FF_<ID>=1`) and *provisioned* (its required credentials are present). Code
+checks `flags.effective(id)` and degrades gracefully otherwise — uses bundled data,
+reports a gap, or notes what's missing. Nothing hard-fails for lack of a key.
+
+```bash
+python3 cross-mapping/engine/feature_flags.py --list             # status of all flags
+python3 cross-mapping/engine/feature_flags.py --enable cloud_render
+```
+
+| Flag | Gates | Default-off fallback |
+|---|---|---|
+| `github_authenticated` | GitHub token for monitor release checks | unauthenticated public API |
+| `cloud_render` | JS-page rendering for the crawler | report js_required for manual review |
+| `nist_cprt_api` | NIST CPRT structured API | bundled spreadsheets / OSCAL |
+| `mcp_elicit`, `mcp_google_drive` | OAuth MCP servers | local files / skip step |
+| `connector_thoropass / vanta / drata / aws_audit_manager` | live GRC platform tenants | bundled sample crosswalk CSVs |
+
+This is also where the **Elicit / Google Drive MCP servers** live: they require
+interactive OAuth that can't run headless, so they stay off until a user authorizes
+them in an interactive `claude mcp` / `/mcp` session or via claude.ai connector settings.
+
 ## Atoms (`skills/atoms/`)
 
 Single-operation skills following the educator-tools convention (`SKILL.md` +

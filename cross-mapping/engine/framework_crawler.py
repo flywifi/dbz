@@ -52,11 +52,23 @@ from typing import Dict, List, Optional, Tuple
 _HERE = Path(__file__).resolve().parent
 _REPO_ROOT = _HERE.parent.parent
 
+if str(_HERE) not in sys.path:
+    sys.path.insert(0, str(_HERE))
+
 DEFAULT_REGISTRY = _REPO_ROOT / "canonical-sources" / "feed_registry.json"
 DEFAULT_BASELINE = _REPO_ROOT / "canonical-sources" / "crawl_baselines.json"
 DEFAULT_REPORT = _HERE.parent / "output" / "framework_crawl_report.json"
 
 CRAWLER_VERSION = "1.0.0"
+
+
+def _cloud_render_enabled() -> bool:
+    """True only when the 'cloud_render' feature flag is effective (opt-in)."""
+    try:
+        from feature_flags import FeatureFlags
+        return FeatureFlags.load().effective("cloud_render")
+    except Exception:
+        return False
 
 # Downloadable standards artifacts we care about
 DOC_EXTS = (".pdf", ".xlsx", ".xlsm", ".xls", ".csv", ".json", ".docx", ".zip", ".oscal")
@@ -511,20 +523,27 @@ def run_crawl(
     new = [c for c in all_changes if c["change_status"] == "new"]
     changed = [c for c in all_changes if c["change_status"] == "changed"]
 
+    # JS-required pages found across all feeds — these need cloud_render to crawl.
+    js_pages = sorted({u for r in per_feed_reports for u in r.get("js_required", [])})
+    cloud_render_on = _cloud_render_enabled()
+
     report_doc = {
         "_schema_version": CRAWLER_VERSION,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "registry_path": str(registry_path),
         "robots_respected": respect_robots,
         "user_agent": DEFAULT_UA,
+        "cloud_render_enabled": cloud_render_on,
         "summary": {
             "feeds_crawled": len(target_ids),
             "docs_discovered": len(new_baselines),
             "new": len(new),
             "changed": len(changed),
+            "js_required_skipped": 0 if cloud_render_on else len(js_pages),
         },
         "new_documents": new,
         "changed_documents": changed,
+        "js_required_pages": js_pages,
         "crawl_diagnostics": per_feed_reports,
     }
 
@@ -533,6 +552,10 @@ def run_crawl(
         print(f"    NEW     [{c['feed_id']}] {c['filename']}  (conf {c['confidence']})")
     for c in changed[:20]:
         print(f"    CHANGED [{c['feed_id']}] {c['filename']}  (conf {c['confidence']})")
+    if js_pages and not cloud_render_on:
+        print(f"\n[i] {len(js_pages)} JS-required page(s) skipped. "
+              f"Enable the 'cloud_render' feature flag to crawl them "
+              f"(python3 feature_flags.py --enable cloud_render + set FIRECRAWL_API_KEY).")
 
     if not dry_run:
         report_path.parent.mkdir(parents=True, exist_ok=True)
