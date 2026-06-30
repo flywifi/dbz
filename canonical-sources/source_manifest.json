@@ -449,6 +449,15 @@
       "inspect_needed": true
     },
     {
+      "id": "oscal-v5.2.0-supplement",
+      "file": "canonical-sources/oscal_v5.2.0_full_extract.json",
+      "format": "json",
+      "version": "NIST SP 800-53 Rev 5.2.0 (OSCAL)",
+      "retrieved": "2026-06-30",
+      "role": "oscal_supplement",
+      "notes": "Full OSCAL control extract cached from usnistgov/oscal-content. Provides 7 controls added in v5.2.0 (IA-13, IA-13(1)-(3), SA-15(13), SA-24, SI-2(7)) plus title corrections (e.g. IA-8(5) typo fix). Only used for controls NOT in the spreadsheet-based sources — the spreadsheets remain primary. Re-cache by running: python3 cross-mapping/engine/oscal_diff.py --oscal-cache canonical-sources/oscal_v5.2.0_full_extract.json"
+    },
+    {
       "id": "csa-ccm-v4",
       "file": "canonical-sources/ccm-v4/CCM/primary-dataset.yaml",
       "format": "yaml",

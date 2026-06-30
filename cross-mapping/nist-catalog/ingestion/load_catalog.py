@@ -203,6 +203,46 @@ def load_catalog(family_filter: Optional[str] = None) -> Dict[str, dict]:
                 record["enhancements"] = []
                 controls[ctrl_id] = record
 
+    # ── Merge OSCAL supplement (controls added upstream but not in our spreadsheets) ──
+    try:
+        from load_oscal_supplement import load_supplement_controls, get_title_corrections
+
+        all_known_ids = set(controls.keys())
+        for ctrl in controls.values():
+            for enh in ctrl.get("enhancements", []):
+                all_known_ids.add(enh["id"])
+
+        supplement = load_supplement_controls(all_known_ids)
+        for ctrl_id, supp_ctrl in supplement.items():
+            if supp_ctrl.get("_existing_base"):
+                # Base control exists; only add new enhancements
+                if ctrl_id in controls:
+                    controls[ctrl_id].setdefault("enhancements", []).extend(
+                        supp_ctrl.get("enhancements", []))
+            else:
+                if ctrl_id not in controls:
+                    controls[ctrl_id] = supp_ctrl
+                else:
+                    controls[ctrl_id].setdefault("enhancements", []).extend(
+                        supp_ctrl.get("enhancements", []))
+
+        # Apply title corrections from authoritative OSCAL
+        corrections = get_title_corrections(controls)
+        for fix in corrections:
+            cid = fix["id"]
+            if cid in controls:
+                controls[cid]["title"] = fix["oscal_title"]
+            else:
+                for ctrl in controls.values():
+                    for enh in ctrl.get("enhancements", []):
+                        if enh["id"] == cid:
+                            enh["title"] = fix["oscal_title"]
+                            break
+    except ImportError:
+        pass
+    except FileNotFoundError:
+        pass
+
     return controls
 
 

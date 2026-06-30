@@ -26,7 +26,7 @@ validated, multi-scenario handoff contract — and how it stays current.
 └───────────┬───────────┘   └─────────────┬───────────────┘
             ▼                              ▼
    handoff contract v1.1.0          ER overlap matrix
-   (322 ctrls + 867 enh)            (shared audit work %)
+   (324 ctrls + 872 enh)            (shared audit work %)
             │                              │
             └──────────────┬───────────────┘
                            ▼
@@ -121,7 +121,7 @@ The catalog is NIST-anchored (NIST → others). `build_reverse_index.py` inverts
 `unified_mappings` into `{framework → {target_control_id → [nist_controls]}}`, so a
 customer migrating *into* NIST — or auditing a NIST system against ISO/PCI/GDPR —
 can ask "which NIST controls satisfy ISO 27001 A.5.16?" and get `[AC-2, IA-2, IA-4,
-IA-5, IA-8]`. 24 frameworks indexed.
+IA-5, IA-8]`. 25 frameworks indexed.
 
 ## Build & verify
 
