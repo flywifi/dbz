@@ -472,19 +472,28 @@ class eCFRLoader:
         for req in requirements:
             req["nist_families"] = self.map_to_nist_families(req)
 
+        # Build framework_id and cfr_part for build_db.py consumer
+        part_str = str(part)
+        framework_id = f"{title}-cfr-{part_str}"
+        cfr_part = f"{title} CFR {part_str}"
+
         result: dict = {
             "schema_version": "1.0.0",
             "_source": "eCFR REST API v1",
             "_loader": "ecfr_loader.py",
+            "_framework_id": framework_id,
+            "_cfr_part": cfr_part,
+            "_as_of_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
             "human_review_required": True,
             "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "title": title,
-            "part": str(part),
+            "part": part_str,
             "subpart": subpart,
             "cfr_citation": _build_citation(title, part, subpart),
             "section_count": len(sections),
             "requirement_count": len(requirements),
             "sections": requirements,
+            "requirements": requirements,  # alias used by build_db.py load_cfr_data()
         }
 
         if dry_run:

@@ -398,13 +398,18 @@ class EURLexLoader:
                 articles = self.parse_articles(html, reg_id)
                 articles = self.map_articles_to_nist(articles)
 
+                celex_id = reg_info["celex_id"]
+                fetched_at = datetime.now(timezone.utc).isoformat()
                 result: Dict[str, Any] = {
+                    "_celex_id":          celex_id,
+                    "_eli_version":       f"{celex_id[:5]}/{celex_id[5:]}",
+                    "_consolidated_date": fetched_at[:10],
                     "metadata": {
                         "regulation_id":     reg_id,
-                        "celex_id":          reg_info["celex_id"],
+                        "celex_id":          celex_id,
                         "full_name":         reg_info["full_name"],
-                        "eli_uri":           ELI_BASE.format(celex_id=reg_info["celex_id"]),
-                        "generated_at":      datetime.now(timezone.utc).isoformat(),
+                        "eli_uri":           ELI_BASE.format(celex_id=celex_id),
+                        "generated_at":      fetched_at,
                         "total_articles":    len(articles),
                         "human_review_required": True,
                     },

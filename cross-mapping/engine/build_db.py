@@ -56,6 +56,13 @@ KEV_PATH = REPO_ROOT / "canonical-sources" / "known_exploited_vulnerabilities.js
 ATTACK_PATH = REPO_ROOT / "canonical-sources" / "mitre-attack-techniques.json"
 EDGAR_PATH = REPO_ROOT / "canonical-sources" / "edgar-8k-cyber.json"
 CFR_DIR = REPO_ROOT / "canonical-sources" / "cfr"
+NVD_DIR = REPO_ROOT / "canonical-sources"       # nvd-cve-{date}.json files land here
+CCI_PATH = REPO_ROOT / "canonical-sources" / "disa-cci-trackr.json"
+EURLEX_DIR = REPO_ROOT / "canonical-sources" / "eurlex"
+
+# System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
+ENGINE_VERSION = "1.1.0"
+SCHEMA_VERSION = "3.0"   # matches enhanced_framework_schema.json
 
 CHUNK = 500  # executemany batch size
 
@@ -136,13 +143,21 @@ CREATE INDEX IF NOT EXISTS idx_er_fw ON er_mappings(framework, native_id);
 CREATE INDEX IF NOT EXISTS idx_er_id ON er_mappings(er_id);
 
 CREATE TABLE IF NOT EXISTS framework_registry (
-    framework_id    TEXT PRIMARY KEY,
-    label           TEXT,
-    authority       TEXT,
-    current_version TEXT,
-    last_changed    TEXT,
-    check_strategy  TEXT,
-    draft_status    TEXT
+    framework_id          TEXT PRIMARY KEY,
+    label                 TEXT,
+    authority             TEXT,
+    current_version       TEXT,
+    last_changed          TEXT,
+    check_strategy        TEXT,
+    draft_status          TEXT,
+    version_signal        TEXT,
+    next_expected_version TEXT,
+    release_notes_url     TEXT
+);
+
+CREATE TABLE IF NOT EXISTS db_metadata (
+    key   TEXT PRIMARY KEY,
+    value TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS changelog (
@@ -248,6 +263,44 @@ CREATE TABLE IF NOT EXISTS edgar_cyber_incidents (
 );
 CREATE INDEX IF NOT EXISTS idx_edgar_type ON edgar_cyber_incidents(incident_type);
 CREATE INDEX IF NOT EXISTS idx_edgar_date ON edgar_cyber_incidents(filed_at);
+
+CREATE TABLE IF NOT EXISTS nvd_cves (
+    cve_id        TEXT PRIMARY KEY,
+    published     TEXT,
+    last_modified TEXT,
+    description   TEXT,
+    cvss_score    REAL,
+    severity      TEXT,
+    cwe_ids       TEXT,  -- JSON array
+    nist_families TEXT,  -- JSON array
+    fetched_at    TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_nvd_severity ON nvd_cves(severity);
+CREATE INDEX IF NOT EXISTS idx_nvd_published ON nvd_cves(published);
+
+CREATE TABLE IF NOT EXISTS disa_ccis (
+    cci_id         TEXT PRIMARY KEY,
+    definition     TEXT,
+    type           TEXT,
+    status         TEXT,
+    nist_rev4_refs TEXT,  -- JSON array of {control_id, ap_acronym}
+    nist_rev5_refs TEXT,  -- JSON array
+    fetched_at     TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_disa_ccis_status ON disa_ccis(status);
+
+CREATE TABLE IF NOT EXISTS eurlex_articles (
+    article_id     TEXT,
+    regulation_id  TEXT,
+    celex_id       TEXT,
+    article_number TEXT,
+    title          TEXT,
+    text           TEXT,
+    nist_families  TEXT,  -- JSON array; keyword-heuristic mapping
+    fetched_at     TEXT,
+    PRIMARY KEY (regulation_id, article_id)
+);
+CREATE INDEX IF NOT EXISTS idx_eurlex_regulation ON eurlex_articles(regulation_id);
 """
 
 
@@ -422,6 +475,9 @@ def load_framework_registry(path: Path) -> list[dict]:
             "last_changed": entry.get("last_changed", ""),
             "check_strategy": entry.get("check_strategy", ""),
             "draft_status": entry.get("draft_status", ""),
+            "version_signal": entry.get("version_signal", ""),
+            "next_expected_version": entry.get("next_expected_version", ""),
+            "release_notes_url": entry.get("release_notes_url", ""),
         })
     return rows
 
@@ -454,13 +510,18 @@ def load_announcements(path: Path) -> list[dict]:
     doc = json.loads(path.read_text(encoding="utf-8"))
     rows = []
     for entry in doc.get("entries", []):
+        # fr_watcher.py uses "feed_id" / "agency"; accept both for compatibility
+        entry_id = entry.get("entry_id") or entry.get("feed_id", "")
+        source_feed = entry.get("source_feed") or entry.get("agency", "")
+        if not entry_id:
+            continue  # skip entries without a usable primary key
         rows.append({
-            "entry_id": entry.get("entry_id", ""),
+            "entry_id": entry_id,
             "framework_ids": json.dumps(entry.get("framework_ids", [])),
             "title": entry.get("title", ""),
             "published_at": entry.get("published_at"),
             "url": entry.get("url", ""),
-            "source_feed": entry.get("source_feed", ""),
+            "source_feed": source_feed,
             "change_type": entry.get("change_type", ""),
             "human_reviewed": _bool(entry.get("human_reviewed", False)),
         })
@@ -518,7 +579,7 @@ def load_attack_data(path: Path) -> list[dict]:
     doc = json.loads(path.read_text(encoding="utf-8"))
     rows = []
     for t in doc.get("techniques", []):
-        nist_controls = t.get("nist_800_53_controls", [])
+        nist_controls = t.get("nist_controls", [])  # attack_stix_loader.py writes "nist_controls"
         # Derive family codes from control IDs (e.g. "AC-2" → "AC")
         families = sorted({c.split("-")[0] for c in nist_controls if "-" in c})
         rows.append({
@@ -555,6 +616,78 @@ def load_edgar_data(path: Path) -> list[dict]:
     return rows
 
 
+def load_nvd_data(nvd_dir: Path) -> list[dict]:
+    """Load NVD CVE JSON files (nvd-cve-{date}.json) from nvd_dir."""
+    rows = []
+    import glob as _glob
+    for f in sorted(_glob.glob(str(nvd_dir / "nvd-cve-*.json"))):
+        try:
+            doc = json.loads(Path(f).read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        fetched_at = doc.get("metadata", {}).get("generated_at", "")
+        for cve in doc.get("cves", []):
+            rows.append({
+                "cve_id":        cve.get("cve_id", ""),
+                "published":     cve.get("published", ""),
+                "last_modified": cve.get("last_modified", ""),
+                "description":   cve.get("description", ""),
+                "cvss_score":    cve.get("cvss_score"),
+                "severity":      cve.get("severity", ""),
+                "cwe_ids":       json.dumps(cve.get("cwe_ids", [])),
+                "nist_families": json.dumps(cve.get("nist_families", [])),
+                "fetched_at":    fetched_at,
+            })
+    return rows
+
+
+def load_cci_data(cci_path: Path) -> list[dict]:
+    """Load DISA CCI Trackr JSON; return rows for disa_ccis table."""
+    if not cci_path.exists():
+        return []
+    doc = json.loads(cci_path.read_text(encoding="utf-8"))
+    rows = []
+    fetched_at = doc.get("fetched_at", "")
+    for cci in doc.get("ccis", []):
+        rows.append({
+            "cci_id":         cci.get("cci_id") or cci.get("id", ""),
+            "definition":     cci.get("definition", ""),
+            "type":           cci.get("type", ""),
+            "status":         cci.get("status", ""),
+            "nist_rev4_refs": json.dumps(cci.get("nist_rev4_refs", [])),
+            "nist_rev5_refs": json.dumps(cci.get("nist_rev5_refs", [])),
+            "fetched_at":     fetched_at,
+        })
+    return rows
+
+
+def load_eurlex_data(eurlex_dir: Path) -> list[dict]:
+    """Load EUR-Lex article JSON files from eurlex_dir."""
+    if not eurlex_dir.exists():
+        return []
+    rows = []
+    for f in sorted(eurlex_dir.glob("*-articles.json")):
+        try:
+            doc = json.loads(f.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        reg_id = doc.get("metadata", {}).get("regulation_id", f.stem.replace("-articles", ""))
+        celex_id = doc.get("_celex_id") or doc.get("metadata", {}).get("celex_id", "")
+        fetched_at = doc.get("metadata", {}).get("generated_at", "")
+        for art in doc.get("articles", []):
+            rows.append({
+                "article_id":     art.get("article_id", ""),
+                "regulation_id":  reg_id,
+                "celex_id":       celex_id,
+                "article_number": art.get("article_number", ""),
+                "title":          art.get("title", ""),
+                "text":           art.get("text", ""),
+                "nist_families":  json.dumps(art.get("nist_families", [])),
+                "fetched_at":     fetched_at,
+            })
+    return rows
+
+
 # ── DB writer ─────────────────────────────────────────────────────────────────
 
 def _executemany_chunked(conn: sqlite3.Connection, sql: str, rows: list, label: str) -> None:
@@ -578,6 +711,9 @@ def build_db(
     attack_path: Path = ATTACK_PATH,
     edgar_path: Path = EDGAR_PATH,
     cfr_dir: Path = CFR_DIR,
+    nvd_dir: Path = NVD_DIR,
+    cci_path: Path = CCI_PATH,
+    eurlex_dir: Path = EURLEX_DIR,
 ) -> dict:
     t0 = time.monotonic()
     out_db.parent.mkdir(parents=True, exist_ok=True)
@@ -595,8 +731,25 @@ def build_db(
     conn.executescript(SCHEMA_DDL)
     conn.commit()
 
+    # 0. Stamp build metadata (system versioning — distinct from framework versioning)
+    from datetime import datetime, timezone as _tz
+    feed_count = 0
+    if feed_registry_path.exists():
+        try:
+            feed_count = len(json.loads(feed_registry_path.read_text()).get("feeds", {}))
+        except Exception:
+            pass
+    db_meta = [
+        ("engine_version", ENGINE_VERSION),
+        ("schema_version", SCHEMA_VERSION),
+        ("built_at", datetime.now(_tz.utc).strftime("%Y-%m-%dT%H:%M:%SZ")),
+        ("feed_registry_entry_count", str(feed_count)),
+    ]
+    conn.executemany("INSERT OR REPLACE INTO db_metadata VALUES (?,?)", db_meta)
+    conn.commit()
+
     # 1. Controls + enhancements + parameters + unified_mappings
-    print(f"\n[1/10] Loading catalog: {catalog_path.name}")
+    print(f"\n[1/13] Loading catalog: {catalog_path.name}")
     ctrl_rows, enh_rows, param_rows, mapping_rows = load_catalog(catalog_path)
 
     _executemany_chunked(conn, """
@@ -636,7 +789,7 @@ def build_db(
     conn.commit()
 
     # 2. ER crosswalk data
-    print(f"\n[2/10] Loading ER crosswalk CSVs from {er_dir.name}/")
+    print(f"\n[2/13] Loading ER crosswalk CSVs from {er_dir.name}/")
     er_ctrl_rows, er_mapping_rows = load_er_data(er_dir)
 
     _executemany_chunked(conn, """
@@ -652,18 +805,20 @@ def build_db(
     conn.commit()
 
     # 3. Framework registry
-    print(f"\n[3/10] Loading feed registry: {feed_registry_path.name}")
+    print(f"\n[3/13] Loading feed registry: {feed_registry_path.name}")
     reg_rows = load_framework_registry(feed_registry_path)
     _executemany_chunked(conn, """
         INSERT OR REPLACE INTO framework_registry
-            (framework_id, label, authority, current_version, last_changed, check_strategy, draft_status)
+            (framework_id, label, authority, current_version, last_changed, check_strategy, draft_status,
+             version_signal, next_expected_version, release_notes_url)
         VALUES
-            (:framework_id, :label, :authority, :current_version, :last_changed, :check_strategy, :draft_status)
+            (:framework_id, :label, :authority, :current_version, :last_changed, :check_strategy, :draft_status,
+             :version_signal, :next_expected_version, :release_notes_url)
     """, reg_rows, "framework_registry")
     conn.commit()
 
     # 4. Changelog
-    print(f"\n[4/10] Loading changelog: {changelog_path.name}")
+    print(f"\n[4/13] Loading changelog: {changelog_path.name}")
     cl_rows = load_changelog(changelog_path)
     if cl_rows:
         _executemany_chunked(conn, """
@@ -681,7 +836,7 @@ def build_db(
     conn.commit()
 
     # 5. Announcements
-    print(f"\n[5/10] Loading announcements: {announcements_path.name}")
+    print(f"\n[5/13] Loading announcements: {announcements_path.name}")
     ann_rows = load_announcements(announcements_path)
     if ann_rows:
         _executemany_chunked(conn, """
@@ -695,7 +850,7 @@ def build_db(
     conn.commit()
 
     # 6. CISA KEV catalog
-    print(f"\n[6/10] Loading CISA KEV: {kev_path.name}")
+    print(f"\n[6/13] Loading CISA KEV: {kev_path.name}")
     kev_rows = load_kev_data(kev_path)
     if kev_rows:
         _executemany_chunked(conn, """
@@ -711,7 +866,7 @@ def build_db(
     conn.commit()
 
     # 7. CFR requirements
-    print(f"\n[7/10] Loading CFR requirements from {cfr_dir.name}/")
+    print(f"\n[7/13] Loading CFR requirements from {cfr_dir.name}/")
     cfr_rows = load_cfr_data(cfr_dir)
     if cfr_rows:
         _executemany_chunked(conn, """
@@ -725,7 +880,7 @@ def build_db(
     conn.commit()
 
     # 8. MITRE ATT&CK techniques
-    print(f"\n[8/10] Loading ATT&CK techniques: {attack_path.name}")
+    print(f"\n[8/13] Loading ATT&CK techniques: {attack_path.name}")
     atk_rows = load_attack_data(attack_path)
     if atk_rows:
         _executemany_chunked(conn, """
@@ -739,7 +894,7 @@ def build_db(
     conn.commit()
 
     # 9. SEC EDGAR cyber incident disclosures
-    print(f"\n[9/10] Loading EDGAR disclosures: {edgar_path.name}")
+    print(f"\n[9/13] Loading EDGAR disclosures: {edgar_path.name}")
     edgar_rows = load_edgar_data(edgar_path)
     if edgar_rows:
         _executemany_chunked(conn, """
@@ -755,8 +910,54 @@ def build_db(
     conn.commit()
 
     # 10. FTS5 population
-    print(f"\n[10/10] Building FTS5 index …")
+    print(f"\n[10/13] Building FTS5 index …")
     conn.execute("INSERT INTO controls_fts(controls_fts) VALUES('rebuild')")
+    conn.commit()
+
+    # 11. NVD CVE data
+    print(f"\n[11/13] Loading NVD CVE data from {nvd_dir.name}/")
+    nvd_rows = load_nvd_data(nvd_dir)
+    if nvd_rows:
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO nvd_cves
+                (cve_id, published, last_modified, description, cvss_score,
+                 severity, cwe_ids, nist_families, fetched_at)
+            VALUES
+                (:cve_id, :published, :last_modified, :description, :cvss_score,
+                 :severity, :cwe_ids, :nist_families, :fetched_at)
+        """, nvd_rows, "nvd_cves")
+    else:
+        print(f"  nvd_cves: 0 rows (run nvd_api_loader.py to populate)")
+    conn.commit()
+
+    # 12. DISA CCI data
+    print(f"\n[12/13] Loading DISA CCI data: {cci_path.name}")
+    cci_rows = load_cci_data(cci_path)
+    if cci_rows:
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO disa_ccis
+                (cci_id, definition, type, status, nist_rev4_refs, nist_rev5_refs, fetched_at)
+            VALUES
+                (:cci_id, :definition, :type, :status, :nist_rev4_refs, :nist_rev5_refs, :fetched_at)
+        """, cci_rows, "disa_ccis")
+    else:
+        print(f"  disa_ccis: 0 rows (run cci_trackr_loader.py to populate)")
+    conn.commit()
+
+    # 13. EUR-Lex articles
+    print(f"\n[13/13] Loading EUR-Lex articles from {eurlex_dir.name}/")
+    eurlex_rows = load_eurlex_data(eurlex_dir)
+    if eurlex_rows:
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO eurlex_articles
+                (article_id, regulation_id, celex_id, article_number,
+                 title, text, nist_families, fetched_at)
+            VALUES
+                (:article_id, :regulation_id, :celex_id, :article_number,
+                 :title, :text, :nist_families, :fetched_at)
+        """, eurlex_rows, "eurlex_articles")
+    else:
+        print(f"  eurlex_articles: 0 rows (run eurlex_loader.py to populate)")
     conn.commit()
 
     # ANALYZE + optional VACUUM
@@ -772,7 +973,8 @@ def build_db(
     counts = {}
     for tbl in ("controls", "enhancements", "parameters", "unified_mappings",
                 "er_controls", "er_mappings", "framework_registry", "changelog", "announcements",
-                "cisa_kev", "cfr_requirements", "attack_techniques", "edgar_cyber_incidents"):
+                "cisa_kev", "cfr_requirements", "attack_techniques", "edgar_cyber_incidents",
+                "nvd_cves", "disa_ccis", "eurlex_articles"):
         row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
         counts[tbl] = row[0]
 

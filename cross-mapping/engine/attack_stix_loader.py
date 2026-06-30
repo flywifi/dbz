@@ -178,12 +178,14 @@ def _parse_nist_xlsx(data: bytes) -> Dict[str, List[str]]:
 
 # ── keyword fallback ──────────────────────────────────────────────────────────
 
-def _keyword_map(technique_name: str, tactic: str) -> List[str]:
+def _keyword_map(technique_name: str, tactic) -> List[str]:
     """
     Keyword heuristic: returns a list of NIST control IDs based on technique
     name and tactic. Used when the NIST XLSX is unavailable.
+    tactic may be a list or a string.
     """
-    needle = (technique_name + " " + tactic).lower()
+    tactic_str = " ".join(tactic) if isinstance(tactic, list) else (tactic or "")
+    needle = (technique_name + " " + tactic_str).lower()
     for keywords, controls in _KEYWORD_HEURISTIC:
         if any(kw in needle for kw in keywords):
             return controls
@@ -309,8 +311,6 @@ class ATTACKLoader:
                     if phase:
                         tactics.append(phase.replace("-", " ").title())
 
-            tactic_str = "; ".join(tactics) if tactics else "unknown"
-
             # Sub-technique detection
             is_subtechnique = obj.get("x_mitre_is_subtechnique", False)
             sub_technique_of = ""
@@ -330,7 +330,7 @@ class ATTACKLoader:
                 {
                     "technique_id":     technique_id,
                     "name":             obj.get("name", ""),
-                    "tactic":           tactic_str,
+                    "tactic":           tactics,   # list of tactic names
                     "sub_technique_of": sub_technique_of,
                     "is_subtechnique":  is_subtechnique,
                     "description_snippet": snippet,
@@ -406,8 +406,19 @@ class ATTACKLoader:
             f"{subtechs} sub-techniques"
         )
 
+        # Extract bundle-level version anchor for incremental updates
+        bundle_modified = bundle.get("modified") or bundle.get("spec_version") or ""
+        attack_version = ""
+        for obj in bundle.get("objects", []):
+            if obj.get("type") == "x-mitre-collection":
+                attack_version = obj.get("x_mitre_version", "")
+                bundle_modified = bundle_modified or obj.get("modified", "")
+                break
+
         # Build result envelope
         result: Dict[str, Any] = {
+            "_stix_bundle_modified": bundle_modified,
+            "_attack_version": attack_version,
             "metadata": {
                 "generated_at":        datetime.now(timezone.utc).isoformat(),
                 "source_stix_url":     stix_url or STIX_URL,

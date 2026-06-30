@@ -584,30 +584,133 @@ def cmd_edgar(args, conn: sqlite3.Connection) -> int:
 
 
 def cmd_manifest(args, conn: sqlite3.Connection) -> int:
-    """Show DB build manifest (row counts, size, sha256)."""
+    """Show DB build manifest (row counts, size, sha256) and system build metadata."""
+    # Show system build metadata first (engine/schema version, build timestamp)
+    meta_rows = conn.execute("SELECT key, value FROM db_metadata ORDER BY key").fetchall()
+    if meta_rows and args.format != "json":
+        print("=== Build Metadata ===")
+        for k, v in meta_rows:
+            print(f"  {k}: {v}")
+        print()
+
     counts = {}
-    for tbl in ("controls", "enhancements", "parameters", "unified_mappings",
-                "er_controls", "er_mappings", "framework_registry", "changelog", "announcements"):
-        counts[tbl] = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()[0]
+    all_tables = (
+        "controls", "enhancements", "parameters", "unified_mappings",
+        "er_controls", "er_mappings", "framework_registry", "changelog", "announcements",
+        "cisa_kev", "cfr_requirements", "attack_techniques", "edgar_cyber_incidents",
+        "nvd_cves", "disa_ccis", "eurlex_articles",
+    )
+    for tbl in all_tables:
+        try:
+            counts[tbl] = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()[0]
+        except Exception:
+            counts[tbl] = "n/a"
 
     # Find manifest file
     db_path = Path(conn.execute("PRAGMA database_list").fetchone()[2])
     manifest_path = db_path.parent / "grc_manifest.json"
     if manifest_path.exists():
         manifest = json.loads(manifest_path.read_text())
+        manifest["db_metadata"] = dict(meta_rows)
+        manifest["row_counts"] = {**manifest.get("row_counts", {}), **counts}
     else:
-        manifest = {"note": "grc_manifest.json not found", "row_counts": counts}
+        manifest = {
+            "note": "grc_manifest.json not found",
+            "db_metadata": dict(meta_rows),
+            "row_counts": counts,
+        }
 
     if args.format == "json":
         print(json.dumps(manifest, indent=2))
     else:
         for k, v in manifest.items():
+            if k == "db_metadata":
+                continue  # already printed above
             if isinstance(v, dict):
                 print(f"{k}:")
                 for kk, vv in v.items():
                     print(f"  {kk}: {vv}")
             else:
                 print(f"{k}: {v}")
+    return 0
+
+
+def cmd_nvd(args, conn: sqlite3.Connection) -> int:
+    """Query NVD CVE data by ID, severity, or NIST family."""
+    conditions = []
+    params: list = []
+
+    if getattr(args, "cve", None):
+        conditions.append("cve_id = ?")
+        params.append(args.cve.upper())
+
+    if getattr(args, "severity", None):
+        conditions.append("severity = ?")
+        params.append(args.severity.upper())
+
+    if getattr(args, "family", None):
+        conditions.append("nist_families LIKE ?")
+        params.append(f'%"{args.family}"%')
+
+    where = "WHERE " + " AND ".join(conditions) if conditions else ""
+    sql = f"SELECT cve_id, published, severity, cvss_score, description, nist_families FROM nvd_cves {where} ORDER BY published DESC LIMIT 50"
+    results = conn.execute(sql, params).fetchall()
+    cols = ["cve_id", "published", "severity", "cvss_score", "description", "nist_families"]
+    _output(results, args.format, cols)
+    return 0
+
+
+def cmd_cci(args, conn: sqlite3.Connection) -> int:
+    """Query DISA CCI data by CCI ID or mapped NIST control."""
+    conditions = []
+    params: list = []
+
+    if getattr(args, "id", None):
+        conditions.append("cci_id = ?")
+        params.append(args.id)
+
+    if getattr(args, "control", None):
+        conditions.append("(nist_rev5_refs LIKE ? OR nist_rev4_refs LIKE ?)")
+        params.extend([f'%{args.control}%', f'%{args.control}%'])
+
+    if getattr(args, "status", None):
+        conditions.append("status = ?")
+        params.append(args.status)
+
+    where = "WHERE " + " AND ".join(conditions) if conditions else ""
+    sql = f"SELECT cci_id, status, type, definition, nist_rev5_refs FROM disa_ccis {where} ORDER BY cci_id LIMIT 100"
+    results = conn.execute(sql, params).fetchall()
+    cols = ["cci_id", "status", "type", "definition", "nist_rev5_refs"]
+    _output(results, args.format, cols)
+    return 0
+
+
+def cmd_eurlex(args, conn: sqlite3.Connection) -> int:
+    """Query EUR-Lex regulatory articles by regulation, article number, or NIST family."""
+    conditions = []
+    params: list = []
+
+    if getattr(args, "regulation", None):
+        conditions.append("regulation_id = ?")
+        params.append(args.regulation.lower())
+
+    if getattr(args, "article", None):
+        conditions.append("(article_number = ? OR article_id LIKE ?)")
+        params.extend([args.article, f'%art{args.article}%'])
+
+    if getattr(args, "family", None):
+        conditions.append("nist_families LIKE ?")
+        params.append(f'%"{args.family}"%')
+
+    if getattr(args, "keyword", None):
+        conditions.append("(title LIKE ? OR text LIKE ?)")
+        params.extend([f'%{args.keyword}%', f'%{args.keyword}%'])
+
+    where = "WHERE " + " AND ".join(conditions) if conditions else ""
+    sql = f"SELECT regulation_id, article_number, title, nist_families FROM eurlex_articles {where} ORDER BY regulation_id, article_number LIMIT 50"
+    results = conn.execute(sql, params).fetchall()
+    cols = ["regulation_id", "article_number", "title", "nist_families"]
+    _output(results, args.format, cols)
     return 0
 
 
@@ -729,6 +832,31 @@ def build_parser() -> argparse.ArgumentParser:
     edg.add_argument("--family", metavar="FAM", help="Filter by NIST family")
     _add_format(edg); _add_db(edg)
 
+    # nvd
+    nvd_p = subs.add_parser("nvd", help="Query NVD CVE data (severity, NIST families)")
+    nvd_p.add_argument("--cve", metavar="CVE_ID", help="CVE ID (e.g. CVE-2021-44228)")
+    nvd_p.add_argument("--severity", metavar="LEVEL",
+                       help="Severity: LOW | MEDIUM | HIGH | CRITICAL")
+    nvd_p.add_argument("--family", metavar="FAM", help="Filter by NIST family (e.g. SI, IA)")
+    _add_format(nvd_p); _add_db(nvd_p)
+
+    # cci
+    cci_p = subs.add_parser("cci", help="Query DISA CCI data by ID or NIST control")
+    cci_p.add_argument("--id", metavar="CCI_ID", help="CCI ID (e.g. CCI-000001)")
+    cci_p.add_argument("--control", metavar="CTRL",
+                       help="NIST control ID (e.g. AC-2) — shows all CCIs mapping to it")
+    cci_p.add_argument("--status", metavar="STATUS", help="CCI status (e.g. active)")
+    _add_format(cci_p); _add_db(cci_p)
+
+    # eurlex
+    eur = subs.add_parser("eurlex", help="Query EUR-Lex regulatory articles (GDPR, NIS2, DORA, EU AI Act)")
+    eur.add_argument("--regulation", metavar="REG",
+                     help="Regulation ID: gdpr | nis2 | dora | eu-ai-act")
+    eur.add_argument("--article", metavar="NUM", help="Article number (e.g. 32)")
+    eur.add_argument("--family", metavar="FAM", help="Filter by NIST family")
+    eur.add_argument("--keyword", metavar="KW", help="Keyword in article title or text")
+    _add_format(eur); _add_db(eur)
+
     return ap
 
 
@@ -759,6 +887,9 @@ def main(argv=None) -> int:
         "cfr": cmd_cfr,
         "attack": cmd_attack,
         "edgar": cmd_edgar,
+        "nvd": cmd_nvd,
+        "cci": cmd_cci,
+        "eurlex": cmd_eurlex,
     }
 
     fn = cmd_map.get(args.command)

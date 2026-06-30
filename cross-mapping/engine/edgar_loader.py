@@ -50,6 +50,20 @@ _INCIDENT_NIST_MAP = {
 }
 
 
+def _build_edgar_url(accession: str, file_num: str = "") -> str:
+    """Build a valid EDGAR filing index URL from the accession number.
+
+    Accession format: XXXXXXXXXX-YY-NNNNNN (first 10 digits = filer CIK, zero-padded).
+    Index URL: https://www.sec.gov/Archives/edgar/data/{CIK}/{accessionNoDash}/
+    """
+    parts = accession.split("-")
+    if len(parts) >= 1 and parts[0].isdigit():
+        filer_cik = str(int(parts[0]))  # strip leading zeros
+        accession_nodash = accession.replace("-", "")
+        return f"https://www.sec.gov/Archives/edgar/data/{filer_cik}/{accession_nodash}/"
+    return f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&type=8-K"
+
+
 def _get_session():
     try:
         import requests
@@ -158,7 +172,7 @@ def normalize_hit(hit: dict) -> dict:
         "nist_families": classification["nist_families"],
         "classification_confidence": classification["confidence"],
         "text_snippet": snippet[:500] if snippet else "",
-        "edgar_url": f"https://www.sec.gov/Archives/edgar/data/{accession.replace('-', '').replace('/', '')}",
+        "edgar_url": _build_edgar_url(accession, src.get("file_num", "")),
     }
 
 
@@ -193,11 +207,19 @@ def load_edgar_disclosures(
         for fam in d["nist_families"]:
             by_family[fam] = by_family.get(fam, 0) + 1
 
+    # Version anchors for incremental re-runs
+    filed_dates = [d["filed_at"] for d in disclosures if d.get("filed_at")]
+    last_filed_date = max(filed_dates) if filed_dates else start_date
+    accession_nos = [d["accession_no"] for d in disclosures if d.get("accession_no")]
+    last_accession = max(accession_nos) if accession_nos else ""
+
     result = {
         "_source": "SEC EDGAR — 8-K Item 1.05 cybersecurity incident disclosures",
         "_search_url": EDGAR_SEARCH_URL,
         "_start_date": start_date,
         "_end_date": end_date or "today",
+        "_last_filed_date": last_filed_date,
+        "_last_accession_number": last_accession,
         "_total": len(disclosures),
         "_by_incident_type": dict(sorted(by_type.items(), key=lambda x: -x[1])),
         "_by_nist_family": dict(sorted(by_family.items())),

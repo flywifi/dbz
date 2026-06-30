@@ -436,7 +436,12 @@ class NVDLoader:
             f"CRITICAL: {critical}"
         )
 
+        # Version anchor: max lastModified across all fetched CVEs for incremental re-runs
+        modified_dates = [c["last_modified"] for c in cves if c.get("last_modified")]
+        latest_cve_modified = max(modified_dates) if modified_dates else end_str
+
         result: Dict[str, Any] = {
+            "_latest_cve_modified_date": latest_cve_modified,
             "metadata": {
                 "generated_at":     now.isoformat(),
                 "query_start_date": start_str,
