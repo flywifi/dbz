@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
   "_purpose": "Structured announcements from standards-body RSS/Atom feeds. Populated by announcement_monitor.py.",
-  "generated_at": "2026-06-30T18:38:35Z",
-  "window_days": 730,
+  "generated_at": "2026-06-30T18:41:39Z",
+  "window_days": 180,
   "entries": [
     {
       "entry_id": "88d188c581b3cbf4",
