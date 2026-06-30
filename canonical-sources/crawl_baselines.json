@@ -1,0 +1,326 @@
+{
+  "_schema_version": "1.0.0",
+  "updated_at": "2026-06-30T01:56:44.280621+00:00",
+  "docs": {
+    "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53b/final/documents/sp800-53b-control-baselines.xlsx": {
+      "url": "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53b/final/documents/sp800-53b-control-baselines.xlsx",
+      "status": 200,
+      "size": "98080",
+      "last_modified": "Fri, 14 Feb 2025 15:15:34 GMT",
+      "etag": "\"06f1e4bf37edb1:0\"",
+      "content_hash": "",
+      "filename": "sp800-53b-control-baselines.xlsx",
+      "discovery": "registry_known"
+    },
+    "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53B.pdf": {
+      "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53B.pdf",
+      "status": 404,
+      "size": "",
+      "last_modified": "",
+      "etag": "",
+      "content_hash": "",
+      "filename": "NIST.SP.800-53B.pdf",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/files/pubs/sp/800/53/b/upd1/final/docs/sp800-53b-control-baselines.xlsx": {
+      "url": "https://csrc.nist.gov/files/pubs/sp/800/53/b/upd1/final/docs/sp800-53b-control-baselines.xlsx",
+      "status": 200,
+      "size": "98080",
+      "last_modified": "Fri, 14 Feb 2025 15:15:34 GMT",
+      "etag": "\"06f1e4bf37edb1:0\"",
+      "content_hash": "",
+      "filename": "sp800-53b-control-baselines.xlsx",
+      "discovery": "crawl"
+    },
+    "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json": {
+      "url": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+      "status": 200,
+      "size": "10442037",
+      "last_modified": "",
+      "etag": "\"b7cae1a85709116a8fd0ce833cacda9339c103422c8152ad6e4f73fbbdc706f1\"",
+      "content_hash": "",
+      "filename": "NIST_SP-800-53_rev5_catalog.json",
+      "discovery": "registry_known"
+    },
+    "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/sp800-53r5-control-catalog.xlsx": {
+      "url": "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/sp800-53r5-control-catalog.xlsx",
+      "status": 200,
+      "size": "362839",
+      "last_modified": "Fri, 14 Feb 2025 15:15:35 GMT",
+      "etag": "\"805b74bf37edb1:0\"",
+      "content_hash": "",
+      "filename": "sp800-53r5-control-catalog.xlsx",
+      "discovery": "registry_known"
+    },
+    "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/SP_800-53_v5_1-derived-OSCAL.pdf": {
+      "url": "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/SP_800-53_v5_1-derived-OSCAL.pdf",
+      "status": 200,
+      "size": "3102787",
+      "last_modified": "Sun, 29 Sep 2024 23:17:07 GMT",
+      "etag": "\"80dbaeb3c512db1:0\"",
+      "content_hash": "",
+      "filename": "SP_800-53_v5_1-derived-OSCAL.pdf",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/NIST_SP-800-53_rev5_catalog_load.csv": {
+      "url": "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/NIST_SP-800-53_rev5_catalog_load.csv",
+      "status": 200,
+      "size": "1074158",
+      "last_modified": "Sun, 29 Sep 2024 23:17:07 GMT",
+      "etag": "\"80dbaeb3c512db1:0\"",
+      "content_hash": "",
+      "filename": "NIST_SP-800-53_rev5_catalog_load.csv",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/NIST_SP-800-53_rev5-derived-OSCAL.xlsx": {
+      "url": "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/NIST_SP-800-53_rev5-derived-OSCAL.xlsx",
+      "status": 200,
+      "size": "378937",
+      "last_modified": "Sun, 29 Sep 2024 23:17:07 GMT",
+      "etag": "\"80dbaeb3c512db1:0\"",
+      "content_hash": "",
+      "filename": "NIST_SP-800-53_rev5-derived-OSCAL.xlsx",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/csrc/media/Publications/sp/800-53a/rev-5/final/documents/sp800-53ar5-assessment-procedures.csv": {
+      "url": "https://csrc.nist.gov/csrc/media/Publications/sp/800-53a/rev-5/final/documents/sp800-53ar5-assessment-procedures.csv",
+      "status": 200,
+      "size": "1496017",
+      "last_modified": "Sun, 29 Sep 2024 23:20:56 GMT",
+      "etag": "\"07c2d3cc612db1:0\"",
+      "content_hash": "",
+      "filename": "sp800-53ar5-assessment-procedures.csv",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/csrc/media/Projects/risk-management/800-53%20Downloads/800-53Ar5/sp800-53ar5-assessment-procedures.xlsx": {
+      "url": "https://csrc.nist.gov/csrc/media/Projects/risk-management/800-53%20Downloads/800-53Ar5/sp800-53ar5-assessment-procedures.xlsx",
+      "status": 200,
+      "size": "468556",
+      "last_modified": "Sun, 29 Sep 2024 23:17:07 GMT",
+      "etag": "\"80dbaeb3c512db1:0\"",
+      "content_hash": "",
+      "filename": "sp800-53ar5-assessment-procedures.xlsx",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/SP_800-53B_derived-OSCAL.pdf": {
+      "url": "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/SP_800-53B_derived-OSCAL.pdf",
+      "status": 200,
+      "size": "747779",
+      "last_modified": "Sun, 29 Sep 2024 23:17:07 GMT",
+      "etag": "\"80dbaeb3c512db1:0\"",
+      "content_hash": "",
+      "filename": "SP_800-53B_derived-OSCAL.pdf",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/NIST_SP-800-53_rev5_LOW-baseline_profile_load.csv": {
+      "url": "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/NIST_SP-800-53_rev5_LOW-baseline_profile_load.csv",
+      "status": 200,
+      "size": "266842",
+      "last_modified": "Sun, 29 Sep 2024 23:17:07 GMT",
+      "etag": "\"80dbaeb3c512db1:0\"",
+      "content_hash": "",
+      "filename": "NIST_SP-800-53_rev5_LOW-baseline_profile_load.csv",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/NIST_SP-800-53_rev5_MODERATE-baseline_profile_load.csv": {
+      "url": "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/NIST_SP-800-53_rev5_MODERATE-baseline_profile_load.csv",
+      "status": 200,
+      "size": "404959",
+      "last_modified": "Sun, 29 Sep 2024 23:17:07 GMT",
+      "etag": "\"80dbaeb3c512db1:0\"",
+      "content_hash": "",
+      "filename": "NIST_SP-800-53_rev5_MODERATE-baseline_profile_load.csv",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/NIST_SP-800-53_rev5_HIGH-baseline_profile_load.csv": {
+      "url": "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/NIST_SP-800-53_rev5_HIGH-baseline_profile_load.csv",
+      "status": 200,
+      "size": "471334",
+      "last_modified": "Sun, 29 Sep 2024 23:17:07 GMT",
+      "etag": "\"80dbaeb3c512db1:0\"",
+      "content_hash": "",
+      "filename": "NIST_SP-800-53_rev5_HIGH-baseline_profile_load.csv",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/NIST_SP-800-53_rev5_PRIVACY-baseline_profile_load.csv": {
+      "url": "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r5/NIST_SP-800-53_rev5_PRIVACY-baseline_profile_load.csv",
+      "status": 200,
+      "size": "174705",
+      "last_modified": "Sun, 29 Sep 2024 23:17:07 GMT",
+      "etag": "\"80dbaeb3c512db1:0\"",
+      "content_hash": "",
+      "filename": "NIST_SP-800-53_rev5_PRIVACY-baseline_profile_load.csv",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/csrc/media/Projects/risk-management/800-53%20Downloads/800-53r5/NIST%20SP%20800-53B-Jan2022.xlsx": {
+      "url": "https://csrc.nist.gov/csrc/media/Projects/risk-management/800-53%20Downloads/800-53r5/NIST%20SP%20800-53B-Jan2022.xlsx",
+      "status": 200,
+      "size": "90562",
+      "last_modified": "Fri, 14 Feb 2025 16:00:24 GMT",
+      "etag": "\"0dc7b8ef97edb1:0\"",
+      "content_hash": "",
+      "filename": "NIST SP 800-53B-Jan2022.xlsx",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/csrc/media/Projects/risk-management/800-53%20Downloads/800-53r4/800-53-rev4-controls.csv": {
+      "url": "https://csrc.nist.gov/csrc/media/Projects/risk-management/800-53%20Downloads/800-53r4/800-53-rev4-controls.csv",
+      "status": 200,
+      "size": "748945",
+      "last_modified": "Sun, 29 Sep 2024 23:17:06 GMT",
+      "etag": "\"04516b3c512db1:0\"",
+      "content_hash": "",
+      "filename": "800-53-rev4-controls.csv",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/csrc/media/Projects/risk-management/800-53%20Downloads/800-53Ar4/800-53a-rev4-objectives.csv": {
+      "url": "https://csrc.nist.gov/csrc/media/Projects/risk-management/800-53%20Downloads/800-53Ar4/800-53a-rev4-objectives.csv",
+      "status": 200,
+      "size": "1023304",
+      "last_modified": "Sun, 29 Sep 2024 23:17:06 GMT",
+      "etag": "\"04516b3c512db1:0\"",
+      "content_hash": "",
+      "filename": "800-53a-rev4-objectives.csv",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r3/800-53-rev3-controls.csv": {
+      "url": "https://csrc.nist.gov/CSRC/media/Projects/risk-management/800-53%20Downloads/800-53r3/800-53-rev3-controls.csv",
+      "status": 200,
+      "size": "377044",
+      "last_modified": "Sun, 29 Sep 2024 23:17:06 GMT",
+      "etag": "\"04516b3c512db1:0\"",
+      "content_hash": "",
+      "filename": "800-53-rev3-controls.csv",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/files/pubs/sp/800/53/r5/upd1/final/docs/sp800-53r5-potential-updates.xlsx": {
+      "url": "https://csrc.nist.gov/files/pubs/sp/800/53/r5/upd1/final/docs/sp800-53r5-potential-updates.xlsx",
+      "status": 200,
+      "size": "22185",
+      "last_modified": "Sun, 29 Sep 2024 23:20:57 GMT",
+      "etag": "\"8012c63cc612db1:0\"",
+      "content_hash": "",
+      "filename": "sp800-53r5-potential-updates.xlsx",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/sp800-53r4-to-r5-comparison-workbook.xlsx": {
+      "url": "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/sp800-53r4-to-r5-comparison-workbook.xlsx",
+      "status": 200,
+      "size": "167183",
+      "last_modified": "Sun, 29 Sep 2024 23:20:57 GMT",
+      "etag": "\"8012c63cc612db1:0\"",
+      "content_hash": "",
+      "filename": "sp800-53r4-to-r5-comparison-workbook.xlsx",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/sp800-53r4-appj-to-r5-comparison.xlsx": {
+      "url": "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/sp800-53r4-appj-to-r5-comparison.xlsx",
+      "status": 200,
+      "size": "170848",
+      "last_modified": "Sun, 29 Sep 2024 23:20:57 GMT",
+      "etag": "\"8012c63cc612db1:0\"",
+      "content_hash": "",
+      "filename": "sp800-53r4-appj-to-r5-comparison.xlsx",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/csf-pf-to-sp800-53r5-mappings.xlsx": {
+      "url": "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/csf-pf-to-sp800-53r5-mappings.xlsx",
+      "status": 200,
+      "size": "201644",
+      "last_modified": "Sun, 29 Sep 2024 23:20:57 GMT",
+      "etag": "\"8012c63cc612db1:0\"",
+      "content_hash": "",
+      "filename": "csf-pf-to-sp800-53r5-mappings.xlsx",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/sp800-53-collaboration-index-template.xlsx": {
+      "url": "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/sp800-53-collaboration-index-template.xlsx",
+      "status": 200,
+      "size": "111690",
+      "last_modified": "Thu, 20 Mar 2025 18:25:29 GMT",
+      "etag": "\"80f21c75c599db1:0\"",
+      "content_hash": "",
+      "filename": "sp800-53-collaboration-index-template.xlsx",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/sp800-53-collaboration-index-template.docx": {
+      "url": "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/sp800-53-collaboration-index-template.docx",
+      "status": 200,
+      "size": "152516",
+      "last_modified": "Thu, 20 Mar 2025 18:25:29 GMT",
+      "etag": "\"80f21c75c599db1:0\"",
+      "content_hash": "",
+      "filename": "sp800-53-collaboration-index-template.docx",
+      "discovery": "crawl"
+    },
+    "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf": {
+      "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf",
+      "status": 404,
+      "size": "",
+      "last_modified": "",
+      "etag": "",
+      "content_hash": "",
+      "filename": "NIST.SP.800-53r5.pdf",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/files/projects/Risk-Management/800-53%20Comment%20Site/SP800-53-r5.2.0-changes.pdf": {
+      "url": "https://csrc.nist.gov/files/projects/Risk-Management/800-53%20Comment%20Site/SP800-53-r5.2.0-changes.pdf",
+      "status": 200,
+      "size": "93468",
+      "last_modified": "Wed, 27 Aug 2025 15:10:23 GMT",
+      "etag": "\"8019e3b56417dc1:0\"",
+      "content_hash": "",
+      "filename": "SP800-53-r5.2.0-changes.pdf",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/files/pubs/sp/800/53/r5/upd1/final/docs/sp800-53r4-to-r5-comparison-workbook.xlsx": {
+      "url": "https://csrc.nist.gov/files/pubs/sp/800/53/r5/upd1/final/docs/sp800-53r4-to-r5-comparison-workbook.xlsx",
+      "status": 200,
+      "size": "167183",
+      "last_modified": "Sun, 29 Sep 2024 23:20:57 GMT",
+      "etag": "\"8012c63cc612db1:0\"",
+      "content_hash": "",
+      "filename": "sp800-53r4-to-r5-comparison-workbook.xlsx",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/files/pubs/sp/800/53/r5/upd1/final/docs/sp800-53r4-appj-to-r5-comparison.xlsx": {
+      "url": "https://csrc.nist.gov/files/pubs/sp/800/53/r5/upd1/final/docs/sp800-53r4-appj-to-r5-comparison.xlsx",
+      "status": 200,
+      "size": "170848",
+      "last_modified": "Sun, 29 Sep 2024 23:20:57 GMT",
+      "etag": "\"8012c63cc612db1:0\"",
+      "content_hash": "",
+      "filename": "sp800-53r4-appj-to-r5-comparison.xlsx",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/files/pubs/sp/800/53/r5/upd1/final/docs/csf-pf-to-sp800-53r5-mappings.xlsx": {
+      "url": "https://csrc.nist.gov/files/pubs/sp/800/53/r5/upd1/final/docs/csf-pf-to-sp800-53r5-mappings.xlsx",
+      "status": 200,
+      "size": "201644",
+      "last_modified": "Sun, 29 Sep 2024 23:20:57 GMT",
+      "etag": "\"8012c63cc612db1:0\"",
+      "content_hash": "",
+      "filename": "csf-pf-to-sp800-53r5-mappings.xlsx",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/files/pubs/sp/800/53/r5/upd1/final/docs/sp800-53-collaboration-index-template.xlsx": {
+      "url": "https://csrc.nist.gov/files/pubs/sp/800/53/r5/upd1/final/docs/sp800-53-collaboration-index-template.xlsx",
+      "status": 200,
+      "size": "111690",
+      "last_modified": "Thu, 20 Mar 2025 18:25:29 GMT",
+      "etag": "\"80f21c75c599db1:0\"",
+      "content_hash": "",
+      "filename": "sp800-53-collaboration-index-template.xlsx",
+      "discovery": "crawl"
+    },
+    "https://csrc.nist.gov/files/pubs/sp/800/53/r5/upd1/final/docs/sp800-53-collaboration-index-template.docx": {
+      "url": "https://csrc.nist.gov/files/pubs/sp/800/53/r5/upd1/final/docs/sp800-53-collaboration-index-template.docx",
+      "status": 200,
+      "size": "152516",
+      "last_modified": "Thu, 20 Mar 2025 18:25:29 GMT",
+      "etag": "\"80f21c75c599db1:0\"",
+      "content_hash": "",
+      "filename": "sp800-53-collaboration-index-template.docx",
+      "discovery": "crawl"
+    }
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://flywifi.dev/dbz/schema/handoff_contract_v1.1.0.schema.json",
+  "title": "GRC Cross-Mapping Handoff Contract",
+  "description": "Per-control handoff contract for the NIST 800-53 enriched catalog (schema v1.1.0). One record is a self-contained, multi-scenario handoff: assessment, FedRAMP authorization, gap analysis, sales/CS overlap, and audit. The unified_mappings array is the primary cross-framework relationship field; per-framework lists are retained for backward compatibility.",
+  "type": "object",
+  "definitions": {
+    "baselines": {
+      "type": "object",
+      "description": "FedRAMP / 800-53B baseline inclusion flags.",
+      "properties": {
+        "privacy": {"type": ["boolean", "null"]},
+        "low": {"type": ["boolean", "null"]},
+        "moderate": {"type": ["boolean", "null"]},
+        "high": {"type": ["boolean", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "parameter": {
+      "type": "object",
+      "description": "An [Assignment:] or [Selection:] block extracted from control text. Required for FedRAMP SSP parameterization and assessment-objective mapping.",
+      "required": ["id", "type", "label"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^param-\\d+$"},
+        "type": {"type": "string", "enum": ["assignment", "selection"]},
+        "label": {"type": "string"},
+        "position": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "compliance_scope": {
+      "type": "object",
+      "description": "Fast-filter summary used by the overlap engine and sales/CS reports.",
+      "required": ["fedramp_levels", "privacy_baseline", "mapped_frameworks", "framework_count"],
+      "properties": {
+        "fedramp_levels": {
+          "type": "array",
+          "items": {"type": "string", "enum": ["low", "moderate", "high"]}
+        },
+        "privacy_baseline": {"type": "boolean"},
+        "mapped_frameworks": {"type": "array", "items": {"type": "string"}},
+        "framework_count": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "unified_mapping": {
+      "type": "object",
+      "description": "A single cross-framework relationship record. The primary handoff field — all downstream engines read from here.",
+      "required": ["framework", "control_id", "relationship_type", "direction", "mapping_source"],
+      "properties": {
+        "framework": {"type": "string", "minLength": 1},
+        "framework_version": {"type": "string"},
+        "control_id": {"type": "string"},
+        "relationship_type": {
+          "type": "string",
+          "description": "NIST OLIR STRM vocabulary, plus 'mapped_to' for simple references and 'transitive_via_hitrust' for bridged inferences.",
+          "enum": ["Subset", "Superset", "Equal", "Intersecting", "mapped_to", "transitive_via_hitrust", ""]
+        },
+        "strength": {"type": "string"},
+        "direction": {"type": "string"},
+        "mapping_source": {
+          "type": "string",
+          "description": "Provenance of the mapping. Required so a bridged inference is never mistaken for an authoritative direct crosswalk."
+        },
+        "notes": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "enhancement": {
+      "type": "object",
+      "required": [
+        "schema_version", "id", "title", "parameters", "baselines",
+        "compliance_scope", "mapped_ccis", "unified_mappings"
+      ],
+      "properties": {
+        "schema_version": {"type": "string"},
+        "id": {"type": "string", "pattern": "^[A-Z]{2,3}-\\d+\\(\\d+\\)$"},
+        "title": {"type": "string"},
+        "text": {"type": "string"},
+        "discussion": {"type": "string"},
+        "parameters": {"type": "array", "items": {"$ref": "#/definitions/parameter"}},
+        "baselines": {"$ref": "#/definitions/baselines"},
+        "compliance_scope": {"$ref": "#/definitions/compliance_scope"},
+        "mapped_ccis": {"type": "array", "items": {"type": "string", "pattern": "^CCI-\\d{6}$"}},
+        "iso_27001_mappings": {"type": "array"},
+        "cmmc_mappings": {"type": "array"},
+        "hitrust_mappings": {"type": "array", "items": {"type": "string"}},
+        "unified_mappings": {"type": "array", "items": {"$ref": "#/definitions/unified_mapping"}}
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version", "catalog_source", "id", "family", "title", "text",
+    "parameters", "baselines", "compliance_scope", "enhancements",
+    "mapped_ccis", "unified_mappings"
+  ],
+  "properties": {
+    "schema_version": {"type": "string", "const": "1.1.0"},
+    "catalog_source": {"type": "string"},
+    "generated_at": {"type": "string"},
+    "id": {"type": "string", "pattern": "^[A-Z]{2,3}-\\d+$"},
+    "family": {"type": "string", "pattern": "^[A-Z]{2,3}$"},
+    "title": {"type": "string"},
+    "text": {"type": "string"},
+    "discussion": {"type": "string"},
+    "related_controls": {"type": "string"},
+    "parameters": {"type": "array", "items": {"$ref": "#/definitions/parameter"}},
+    "baselines": {"$ref": "#/definitions/baselines"},
+    "compliance_scope": {"$ref": "#/definitions/compliance_scope"},
+    "enhancements": {"type": "array", "items": {"$ref": "#/definitions/enhancement"}},
+    "mapped_ccis": {"type": "array", "items": {"type": "string", "pattern": "^CCI-\\d{6}$"}},
+    "iso_27001_mappings": {"type": "array"},
+    "cmmc_mappings": {"type": "array"},
+    "hitrust_mappings": {"type": "array", "items": {"type": "string"}},
+    "unified_mappings": {"type": "array", "items": {"$ref": "#/definitions/unified_mapping"}}
+  },
+  "additionalProperties": false
+}

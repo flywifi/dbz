@@ -167,6 +167,77 @@ def load_cmmc_mapping() -> Dict[str, List[dict]]:
     return result
 
 
+# ── NIST CSF 2.0 (direct concept crosswalk) ─────────────────────────────────────
+
+@lru_cache(maxsize=1)
+def load_csf2_mapping() -> Dict[str, List[dict]]:
+    """
+    Load the official NIST CSF 2.0 → 800-53 r5 concept crosswalk (STRM) and
+    invert it to NIST-anchored form.
+
+    This is a DIRECT, authoritative mapping (NIST-published), distinct from the
+    HITRUST-bridged "NIST CSF" mappings (which are transitive_via_hitrust).
+
+    Returns dict[nist_id → list of {csf2_id, strength}]
+    """
+    src = "nist-csf2-concept-crosswalk"
+    path = source_path(src)
+    if not path.exists():
+        raise FileNotFoundError(f"CSF 2.0 crosswalk not found: {path}")
+
+    sn = sheet_name(src)
+    hr = header_row(src)
+    skiprows = list(range(hr)) if hr else None
+    df = pd.read_excel(path, sheet_name=sn, skiprows=skiprows)
+    df.columns = [str(c).replace("\n", " ").strip() if isinstance(c, str) else c
+                  for c in df.columns]
+
+    csf_col = col(src, "csf2_id")
+    nist_col = col(src, "nist_53r5_id")
+
+    def _opt(role):
+        try:
+            return col(src, role)
+        except KeyError:
+            return None
+
+    str_col = _opt("strength")
+
+    # Resolve actual column names (manifest names may have had embedded newlines)
+    def _resolve(target):
+        for c in df.columns:
+            if isinstance(c, str) and target.replace("\n", " ").strip().lower() in c.lower():
+                return c
+        return target
+
+    csf_col = _resolve(csf_col)
+    nist_col = _resolve(nist_col)
+    str_col = _resolve(str_col) if str_col else None
+
+    result: Dict[str, List[dict]] = {}
+    for _, row in df.iterrows():
+        csf_id = str(row.get(csf_col, "")).strip()
+        nist_raw = str(row.get(nist_col, "")).strip()
+        if not csf_id or csf_id == "nan" or not nist_raw or nist_raw == "nan":
+            continue
+        # CSF subcategory IDs look like GV.OC-01; skip function/category headers (GV, GV.OC)
+        if not re.search(r"-\d", csf_id):
+            continue
+        strength = (str(row.get(str_col, "")).strip()
+                    if str_col and pd.notna(row.get(str_col)) else "")
+        strength = "" if strength == "nan" else strength
+
+        nist_ids = {_normalize_nist_id(x) for x in re.split(r"[\n;,]+", nist_raw) if x.strip()}
+        for nist_id in nist_ids:
+            if not nist_id:
+                continue
+            bucket = result.setdefault(nist_id, [])
+            if not any(r["csf2_id"] == csf_id for r in bucket):
+                bucket.append({"csf2_id": csf_id, "strength": strength})
+
+    return result
+
+
 # ── HITRUST ────────────────────────────────────────────────────────────────────
 
 @lru_cache(maxsize=1)
@@ -226,5 +297,165 @@ def load_hitrust_mapping() -> Dict[str, List[str]]:
                 bucket = result.setdefault(nist_id, [])
                 if hitrust_id not in bucket:
                     bucket.append(hitrust_id)
+
+    return result
+
+
+# ── International standards & legal regulations (via the HITRUST hub) ────────────
+#
+# HITRUST CSF v11.4 cross-references 64 authoritative sources. We pivot
+# NIST 800-53 r5 → HITRUST control → {international standard / legal regulation},
+# which lets us deliver GDPR, CCPA, PCI DSS, ISO privacy/AI standards, NIST AI RMF,
+# CSF 2.0, and US state privacy laws WITHOUT a separate crosswalk for each.
+#
+# These are TRANSITIVE mappings (NIST↔HITRUST↔X). They are weaker than a direct
+# crosswalk and are always labeled relationship_type="transitive_via_hitrust" and
+# mapping_source="…via HITRUST CSF hub" so downstream consumers never mistake a
+# bridged inference for an authoritative direct mapping (no-fabrication rule).
+
+# column name in the cross-reference  →  {framework, version, category, jurisdiction}
+BRIDGED_FRAMEWORKS = {
+    "EU GDPR v2023": {
+        "framework": "EU GDPR", "version": "2016/679 (2023 consolidation)",
+        "category": "privacy_law", "jurisdiction": "EU"},
+    "California Consumer Privacy Act § 1798": {
+        "framework": "CCPA/CPRA", "version": "Cal. Civ. Code § 1798",
+        "category": "privacy_law", "jurisdiction": "US-CA"},
+    "PCI DSS v4.0": {
+        "framework": "PCI DSS", "version": "v4.0",
+        "category": "security_standard", "jurisdiction": "global"},
+    "ISO/IEC 27001:2022": {
+        "framework": "ISO/IEC 27001", "version": "2022",
+        "category": "security_standard", "jurisdiction": "international"},
+    "ISO/IEC 27002:2022": {
+        "framework": "ISO/IEC 27002", "version": "2022",
+        "category": "security_standard", "jurisdiction": "international"},
+    "ISO/IEC 29100:2011": {
+        "framework": "ISO/IEC 29100 (Privacy Framework)", "version": "2011",
+        "category": "privacy_standard", "jurisdiction": "international"},
+    "ISO/IEC 29151:2017 (Annex)": {
+        "framework": "ISO/IEC 29151 (PII Protection)", "version": "2017",
+        "category": "privacy_standard", "jurisdiction": "international"},
+    "ISO/IEC 27799:2016": {
+        "framework": "ISO/IEC 27799 (Health Informatics)", "version": "2016",
+        "category": "security_standard", "jurisdiction": "international"},
+    "ISO/IEC 23894:2023": {
+        "framework": "ISO/IEC 23894 (AI Risk Management)", "version": "2023",
+        "category": "ai_governance", "jurisdiction": "international"},
+    "ISO 31000:2018": {
+        "framework": "ISO 31000 (Risk Management)", "version": "2018",
+        "category": "risk_management", "jurisdiction": "international"},
+    "NIST AI RMF 1.0": {
+        "framework": "NIST AI RMF", "version": "1.0",
+        "category": "ai_governance", "jurisdiction": "US"},
+    "NIST Cybersecurity Framework 2.0": {
+        "framework": "NIST CSF", "version": "2.0",
+        "category": "security_framework", "jurisdiction": "US"},
+    "APEC Cross-Border Privacy Rules (CBPR)": {
+        "framework": "APEC CBPR", "version": "current",
+        "category": "privacy_framework", "jurisdiction": "APEC"},
+    "OECD Privacy Framework": {
+        "framework": "OECD Privacy Framework", "version": "2013",
+        "category": "privacy_framework", "jurisdiction": "OECD"},
+    "Singapore Personal Data Protection Act (2023)": {
+        "framework": "Singapore PDPA", "version": "2023",
+        "category": "privacy_law", "jurisdiction": "SG"},
+    "23 NYCRR 500 (2nd Amendment)": {
+        "framework": "NY DFS 23 NYCRR 500", "version": "2nd Amendment",
+        "category": "regulation", "jurisdiction": "US-NY"},
+    "State of Massachusetts Data Protection Act (201 CMR 17.00) 2024": {
+        "framework": "Massachusetts 201 CMR 17.00", "version": "2024",
+        "category": "privacy_law", "jurisdiction": "US-MA"},
+    "State of Nevada Security and Privacy of Personal Information (NRS 603A)": {
+        "framework": "Nevada NRS 603A", "version": "current",
+        "category": "privacy_law", "jurisdiction": "US-NV"},
+    "HIPAA Privacy Rule": {
+        "framework": "HIPAA Privacy Rule", "version": "45 CFR 164 Subpart E",
+        "category": "privacy_law", "jurisdiction": "US"},
+    "PCI DSS v4.0": {
+        "framework": "PCI DSS", "version": "v4.0",
+        "category": "security_standard", "jurisdiction": "global"},
+}
+
+
+@lru_cache(maxsize=1)
+def load_international_via_hitrust() -> Dict[str, List[dict]]:
+    """
+    Pivot NIST 800-53 r5 → HITRUST → international standards & legal regulations.
+
+    Returns dict[nist_id → list of {framework, framework_version, control_id,
+                 category, jurisdiction, relationship_type, mapping_source, via}]
+
+    Every record is TRANSITIVE (bridged through HITRUST) and labeled as such.
+    """
+    src = "hitrust-csf-cross-reference"
+    path = source_path(src)
+    if not path.exists():
+        raise FileNotFoundError(f"HITRUST cross-reference not found: {path}")
+
+    sn = sheet_name(src)
+    hr = header_row(src)
+    skiprows = list(range(hr)) if hr else None
+    df = pd.read_excel(path, sheet_name=sn, skiprows=skiprows)
+    df.columns = [str(c).strip() if isinstance(c, str) else c for c in df.columns]
+
+    # Locate the NIST r5 column
+    nist_col = None
+    for candidate in ["NIST SP 800-53 r5", "NIST SP 800-53 R5"]:
+        if candidate in df.columns:
+            nist_col = candidate
+            break
+    if nist_col is None:
+        for c in df.columns:
+            if isinstance(c, str) and "NIST" in c.upper() and "800-53" in c and "r5" in c.lower():
+                nist_col = c
+                break
+    if nist_col is None:
+        raise RuntimeError("Cannot find NIST 800-53 r5 column in HITRUST cross-reference")
+
+    # Which bridged frameworks are actually present as columns
+    present = {colname: meta for colname, meta in BRIDGED_FRAMEWORKS.items()
+               if colname in df.columns}
+
+    result: Dict[str, List[dict]] = {}
+    # nist_id → framework → set(refs) to dedupe across HITRUST rows
+    acc: Dict[str, Dict[str, set]] = {}
+
+    for _, row in df.iterrows():
+        nist_raw = str(row.get(nist_col, "")).strip()
+        if not nist_raw or nist_raw == "nan":
+            continue
+        nist_ids = {_normalize_nist_id(x) for x in re.split(r"[\n;,]+", nist_raw) if x.strip()}
+        nist_ids = {n for n in nist_ids if n}
+        if not nist_ids:
+            continue
+
+        for colname, meta in present.items():
+            cell = str(row.get(colname, "")).strip()
+            if not cell or cell == "nan":
+                continue
+            refs = [x.strip() for x in re.split(r"[\n;]+", cell) if x.strip()]
+            for nist_id in nist_ids:
+                fw_acc = acc.setdefault(nist_id, {}).setdefault(meta["framework"], set())
+                fw_acc.update(refs)
+
+    # Materialize accumulated refs into mapping records
+    for nist_id, fw_map in acc.items():
+        for colname, meta in present.items():
+            fw = meta["framework"]
+            refs = fw_map.get(fw)
+            if not refs:
+                continue
+            for ref in sorted(refs):
+                result.setdefault(nist_id, []).append({
+                    "framework": fw,
+                    "framework_version": meta["version"],
+                    "control_id": ref,
+                    "category": meta["category"],
+                    "jurisdiction": meta["jurisdiction"],
+                    "relationship_type": "transitive_via_hitrust",
+                    "mapping_source": "HITRUST CSF v11.4 Cross-Reference (bridged via HITRUST hub)",
+                    "via": "HITRUST CSF",
+                })
 
     return result

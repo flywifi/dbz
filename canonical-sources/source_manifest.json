@@ -210,7 +210,27 @@
       "file": "canonical-sources/source_data/sp800-53r5-to-iso-27001-mapping-2022-OLIR-2023-10-12-UPDATED.xlsx",
       "format": "xlsx",
       "sheet_pattern": "Relationships-{FAMILY}",
-      "sheets_example": ["Relationships-AC", "AT", "AU", "CA", "CM", "CP", "IA", "IR", "MA", "MP", "PE", "PL", "PM", "PS", "RA", "SA", "SC", "SI", "SR"],
+      "sheets_example": [
+        "Relationships-AC",
+        "AT",
+        "AU",
+        "CA",
+        "CM",
+        "CP",
+        "IA",
+        "IR",
+        "MA",
+        "MP",
+        "PE",
+        "PL",
+        "PM",
+        "PS",
+        "RA",
+        "SA",
+        "SC",
+        "SI",
+        "SR"
+      ],
       "header_row": 0,
       "version": "NIST IR 8477 / ISO/IEC 27001:2022 OLIR, Updated 2023-10-12",
       "retrieved": "2024",
@@ -314,8 +334,16 @@
       "file": "canonical-sources/source_data/Cybersecurity_Framework_v2-0_Concept_Crosswalk_800-53_final.xlsx",
       "format": "xlsx",
       "role": "csf2_to_nist53",
-      "notes": "inspect_needed — official NIST CSF 2.0 → 800-53 concept crosswalk.",
-      "inspect_needed": true
+      "notes": "Official NIST CSF 2.0 → 800-53 r5 concept crosswalk (STRM). Focal=CSF 2.0 subcategory, Reference=800-53 control. Inverted to NIST→CSF in load_csf2_mapping(). Authoritative (direct), unlike the HITRUST-bridged NIST CSF.",
+      "sheet": "Relationships",
+      "header_row": 0,
+      "version": "NIST CSF 2.0 (Feb 2024)",
+      "retrieved": "2024",
+      "column_roles": {
+        "Focal Document Element": "csf2_id",
+        "Reference Document Element": "nist_53r5_id",
+        "Strength of Relationship (Optional)": "strength"
+      }
     },
     {
       "id": "nist-csf2-implementation-examples",
@@ -444,7 +472,9 @@
         "id": "er-soc1-t1",
         "file": "cross-mapping/core-audit/mappings/SOC 1 T1.csv",
         "format": "csv",
-        "frameworks_covered": ["SOC 1"],
+        "frameworks_covered": [
+          "SOC 1"
+        ],
         "column_roles": {
           "Reference ID": "er_id",
           "Category": "er_category",
@@ -459,7 +489,9 @@
         "id": "er-soc1-t2",
         "file": "cross-mapping/core-audit/mappings/SOC 1 T2.csv",
         "format": "csv",
-        "frameworks_covered": ["SOC 1"],
+        "frameworks_covered": [
+          "SOC 1"
+        ],
         "column_roles": {
           "Reference ID": "er_id",
           "Category": "er_category",
@@ -474,7 +506,10 @@
         "id": "er-soc2-t1",
         "file": "cross-mapping/core-audit/mappings/SOC 2 T1.csv",
         "format": "csv",
-        "frameworks_covered": ["SOC 2", "ISO 27001/2 (2022)"],
+        "frameworks_covered": [
+          "SOC 2",
+          "ISO 27001/2 (2022)"
+        ],
         "column_roles": {
           "Reference ID": "er_id",
           "Category": "er_category",
@@ -489,7 +524,12 @@
         "id": "er-soc2-t2",
         "file": "cross-mapping/core-audit/mappings/SOC 2 T2.csv",
         "format": "csv",
-        "frameworks_covered": ["SOC 2", "ISO 27001/2 (2022)", "HIPAA", "HITRUST e1"],
+        "frameworks_covered": [
+          "SOC 2",
+          "ISO 27001/2 (2022)",
+          "HIPAA",
+          "HITRUST e1"
+        ],
         "column_roles": {
           "Reference ID": "er_id",
           "Category": "er_category",
@@ -504,7 +544,9 @@
         "id": "er-iso-27001",
         "file": "cross-mapping/core-audit/mappings/ISO 27001.csv",
         "format": "csv",
-        "frameworks_covered": ["ISO 27001/2 (2022)"],
+        "frameworks_covered": [
+          "ISO 27001/2 (2022)"
+        ],
         "column_roles": {
           "Reference ID": "er_id",
           "Category": "er_category",
@@ -518,7 +560,9 @@
         "id": "er-hipaa",
         "file": "cross-mapping/core-audit/mappings/HIPAA Security.csv",
         "format": "csv",
-        "frameworks_covered": ["HIPAA Security"],
+        "frameworks_covered": [
+          "HIPAA Security"
+        ],
         "column_roles": {
           "Reference ID": "er_id",
           "Category": "er_category",
@@ -532,7 +576,10 @@
         "id": "er-soc2-t2-iso-27001-combo",
         "file": "cross-mapping/core-audit/mappings/SOC 2 T2 & ISO 27001.csv",
         "format": "csv",
-        "frameworks_covered": ["SOC 2", "ISO 27001/2 (2022)"],
+        "frameworks_covered": [
+          "SOC 2",
+          "ISO 27001/2 (2022)"
+        ],
         "role": "overlap_oracle",
         "column_roles": {
           "Reference ID": "er_id",
@@ -549,14 +596,20 @@
         "id": "er-soc2-t1-iso-27001-combo",
         "file": "cross-mapping/core-audit/mappings/SOC 2 T1 & ISO 27001.csv",
         "format": "csv",
-        "frameworks_covered": ["SOC 2", "ISO 27001/2 (2022)"],
+        "frameworks_covered": [
+          "SOC 2",
+          "ISO 27001/2 (2022)"
+        ],
         "role": "overlap_oracle"
       },
       {
         "id": "er-soc2-t1-hipaa-combo",
         "file": "cross-mapping/core-audit/mappings/SOC 2 T1 & HIPAA S.csv",
         "format": "csv",
-        "frameworks_covered": ["SOC 2", "HIPAA Security"],
+        "frameworks_covered": [
+          "SOC 2",
+          "HIPAA Security"
+        ],
         "role": "overlap_oracle"
       }
     ]

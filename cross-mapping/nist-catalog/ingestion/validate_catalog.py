@@ -64,10 +64,11 @@ REQUIRED_COMPLIANCE_SCOPE_FIELDS = [
     "fedramp_levels", "privacy_baseline", "mapped_frameworks", "framework_count",
 ]
 
-CCI_RE = re.compile(r"^CCI-\d+$")
+CCI_RE = re.compile(r"^CCI-\d{6}$")   # DISA CCI format: CCI- + 6-digit zero-padded
 
 VALID_RELATIONSHIP_TYPES = {
-    "Subset", "Superset", "Equal", "Intersecting", "mapped_to", "",
+    "Subset", "Superset", "Equal", "Intersecting", "mapped_to",
+    "transitive_via_hitrust", "",
 }
 
 

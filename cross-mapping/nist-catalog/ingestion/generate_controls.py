@@ -72,6 +72,8 @@ def _build_unified_mappings(
     iso_records: List[dict],
     cmmc_records: List[dict],
     hitrust_ids: List[str],
+    intl_records: Optional[List[dict]] = None,
+    csf2_records: Optional[List[dict]] = None,
 ) -> List[dict]:
     """
     Consolidate all cross-framework mappings into a single typed list.
@@ -112,6 +114,20 @@ def _build_unified_mappings(
             "notes": rec.get("fulfilled_by", ""),
         })
 
+    # NIST CSF 2.0 — DIRECT authoritative crosswalk (NIST-published), distinct
+    # from the HITRUST-bridged "NIST CSF" entries in intl_records.
+    for rec in (csf2_records or []):
+        unified.append({
+            "framework": "NIST CSF 2.0",
+            "framework_version": "2.0",
+            "control_id": rec.get("csf2_id", ""),
+            "relationship_type": "mapped_to",
+            "strength": rec.get("strength", ""),
+            "direction": "NIST→CSF 2.0",
+            "mapping_source": "NIST CSF 2.0 Concept Crosswalk to 800-53 (official, direct)",
+            "notes": "",
+        })
+
     for rec in cmmc_records:
         # Derive 800-171 control ID from CMMC practice: "AC.L1-3.1.1(a.)" → "3.1.1"
         practice = rec.get("cmmc_practice", "")
@@ -150,6 +166,21 @@ def _build_unified_mappings(
             "direction": "NIST→HITRUST",
             "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
             "notes": "",
+        })
+
+    # International standards & legal regulations, bridged transitively via HITRUST.
+    # Labeled relationship_type="transitive_via_hitrust" so consumers never mistake
+    # a bridged inference for an authoritative direct crosswalk.
+    for rec in (intl_records or []):
+        unified.append({
+            "framework": rec.get("framework", ""),
+            "framework_version": rec.get("framework_version", ""),
+            "control_id": rec.get("control_id", ""),
+            "relationship_type": rec.get("relationship_type", "transitive_via_hitrust"),
+            "strength": "",
+            "direction": f"NIST→{rec.get('framework','')}",
+            "mapping_source": rec.get("mapping_source", ""),
+            "notes": f"category={rec.get('category','')}; jurisdiction={rec.get('jurisdiction','')}; via={rec.get('via','')}",
         })
 
     return unified
@@ -198,6 +229,16 @@ def _load_hitrust():
     return load_hitrust_mapping()
 
 
+def _load_international():
+    from load_crosswalks import load_international_via_hitrust
+    return load_international_via_hitrust()
+
+
+def _load_csf2():
+    from load_crosswalks import load_csf2_mapping
+    return load_csf2_mapping()
+
+
 # ── assembly ───────────────────────────────────────────────────────────────────
 
 def assemble_control(
@@ -207,6 +248,8 @@ def assemble_control(
     iso_map: dict,
     cmmc_map: dict,
     hitrust_map: dict,
+    intl_map: dict = None,
+    csf2_map: dict = None,
     generated_at: str = "",
 ) -> dict:
     """
@@ -224,12 +267,18 @@ def assemble_control(
     discussion = catalog_record.get("discussion", "")
     baselines  = catalog_record.get("baselines", {})
 
+    intl_map = intl_map or {}
+    csf2_map = csf2_map or {}
     cci_ids     = cci_idx.get(ctrl_id, [])
     iso_records = iso_map.get(ctrl_id, [])
     cmmc_records = cmmc_map.get(ctrl_id, [])
     hitrust_ids  = hitrust_map.get(ctrl_id, [])
+    intl_records = intl_map.get(ctrl_id, [])
+    csf2_records = csf2_map.get(ctrl_id, [])
 
-    unified = _build_unified_mappings(ctrl_id, cci_ids, iso_records, cmmc_records, hitrust_ids)
+    unified = _build_unified_mappings(
+        ctrl_id, cci_ids, iso_records, cmmc_records, hitrust_ids,
+        intl_records, csf2_records)
 
     record = {
         # ── Identity ──────────────────────────────────────────────────────
@@ -279,8 +328,10 @@ def assemble_control(
         enh_iso    = iso_map.get(enh_id, [])
         enh_cmmc   = cmmc_map.get(enh_id, [])
         enh_hitrust = hitrust_map.get(enh_id, [])
+        enh_intl   = intl_map.get(enh_id, [])
+        enh_csf2   = csf2_map.get(enh_id, [])
         enh_unified = _build_unified_mappings(
-            enh_id, enh_cci, enh_iso, enh_cmmc, enh_hitrust
+            enh_id, enh_cci, enh_iso, enh_cmmc, enh_hitrust, enh_intl, enh_csf2
         )
         enh_baselines = enh.get("baselines", {})
 
@@ -331,6 +382,8 @@ def main():
     iso_map    = {}
     cmmc_map   = {}
     hitrust_map = {}
+    intl_map   = {}
+    csf2_map   = {}
 
     if not args.skip_cci:
         print("[*] Loading CCI index …")
@@ -362,12 +415,30 @@ def main():
         except Exception as e:
             print(f"    [warn] {e} — HITRUST mappings will be empty")
 
+        print("[*] Loading international standards & legal regs (via HITRUST hub) …")
+        try:
+            intl_map = _load_international()
+            n_records = sum(len(v) for v in intl_map.values())
+            frameworks = sorted({m["framework"] for v in intl_map.values() for m in v})
+            print(f"    {len(intl_map)} NIST IDs → {n_records} bridged mappings "
+                  f"across {len(frameworks)} frameworks")
+            print(f"    frameworks: {', '.join(frameworks[:8])}…")
+        except Exception as e:
+            print(f"    [warn] {e} — international mappings will be empty")
+
+        print("[*] Loading NIST CSF 2.0 direct crosswalk …")
+        try:
+            csf2_map = _load_csf2()
+            print(f"    {len(csf2_map)} NIST IDs with direct CSF 2.0 mappings")
+        except Exception as e:
+            print(f"    [warn] {e} — CSF 2.0 direct mappings will be empty")
+
     print("[*] Assembling output …")
     output: dict = {}
     for ctrl_id, catalog_record in catalog.items():
         output[ctrl_id] = assemble_control(
             ctrl_id, catalog_record, cci_idx, iso_map, cmmc_map, hitrust_map,
-            generated_at=generated_at,
+            intl_map=intl_map, csf2_map=csf2_map, generated_at=generated_at,
         )
 
     if args.family:

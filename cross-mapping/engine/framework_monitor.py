@@ -253,15 +253,22 @@ def _check_feed_entry(feed_id: str, entry: dict) -> dict:
             result["error"] = "no landing URL"
             return result
         head = _http_head(landing_url)
+        last_mod = head.get("last_modified", "")
+        etag = head.get("etag", "")
         result.update({
-            "last_modified_header": head.get("last_modified", ""),
-            "etag": head.get("etag", ""),
+            "last_modified_header": last_mod,
+            "etag": etag,
             "error": head.get("error"),
-            "version_signal": head.get("last_modified") or head.get("etag"),
         })
-        # Content fingerprint only if HEAD gave us useful signals
-        if not head.get("error") and not head.get("last_modified"):
-            result["fingerprint"] = _content_fingerprint(landing_url)
+        # Many GRC landing pages (csrc.nist.gov etc.) serve no Last-Modified/ETag,
+        # so fall back to a content fingerprint as the version signal.
+        if not head.get("error"):
+            if last_mod or etag:
+                result["version_signal"] = last_mod or etag
+            else:
+                fp = _content_fingerprint(landing_url)
+                result["fingerprint"] = fp
+                result["version_signal"] = f"fp:{fp}" if fp else ""
 
     return result
 
