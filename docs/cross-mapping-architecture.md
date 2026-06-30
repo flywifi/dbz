@@ -3,16 +3,19 @@
 How the GRC cross-mapping backend turns raw framework spreadsheets into a
 validated, multi-scenario handoff contract — and how it stays current.
 
-## Two cores + an update layer
+## Two cores + an update layer + a query DB
 
 ```
-                    ┌─────────────────────────────────────────────┐
-                    │              UPDATE LAYER (news feed)         │
-                    │  framework_crawler.py   (PDF/Excel discovery) │
-                    │  oscal_diff.py          (control-level diff)  │
-                    │  framework_monitor.py   (version signals)     │
-                    │      ▲ feed_registry.json (18 sources)        │
-                    └──────┼──────────────────────────────────────┘
+                    ┌─────────────────────────────────────────────────────┐
+                    │              UPDATE LAYER (news feed)                 │
+                    │  framework_crawler.py    (PDF/Excel discovery)        │
+                    │  oscal_diff.py           (control-level diff)         │
+                    │  framework_monitor.py    (version signals)            │
+                    │  announcement_monitor.py (RSS/Atom announcement feeds)│
+                    │      ▲ feed_registry.json (31 sources)                │
+                    │      → announcements_feed.json (structured entries)   │
+                    │      → framework_changelog.json (confirmed diffs)     │
+                    └──────┼──────────────────────────────────────────────┘
                            │ flags "re-pin source X"
         ┌──────────────────┴───────────────────┐
         │            source_manifest.json        │  ← every sheet/column/version pin
@@ -30,8 +33,14 @@ validated, multi-scenario handoff contract — and how it stays current.
             │                              │
             └──────────────┬───────────────┘
                            ▼
-              build_reverse_index.py
-              (bidirectional lookup)
+                     build_db.py
+              ┌─────────────────────┐
+              │   grc.db (SQLite)   │  ← query layer; rebuilt after every catalog run
+              │  15–20 MB, indexed  │
+              └────────┬────────────┘
+                       ▼
+                 dbz_query.py  (CLI: reverse, forward, scope, overlap,
+                                search, changelog, feeds, announcements)
 ```
 
 ## The handoff contract (schema v1.1.0)
@@ -86,8 +95,8 @@ feeds for now, bridged through ISO 23894 / NIST AI RMF where applicable.
 
 ## The update layer (news feed)
 
-The catalog is only as current as its sources. Three prongs keep it fresh; all
-read `canonical-sources/feed_registry.json` (18 framework definitions):
+The catalog is only as current as its sources. Four prongs keep it fresh; all
+read `canonical-sources/feed_registry.json` (31 framework definitions):
 
 1. **`framework_crawler.py`** — the transverser. Politely crawls each framework's
    official download page, discovers downloadable standards artifacts
@@ -101,44 +110,134 @@ read `canonical-sources/feed_registry.json` (18 framework definitions):
    catalog (Range-windowed to survive proxy truncation of the ~10MB file) and diffs
    it **control-by-control** against our generated catalog. Answers "has NIST
    added/withdrawn/renamed a control since we built?" — the question that actually
-   triggers a rebuild.
+   triggers a rebuild. With `--write-changelog`, appends confirmed diffs to
+   `canonical-sources/framework_changelog.json`.
 
 3. **`framework_monitor.py`** — lightweight version-signal poller (landing-page
    ETag/Last-Modified/content-fingerprint, GitHub releases, RSS). Emits action items
    for which `source_manifest.json` keys to re-pin.
 
+4. **`announcement_monitor.py`** — **early-warning prong**. Scans RSS/Atom news
+   feeds from standards bodies (NIST CSRC, ENISA, PCI SSC, FedRAMP, ICO, etc.)
+   for major revisions, draft releases, and public comment periods. These announcements
+   appear **weeks before** a new PDF/Excel file is published, so this prong fires
+   first. Writes to `canonical-sources/announcements_feed.json`; preserves
+   `human_reviewed: true` flags on existing entries.
+
 **Nothing is auto-applied.** Every prong sets `human_review_required: true`; a human
 verifies the change on the primary source, re-pins the manifest, and rebuilds.
+
+### Change type vocabulary (announcement signals)
+`major_revision · minor_update · draft_release · public_comment · new_framework · retired · informational`
+Classified by regex scoring against title + summary text; threshold 0.15 confidence.
 
 ### Change intelligence
 `feed_registry.json → monitoring_policy`: primary vs secondary confirmation,
 confidence scoring (0.9 = primary + ≥2 signals, 0.7 = primary + 1 signal,
 0.4 = discovery-only), 730-day recency window.
 
+Each feed entry now includes `announcement_feeds` (list of RSS/Atom URLs),
+`draft_status` (none | ipd | second_draft | final_public_draft),
+`draft_landing_url`, and `public_comment_deadline`.
+
+## Local SQLite database (`grc.db`) + query CLI
+
+The 29 MB JSON catalog costs ~50k LLM tokens per query even for a simple lookup.
+`build_db.py` normalizes the catalog into a local SQLite database that answers common
+questions with **zero LLM tokens** — the LLM only handles interpretation, gap analysis,
+and synthesis.
+
+### Token savings
+
+| Query | Before | After |
+|---|---|---|
+| Reverse lookup (ISO A.5.16 → NIST) | ~50k tokens | ~200 tokens |
+| Forward mapping (AC-2 → all frameworks) | ~50k tokens | ~800 tokens |
+| Scope filter (FedRAMP Moderate, AC family) | ~50k tokens | ~500 tokens |
+| ER overlap (SOC 2 ↔ ISO 27001) | ~10k tokens | ~200 tokens |
+| Keyword search | not feasible | ~1k tokens |
+| Announcement check | not feasible | ~300 tokens |
+
+### Key tables
+`controls` · `enhancements` · `parameters` · `unified_mappings` (60k+ rows, indexed) ·
+`er_controls` · `er_mappings` · `framework_registry` · `changelog` · `announcements` ·
+`controls_fts` (FTS5 keyword search)
+
+### Key views
+`er_overlap_pairs` (pre-joined overlap matrix) · `baseline_controls` · `reverse_index`
+
+### Query CLI (`dbz_query.py`)
+
+```bash
+# Reverse lookup: which NIST controls map to ISO A.5.16?
+python3 cross-mapping/engine/dbz_query.py reverse \
+    --framework "ISO/IEC 27001:2022" --control A.5.16
+
+# Forward mapping: where does AC-2 map in ISO and CMMC?
+python3 cross-mapping/engine/dbz_query.py forward \
+    --control AC-2 --frameworks iso cmmc
+
+# Scope filter: FedRAMP Moderate AC-family controls
+python3 cross-mapping/engine/dbz_query.py scope \
+    --fedramp moderate --family AC
+
+# ER-level overlap
+python3 cross-mapping/engine/dbz_query.py overlap \
+    --framework-a "SOC 2" --framework-b "ISO 27001/2 (2022)"
+
+# Keyword search (FTS5)
+python3 cross-mapping/engine/dbz_query.py search \
+    --keyword "multi-factor authentication" --scope moderate
+
+# Recent announcements
+python3 cross-mapping/engine/dbz_query.py announcements --days 30
+
+# Framework changelog
+python3 cross-mapping/engine/dbz_query.py changelog --framework nist-800-53
+```
+
+Output: `--format table` (default) · `--format json` · `--format csv`
+DB auto-discovery: walks up from CWD for `cross-mapping/output/grc.db`; override with `--db PATH`.
+
+### Rebuild trigger
+`build_db.py` runs automatically as the final step of `generate_controls.py --all-families`,
+keeping `grc.db` in sync with the JSON output. Runtime ~30 seconds; output ~15–20 MB.
+`grc.db` is gitignored (build artifact).
+
 ## Reverse index (bidirectional handoff)
 
-The catalog is NIST-anchored (NIST → others). `build_reverse_index.py` inverts
-`unified_mappings` into `{framework → {target_control_id → [nist_controls]}}`, so a
-customer migrating *into* NIST — or auditing a NIST system against ISO/PCI/GDPR —
-can ask "which NIST controls satisfy ISO 27001 A.5.16?" and get `[AC-2, IA-2, IA-4,
-IA-5, IA-8]`. 25 frameworks indexed.
+The catalog is NIST-anchored (NIST → others). The `reverse_index` view in `grc.db`
+inverts `unified_mappings` so a customer migrating *into* NIST — or auditing a NIST
+system against ISO/PCI/GDPR — can ask "which NIST controls satisfy ISO 27001 A.5.16?"
+and get `[AC-2, IA-2, IA-4, IA-5, IA-8]`. The legacy `build_reverse_index.py` +
+`reverse_index.json` remain for offline reference; live queries should use the DB.
 
 ## Build & verify
 
 ```bash
-# Build
-python cross-mapping/nist-catalog/ingestion/generate_controls.py        # all families
-python cross-mapping/engine/build_reverse_index.py                       # reverse lookup
+# Build catalog + DB
+python3 cross-mapping/nist-catalog/ingestion/generate_controls.py       # all families
+python3 cross-mapping/engine/build_db.py                                 # grc.db (auto-runs after generate)
+python3 cross-mapping/engine/build_reverse_index.py                      # legacy reverse_index.json
 
 # Verify
-python cross-mapping/nist-catalog/ingestion/validate_catalog.py          # field rules
-python cross-mapping/nist-catalog/ingestion/validate_schema.py           # JSON Schema
-python cross-mapping/tests/test_ac_fixture.py                            # fixtures
+python3 cross-mapping/nist-catalog/ingestion/validate_catalog.py         # field rules
+python3 cross-mapping/nist-catalog/ingestion/validate_schema.py          # JSON Schema
+python3 cross-mapping/tests/test_ac_fixture.py                           # fixtures
+
+# Verify DB row counts
+python3 -c "
+import sqlite3; c = sqlite3.connect('cross-mapping/output/grc.db')
+print('controls:', c.execute('SELECT COUNT(*) FROM controls').fetchone()[0])
+print('unified_mappings:', c.execute('SELECT COUNT(*) FROM unified_mappings').fetchone()[0])
+print('er_mappings:', c.execute('SELECT COUNT(*) FROM er_mappings').fetchone()[0])
+"
 
 # Stay current (news feed)
-python cross-mapping/engine/framework_crawler.py --crawl --update-baselines
-python cross-mapping/engine/oscal_diff.py
-python cross-mapping/engine/framework_monitor.py
+python3 cross-mapping/engine/framework_crawler.py --crawl --update-baselines
+python3 cross-mapping/engine/oscal_diff.py --write-changelog
+python3 cross-mapping/engine/framework_monitor.py
+python3 cross-mapping/engine/announcement_monitor.py
 ```
 
 ## Feature flags (opt-in integrations)
@@ -173,5 +272,14 @@ them in an interactive `claude mcp` / `/mcp` session or via claude.ai connector 
 ## Atoms (`skills/atoms/`)
 
 Single-operation skills following the educator-tools convention (`SKILL.md` +
-`scripts/` + "Do NOT use for…" clause + `human_review_required`):
-`compliance-crosswalk` · `gap-analysis` · `overlap-query` · `framework-update-check`.
+`scripts/` + "Do NOT use for…" clause + `human_review_required`).
+
+| Atom | Script | DB method | Fallback |
+|---|---|---|---|
+| `compliance-crosswalk` | `crosswalk.py` | `SELECT` from `controls` + `unified_mappings` | JSON catalog load |
+| `gap-analysis` | `gap_analysis.py` | LEFT JOIN `controls` ↔ `unified_mappings` | — |
+| `overlap-query` | `overlap_query.py` | `er_overlap_pairs` view + `er_mappings` | — |
+| `framework-update-check` | `update_check.py` | `framework_monitor` + `announcement_monitor` | — |
+
+All atom scripts auto-discover `grc.db` by walking up from CWD.
+`compliance-crosswalk` falls back to direct JSON loading if the DB is not yet built.

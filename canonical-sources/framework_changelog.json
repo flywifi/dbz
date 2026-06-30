@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.0.0",
+  "_purpose": "Confirmed control-level changes when a new framework version is loaded. Populated by oscal_diff.py --write-changelog (human_confirmed=false) and by humans for non-OSCAL frameworks.",
+  "_usage": "human_confirmed=false entries are machine-generated diffs. Set human_confirmed=true after verifying on the primary source. announcement_ref links to an entry_id in announcements_feed.json.",
+  "entries": []
+}

@@ -10,4 +10,6 @@ build/
 .DS_Store
 Thumbs.db
 cross-mapping/output/*.json
+cross-mapping/output/grc.db
+cross-mapping/output/grc_manifest.json
 cross-mapping/nist-catalog/output/*.json

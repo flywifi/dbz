@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "_purpose": "Structured announcements from standards-body RSS/Atom feeds. Populated by announcement_monitor.py. Early-warning signals that precede file changes in canonical-sources/ by weeks.",
+  "_usage": "Entries with human_reviewed=false are automated signals; set to true after a human verifies on the primary source. action_items drive re-pinning in source_manifest.json.",
+  "generated_at": null,
+  "window_days": 180,
+  "entries": []
+}
