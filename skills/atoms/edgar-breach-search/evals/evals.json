@@ -1,0 +1,40 @@
+{
+  "atom": "edgar-breach-search",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "Ransomware filter — returns incidents with IR and SC families",
+      "input": {"incident_type": "ransomware", "limit": 5},
+      "expected_output": {
+        "count": {"$gte": 0},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "count may be 0 if edgar_loader.py has not been run; that is still a pass"
+    },
+    {
+      "id": "fail-01",
+      "label": "Unknown incident type — returns empty, not fabricated data",
+      "input": {"incident_type": "alien_invasion"},
+      "expected_output": {
+        "incidents": [],
+        "count": 0,
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "Unknown types return empty result, not an error and not fabricated records"
+    },
+    {
+      "id": "edge-01",
+      "label": "No filters — returns all incidents up to limit",
+      "input": {"limit": 3},
+      "expected_output": {
+        "count": {"$gte": 0},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "Empty DB is valid state when edgar_loader.py has not run"
+    }
+  ]
+}

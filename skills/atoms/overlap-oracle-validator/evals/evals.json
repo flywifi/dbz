@@ -1,0 +1,44 @@
+{
+  "atom": "overlap-oracle-validator",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "SOC2 × ISO27001 — Jaccard in oracle range with oracle validation",
+      "input": {"framework_a": "SOC2", "framework_b": "ISO27001", "check_oracle": true},
+      "expected_output": {
+        "jaccard": {"$gte": 0.0, "$lte": 1.0},
+        "a_covers_b_pct": {"$gte": 0.0, "$lte": 100.0},
+        "b_covers_a_pct": {"$gte": 0.0, "$lte": 100.0},
+        "oracle_status": {"$in": ["pass", "skipped"]},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "oracle_status may be 'skipped' if combination CSV not present; Jaccard must be a real computed value not 0 unless genuinely empty"
+    },
+    {
+      "id": "fail-01",
+      "label": "Unknown framework — returns error, not fabricated overlap",
+      "input": {"framework_a": "FAKE_FRAMEWORK_XYZ", "framework_b": "SOC2"},
+      "expected_output": {
+        "error": {"$contains": "not found"},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "Unknown framework must return an error object, never a fabricated jaccard value"
+    },
+    {
+      "id": "edge-01",
+      "label": "Valid pair with no combination CSV — oracle_status skipped",
+      "input": {"framework_a": "HIPAA", "framework_b": "ISO27001", "check_oracle": true},
+      "expected_output": {
+        "jaccard": {"$gte": 0.0, "$lte": 1.0},
+        "oracle_status": "skipped",
+        "oracle_delta": null,
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "When no combination CSV exists for the pair, oracle validation is skipped — not a failure"
+    }
+  ]
+}

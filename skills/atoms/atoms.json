@@ -175,6 +175,94 @@
         "count": "integer"
       },
       "tags": ["changelog", "version", "history", "query"]
+    },
+    {
+      "id": "edgar-breach-search",
+      "label": "SEC EDGAR Breach Search",
+      "version": "1.0",
+      "path": "skills/atoms/edgar-breach-search",
+      "script": "cross-mapping/engine/dbz_query.py",
+      "input_schema": {
+        "incident_type": "string? — ransomware | breach | unauthorized_access | disruption",
+        "company": "string? — partial company name match",
+        "since": "string? — ISO date YYYY-MM-DD; filter by disclosure date",
+        "limit": "integer? — default 20"
+      },
+      "output_schema": {
+        "incidents": "array — [{accession_no, company_name, cik, incident_date, disclosure_date, incident_type, nist_families, filing_url}]",
+        "count": "integer",
+        "db_built_at": "string",
+        "human_review_required": "boolean — always true"
+      },
+      "tags": ["edgar", "sec", "breach", "incident", "nist", "query"]
+    },
+    {
+      "id": "overlap-oracle-validator",
+      "label": "Overlap Oracle Validator",
+      "version": "1.0",
+      "path": "skills/atoms/overlap-oracle-validator",
+      "script": "cross-mapping/engine/er_overlap.py",
+      "input_schema": {
+        "framework_a": "string — e.g. SOC2, ISO27001, HIPAA",
+        "framework_b": "string — e.g. ISO27001, HITRUST, GDPR",
+        "check_oracle": "boolean? — default false; validate against combination CSV oracle"
+      },
+      "output_schema": {
+        "framework_a": "string",
+        "framework_b": "string",
+        "jaccard": "number — 0.0–1.0",
+        "a_covers_b_pct": "number — 0.0–100.0",
+        "b_covers_a_pct": "number — 0.0–100.0",
+        "oracle_delta": "number or null — deviation from oracle CSV value",
+        "oracle_status": "string — pass | fail | skipped",
+        "human_review_required": "boolean — always true"
+      },
+      "tags": ["overlap", "jaccard", "oracle", "er", "validation"]
+    },
+    {
+      "id": "ecfr-monitor",
+      "label": "eCFR Part Monitor",
+      "version": "1.0",
+      "path": "skills/atoms/ecfr-monitor",
+      "script": "cross-mapping/engine/ecfr_loader.py",
+      "input_schema": {
+        "title": "integer — CFR title number (e.g. 45)",
+        "part": "integer — CFR part number (e.g. 164)",
+        "subpart": "string? — subpart letter (e.g. 'C')",
+        "since_date": "string? — ISO date YYYY-MM-DD; detect changes since this date"
+      },
+      "output_schema": {
+        "title": "integer",
+        "part": "integer",
+        "subpart": "string or null",
+        "as_of_date": "string — YYYY-MM-DD from eCFR versioner API",
+        "section_count": "integer",
+        "changed": "boolean — true if as_of_date > since_date",
+        "human_review_required": "boolean — always true"
+      },
+      "tags": ["cfr", "ecfr", "regulatory", "hipaa", "glba", "monitor"]
+    },
+    {
+      "id": "feed-poller",
+      "label": "Framework Feed Poller",
+      "version": "1.0",
+      "path": "skills/atoms/feed-poller",
+      "script": "cross-mapping/engine/framework_monitor.py",
+      "input_schema": {
+        "framework_id": "string — ID from feed_registry.json (e.g. 'nist-800-53', 'hitrust')"
+      },
+      "output_schema": {
+        "framework_id": "string",
+        "label": "string",
+        "current_version": "string",
+        "latest_detected": "string or null",
+        "check_strategy": "string — github_release | poll_landing | rss_feed",
+        "version_signal": "string",
+        "changed": "boolean",
+        "draft_status": "string — none | draft | retired",
+        "human_review_required": "boolean — always true"
+      },
+      "tags": ["monitoring", "feed", "version", "registry", "poll"]
     }
   ]
 }

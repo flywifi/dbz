@@ -1,0 +1,44 @@
+{
+  "atom": "feed-poller",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "Known stable framework — returns version string and changed=false",
+      "input": {"framework_id": "nist-800-53"},
+      "expected_output": {
+        "framework_id": "nist-800-53",
+        "current_version": {"$exists": true},
+        "changed": false,
+        "draft_status": "none",
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "nist-800-53 is a stable entry; changed should be false unless a new OSCAL release has been detected"
+    },
+    {
+      "id": "fail-01",
+      "label": "Unknown framework_id — returns error, not fabricated version data",
+      "input": {"framework_id": "nonexistent-framework-xyz"},
+      "expected_output": {
+        "error": {"$contains": "not found"},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "Unknown framework_id must return error; never fabricate a version string or changed value"
+    },
+    {
+      "id": "edge-01",
+      "label": "Retired framework — returns changed=false and draft_status=retired",
+      "input": {"framework_id": "ffiec-cat"},
+      "expected_output": {
+        "framework_id": "ffiec-cat",
+        "changed": false,
+        "draft_status": "retired",
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "FFIEC CAT was sunset Aug 2025; retired frameworks must return changed=false — they do not update"
+    }
+  ]
+}

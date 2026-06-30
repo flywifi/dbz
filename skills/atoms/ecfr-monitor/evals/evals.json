@@ -1,0 +1,42 @@
+{
+  "atom": "ecfr-monitor",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "45 CFR 164 (HIPAA Security Rule) — returns valid as-of date and section count",
+      "input": {"title": 45, "part": 164, "subpart": "C"},
+      "expected_output": {
+        "title": 45,
+        "part": 164,
+        "as_of_date": {"$matches": "^\\d{4}-\\d{2}-\\d{2}$"},
+        "section_count": {"$gte": 1},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "Requires outbound HTTPS to ecfr.gov; may return cached result if API is unavailable"
+    },
+    {
+      "id": "fail-01",
+      "label": "Nonexistent CFR part — returns error, not fabricated section data",
+      "input": {"title": 99, "part": 9999},
+      "expected_output": {
+        "error": {"$exists": true},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "CFR title 99 part 9999 does not exist; must return error object, never a fabricated as_of_date or section_count"
+    },
+    {
+      "id": "edge-01",
+      "label": "since_date in the future — changed is always false",
+      "input": {"title": 45, "part": 164, "since_date": "2099-12-31"},
+      "expected_output": {
+        "changed": false,
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "No CFR part can have an as-of date in the future; changed must be false"
+    }
+  ]
+}
