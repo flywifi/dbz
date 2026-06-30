@@ -1,0 +1,40 @@
+{
+  "skill": "bulk-evidence-partitioner",
+  "version": "1.0",
+  "description": "Inventory source, partition bulk evidence artifact into stable chunks, validate",
+  "steps": [
+    {
+      "id": "manifest_check",
+      "atom": "source-manifest-lookup",
+      "label": "Look up source key in source_manifest to confirm expected format",
+      "input": {
+        "key": "{{input.source_key}}"
+      },
+      "output_as": "manifest_entry"
+    },
+    {
+      "id": "partition",
+      "atom": "bulk-evidence-partitioner",
+      "label": "Partition artifact into stable, hash-based chunks",
+      "input": {
+        "artifact": "{{input.artifact}}",
+        "chunk_size": "{{input.chunk_size}}",
+        "manifest": "{{manifest_entry}}"
+      },
+      "output_as": "chunks"
+    },
+    {
+      "id": "validate",
+      "atom": "claim-and-output-validator",
+      "label": "Validate chunk IDs are stable (hash-based) and no cross-file chunks exist",
+      "input": {
+        "output": "{{chunks}}",
+        "schema": "evidence-chunk"
+      },
+      "output_as": "validated"
+    }
+  ],
+  "output": "{{validated}}",
+  "on_step_failure": "stop_and_return_error",
+  "notes": "Chunk IDs are SHA-256 hash-based, not random — ensures stable IDs across re-runs. No cross-file chunks (each chunk belongs to exactly one source document)."
+}

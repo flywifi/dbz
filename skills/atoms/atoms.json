@@ -1,0 +1,180 @@
+{
+  "schema_version": "1.0",
+  "repo": "dbz",
+  "atoms": [
+    {
+      "id": "compliance-crosswalk",
+      "label": "Compliance Crosswalk",
+      "version": "1.0",
+      "path": "skills/atoms/compliance-crosswalk",
+      "script": "cross-mapping/engine/overlap_calculator.py",
+      "input_schema": {
+        "normalized_controls": "array — list of {control_id, title, framework} objects",
+        "target_framework": "string — framework_id to cross-map to (e.g. 'nist-800-53')"
+      },
+      "output_schema": {
+        "crosswalk": "array — [{source_control, target_control, relationship_type}]",
+        "gaps": "array — [{control_id, reason}] controls with no mapping",
+        "human_review_required": "boolean — always true"
+      },
+      "tags": ["crosswalk", "nist", "er", "mapping"]
+    },
+    {
+      "id": "gap-analysis",
+      "label": "Gap Analysis",
+      "version": "1.0",
+      "path": "skills/atoms/gap-analysis",
+      "script": "cross-mapping/engine/overlap_calculator.py",
+      "input_schema": {
+        "crosswalked": "object — output of compliance-crosswalk atom",
+        "framework_id": "string — target framework to check coverage against"
+      },
+      "output_schema": {
+        "gaps": "array — [{control_id, family, title, severity}] uncovered controls",
+        "coverage_pct": "number — percentage of controls covered",
+        "db_built_at": "string — ISO timestamp when grc.db was last built",
+        "human_review_required": "boolean — always true"
+      },
+      "tags": ["gap", "coverage", "nist", "audit"]
+    },
+    {
+      "id": "overlap-query",
+      "label": "Framework Overlap Query",
+      "version": "1.0",
+      "path": "skills/atoms/overlap-query",
+      "script": "cross-mapping/engine/er_overlap.py",
+      "input_schema": {
+        "framework_a": "string — first framework_id (e.g. 'soc-2')",
+        "framework_b": "string — second framework_id (e.g. 'iso-27001')"
+      },
+      "output_schema": {
+        "jaccard": "number — |A∩B|/|A∪B| overlap coefficient",
+        "a_covers_b_pct": "number — % of B controls covered by A",
+        "b_covers_a_pct": "number — % of A controls covered by B",
+        "shared_controls": "array — control IDs in both frameworks"
+      },
+      "tags": ["overlap", "jaccard", "er", "shared-audit-work"]
+    },
+    {
+      "id": "framework-update-check",
+      "label": "Framework Update Check",
+      "version": "1.0",
+      "path": "skills/atoms/framework-update-check",
+      "script": "cross-mapping/engine/framework_monitor.py",
+      "input_schema": {
+        "framework_id": "string — ID from feed_registry.json"
+      },
+      "output_schema": {
+        "framework_id": "string",
+        "current_version": "string — version in feed_registry",
+        "latest_detected": "string — version detected from crawl",
+        "signal_type": "string — what signal triggered detection",
+        "changed": "boolean — true if latest_detected != current_version",
+        "notes": "string — optional context (e.g. 'retired')"
+      },
+      "tags": ["monitoring", "feed", "version", "registry"]
+    },
+    {
+      "id": "control-search",
+      "label": "Control Search",
+      "version": "1.0",
+      "path": "skills/atoms/control-search",
+      "script": "cross-mapping/engine/dbz_query.py",
+      "input_schema": {
+        "query": "string — keyword or phrase to search",
+        "family": "string? — optional NIST family filter (e.g. 'AC', 'SC')",
+        "max_results": "integer? — default 20"
+      },
+      "output_schema": {
+        "controls": "array — [{id, title, family, text}]",
+        "count": "integer"
+      },
+      "tags": ["search", "nist", "controls", "query"]
+    },
+    {
+      "id": "control-scope",
+      "label": "Control Scope Lookup",
+      "version": "1.0",
+      "path": "skills/atoms/control-scope",
+      "script": "cross-mapping/engine/dbz_query.py",
+      "input_schema": {
+        "framework_id": "string — framework ID from feed_registry (e.g. 'fedramp-moderate')"
+      },
+      "output_schema": {
+        "framework_id": "string",
+        "controls": "array — [{id, title, family, baseline}]",
+        "count": "integer"
+      },
+      "tags": ["scope", "baseline", "fedramp", "nist", "query"]
+    },
+    {
+      "id": "kev-lookup",
+      "label": "KEV Vulnerability Lookup",
+      "version": "1.0",
+      "path": "skills/atoms/kev-lookup",
+      "script": "cross-mapping/engine/dbz_query.py",
+      "input_schema": {
+        "cve_id": "string — CVE identifier (e.g. 'CVE-2021-44228')"
+      },
+      "output_schema": {
+        "cve_id": "string",
+        "date_added": "string — ISO date added to KEV",
+        "vulnerability_name": "string",
+        "affected_product": "string",
+        "nist_families": "array — NIST 800-53 control families relevant to this CVE",
+        "in_kev": "boolean"
+      },
+      "tags": ["kev", "cve", "vulnerability", "cisa", "query"]
+    },
+    {
+      "id": "cfr-lookup",
+      "label": "CFR Section Lookup",
+      "version": "1.0",
+      "path": "skills/atoms/cfr-lookup",
+      "script": "cross-mapping/engine/dbz_query.py",
+      "input_schema": {
+        "part": "string — CFR part in '45-CFR-164' format",
+        "section": "string? — optional section number (e.g. '164.308')"
+      },
+      "output_schema": {
+        "part": "string",
+        "sections": "array — [{section_id, title, text, nist_families}]",
+        "count": "integer"
+      },
+      "tags": ["cfr", "hipaa", "glba", "regulatory", "query"]
+    },
+    {
+      "id": "attack-mapper",
+      "label": "ATT&CK Technique Mapper",
+      "version": "1.0",
+      "path": "skills/atoms/attack-mapper",
+      "script": "cross-mapping/engine/dbz_query.py",
+      "input_schema": {
+        "technique_id": "string — MITRE ATT&CK technique ID (e.g. 'T1078')"
+      },
+      "output_schema": {
+        "technique_id": "string",
+        "name": "string",
+        "tactics": "array — MITRE tactic names",
+        "nist_controls": "array — mapped NIST 800-53 control IDs"
+      },
+      "tags": ["mitre", "attack", "technique", "nist-mapping", "query"]
+    },
+    {
+      "id": "changelog-query",
+      "label": "Framework Changelog Query",
+      "version": "1.0",
+      "path": "skills/atoms/changelog-query",
+      "script": "cross-mapping/engine/dbz_query.py",
+      "input_schema": {
+        "framework_id": "string? — optional filter by framework",
+        "since": "string? — optional ISO date filter"
+      },
+      "output_schema": {
+        "entries": "array — [{framework_id, change_type, old_version, new_version, changed_at, summary}]",
+        "count": "integer"
+      },
+      "tags": ["changelog", "version", "history", "query"]
+    }
+  ]
+}

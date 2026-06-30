@@ -93,3 +93,8 @@ python3 cross-mapping/engine/build_db.py
 ```
 
 `human_review_required: true` — gap classifications require compliance specialist validation.
+
+## Conflicting sources — minority-report policy
+When DB coverage data conflicts with a manually-provided crosswalk (e.g., DB says 70% but
+the source report claims 85%), emit `minority_report.conflicts` with both figures and sources.
+See canonical policy: `skills/shared/minority-report.md`.

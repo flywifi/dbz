@@ -1,0 +1,40 @@
+{
+  "atom": "control-search",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "Search 'multifactor authentication' — must include IA-2",
+      "input": {
+        "query": "multifactor authentication"
+      },
+      "expected_output": {
+        "controls": [{"id": "IA-2"}],
+        "count_min": 1
+      },
+      "expect_pass": true
+    },
+    {
+      "id": "fail-01",
+      "label": "Unknown family code 'ZZ' — must error, not return empty results",
+      "input": {
+        "query": "access control",
+        "family": "ZZ"
+      },
+      "expected_error": "invalid family",
+      "expect_pass": false
+    },
+    {
+      "id": "edge-01",
+      "label": "Query with no matches — returns empty list, not an error",
+      "input": {
+        "query": "xyzzy_no_such_control_term_98765"
+      },
+      "expected_output": {
+        "controls": [],
+        "count": 0
+      },
+      "expect_pass": true
+    }
+  ]
+}

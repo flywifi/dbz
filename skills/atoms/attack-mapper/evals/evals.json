@@ -1,0 +1,41 @@
+{
+  "atom": "attack-mapper",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "T1078 (Valid Accounts) — must include AC-2 and IA-2 in nist_controls; tactics is array",
+      "input": {
+        "technique_id": "T1078"
+      },
+      "expected_output": {
+        "technique_id": "T1078",
+        "nist_controls_contains": ["AC-2", "IA-2"],
+        "tactics_is_array": true
+      },
+      "expect_pass": true,
+      "notes": "Regression: tactics must be JSON array, not semicolon-delimited string (loader bug fix)"
+    },
+    {
+      "id": "fail-01",
+      "label": "Invalid technique format — must error",
+      "input": {
+        "technique_id": "not-an-attack-id"
+      },
+      "expected_error": "invalid technique ID",
+      "expect_pass": false
+    },
+    {
+      "id": "edge-01",
+      "label": "Technique with no NIST mapping — returns empty nist_controls, not error",
+      "input": {
+        "technique_id": "T9999"
+      },
+      "expected_output": {
+        "nist_controls": []
+      },
+      "expect_pass": true,
+      "notes": "Some techniques have no mapped controls; this is valid, not an error"
+    }
+  ]
+}

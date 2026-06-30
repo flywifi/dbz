@@ -1,0 +1,35 @@
+{
+  "atom": "changelog-query",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "No filters — returns all entries; count >= 0",
+      "input": {},
+      "expected_output": {
+        "count_min": 0
+      },
+      "expect_pass": true
+    },
+    {
+      "id": "pass-02",
+      "label": "Filter by framework_id 'nist-800-53' — returns only that framework's entries",
+      "input": {
+        "framework_id": "nist-800-53"
+      },
+      "expected_output": {
+        "entries_all_match_framework": "nist-800-53"
+      },
+      "expect_pass": true
+    },
+    {
+      "id": "fail-01",
+      "label": "Invalid change_type value — must error with vocabulary in message",
+      "input": {
+        "change_type": "totally_made_up_type"
+      },
+      "expected_error": "invalid change_type",
+      "expect_pass": false
+    }
+  ]
+}

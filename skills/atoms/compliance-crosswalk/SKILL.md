@@ -73,3 +73,8 @@ Reads from `unified_mappings` in the enriched catalog JSON (schema_version 1.1.0
 Relationship types follow the NIST OLIR STRM vocabulary:
   "Subset" | "Superset" | "Equal" | "Intersecting" | "mapped_to" | ""
 `human_review_required: true` — relationship type and strength must be verified by a compliance specialist.
+
+## Conflicting sources — minority-report policy
+When two crosswalk sources disagree on a mapping (e.g., NIST OLIR says "Subset" but HITRUST hub
+says "Equal" for the same control pair), emit `minority_report.conflicts` with both sources.
+See canonical policy: `skills/shared/minority-report.md`.

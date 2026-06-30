@@ -1,0 +1,20 @@
+{
+  "skill": "claim-and-output-validator",
+  "version": "1.0",
+  "description": "Validate an atom or skill output against its declared schema; flag for human review",
+  "steps": [
+    {
+      "id": "schema_check",
+      "atom": "claim-and-output-validator",
+      "label": "Deterministic schema validation — required fields, types, vocabulary constraints",
+      "input": {
+        "output": "{{input.output}}",
+        "schema": "{{input.schema}}"
+      },
+      "output_as": "schema_result"
+    }
+  ],
+  "output": "{{schema_result}}",
+  "on_step_failure": "stop_and_return_error",
+  "notes": "Deterministic checks run first (schema, required fields, vocabulary) before any LLM-based claim checking. Fails closed on missing required keys. human_review_required: true on all compliance outputs."
+}

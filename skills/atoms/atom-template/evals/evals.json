@@ -1,0 +1,27 @@
+{
+  "atom": "__ATOM_NAME__",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "Normal case — expected output",
+      "input": {},
+      "expected_output": {},
+      "expect_pass": true
+    },
+    {
+      "id": "fail-01",
+      "label": "Input missing required field",
+      "input": {},
+      "expected_error": "missing field: REPLACE_FIELD",
+      "expect_pass": false
+    },
+    {
+      "id": "edge-01",
+      "label": "Edge: empty result set",
+      "input": {},
+      "expected_output": {"count": 0, "items": []},
+      "expect_pass": true
+    }
+  ]
+}

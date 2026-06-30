@@ -1,0 +1,40 @@
+{
+  "skill": "permission-aware-connector-template",
+  "version": "1.0",
+  "description": "Derive minimum-privilege permission matrix for a connector; require operator review",
+  "steps": [
+    {
+      "id": "scope_lookup",
+      "atom": "control-scope",
+      "label": "Retrieve control scope for the target framework to anchor permission derivation",
+      "input": {
+        "framework_id": "{{input.framework_id}}"
+      },
+      "output_as": "controls"
+    },
+    {
+      "id": "matrix_gen",
+      "atom": "permission-aware-connector-template",
+      "label": "Generate least-privilege permission matrix from resource model and control scope",
+      "input": {
+        "controls": "{{controls}}",
+        "resource_model": "{{input.resource_model}}",
+        "auth_mode": "{{input.auth_mode}}"
+      },
+      "output_as": "matrix"
+    },
+    {
+      "id": "validate",
+      "atom": "claim-and-output-validator",
+      "label": "Validate matrix: no wildcard scopes, no real credentials, human_review_required: true",
+      "input": {
+        "output": "{{matrix}}",
+        "schema": "permission-matrix"
+      },
+      "output_as": "validated"
+    }
+  ],
+  "output": "{{validated}}",
+  "on_step_failure": "stop_and_return_error",
+  "notes": "human_review_required: true is non-negotiable on all permission matrix outputs. No-OAuth fallback path must always be documented alongside full-OAuth path. Wildcard scopes ('read:all') are blocked by the validate step."
+}

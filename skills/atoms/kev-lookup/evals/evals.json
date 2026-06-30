@@ -1,0 +1,40 @@
+{
+  "atom": "kev-lookup",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "CVE-2021-44228 (Log4Shell) — must be in KEV with SI/RA families",
+      "input": {
+        "cve_id": "CVE-2021-44228"
+      },
+      "expected_output": {
+        "cve_id": "CVE-2021-44228",
+        "in_kev": true,
+        "nist_families_contains": ["SI", "RA"]
+      },
+      "expect_pass": true
+    },
+    {
+      "id": "fail-01",
+      "label": "Invalid CVE format — must return error",
+      "input": {
+        "cve_id": "not-a-cve-id"
+      },
+      "expected_error": "invalid CVE",
+      "expect_pass": false
+    },
+    {
+      "id": "edge-01",
+      "label": "Valid CVE not in KEV — in_kev: false, not an error",
+      "input": {
+        "cve_id": "CVE-1999-0001"
+      },
+      "expected_output": {
+        "in_kev": false
+      },
+      "expect_pass": true,
+      "notes": "Regression: absence from KEV is a valid result; must never error on a valid CVE ID not in the catalog"
+    }
+  ]
+}

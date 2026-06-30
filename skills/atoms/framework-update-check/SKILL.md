@@ -124,3 +124,8 @@ Writes side outputs (unless `--dry-run`):
 `human_review_required: true` — both monitor signals and announcements are advisory; a human
 must verify the actual framework change and determine if source files need updating before
 re-running the catalog build.
+
+## Conflicting sources — minority-report policy
+When the landing-page signal and the RSS/Atom feed signal disagree about whether a version
+has changed, emit `minority_report.conflicts` with both signals before returning the result.
+See canonical policy: `skills/shared/minority-report.md`.

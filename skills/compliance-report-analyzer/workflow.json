@@ -1,0 +1,50 @@
+{
+  "skill": "compliance-report-analyzer",
+  "version": "1.0",
+  "description": "Extract, normalize, crosswalk, and gap-analyze controls from a compliance report artifact",
+  "steps": [
+    {
+      "id": "normalize",
+      "atom": "audit-artifact-normalizer",
+      "label": "Normalize the input artifact into structured control list",
+      "input": {
+        "artifact": "{{input.artifact}}",
+        "access_mode": "{{input.access_mode}}"
+      },
+      "output_as": "normalized"
+    },
+    {
+      "id": "crosswalk",
+      "atom": "compliance-crosswalk",
+      "label": "Map normalized controls to target framework",
+      "input": {
+        "normalized_controls": "{{normalized.controls}}",
+        "target_framework": "{{input.target_framework}}"
+      },
+      "output_as": "crosswalked"
+    },
+    {
+      "id": "gap",
+      "atom": "gap-analysis",
+      "label": "Identify uncovered controls in target framework",
+      "input": {
+        "crosswalked": "{{crosswalked}}",
+        "framework_id": "{{input.target_framework}}"
+      },
+      "output_as": "gaps"
+    },
+    {
+      "id": "validate",
+      "atom": "claim-and-output-validator",
+      "label": "Validate output schema and flag for human review",
+      "input": {
+        "output": "{{gaps}}",
+        "schema": "gap-analysis"
+      },
+      "output_as": "validated"
+    }
+  ],
+  "output": "{{validated}}",
+  "on_step_failure": "stop_and_return_error",
+  "notes": "Each step is independently callable for debugging. 'normalize' step sets access_mode from references/access-modes.md hierarchy."
+}

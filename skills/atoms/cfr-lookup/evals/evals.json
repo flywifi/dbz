@@ -1,0 +1,42 @@
+{
+  "atom": "cfr-lookup",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "HIPAA 164.308 — Administrative Safeguards, families include IA and AC",
+      "input": {
+        "part": "45-CFR-164",
+        "section": "164.308"
+      },
+      "expected_output": {
+        "part": "45-CFR-164",
+        "sections": [{"section_id": "164.308"}],
+        "nist_families_contains": ["IA", "AC"]
+      },
+      "expect_pass": true
+    },
+    {
+      "id": "fail-01",
+      "label": "Invalid CFR part format — must error",
+      "input": {
+        "part": "hipaa-security-rule"
+      },
+      "expected_error": "invalid CFR part format",
+      "expect_pass": false
+    },
+    {
+      "id": "edge-01",
+      "label": "Valid CFR part not yet ingested — returns empty sections, not error",
+      "input": {
+        "part": "99-CFR-999"
+      },
+      "expected_output": {
+        "sections": [],
+        "count": 0
+      },
+      "expect_pass": true,
+      "notes": "Regression: absence from DB is a valid result for a valid-format part not yet loaded"
+    }
+  ]
+}

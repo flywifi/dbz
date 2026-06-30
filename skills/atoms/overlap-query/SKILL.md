@@ -80,3 +80,8 @@ Oracle CSVs (`SOC 2 T2 & ISO 27001.csv` etc.) remain as validation oracles — s
 that `shared_er_count` from the DB matches the overlap CSV row count.
 
 `human_review_required: true` — ER-level overlap is advisory; actual audit scope depends on organization context.
+
+## Conflicting sources — minority-report policy
+When ER-derived Jaccard diverges from an oracle CSV by more than 3 percentage points,
+emit `minority_report.conflicts` with both figures. The oracle CSV is the ground truth.
+See canonical policy: `skills/shared/minority-report.md`.

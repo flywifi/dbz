@@ -1,0 +1,40 @@
+{
+  "skill": "audit-artifact-normalizer",
+  "version": "1.0",
+  "description": "Inventory, access-mode-check, normalize, and validate an audit artifact into structured controls",
+  "steps": [
+    {
+      "id": "manifest_check",
+      "atom": "source-manifest-lookup",
+      "label": "Look up artifact type in source_manifest to determine expected schema",
+      "input": {
+        "role": "{{input.artifact_type}}"
+      },
+      "output_as": "manifest_entry"
+    },
+    {
+      "id": "normalize",
+      "atom": "audit-artifact-normalizer",
+      "label": "Normalize artifact to structured control list using manifest schema",
+      "input": {
+        "artifact": "{{input.artifact}}",
+        "manifest": "{{manifest_entry}}",
+        "access_mode": "{{input.access_mode}}"
+      },
+      "output_as": "normalized"
+    },
+    {
+      "id": "validate",
+      "atom": "claim-and-output-validator",
+      "label": "Validate normalized output against expected schema",
+      "input": {
+        "output": "{{normalized}}",
+        "schema": "normalized-artifact"
+      },
+      "output_as": "validated"
+    }
+  ],
+  "output": "{{validated}}",
+  "on_step_failure": "stop_and_return_error",
+  "notes": "access_mode hierarchy: direct_integration > runtime_native > local_artifact > planning_only. manifest_check step is optional if artifact_type is omitted."
+}

@@ -1,0 +1,39 @@
+{
+  "atom": "control-scope",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "FedRAMP Moderate baseline — must return 300+ controls",
+      "input": {
+        "framework_id": "fedramp-moderate"
+      },
+      "expected_output": {
+        "framework_id": "fedramp-moderate",
+        "count_min": 300
+      },
+      "expect_pass": true
+    },
+    {
+      "id": "fail-01",
+      "label": "Unknown framework_id — must error, not return empty list",
+      "input": {
+        "framework_id": "unknown-framework-xyz-99999"
+      },
+      "expected_error": "framework not found",
+      "expect_pass": false
+    },
+    {
+      "id": "edge-01",
+      "label": "SOC 2 (ER-side only) — returns er_controls, no NIST conflict",
+      "input": {
+        "framework_id": "soc-2"
+      },
+      "expected_output": {
+        "count_min": 1
+      },
+      "expect_pass": true,
+      "notes": "SOC 2 only exists in er_controls; no NIST side. Must not emit minority_report here."
+    }
+  ]
+}

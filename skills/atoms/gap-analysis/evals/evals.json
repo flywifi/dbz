@@ -1,0 +1,66 @@
+{
+  "atom": "gap-analysis",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "10 controls crosswalked, 3 missing — coverage 70%",
+      "input": {
+        "crosswalked": {
+          "mappings": [
+            {"target_control": "A.5.16"}, {"target_control": "A.5.17"}, {"target_control": "A.5.18"},
+            {"target_control": "A.5.19"}, {"target_control": "A.5.20"}, {"target_control": "A.5.21"},
+            {"target_control": "A.5.22"}
+          ],
+          "gaps": [
+            {"target_framework": "ISO/IEC 27001:2022", "control_id": "A.5.23"},
+            {"target_framework": "ISO/IEC 27001:2022", "control_id": "A.5.24"},
+            {"target_framework": "ISO/IEC 27001:2022", "control_id": "A.5.25"}
+          ]
+        },
+        "framework_id": "iso-27001"
+      },
+      "expected_output": {
+        "coverage_pct": 70.0,
+        "gaps": [{"control_id": "A.5.23"}, {"control_id": "A.5.24"}, {"control_id": "A.5.25"}],
+        "human_review_required": true
+      },
+      "expect_pass": true
+    },
+    {
+      "id": "fail-01",
+      "label": "partially_covered must not be treated as fully_covered — regression guard",
+      "input": {
+        "crosswalked": {
+          "mappings": [{"target_control": "A.5.16", "relationship_type": "Intersecting"}],
+          "gaps": []
+        },
+        "framework_id": "iso-27001"
+      },
+      "expected_output": {
+        "coverage_pct": 100.0
+      },
+      "expect_pass": false,
+      "notes": "Regression: Intersecting (partial overlap) must NOT count as full coverage; coverage_pct < 100"
+    },
+    {
+      "id": "edge-01",
+      "label": "All controls covered — coverage 100%, gaps empty",
+      "input": {
+        "crosswalked": {
+          "mappings": [
+            {"target_control": "A.5.16"}, {"target_control": "A.5.17"}
+          ],
+          "gaps": []
+        },
+        "framework_id": "iso-27001"
+      },
+      "expected_output": {
+        "coverage_pct": 100.0,
+        "gaps": [],
+        "human_review_required": true
+      },
+      "expect_pass": true
+    }
+  ]
+}

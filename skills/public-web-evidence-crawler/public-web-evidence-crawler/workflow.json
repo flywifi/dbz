@@ -1,0 +1,30 @@
+{
+  "skill": "public-web-evidence-crawler",
+  "version": "1.0",
+  "description": "Crawl a public URL for compliance evidence, classify source, validate, flag for review",
+  "steps": [
+    {
+      "id": "crawl",
+      "atom": "public-web-evidence-crawler",
+      "label": "Fetch URL content respecting robots.txt; record retrieved_at timestamp",
+      "input": {
+        "url": "{{input.url}}",
+        "access_mode": "{{input.access_mode}}"
+      },
+      "output_as": "raw_evidence"
+    },
+    {
+      "id": "validate",
+      "atom": "claim-and-output-validator",
+      "label": "Validate evidence record has source_url, source_class, retrieved_at; flag for human review",
+      "input": {
+        "output": "{{raw_evidence}}",
+        "schema": "evidence-record"
+      },
+      "output_as": "validated"
+    }
+  ],
+  "output": "{{validated}}",
+  "on_step_failure": "stop_and_return_error",
+  "notes": "robots.txt compliance is enforced at the crawl step — disallowed paths are never fetched. retrieved_at is required on every evidence record even for cached results. source_class must be one of: trust_center, regulatory_filing, news_article, company_blog, other."
+}

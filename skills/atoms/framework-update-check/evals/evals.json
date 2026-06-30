@@ -1,0 +1,40 @@
+{
+  "atom": "framework-update-check",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "Known stable framework — returns changed: false",
+      "input": {
+        "framework_id": "nist-800-53"
+      },
+      "expected_output": {
+        "framework_id": "nist-800-53",
+        "changed": false
+      },
+      "expect_pass": true
+    },
+    {
+      "id": "fail-01",
+      "label": "Unknown framework_id — must error with framework_id in message",
+      "input": {
+        "framework_id": "unknown-framework-xyz"
+      },
+      "expected_error": "framework not found in feed_registry",
+      "expect_pass": false
+    },
+    {
+      "id": "edge-01",
+      "label": "Retired framework (FFIEC CAT) — returns changed: false with notes: 'retired'",
+      "input": {
+        "framework_id": "ffiec-cat"
+      },
+      "expected_output": {
+        "changed": false,
+        "notes": "retired"
+      },
+      "expect_pass": true,
+      "notes": "Regression: retired frameworks must not be flagged as 'changed'; they are stable by definition"
+    }
+  ]
+}

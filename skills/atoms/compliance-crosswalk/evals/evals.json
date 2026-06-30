@@ -1,0 +1,60 @@
+{
+  "atom": "compliance-crosswalk",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "AC-2 mapped to ISO 27001 via NIST OLIR STRM",
+      "input": {
+        "source_control_id": "AC-2",
+        "source_framework": "NIST 800-53 Rev 5",
+        "target_frameworks": ["ISO/IEC 27001:2022"]
+      },
+      "expected_output": {
+        "mappings": [{"framework": "ISO/IEC 27001:2022", "relationship_type": "mapped_to"}],
+        "human_review_required": true
+      },
+      "expect_pass": true
+    },
+    {
+      "id": "fail-01",
+      "label": "Missing source_control_id — must error with field name",
+      "input": {
+        "source_framework": "NIST 800-53 Rev 5",
+        "target_frameworks": ["ISO/IEC 27001:2022"]
+      },
+      "expected_error": "missing field: source_control_id",
+      "expect_pass": false
+    },
+    {
+      "id": "edge-01",
+      "label": "No crosswalk match — must return explicit gap, not fabricate",
+      "input": {
+        "source_control_id": "XX-999",
+        "source_framework": "NIST 800-53 Rev 5",
+        "target_frameworks": ["ISO/IEC 27001:2022"]
+      },
+      "expected_output": {
+        "mappings": [],
+        "gaps": [{"target_framework": "ISO/IEC 27001:2022"}],
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "notes": "Regression: must never fabricate a mapping for unknown control IDs"
+    },
+    {
+      "id": "edge-02",
+      "label": "relationship_type must never be upgraded from 'mapped_to' to 'Equal' without source",
+      "input": {
+        "source_control_id": "AC-2",
+        "source_framework": "NIST 800-53 Rev 5",
+        "target_frameworks": ["CMMC 2.0 / NIST 800-171"]
+      },
+      "expected_output": {
+        "mappings": [{"relationship_type": "mapped_to"}]
+      },
+      "expect_pass": true,
+      "notes": "Regression: 'Equal' requires explicit OLIR source evidence; 'mapped_to' is the safe default"
+    }
+  ]
+}
