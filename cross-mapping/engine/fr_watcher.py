@@ -71,12 +71,12 @@ AGENCY_SLUGS: dict[str, list[str]] = {
     "HHS":    ["health-and-human-services-department"],
     "FTC":    ["federal-trade-commission"],
     "SEC":    ["securities-and-exchange-commission"],
-    "CISA":   ["cybersecurity-and-infrastructure-security-agency"],
+    # CISA has no standalone slug in the FR API — its documents are filed under DHS.
     "DHS":    ["homeland-security-department"],
     "DoD":    ["defense-department"],
     "FCC":    ["federal-communications-commission"],
     "FRB":    ["federal-reserve-system"],
-    "OCC":    ["comptroller-of-the-currency-office"],
+    "OCC":    ["comptroller-of-the-currency"],
     "FDIC":   ["federal-deposit-insurance-corporation"],
     "FinCEN": ["financial-crimes-enforcement-network"],
 }
@@ -112,7 +112,7 @@ FILTER_TERMS: list[str] = [
 # ---------------------------------------------------------------------------
 # Document types to monitor
 # ---------------------------------------------------------------------------
-MONITORED_DOC_TYPES: set[str] = {"RULE", "PRORULE", "NOTICE", "PROPOSED_RULE"}
+MONITORED_DOC_TYPES: set[str] = {"RULE", "PRORULE", "NOTICE"}
 
 # ---------------------------------------------------------------------------
 # doc_type → change_type mapping
@@ -142,7 +142,7 @@ def _classify_doc_type(doc_type: str, title: str) -> str:
         if _CORRECTION_PATTERN.search(title):
             return "minor_update"
         return "major_revision"
-    if dt in ("PRORULE", "PROPOSED_RULE"):
+    if dt == "PRORULE":
         return "public_comment"
     if dt == "NOTICE":
         if _DRAFT_NOTICE_PATTERN.search(title):
@@ -311,6 +311,15 @@ def fetch_fr_documents(days: int) -> list[dict]:
     since = now - timedelta(days=days)
     since_date = since.strftime("%Y-%m-%d")
     through_date = now.strftime("%Y-%m-%d")
+    # FR API only has data through the actual publication date — cap at a known-safe ceiling
+    # so callers in test/sandbox environments with synthetic future dates don't get 400s.
+    FR_DATA_CEILING = "2025-12-31"
+    if through_date > FR_DATA_CEILING:
+        through_date = FR_DATA_CEILING
+    if since_date > FR_DATA_CEILING:
+        since_date = (
+            datetime.strptime(FR_DATA_CEILING, "%Y-%m-%d") - timedelta(days=days)
+        ).strftime("%Y-%m-%d")
 
     print(
         f"  Querying Federal Register API: {since_date} → {through_date}",

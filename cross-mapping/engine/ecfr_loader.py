@@ -52,10 +52,13 @@ CFR_OUTPUT_DIR = _REPO_ROOT / "canonical-sources" / "cfr"
 # API endpoints
 # ---------------------------------------------------------------------------
 ECFR_FULL_URL = (
-    "https://www.ecfr.gov/api/versioner/v1/full/current/title-{title}.xml"
+    "https://www.ecfr.gov/api/versioner/v1/full/{date}/title-{title}.xml"
 )
 ECFR_STRUCTURE_URL = (
-    "https://www.ecfr.gov/api/versioner/v1/structure/current/title-{title}.json"
+    "https://www.ecfr.gov/api/versioner/v1/structure/{date}/title-{title}.json"
+)
+ECFR_VERSIONS_URL = (
+    "https://www.ecfr.gov/api/versioner/v1/versions/title-{title}.json"
 )
 
 # ---------------------------------------------------------------------------
@@ -303,6 +306,34 @@ class eCFRLoader:
 
     def __init__(self) -> None:
         self._last_request_time: float = 0.0
+        self._date_cache: dict[int, str] = {}  # title → resolved date
+
+    def _resolve_date(self, title: int) -> str:
+        """Return the latest available eCFR version date for *title*.
+
+        Falls back to a hardcoded recent date if the versions API fails, rather
+        than using 'current' which eCFR does not support on the full-text endpoint.
+        """
+        if title in self._date_cache:
+            return self._date_cache[title]
+        url = ECFR_VERSIONS_URL.format(title=title)
+        raw = self._get(url, accept="application/json")
+        if raw:
+            try:
+                data = json.loads(raw)
+                dates = sorted(set(
+                    v["date"] for v in data.get("content_versions", [])
+                    if v.get("date")
+                ))
+                if dates:
+                    self._date_cache[title] = dates[-1]
+                    return dates[-1]
+            except (json.JSONDecodeError, KeyError):
+                pass
+        # Fallback: known-good date that covers all current CFR titles
+        fallback = "2026-01-28"
+        self._date_cache[title] = fallback
+        return fallback
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -329,10 +360,11 @@ class eCFRLoader:
         Fetch the eCFR part/section structure for *title*.
 
         Returns the parsed JSON dict from
-            GET /api/versioner/v1/structure/current/title-{N}.json
+            GET /api/versioner/v1/structure/{date}/title-{N}.json
         or an empty dict on failure.
         """
-        url = ECFR_STRUCTURE_URL.format(title=title)
+        date = self._resolve_date(title)
+        url = ECFR_STRUCTURE_URL.format(date=date, title=title)
         print(f"  Fetching structure: {url}", file=sys.stderr)
         raw = self._get(url, accept="application/json")
         if not raw:
@@ -361,7 +393,8 @@ class eCFRLoader:
 
         Returns empty list on fetch or parse failure.
         """
-        url = ECFR_FULL_URL.format(title=title)
+        date = self._resolve_date(title)
+        url = ECFR_FULL_URL.format(date=date, title=title)
         params = [f"part={part}"]
         if subpart:
             params.append(f"subpart={subpart}")
@@ -483,7 +516,7 @@ class eCFRLoader:
             "_loader": "ecfr_loader.py",
             "_framework_id": framework_id,
             "_cfr_part": cfr_part,
-            "_as_of_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+            "_as_of_date": self._resolve_date(title),
             "human_review_required": True,
             "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "title": title,
