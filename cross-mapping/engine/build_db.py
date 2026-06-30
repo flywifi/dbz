@@ -11,6 +11,10 @@ Sources consumed:
   - canonical-sources/feed_registry.json
   - canonical-sources/announcements_feed.json
   - canonical-sources/framework_changelog.json
+  - canonical-sources/known_exploited_vulnerabilities.json  (optional; kev_loader.py)
+  - canonical-sources/cfr/*.json                           (optional; ecfr_loader.py)
+  - canonical-sources/mitre-attack-techniques.json         (optional; attack_stix_loader.py)
+  - canonical-sources/edgar-8k-cyber.json                 (optional; edgar_loader.py)
 
 Output:
   - cross-mapping/output/grc.db        (SQLite; gitignored)
@@ -46,6 +50,12 @@ DEFAULT_ANNOUNCEMENTS = REPO_ROOT / "canonical-sources" / "announcements_feed.js
 DEFAULT_CHANGELOG = REPO_ROOT / "canonical-sources" / "framework_changelog.json"
 DEFAULT_OUT = REPO_ROOT / "cross-mapping" / "output" / "grc.db"
 DEFAULT_MANIFEST = REPO_ROOT / "cross-mapping" / "output" / "grc_manifest.json"
+
+# Optional enrichment sources (loaded if present; skipped silently if absent)
+KEV_PATH = REPO_ROOT / "canonical-sources" / "known_exploited_vulnerabilities.json"
+ATTACK_PATH = REPO_ROOT / "canonical-sources" / "mitre-attack-techniques.json"
+EDGAR_PATH = REPO_ROOT / "canonical-sources" / "edgar-8k-cyber.json"
+CFR_DIR = REPO_ROOT / "canonical-sources" / "cfr"
 
 CHUNK = 500  # executemany batch size
 
@@ -189,6 +199,55 @@ CREATE VIEW IF NOT EXISTS reverse_index AS
            relationship_type, strength, mapping_source
     FROM unified_mappings
     WHERE target_id IS NOT NULL AND target_id != '';
+
+CREATE TABLE IF NOT EXISTS cisa_kev (
+    cve_id             TEXT PRIMARY KEY,
+    date_added         TEXT,
+    vulnerability_name TEXT,
+    affected_product   TEXT,
+    short_description  TEXT,
+    required_action    TEXT,
+    due_date           TEXT,
+    nist_families      TEXT  -- JSON array
+);
+CREATE INDEX IF NOT EXISTS idx_kev_date ON cisa_kev(date_added);
+
+CREATE TABLE IF NOT EXISTS cfr_requirements (
+    section_id    TEXT PRIMARY KEY,
+    title         TEXT,
+    text          TEXT,
+    cfr_part      TEXT,
+    framework_id  TEXT,
+    nist_families TEXT  -- JSON array
+);
+CREATE INDEX IF NOT EXISTS idx_cfr_part ON cfr_requirements(cfr_part);
+CREATE INDEX IF NOT EXISTS idx_cfr_fw   ON cfr_requirements(framework_id);
+
+CREATE TABLE IF NOT EXISTS attack_techniques (
+    technique_id   TEXT PRIMARY KEY,
+    name           TEXT,
+    tactic         TEXT,   -- JSON array of tactic names
+    is_subtechnique INTEGER NOT NULL DEFAULT 0,
+    parent_id      TEXT,
+    nist_controls  TEXT,   -- JSON array of control IDs
+    nist_families  TEXT    -- JSON array of family codes (derived)
+);
+CREATE INDEX IF NOT EXISTS idx_atk_tactic ON attack_techniques(tactic);
+
+CREATE TABLE IF NOT EXISTS edgar_cyber_incidents (
+    accession_no   TEXT PRIMARY KEY,
+    company_name   TEXT,
+    cik            TEXT,
+    filed_at       TEXT,
+    period_of_report TEXT,
+    incident_type  TEXT,
+    nist_families  TEXT,   -- JSON array
+    classification_confidence TEXT,
+    text_snippet   TEXT,
+    edgar_url      TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_edgar_type ON edgar_cyber_incidents(incident_type);
+CREATE INDEX IF NOT EXISTS idx_edgar_date ON edgar_cyber_incidents(filed_at);
 """
 
 
@@ -408,6 +467,94 @@ def load_announcements(path: Path) -> list[dict]:
     return rows
 
 
+def load_kev_data(path: Path) -> list[dict]:
+    """Load CISA KEV enriched JSON; return rows for cisa_kev table."""
+    if not path.exists():
+        return []
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    rows = []
+    for v in doc.get("vulnerabilities", []):
+        rows.append({
+            "cve_id": v.get("cveID") or v.get("cve_id", ""),
+            "date_added": v.get("dateAdded", ""),
+            "vulnerability_name": v.get("vulnerabilityName", ""),
+            "affected_product": v.get("product", ""),
+            "short_description": v.get("shortDescription", ""),
+            "required_action": v.get("requiredAction", ""),
+            "due_date": v.get("dueDate", ""),
+            "nist_families": json.dumps(v.get("nist_families", [])),
+        })
+    return rows
+
+
+def load_cfr_data(cfr_dir: Path) -> list[dict]:
+    """Load structured CFR requirement JSON files from cfr/ directory."""
+    if not cfr_dir.exists():
+        return []
+    rows = []
+    for f in sorted(cfr_dir.glob("*.json")):
+        try:
+            doc = json.loads(f.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        framework_id = doc.get("_framework_id", "")
+        cfr_part = doc.get("_cfr_part", "")
+        for req in doc.get("requirements", []):
+            rows.append({
+                "section_id": req.get("section_id", ""),
+                "title": req.get("title", ""),
+                "text": req.get("text", ""),
+                "cfr_part": cfr_part or req.get("cfr_part", ""),
+                "framework_id": framework_id,
+                "nist_families": json.dumps(req.get("nist_families", [])),
+            })
+    return rows
+
+
+def load_attack_data(path: Path) -> list[dict]:
+    """Load MITRE ATT&CK technique JSON; return rows for attack_techniques table."""
+    if not path.exists():
+        return []
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    rows = []
+    for t in doc.get("techniques", []):
+        nist_controls = t.get("nist_800_53_controls", [])
+        # Derive family codes from control IDs (e.g. "AC-2" → "AC")
+        families = sorted({c.split("-")[0] for c in nist_controls if "-" in c})
+        rows.append({
+            "technique_id": t.get("technique_id", ""),
+            "name": t.get("name", ""),
+            "tactic": json.dumps(t.get("tactics", t.get("tactic", []))),
+            "is_subtechnique": 1 if t.get("is_subtechnique") else 0,
+            "parent_id": t.get("parent_id", "") or "",
+            "nist_controls": json.dumps(nist_controls),
+            "nist_families": json.dumps(families),
+        })
+    return rows
+
+
+def load_edgar_data(path: Path) -> list[dict]:
+    """Load SEC EDGAR 8-K cyber disclosure JSON; return rows for edgar_cyber_incidents table."""
+    if not path.exists():
+        return []
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    rows = []
+    for d in doc.get("disclosures", []):
+        rows.append({
+            "accession_no": d.get("accession_no", ""),
+            "company_name": d.get("company_name", ""),
+            "cik": d.get("cik", ""),
+            "filed_at": d.get("filed_at", ""),
+            "period_of_report": d.get("period_of_report", ""),
+            "incident_type": d.get("incident_type", ""),
+            "nist_families": json.dumps(d.get("nist_families", [])),
+            "classification_confidence": d.get("classification_confidence", ""),
+            "text_snippet": d.get("text_snippet", ""),
+            "edgar_url": d.get("edgar_url", ""),
+        })
+    return rows
+
+
 # ── DB writer ─────────────────────────────────────────────────────────────────
 
 def _executemany_chunked(conn: sqlite3.Connection, sql: str, rows: list, label: str) -> None:
@@ -427,6 +574,10 @@ def build_db(
     out_db: Path = DEFAULT_OUT,
     manifest_path: Path = DEFAULT_MANIFEST,
     vacuum: bool = True,
+    kev_path: Path = KEV_PATH,
+    attack_path: Path = ATTACK_PATH,
+    edgar_path: Path = EDGAR_PATH,
+    cfr_dir: Path = CFR_DIR,
 ) -> dict:
     t0 = time.monotonic()
     out_db.parent.mkdir(parents=True, exist_ok=True)
@@ -445,7 +596,7 @@ def build_db(
     conn.commit()
 
     # 1. Controls + enhancements + parameters + unified_mappings
-    print(f"\n[1/6] Loading catalog: {catalog_path.name}")
+    print(f"\n[1/10] Loading catalog: {catalog_path.name}")
     ctrl_rows, enh_rows, param_rows, mapping_rows = load_catalog(catalog_path)
 
     _executemany_chunked(conn, """
@@ -485,7 +636,7 @@ def build_db(
     conn.commit()
 
     # 2. ER crosswalk data
-    print(f"\n[2/6] Loading ER crosswalk CSVs from {er_dir.name}/")
+    print(f"\n[2/10] Loading ER crosswalk CSVs from {er_dir.name}/")
     er_ctrl_rows, er_mapping_rows = load_er_data(er_dir)
 
     _executemany_chunked(conn, """
@@ -501,7 +652,7 @@ def build_db(
     conn.commit()
 
     # 3. Framework registry
-    print(f"\n[3/6] Loading feed registry: {feed_registry_path.name}")
+    print(f"\n[3/10] Loading feed registry: {feed_registry_path.name}")
     reg_rows = load_framework_registry(feed_registry_path)
     _executemany_chunked(conn, """
         INSERT OR REPLACE INTO framework_registry
@@ -512,7 +663,7 @@ def build_db(
     conn.commit()
 
     # 4. Changelog
-    print(f"\n[4/6] Loading changelog: {changelog_path.name}")
+    print(f"\n[4/10] Loading changelog: {changelog_path.name}")
     cl_rows = load_changelog(changelog_path)
     if cl_rows:
         _executemany_chunked(conn, """
@@ -530,7 +681,7 @@ def build_db(
     conn.commit()
 
     # 5. Announcements
-    print(f"\n[5/6] Loading announcements: {announcements_path.name}")
+    print(f"\n[5/10] Loading announcements: {announcements_path.name}")
     ann_rows = load_announcements(announcements_path)
     if ann_rows:
         _executemany_chunked(conn, """
@@ -543,8 +694,68 @@ def build_db(
         print("  announcements: 0 rows (empty)")
     conn.commit()
 
-    # 6. FTS5 population
-    print(f"\n[6/6] Building FTS5 index …")
+    # 6. CISA KEV catalog
+    print(f"\n[6/10] Loading CISA KEV: {kev_path.name}")
+    kev_rows = load_kev_data(kev_path)
+    if kev_rows:
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO cisa_kev
+                (cve_id, date_added, vulnerability_name, affected_product,
+                 short_description, required_action, due_date, nist_families)
+            VALUES
+                (:cve_id, :date_added, :vulnerability_name, :affected_product,
+                 :short_description, :required_action, :due_date, :nist_families)
+        """, kev_rows, "cisa_kev")
+    else:
+        print(f"  cisa_kev: 0 rows (run kev_loader.py to populate)")
+    conn.commit()
+
+    # 7. CFR requirements
+    print(f"\n[7/10] Loading CFR requirements from {cfr_dir.name}/")
+    cfr_rows = load_cfr_data(cfr_dir)
+    if cfr_rows:
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO cfr_requirements
+                (section_id, title, text, cfr_part, framework_id, nist_families)
+            VALUES
+                (:section_id, :title, :text, :cfr_part, :framework_id, :nist_families)
+        """, cfr_rows, "cfr_requirements")
+    else:
+        print(f"  cfr_requirements: 0 rows (run ecfr_loader.py to populate)")
+    conn.commit()
+
+    # 8. MITRE ATT&CK techniques
+    print(f"\n[8/10] Loading ATT&CK techniques: {attack_path.name}")
+    atk_rows = load_attack_data(attack_path)
+    if atk_rows:
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO attack_techniques
+                (technique_id, name, tactic, is_subtechnique, parent_id, nist_controls, nist_families)
+            VALUES
+                (:technique_id, :name, :tactic, :is_subtechnique, :parent_id, :nist_controls, :nist_families)
+        """, atk_rows, "attack_techniques")
+    else:
+        print(f"  attack_techniques: 0 rows (run attack_stix_loader.py to populate)")
+    conn.commit()
+
+    # 9. SEC EDGAR cyber incident disclosures
+    print(f"\n[9/10] Loading EDGAR disclosures: {edgar_path.name}")
+    edgar_rows = load_edgar_data(edgar_path)
+    if edgar_rows:
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO edgar_cyber_incidents
+                (accession_no, company_name, cik, filed_at, period_of_report,
+                 incident_type, nist_families, classification_confidence, text_snippet, edgar_url)
+            VALUES
+                (:accession_no, :company_name, :cik, :filed_at, :period_of_report,
+                 :incident_type, :nist_families, :classification_confidence, :text_snippet, :edgar_url)
+        """, edgar_rows, "edgar_cyber_incidents")
+    else:
+        print(f"  edgar_cyber_incidents: 0 rows (run edgar_loader.py to populate)")
+    conn.commit()
+
+    # 10. FTS5 population
+    print(f"\n[10/10] Building FTS5 index …")
     conn.execute("INSERT INTO controls_fts(controls_fts) VALUES('rebuild')")
     conn.commit()
 
@@ -560,7 +771,8 @@ def build_db(
     # Row counts
     counts = {}
     for tbl in ("controls", "enhancements", "parameters", "unified_mappings",
-                "er_controls", "er_mappings", "framework_registry", "changelog", "announcements"):
+                "er_controls", "er_mappings", "framework_registry", "changelog", "announcements",
+                "cisa_kev", "cfr_requirements", "attack_techniques", "edgar_cyber_incidents"):
         row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
         counts[tbl] = row[0]
 

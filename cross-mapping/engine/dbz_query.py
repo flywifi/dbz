@@ -15,6 +15,14 @@ Usage:
     python3 dbz_query.py feeds [--framework nist-800-53] [--status changed]
     python3 dbz_query.py announcements [--days 30] [--framework fedramp] [--unreviewed]
     python3 dbz_query.py manifest
+    python3 dbz_query.py kev --cve CVE-2021-44228
+    python3 dbz_query.py kev --days 30 --family SI
+    python3 dbz_query.py cfr --part "45-CFR-164" --section 164.308
+    python3 dbz_query.py cfr --keyword "authentication" --family IA
+    python3 dbz_query.py attack --technique T1078
+    python3 dbz_query.py attack --tactic initial-access --control AC-2
+    python3 dbz_query.py edgar --incident-type ransomware
+    python3 dbz_query.py edgar --company "Acme" --days 180
 
 DB discovery: walks up from CWD looking for cross-mapping/output/grc.db; or --db PATH.
 """
@@ -448,6 +456,133 @@ def cmd_announcements(args, conn: sqlite3.Connection) -> int:
     return 0
 
 
+def cmd_kev(args, conn: sqlite3.Connection) -> int:
+    """Look up a CVE or list recent KEV entries with NIST family mappings."""
+    conditions = []
+    params: list = []
+
+    if getattr(args, "cve", None):
+        conditions.append("cve_id = ?")
+        params.append(args.cve.upper())
+    if getattr(args, "days", None):
+        conditions.append(f"date_added >= date('now', '-{int(args.days)} days')")
+    if getattr(args, "family", None):
+        conditions.append("nist_families LIKE ?")
+        params.append(f'%"{args.family.upper()}"%')
+
+    where = ("WHERE " + " AND ".join(conditions)) if conditions else ""
+    sql = f"""
+        SELECT cve_id, date_added, vulnerability_name, affected_product, nist_families
+        FROM cisa_kev {where}
+        ORDER BY date_added DESC
+        LIMIT 100
+    """
+    rows = conn.execute(sql, params).fetchall()
+    results = [dict(r) for r in rows]
+    cols = ["cve_id", "date_added", "vulnerability_name", "affected_product", "nist_families"]
+    _output(results, args.format, cols)
+    return 0
+
+
+def cmd_cfr(args, conn: sqlite3.Connection) -> int:
+    """Look up CFR requirements by part, section, or keyword."""
+    conditions = []
+    params: list = []
+
+    if getattr(args, "part", None):
+        conditions.append("cfr_part LIKE ?")
+        params.append(f"%{args.part}%")
+    if getattr(args, "section", None):
+        conditions.append("section_id LIKE ?")
+        params.append(f"%{args.section}%")
+    if getattr(args, "keyword", None):
+        conditions.append("(title LIKE ? OR text LIKE ?)")
+        kw = f"%{args.keyword}%"
+        params.extend([kw, kw])
+    if getattr(args, "family", None):
+        conditions.append("nist_families LIKE ?")
+        params.append(f'%"{args.family.upper()}"%')
+
+    where = ("WHERE " + " AND ".join(conditions)) if conditions else ""
+    sql = f"""
+        SELECT section_id, cfr_part, framework_id, title, nist_families
+        FROM cfr_requirements {where}
+        ORDER BY cfr_part, section_id
+        LIMIT 100
+    """
+    rows = conn.execute(sql, params).fetchall()
+    results = [dict(r) for r in rows]
+    cols = ["section_id", "cfr_part", "framework_id", "title", "nist_families"]
+    _output(results, args.format, cols)
+    return 0
+
+
+def cmd_attack(args, conn: sqlite3.Connection) -> int:
+    """Look up MITRE ATT&CK techniques and their NIST 800-53 control mappings."""
+    conditions = []
+    params: list = []
+
+    if getattr(args, "technique", None):
+        tid = args.technique.upper()
+        conditions.append("(technique_id = ? OR technique_id LIKE ?)")
+        params.extend([tid, f"{tid}.%"])
+    if getattr(args, "name", None):
+        conditions.append("name LIKE ?")
+        params.append(f"%{args.name}%")
+    if getattr(args, "tactic", None):
+        conditions.append("tactic LIKE ?")
+        params.append(f"%{args.tactic}%")
+    if getattr(args, "control", None):
+        conditions.append("nist_controls LIKE ?")
+        params.append(f'%"{args.control.upper()}%')
+
+    where = ("WHERE " + " AND ".join(conditions)) if conditions else ""
+    sql = f"""
+        SELECT technique_id, name, tactic, is_subtechnique, nist_controls, nist_families
+        FROM attack_techniques {where}
+        ORDER BY technique_id
+        LIMIT 100
+    """
+    rows = conn.execute(sql, params).fetchall()
+    results = [dict(r) for r in rows]
+    cols = ["technique_id", "name", "tactic", "is_subtechnique", "nist_controls", "nist_families"]
+    _output(results, args.format, cols)
+    return 0
+
+
+def cmd_edgar(args, conn: sqlite3.Connection) -> int:
+    """Query SEC EDGAR 8-K Item 1.05 cyber incident disclosures."""
+    conditions = []
+    params: list = []
+
+    if getattr(args, "company", None):
+        conditions.append("company_name LIKE ?")
+        params.append(f"%{args.company}%")
+    if getattr(args, "incident_type", None):
+        conditions.append("incident_type LIKE ?")
+        params.append(f"%{args.incident_type}%")
+    if getattr(args, "days", None):
+        conditions.append(f"filed_at >= date('now', '-{int(args.days)} days')")
+    if getattr(args, "family", None):
+        conditions.append("nist_families LIKE ?")
+        params.append(f'%"{args.family.upper()}"%')
+
+    where = ("WHERE " + " AND ".join(conditions)) if conditions else ""
+    sql = f"""
+        SELECT accession_no, company_name, filed_at, incident_type,
+               nist_families, classification_confidence
+        FROM edgar_cyber_incidents {where}
+        ORDER BY filed_at DESC
+        LIMIT 100
+    """
+    rows = conn.execute(sql, params).fetchall()
+    results = [dict(r) for r in rows]
+    cols = ["accession_no", "company_name", "filed_at", "incident_type",
+            "nist_families", "classification_confidence"]
+    _output(results, args.format, cols)
+    return 0
+
+
 def cmd_manifest(args, conn: sqlite3.Connection) -> int:
     """Show DB build manifest (row counts, size, sha256)."""
     counts = {}
@@ -562,6 +697,38 @@ def build_parser() -> argparse.ArgumentParser:
     man = subs.add_parser("manifest", help="Show DB build manifest (row counts, sha256)")
     _add_format(man); _add_db(man)
 
+    # kev
+    kev = subs.add_parser("kev", help="Look up CISA KEV entries (CVE → NIST families)")
+    kev.add_argument("--cve", metavar="CVE_ID", help="CVE ID (e.g. CVE-2021-44228)")
+    kev.add_argument("--days", type=int, metavar="N", help="Added in last N days")
+    kev.add_argument("--family", metavar="FAM", help="Filter by NIST family (e.g. SI, IA)")
+    _add_format(kev); _add_db(kev)
+
+    # cfr
+    cfr = subs.add_parser("cfr", help="Query CFR regulatory requirements")
+    cfr.add_argument("--part", metavar="PART", help="CFR part (e.g. 45-CFR-164, 16-CFR-314)")
+    cfr.add_argument("--section", metavar="SEC", help="Section ID substring (e.g. 164.308)")
+    cfr.add_argument("--keyword", metavar="KW", help="Keyword search in title/text")
+    cfr.add_argument("--family", metavar="FAM", help="Filter by NIST family")
+    _add_format(cfr); _add_db(cfr)
+
+    # attack
+    atk = subs.add_parser("attack", help="Query MITRE ATT&CK techniques and NIST 800-53 mappings")
+    atk.add_argument("--technique", metavar="TID", help="ATT&CK technique ID (e.g. T1078)")
+    atk.add_argument("--name", metavar="NAME", help="Technique name substring")
+    atk.add_argument("--tactic", metavar="TACTIC", help="Tactic name substring (e.g. initial-access)")
+    atk.add_argument("--control", metavar="CTRL", help="NIST control ID (e.g. AC-2)")
+    _add_format(atk); _add_db(atk)
+
+    # edgar
+    edg = subs.add_parser("edgar", help="Query SEC EDGAR 8-K cyber incident disclosures")
+    edg.add_argument("--company", metavar="NAME", help="Company name substring")
+    edg.add_argument("--incident-type", metavar="TYPE", dest="incident_type",
+                     help="Incident type (e.g. ransomware, data_breach, unauthorized_access)")
+    edg.add_argument("--days", type=int, metavar="N", help="Filed in last N days")
+    edg.add_argument("--family", metavar="FAM", help="Filter by NIST family")
+    _add_format(edg); _add_db(edg)
+
     return ap
 
 
@@ -588,6 +755,10 @@ def main(argv=None) -> int:
         "feeds": cmd_feeds,
         "announcements": cmd_announcements,
         "manifest": cmd_manifest,
+        "kev": cmd_kev,
+        "cfr": cmd_cfr,
+        "attack": cmd_attack,
+        "edgar": cmd_edgar,
     }
 
     fn = cmd_map.get(args.command)

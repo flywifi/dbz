@@ -22,8 +22,26 @@
       "last_checked": null,
       "last_changed": "2020-12-10",
       "announcement_feeds": [
-        {"url": "https://www.nist.gov/news-events/cybersecurity/rss", "type": "rss", "filter_keywords": ["800-53", "SP 800-53", "control catalog"], "notes": "NIST cybersecurity news — filter for 800-53 mentions"},
-        {"url": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml", "type": "rss", "filter_keywords": ["800-53", "control catalog", "revision"], "notes": "NIST Cybersecurity Insights blog"}
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "800-53",
+            "SP 800-53",
+            "control catalog"
+          ],
+          "notes": "NIST cybersecurity news — filter for 800-53 mentions"
+        },
+        {
+          "url": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "800-53",
+            "control catalog",
+            "revision"
+          ],
+          "notes": "NIST Cybersecurity Insights blog"
+        }
       ],
       "draft_landing_url": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final",
       "draft_status": "none",
@@ -36,7 +54,14 @@
         "https://csrc.nist.gov/projects/risk-management/sp800-53-controls/downloads",
         "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final"
       ],
-      "doc_patterns": [".pdf", ".xlsx", ".xlsm", ".csv", ".json", ".zip"]
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".xlsm",
+        ".csv",
+        ".json",
+        ".zip"
+      ]
     },
     "nist-800-53b": {
       "label": "NIST SP 800-53B Control Baselines",
@@ -52,14 +77,34 @@
       "last_checked": null,
       "last_changed": "2020-10-29",
       "announcement_feeds": [
-        {"url": "https://www.nist.gov/news-events/cybersecurity/rss", "type": "rss", "filter_keywords": ["800-53B", "baselines", "800-53 B"], "notes": "NIST cybersecurity news — filter for 800-53B mentions"}
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "800-53B",
+            "baselines",
+            "800-53 B"
+          ],
+          "notes": "NIST cybersecurity news — filter for 800-53B mentions"
+        }
       ],
       "draft_landing_url": "https://csrc.nist.gov/pubs/sp/800/53/b/upd1/final",
       "draft_status": "none",
       "public_comment_deadline": null,
-      "source_manifest_keys": ["nist-800-53b-baselines"],
-      "crawl_seeds": ["https://csrc.nist.gov/pubs/sp/800/53/b/upd1/final"],
-      "doc_patterns": [".pdf", ".xlsx", ".xlsm", ".csv", ".json", ".zip"]
+      "source_manifest_keys": [
+        "nist-800-53b-baselines"
+      ],
+      "crawl_seeds": [
+        "https://csrc.nist.gov/pubs/sp/800/53/b/upd1/final"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".xlsm",
+        ".csv",
+        ".json",
+        ".zip"
+      ]
     },
     "nist-800-171": {
       "label": "NIST SP 800-171 Protecting CUI",
@@ -77,15 +122,42 @@
       "last_changed": "2024-05-14",
       "notes": "Rev 3 released May 2024; CMMC 2.0 currently references Rev 2. Monitor for CMMC alignment to Rev 3.",
       "announcement_feeds": [
-        {"url": "https://www.nist.gov/news-events/cybersecurity/rss", "type": "rss", "filter_keywords": ["800-171", "CUI", "controlled unclassified"], "notes": "Filter for 800-171 / CUI mentions"},
-        {"url": "https://www.acq.osd.mil/cmmc/rss.xml", "type": "rss", "filter_keywords": ["800-171", "Rev 3", "CMMC"], "notes": "OUSD(A&S) CMMC news — catches DFARS/CMMC→800-171 Rev 3 alignment news"}
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "800-171",
+            "CUI",
+            "controlled unclassified"
+          ],
+          "notes": "Filter for 800-171 / CUI mentions"
+        },
+        {
+          "url": "https://www.acq.osd.mil/cmmc/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "800-171",
+            "Rev 3",
+            "CMMC"
+          ],
+          "notes": "OUSD(A&S) CMMC news — catches DFARS/CMMC→800-171 Rev 3 alignment news"
+        }
       ],
       "draft_landing_url": "https://csrc.nist.gov/pubs/sp/800/171/r3/final",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://csrc.nist.gov/pubs/sp/800/171/r3/final"],
-      "doc_patterns": [".pdf", ".xlsx", ".xlsm", ".csv", ".json", ".zip"]
+      "crawl_seeds": [
+        "https://csrc.nist.gov/pubs/sp/800/171/r3/final"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".xlsm",
+        ".csv",
+        ".json",
+        ".zip"
+      ]
     },
     "nist-800-172": {
       "label": "NIST SP 800-172 Enhanced Security Req for CUI",
@@ -101,14 +173,32 @@
       "last_checked": null,
       "last_changed": "2021-02-02",
       "announcement_feeds": [
-        {"url": "https://www.nist.gov/news-events/cybersecurity/rss", "type": "rss", "filter_keywords": ["800-172", "enhanced security", "CUI"], "notes": "Filter for 800-172 mentions"}
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "800-172",
+            "enhanced security",
+            "CUI"
+          ],
+          "notes": "Filter for 800-172 mentions"
+        }
       ],
       "draft_landing_url": "https://csrc.nist.gov/pubs/sp/800/172/final",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://csrc.nist.gov/pubs/sp/800/172/final"],
-      "doc_patterns": [".pdf", ".xlsx", ".xlsm", ".csv", ".json", ".zip"]
+      "crawl_seeds": [
+        "https://csrc.nist.gov/pubs/sp/800/172/final"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".xlsm",
+        ".csv",
+        ".json",
+        ".zip"
+      ]
     },
     "cmmc": {
       "label": "Cybersecurity Maturity Model Certification (CMMC)",
@@ -126,15 +216,44 @@
       "last_changed": "2024-12-16",
       "notes": "CMMC 2.0 Final Rule effective Dec 16 2024. Level 2 = 800-171 Rev 2 practices. Monitor for DFARS clause updates and Level 2→Rev 3 migration timeline.",
       "announcement_feeds": [
-        {"url": "https://www.acq.osd.mil/cmmc/rss.xml", "type": "rss", "filter_keywords": ["CMMC", "DFARS", "certification"], "notes": "OUSD(A&S) CMMC program news"},
-        {"url": "https://www.dcsa.mil/rss/news/", "type": "rss", "filter_keywords": ["CMMC", "DCSA", "certification"], "notes": "DCSA announcements affecting CMMC assessment process"}
+        {
+          "url": "https://www.acq.osd.mil/cmmc/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "CMMC",
+            "DFARS",
+            "certification"
+          ],
+          "notes": "OUSD(A&S) CMMC program news"
+        },
+        {
+          "url": "https://www.dcsa.mil/rss/news/",
+          "type": "rss",
+          "filter_keywords": [
+            "CMMC",
+            "DCSA",
+            "certification"
+          ],
+          "notes": "DCSA announcements affecting CMMC assessment process"
+        }
       ],
       "draft_landing_url": "https://www.acq.osd.mil/cmmc/",
       "draft_status": "none",
       "public_comment_deadline": null,
-      "source_manifest_keys": ["cmmc-800-171-53-crosswalk"],
-      "crawl_seeds": ["https://dodcio.defense.gov/CMMC/Documentation/"],
-      "doc_patterns": [".pdf", ".xlsx", ".xlsm", ".csv", ".json", ".zip"]
+      "source_manifest_keys": [
+        "cmmc-800-171-53-crosswalk"
+      ],
+      "crawl_seeds": [
+        "https://dodcio.defense.gov/CMMC/Documentation/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".xlsm",
+        ".csv",
+        ".json",
+        ".zip"
+      ]
     },
     "fedramp": {
       "label": "FedRAMP Program",
@@ -155,21 +274,50 @@
       "last_changed": "2025-03-01",
       "notes": "FedRAMP 20x introduces KSIs (Key Security Indicators) as automated evidence. Monitor fedramp-automation GitHub releases for OSCAL baseline updates. 20x pilot tracked separately as fedramp-20x.",
       "announcement_feeds": [
-        {"url": "https://www.fedramp.gov/feed.xml", "type": "rss", "filter_keywords": ["baseline", "authorization", "20x", "KSI"], "notes": "FedRAMP.gov news feed"},
-        {"url": "https://github.com/GSA/fedramp-automation/releases.atom", "type": "atom", "filter_keywords": ["baseline", "OSCAL"], "notes": "GSA fedramp-automation GitHub releases Atom feed"}
+        {
+          "url": "https://www.fedramp.gov/feed.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "baseline",
+            "authorization",
+            "20x",
+            "KSI"
+          ],
+          "notes": "FedRAMP.gov news feed"
+        },
+        {
+          "url": "https://github.com/GSA/fedramp-automation/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "baseline",
+            "OSCAL"
+          ],
+          "notes": "GSA fedramp-automation GitHub releases Atom feed"
+        }
       ],
       "draft_landing_url": "https://www.fedramp.gov/20x/",
       "draft_status": "none",
       "public_comment_deadline": null,
-      "source_manifest_keys": ["nist-800-53b-baselines"],
-      "crawl_seeds": ["https://www.fedramp.gov/documents-templates/"],
-      "doc_patterns": [".pdf", ".xlsx", ".xlsm", ".csv", ".json", ".zip"]
+      "source_manifest_keys": [
+        "nist-800-53b-baselines"
+      ],
+      "crawl_seeds": [
+        "https://www.fedramp.gov/documents-templates/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".xlsm",
+        ".csv",
+        ".json",
+        ".zip"
+      ]
     },
     "hitrust": {
       "label": "HITRUST CSF",
       "authority": "primary",
       "framework_id": "hitrust",
-      "current_version": "v11.4.0 (March 2025)",
+      "current_version": "v11.5.0 (June 2025)",
       "urls": {
         "landing": "https://hitrustalliance.net/csf/",
         "updates": "https://hitrustalliance.net/csf/csf-suite-updates/",
@@ -178,17 +326,48 @@
       "check_strategy": "poll_landing",
       "last_checked": null,
       "last_changed": "2025-03-01",
-      "notes": "v11.4.0 released March 2025. Check for v11.4.x point releases or v12 announcements.",
+      "notes": "v11.5.0 adds CMMC 2.0, DORA, ISO 29151, CMS ARS v5.1 mappings. Previously had v11.4.0.",
       "announcement_feeds": [
-        {"url": "https://hitrustalliance.net/feed/", "type": "rss", "filter_keywords": ["CSF", "version", "update", "release"], "notes": "HITRUST Community Blog RSS"},
-        {"url": "https://hitrustalliance.net/category/news/feed/", "type": "rss", "filter_keywords": ["CSF", "v11", "v12", "update"], "notes": "HITRUST news category feed"}
+        {
+          "url": "https://hitrustalliance.net/feed/",
+          "type": "rss",
+          "filter_keywords": [
+            "CSF",
+            "version",
+            "update",
+            "release"
+          ],
+          "notes": "HITRUST Community Blog RSS"
+        },
+        {
+          "url": "https://hitrustalliance.net/category/news/feed/",
+          "type": "rss",
+          "filter_keywords": [
+            "CSF",
+            "v11",
+            "v12",
+            "update"
+          ],
+          "notes": "HITRUST news category feed"
+        }
       ],
       "draft_landing_url": "https://hitrustalliance.net/csf/",
       "draft_status": "none",
       "public_comment_deadline": null,
-      "source_manifest_keys": ["hitrust-csf-cross-reference"],
-      "crawl_seeds": ["https://hitrustalliance.net/csf"],
-      "doc_patterns": [".pdf", ".xlsx", ".xlsm", ".csv", ".json", ".zip"]
+      "source_manifest_keys": [
+        "hitrust-csf-cross-reference"
+      ],
+      "crawl_seeds": [
+        "https://hitrustalliance.net/csf"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".xlsm",
+        ".csv",
+        ".json",
+        ".zip"
+      ]
     },
     "iso-27001": {
       "label": "ISO/IEC 27001:2022",
@@ -205,15 +384,44 @@
       "last_changed": "2022-10-25",
       "notes": "ISO 27001:2022 released Oct 2022. Transition period ended Oct 2025. Monitor NIST OLIR for updated STRM mapping. ISO 27001:2027 amendment cycle may begin 2026.",
       "announcement_feeds": [
-        {"url": "https://www.iso.org/rss/news.xml", "type": "rss", "filter_keywords": ["27001", "27002", "information security"], "notes": "ISO press releases — filter for 27001/27002 mentions"},
-        {"url": "https://www.nist.gov/news-events/cybersecurity/rss", "type": "rss", "filter_keywords": ["OLIR", "ISO 27001", "informative reference"], "notes": "NIST OLIR updates for ISO 27001 crosswalk refreshes"}
+        {
+          "url": "https://www.iso.org/rss/news.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "27001",
+            "27002",
+            "information security"
+          ],
+          "notes": "ISO press releases — filter for 27001/27002 mentions"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "OLIR",
+            "ISO 27001",
+            "informative reference"
+          ],
+          "notes": "NIST OLIR updates for ISO 27001 crosswalk refreshes"
+        }
       ],
       "draft_landing_url": "https://www.iso.org/standard/27001",
       "draft_status": "none",
       "public_comment_deadline": null,
-      "source_manifest_keys": ["nist-800-53r5-to-iso-27001-olir"],
-      "crawl_seeds": ["https://csrc.nist.gov/projects/olir/informative-reference-catalog"],
-      "doc_patterns": [".pdf", ".xlsx", ".xlsm", ".csv", ".json", ".zip"]
+      "source_manifest_keys": [
+        "nist-800-53r5-to-iso-27001-olir"
+      ],
+      "crawl_seeds": [
+        "https://csrc.nist.gov/projects/olir/informative-reference-catalog"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".xlsm",
+        ".csv",
+        ".json",
+        ".zip"
+      ]
     },
     "disa-cci": {
       "label": "DISA CCI List (Control Correlation Identifiers)",
@@ -230,41 +438,89 @@
       "last_changed": "2022-01-01",
       "notes": "CCI list maps to NIST 800-53 r4. Bridge via sp800-53r4-to-r5-comparison-workbook.xlsx.",
       "announcement_feeds": [
-        {"url": "https://public.cyber.mil/rss", "type": "rss", "filter_keywords": ["CCI", "STIG", "control correlation"], "notes": "DISA Cyber.mil news — filter for CCI updates"}
+        {
+          "url": "https://public.cyber.mil/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "CCI",
+            "STIG",
+            "control correlation"
+          ],
+          "notes": "DISA Cyber.mil news — filter for CCI updates"
+        }
       ],
       "draft_landing_url": "https://public.cyber.mil/stigs/cci/",
       "draft_status": "none",
       "public_comment_deadline": null,
-      "source_manifest_keys": ["disa-cci-list", "nist-r4-to-r5-bridge"],
-      "crawl_seeds": ["https://public.cyber.mil/stigs/downloads/"],
-      "doc_patterns": [".pdf", ".xlsx", ".xlsm", ".csv", ".json", ".zip"]
+      "source_manifest_keys": [
+        "disa-cci-list",
+        "nist-r4-to-r5-bridge"
+      ],
+      "crawl_seeds": [
+        "https://public.cyber.mil/stigs/downloads/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".xlsm",
+        ".csv",
+        ".json",
+        ".zip"
+      ]
     },
     "csa-ccm": {
       "label": "CSA Cloud Controls Matrix v4",
       "authority": "primary",
       "framework_id": "csa-ccm",
-      "current_version": "v4.0.12",
+      "current_version": "v4.1",
       "urls": {
         "landing": "https://cloudsecurityalliance.org/research/cloud-controls-matrix/",
         "github": "https://github.com/cloudsecurityalliance/cloud-controls-matrix",
         "release": "https://github.com/cloudsecurityalliance/cloud-controls-matrix/releases",
-        "download_page": "https://cloudsecurityalliance.org/research/cloud-controls-matrix/"
+        "download_page": "https://cloudsecurityalliance.org/research/cloud-controls-matrix/",
+        "xlsx": "https://github.com/cloudsecurityalliance/cloud-controls-matrix/releases/latest"
       },
       "check_strategy": "github_release",
       "github_repo": "cloudsecurityalliance/cloud-controls-matrix",
       "last_checked": null,
       "last_changed": "2023-11-01",
-      "notes": "CCM v4.0.12 is current. CC-BY licensed — available in canonical-sources/ccm-v4/. CCM v5 tracked separately as csa-star-ccm5.",
+      "notes": "v4.1 released 2025 on GitHub (cloudsecurityalliance/cloud-controls-matrix). Previously pinned as v4.0.12.",
       "announcement_feeds": [
-        {"url": "https://cloudsecurityalliance.org/feed", "type": "rss", "filter_keywords": ["CCM", "Cloud Controls Matrix", "STAR"], "notes": "CSA blog and news feed"},
-        {"url": "https://github.com/cloudsecurityalliance/cloud-controls-matrix/releases.atom", "type": "atom", "filter_keywords": ["v4", "CCM"], "notes": "GitHub releases Atom for CCM v4 point releases"}
+        {
+          "url": "https://cloudsecurityalliance.org/feed",
+          "type": "rss",
+          "filter_keywords": [
+            "CCM",
+            "Cloud Controls Matrix",
+            "STAR"
+          ],
+          "notes": "CSA blog and news feed"
+        },
+        {
+          "url": "https://github.com/cloudsecurityalliance/cloud-controls-matrix/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "v4",
+            "CCM"
+          ],
+          "notes": "GitHub releases Atom for CCM v4 point releases"
+        }
       ],
       "draft_landing_url": "https://cloudsecurityalliance.org/research/cloud-controls-matrix/",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://cloudsecurityalliance.org/research/cloud-controls-matrix/"],
-      "doc_patterns": [".pdf", ".xlsx", ".xlsm", ".csv", ".json", ".zip"]
+      "crawl_seeds": [
+        "https://cloudsecurityalliance.org/research/cloud-controls-matrix/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".xlsm",
+        ".csv",
+        ".json",
+        ".zip"
+      ]
     },
     "soc2": {
       "label": "AICPA SOC 2 Trust Services Criteria",
@@ -281,15 +537,42 @@
       "last_changed": "2022-04-01",
       "notes": "2022 update added criteria for cybersecurity risk management. ER crosswalk data from compliance-report-analyzer covers SOC 2 T1 and T2.",
       "announcement_feeds": [
-        {"url": "https://www.aicpa-cima.com/news/rss", "type": "rss", "filter_keywords": ["SOC 2", "Trust Services", "TSC", "criteria"], "notes": "AICPA-CIMA news — filter for SOC/TSC updates"},
-        {"url": "https://www.aicpa-cima.com/publications/rss", "type": "rss", "filter_keywords": ["SOC", "Trust Services"], "notes": "AICPA publications feed"}
+        {
+          "url": "https://www.aicpa-cima.com/news/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "SOC 2",
+            "Trust Services",
+            "TSC",
+            "criteria"
+          ],
+          "notes": "AICPA-CIMA news — filter for SOC/TSC updates"
+        },
+        {
+          "url": "https://www.aicpa-cima.com/publications/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "SOC",
+            "Trust Services"
+          ],
+          "notes": "AICPA publications feed"
+        }
       ],
       "draft_landing_url": "https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services"],
-      "doc_patterns": [".pdf", ".xlsx", ".xlsm", ".csv", ".json", ".zip"]
+      "crawl_seeds": [
+        "https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".xlsm",
+        ".csv",
+        ".json",
+        ".zip"
+      ]
     },
     "hipaa": {
       "label": "HIPAA Security Rule",
@@ -307,15 +590,44 @@
       "last_changed": "2013-01-25",
       "notes": "HIPAA Security Rule NPRM (proposed update) published Jan 2025 — final rule expected 2026. Covers enhanced cybersecurity requirements including MFA, asset inventories, network segmentation.",
       "announcement_feeds": [
-        {"url": "https://www.hhs.gov/rss/hipaa-news.xml", "type": "rss", "filter_keywords": ["Security Rule", "NPRM", "final rule", "enforcement"], "notes": "HHS HIPAA-specific news RSS"},
-        {"url": "https://www.hhs.gov/about/news/rss/ocr-news.xml", "type": "rss", "filter_keywords": ["HIPAA", "Security Rule", "breach", "enforcement"], "notes": "OCR enforcement and rule updates"}
+        {
+          "url": "https://www.hhs.gov/rss/hipaa-news.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "Security Rule",
+            "NPRM",
+            "final rule",
+            "enforcement"
+          ],
+          "notes": "HHS HIPAA-specific news RSS"
+        },
+        {
+          "url": "https://www.hhs.gov/about/news/rss/ocr-news.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "HIPAA",
+            "Security Rule",
+            "breach",
+            "enforcement"
+          ],
+          "notes": "OCR enforcement and rule updates"
+        }
       ],
       "draft_landing_url": "https://www.hhs.gov/hipaa/for-professionals/security/guidance/federal-register-notice-hipaa-security-rule-nprm/index.html",
       "draft_status": "final_public_draft",
       "public_comment_deadline": "2025-03-07",
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://www.hhs.gov/hipaa/for-professionals/security/index.html"],
-      "doc_patterns": [".pdf", ".xlsx", ".xlsm", ".csv", ".json", ".zip"]
+      "crawl_seeds": [
+        "https://www.hhs.gov/hipaa/for-professionals/security/index.html"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".xlsm",
+        ".csv",
+        ".json",
+        ".zip"
+      ]
     },
     "eu-ai-act": {
       "label": "EU Artificial Intelligence Act (base regulation)",
@@ -332,15 +644,40 @@
       "last_changed": "2024-08-01",
       "notes": "Phased obligations: prohibited-AI Feb 2025, GPAI Aug 2025, high-risk Aug 2026/2027. Implementing acts tracked separately as eu-ai-act-impl.",
       "announcement_feeds": [
-        {"url": "https://digital-strategy.ec.europa.eu/en/rss/news", "type": "rss", "filter_keywords": ["AI Act", "artificial intelligence", "GPAI", "high-risk"], "notes": "EC Digital Strategy news — primary channel for AI Act obligations timeline"},
-        {"url": "https://www.europarl.europa.eu/rss/en/pressreleases.xml", "type": "rss", "filter_keywords": ["AI Act", "artificial intelligence act"], "notes": "EP press releases for legislative milestones"}
+        {
+          "url": "https://digital-strategy.ec.europa.eu/en/rss/news",
+          "type": "rss",
+          "filter_keywords": [
+            "AI Act",
+            "artificial intelligence",
+            "GPAI",
+            "high-risk"
+          ],
+          "notes": "EC Digital Strategy news — primary channel for AI Act obligations timeline"
+        },
+        {
+          "url": "https://www.europarl.europa.eu/rss/en/pressreleases.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "AI Act",
+            "artificial intelligence act"
+          ],
+          "notes": "EP press releases for legislative milestones"
+        }
       ],
       "draft_landing_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"],
-      "doc_patterns": [".pdf", ".xlsx", ".csv", ".zip"]
+      "crawl_seeds": [
+        "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".csv",
+        ".zip"
+      ]
     },
     "nis2": {
       "label": "EU NIS2 Directive",
@@ -357,15 +694,41 @@
       "last_changed": "2024-10-17",
       "notes": "NIS2 expands scope to more sectors; member-state transposition ongoing. Maps loosely to ISO 27001 / 800-53 via risk-management measures (Art. 21). ENISA implementing acts for incident reporting in progress.",
       "announcement_feeds": [
-        {"url": "https://www.enisa.europa.eu/media/rss", "type": "rss", "filter_keywords": ["NIS2", "incident", "reporting", "implementing"], "notes": "ENISA publications — key for NIS2 technical guidance and implementing acts"},
-        {"url": "https://digital-strategy.ec.europa.eu/en/rss/news", "type": "rss", "filter_keywords": ["NIS2", "network and information", "cybersecurity directive"], "notes": "EC Digital Strategy NIS2 news"}
+        {
+          "url": "https://www.enisa.europa.eu/media/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "NIS2",
+            "incident",
+            "reporting",
+            "implementing"
+          ],
+          "notes": "ENISA publications — key for NIS2 technical guidance and implementing acts"
+        },
+        {
+          "url": "https://digital-strategy.ec.europa.eu/en/rss/news",
+          "type": "rss",
+          "filter_keywords": [
+            "NIS2",
+            "network and information",
+            "cybersecurity directive"
+          ],
+          "notes": "EC Digital Strategy NIS2 news"
+        }
       ],
       "draft_landing_url": "https://digital-strategy.ec.europa.eu/en/policies/nis2-directive",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://digital-strategy.ec.europa.eu/en/policies/nis2-directive"],
-      "doc_patterns": [".pdf", ".xlsx", ".csv", ".zip"]
+      "crawl_seeds": [
+        "https://digital-strategy.ec.europa.eu/en/policies/nis2-directive"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".csv",
+        ".zip"
+      ]
     },
     "eu-dora": {
       "label": "EU Digital Operational Resilience Act (DORA)",
@@ -381,15 +744,41 @@
       "last_changed": "2025-01-17",
       "notes": "Financial-sector ICT risk + third-party resilience. Applies from Jan 2025. Overlaps 800-53 CP/IR/SR families. RTS/ITS implementing standards finalized by ESAs.",
       "announcement_feeds": [
-        {"url": "https://www.eiopa.europa.eu/rss", "type": "rss", "filter_keywords": ["DORA", "digital operational resilience", "ICT", "RTS"], "notes": "EIOPA news — primary for DORA implementing standards (RTS/ITS)"},
-        {"url": "https://www.eba.europa.eu/rss/news", "type": "rss", "filter_keywords": ["DORA", "digital resilience", "ICT risk"], "notes": "EBA news for banking-sector DORA guidance"}
+        {
+          "url": "https://www.eiopa.europa.eu/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "DORA",
+            "digital operational resilience",
+            "ICT",
+            "RTS"
+          ],
+          "notes": "EIOPA news — primary for DORA implementing standards (RTS/ITS)"
+        },
+        {
+          "url": "https://www.eba.europa.eu/rss/news",
+          "type": "rss",
+          "filter_keywords": [
+            "DORA",
+            "digital resilience",
+            "ICT risk"
+          ],
+          "notes": "EBA news for banking-sector DORA guidance"
+        }
       ],
       "draft_landing_url": "https://www.eiopa.europa.eu/digital-operational-resilience-act-dora_en",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://www.eiopa.europa.eu/digital-operational-resilience-act-dora_en"],
-      "doc_patterns": [".pdf", ".xlsx", ".csv", ".zip"]
+      "crawl_seeds": [
+        "https://www.eiopa.europa.eu/digital-operational-resilience-act-dora_en"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".csv",
+        ".zip"
+      ]
     },
     "uk-gdpr": {
       "label": "UK GDPR / Data Protection Act 2018",
@@ -405,15 +794,41 @@
       "last_changed": "2025-06-19",
       "notes": "Data (Use and Access) Act 2025 amends UK GDPR. Monitor ICO for guidance updates and DSIT for secondary legislation.",
       "announcement_feeds": [
-        {"url": "https://ico.org.uk/about-the-ico/media-centre/news-and-blog/feed/", "type": "rss", "filter_keywords": ["UK GDPR", "data protection", "guidance", "enforcement"], "notes": "ICO news and blog — primary for UK GDPR interpretation and enforcement"},
-        {"url": "https://www.gov.uk/search/news-and-communications.atom?keywords=data+protection&organisations%5B%5D=department-for-science-innovation-and-technology", "type": "atom", "filter_keywords": ["data protection", "UK GDPR", "DUAA"], "notes": "DSIT (DCMS successor) for legislative updates"}
+        {
+          "url": "https://ico.org.uk/about-the-ico/media-centre/news-and-blog/feed/",
+          "type": "rss",
+          "filter_keywords": [
+            "UK GDPR",
+            "data protection",
+            "guidance",
+            "enforcement"
+          ],
+          "notes": "ICO news and blog — primary for UK GDPR interpretation and enforcement"
+        },
+        {
+          "url": "https://www.gov.uk/search/news-and-communications.atom?keywords=data+protection&organisations%5B%5D=department-for-science-innovation-and-technology",
+          "type": "atom",
+          "filter_keywords": [
+            "data protection",
+            "UK GDPR",
+            "DUAA"
+          ],
+          "notes": "DSIT (DCMS successor) for legislative updates"
+        }
       ],
       "draft_landing_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/"],
-      "doc_patterns": [".pdf", ".xlsx", ".csv", ".zip"]
+      "crawl_seeds": [
+        "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".csv",
+        ".zip"
+      ]
     },
     "iso-42001": {
       "label": "ISO/IEC 42001:2023 (AI Management System)",
@@ -428,15 +843,40 @@
       "last_changed": "2023-12-01",
       "notes": "First certifiable AI management system standard. Complements EU AI Act / NIST AI RMF. Bridge via ISO 23894.",
       "announcement_feeds": [
-        {"url": "https://www.iso.org/rss/news.xml", "type": "rss", "filter_keywords": ["42001", "AI management", "artificial intelligence management"], "notes": "ISO press — filter for 42001 mentions or AI management system news"},
-        {"url": "https://www.iso.org/committee/6794475/x/catalogue/rss", "type": "rss", "filter_keywords": ["42001", "AI", "management"], "notes": "ISO/IEC JTC 1/SC 42 (AI) committee publications feed"}
+        {
+          "url": "https://www.iso.org/rss/news.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "42001",
+            "AI management",
+            "artificial intelligence management"
+          ],
+          "notes": "ISO press — filter for 42001 mentions or AI management system news"
+        },
+        {
+          "url": "https://www.iso.org/committee/6794475/x/catalogue/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "42001",
+            "AI",
+            "management"
+          ],
+          "notes": "ISO/IEC JTC 1/SC 42 (AI) committee publications feed"
+        }
       ],
       "draft_landing_url": "https://www.iso.org/standard/81230.html",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://www.iso.org/standard/81230.html"],
-      "doc_patterns": [".pdf", ".xlsx", ".csv", ".zip"]
+      "crawl_seeds": [
+        "https://www.iso.org/standard/81230.html"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".csv",
+        ".zip"
+      ]
     },
     "pci-dss": {
       "label": "PCI DSS",
@@ -452,14 +892,31 @@
       "last_changed": "2024-06-11",
       "notes": "v4.0 mandatory March 2024; v4.0.1 errata June 2024. Future-dated requirements effective March 2025. Crosswalked to 800-53 via HITRUST hub.",
       "announcement_feeds": [
-        {"url": "https://blog.pcisecuritystandards.org/rss.xml", "type": "rss", "filter_keywords": ["PCI DSS", "v4", "requirement", "future-dated"], "notes": "PCI SSC Blog — primary channel for DSS errata, clarifications, and next-version announcements"}
+        {
+          "url": "https://blog.pcisecuritystandards.org/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "PCI DSS",
+            "v4",
+            "requirement",
+            "future-dated"
+          ],
+          "notes": "PCI SSC Blog — primary channel for DSS errata, clarifications, and next-version announcements"
+        }
       ],
       "draft_landing_url": "https://www.pcisecuritystandards.org/standards/",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://www.pcisecuritystandards.org/document_library/"],
-      "doc_patterns": [".pdf", ".xlsx", ".csv", ".zip"]
+      "crawl_seeds": [
+        "https://www.pcisecuritystandards.org/document_library/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".csv",
+        ".zip"
+      ]
     },
     "eu-ai-act-impl": {
       "label": "EU AI Act Implementing Acts & Delegated Regulations",
@@ -477,15 +934,42 @@
       "last_changed": "2025-02-01",
       "notes": "Tracks delegated acts (Art. 97/98), CEN/CENELEC standardization mandate M/589, AI Office GPAI Code of Practice, and prohibited-AI enforcement guidance. Separate from eu-ai-act which tracks the base regulation.",
       "announcement_feeds": [
-        {"url": "https://eur-lex.europa.eu/RSSXSL/sfeed_EULAW.xml", "type": "rss", "filter_keywords": ["artificial intelligence", "AI Act", "2024/1689"], "notes": "EUR-Lex new acts — catches implementing and delegated regulations under the AI Act"},
-        {"url": "https://digital-strategy.ec.europa.eu/en/rss/news", "type": "rss", "filter_keywords": ["AI Office", "GPAI", "implementing", "standardization", "M/589"], "notes": "EC Digital Strategy — primary for AI Office announcements and standardization news"}
+        {
+          "url": "https://eur-lex.europa.eu/RSSXSL/sfeed_EULAW.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "artificial intelligence",
+            "AI Act",
+            "2024/1689"
+          ],
+          "notes": "EUR-Lex new acts — catches implementing and delegated regulations under the AI Act"
+        },
+        {
+          "url": "https://digital-strategy.ec.europa.eu/en/rss/news",
+          "type": "rss",
+          "filter_keywords": [
+            "AI Office",
+            "GPAI",
+            "implementing",
+            "standardization",
+            "M/589"
+          ],
+          "notes": "EC Digital Strategy — primary for AI Office announcements and standardization news"
+        }
       ],
       "draft_landing_url": "https://digital-strategy.ec.europa.eu/en/policies/ai-office",
       "draft_status": "ipd",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"],
-      "doc_patterns": [".pdf", ".xlsx", ".csv", ".zip"]
+      "crawl_seeds": [
+        "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".csv",
+        ".zip"
+      ]
     },
     "owasp-top10": {
       "label": "OWASP Top 10",
@@ -504,42 +988,94 @@
       "last_changed": "2021-09-24",
       "notes": "OWASP Top 10 2021 maps to NIST 800-53 SA/SI/SC families. 2025 edition in active development with data collection phase expected 2024-2025. Crosswalked to 800-53 transitively via HITRUST hub.",
       "announcement_feeds": [
-        {"url": "https://owasp.org/feed.xml", "type": "rss", "filter_keywords": ["Top 10", "Top10", "2025", "release"], "notes": "OWASP Foundation news — catches Top 10 edition releases and data collection announcements"},
-        {"url": "https://github.com/OWASP/Top10/releases.atom", "type": "atom", "filter_keywords": ["v2025", "v2024", "release"], "notes": "GitHub Atom feed for Top 10 releases"}
+        {
+          "url": "https://owasp.org/feed.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "Top 10",
+            "Top10",
+            "2025",
+            "release"
+          ],
+          "notes": "OWASP Foundation news — catches Top 10 edition releases and data collection announcements"
+        },
+        {
+          "url": "https://github.com/OWASP/Top10/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "v2025",
+            "v2024",
+            "release"
+          ],
+          "notes": "GitHub Atom feed for Top 10 releases"
+        }
       ],
       "draft_landing_url": "https://github.com/OWASP/Top10",
       "draft_status": "second_draft",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://owasp.org/Top10/"],
-      "doc_patterns": [".pdf", ".xlsx", ".csv", ".zip"]
+      "crawl_seeds": [
+        "https://owasp.org/Top10/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".csv",
+        ".zip"
+      ]
     },
     "owasp-asvs": {
       "label": "OWASP ASVS (Application Security Verification Standard)",
       "authority": "primary",
       "framework_id": "owasp-asvs",
-      "current_version": "v4.0.3",
+      "current_version": "v5.0.0 (May 2025)",
       "expected_next": "v5.0 (in active development)",
       "urls": {
         "landing": "https://owasp.org/ASVS/",
         "github": "https://github.com/OWASP/ASVS",
-        "release": "https://github.com/OWASP/ASVS/releases"
+        "release": "https://github.com/OWASP/ASVS/releases",
+        "github_releases": "https://github.com/OWASP/ASVS/releases"
       },
       "check_strategy": "github_release",
       "github_repo": "OWASP/ASVS",
       "last_checked": null,
       "last_changed": "2021-10-01",
-      "notes": "ASVS v5.0 in active development — significant restructuring expected. Bridge to NIST 800-53 via NIST SSDF (SP 800-218) and SA/SI family. v5 RC expected 2025.",
+      "notes": "v5.0.0 released May 2025. Previously monitoring v4.0.3.",
       "announcement_feeds": [
-        {"url": "https://github.com/OWASP/ASVS/releases.atom", "type": "atom", "filter_keywords": ["v5", "v4.1", "release"], "notes": "GitHub Atom feed for ASVS releases"},
-        {"url": "https://owasp.org/feed.xml", "type": "rss", "filter_keywords": ["ASVS", "Application Security Verification"], "notes": "OWASP Foundation news for ASVS announcements"}
+        {
+          "url": "https://github.com/OWASP/ASVS/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "v5",
+            "v4.1",
+            "release"
+          ],
+          "notes": "GitHub Atom feed for ASVS releases"
+        },
+        {
+          "url": "https://owasp.org/feed.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "ASVS",
+            "Application Security Verification"
+          ],
+          "notes": "OWASP Foundation news for ASVS announcements"
+        }
       ],
       "draft_landing_url": "https://github.com/OWASP/ASVS",
       "draft_status": "second_draft",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://owasp.org/ASVS/"],
-      "doc_patterns": [".pdf", ".xlsx", ".csv", ".zip", ".json"]
+      "crawl_seeds": [
+        "https://owasp.org/ASVS/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".csv",
+        ".zip",
+        ".json"
+      ]
     },
     "cis-controls": {
       "label": "CIS Controls v8",
@@ -556,14 +1092,32 @@
       "last_changed": "2024-06-01",
       "notes": "CIS Controls v8.1 released June 2024 (minor update to v8). Includes Safeguards with IG1/IG2/IG3 implementation group tiers. Crosswalks to NIST CSF, 800-53, ISO 27001. Crosswalked to 800-53 transitively via HITRUST.",
       "announcement_feeds": [
-        {"url": "https://www.cisecurity.org/feed/", "type": "rss", "filter_keywords": ["CIS Controls", "v8", "v9", "Safeguard", "implementation group"], "notes": "CIS blog/news — catches Controls version updates and new Safeguard guidance"}
+        {
+          "url": "https://www.cisecurity.org/feed/",
+          "type": "rss",
+          "filter_keywords": [
+            "CIS Controls",
+            "v8",
+            "v9",
+            "Safeguard",
+            "implementation group"
+          ],
+          "notes": "CIS blog/news — catches Controls version updates and new Safeguard guidance"
+        }
       ],
       "draft_landing_url": "https://www.cisecurity.org/controls/",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://www.cisecurity.org/controls/cis-controls-list"],
-      "doc_patterns": [".pdf", ".xlsx", ".csv", ".zip"]
+      "crawl_seeds": [
+        "https://www.cisecurity.org/controls/cis-controls-list"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".csv",
+        ".zip"
+      ]
     },
     "csa-star-ccm5": {
       "label": "CSA STAR / Cloud Controls Matrix v5 (in development)",
@@ -582,15 +1136,42 @@
       "last_changed": "2023-11-01",
       "notes": "CCM v5 restructuring in progress — will change domain IDs and control structure. When v5 is released, canonical-sources/ccm-v4/ and source_manifest pinning will need updating. Separate from csa-ccm which tracks stable v4 for production use.",
       "announcement_feeds": [
-        {"url": "https://cloudsecurityalliance.org/feed", "type": "rss", "filter_keywords": ["CCM v5", "Cloud Controls Matrix 5", "STAR", "CCM 5.0"], "notes": "CSA blog — primary channel for v5 preview/release announcements"},
-        {"url": "https://github.com/cloudsecurityalliance/cloud-controls-matrix/releases.atom", "type": "atom", "filter_keywords": ["v5", "5.0"], "notes": "GitHub releases — catch v5 pre-releases and RCs"}
+        {
+          "url": "https://cloudsecurityalliance.org/feed",
+          "type": "rss",
+          "filter_keywords": [
+            "CCM v5",
+            "Cloud Controls Matrix 5",
+            "STAR",
+            "CCM 5.0"
+          ],
+          "notes": "CSA blog — primary channel for v5 preview/release announcements"
+        },
+        {
+          "url": "https://github.com/cloudsecurityalliance/cloud-controls-matrix/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "v5",
+            "5.0"
+          ],
+          "notes": "GitHub releases — catch v5 pre-releases and RCs"
+        }
       ],
       "draft_landing_url": "https://cloudsecurityalliance.org/star/",
       "draft_status": "ipd",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://cloudsecurityalliance.org/star/"],
-      "doc_patterns": [".pdf", ".xlsx", ".xlsm", ".csv", ".json", ".zip"]
+      "crawl_seeds": [
+        "https://cloudsecurityalliance.org/star/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".xlsm",
+        ".csv",
+        ".json",
+        ".zip"
+      ]
     },
     "nist-ai-rmf": {
       "label": "NIST AI RMF 1.0 + GenAI Profile",
@@ -610,15 +1191,42 @@
       "last_changed": "2024-08-01",
       "notes": "GOVERN/MAP/MEASURE/MANAGE functions. NIST AI 600-1 (GenAI Profile) released Aug 2024. Profiles for specific sectors in development. Bridge to 800-53 via ISO 42001 / HITRUST hub (ISO 23894 mapping).",
       "announcement_feeds": [
-        {"url": "https://www.nist.gov/news-events/news/rss", "type": "rss", "filter_keywords": ["AI RMF", "AI 100-1", "AI 600-1", "artificial intelligence risk"], "notes": "NIST news — filter for AI RMF and profile publications"},
-        {"url": "https://github.com/usnistgov/AI-RMF/releases.atom", "type": "atom", "filter_keywords": ["profile", "playbook", "release"], "notes": "usnistgov/AI-RMF GitHub releases for playbook and profile updates"}
+        {
+          "url": "https://www.nist.gov/news-events/news/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "AI RMF",
+            "AI 100-1",
+            "AI 600-1",
+            "artificial intelligence risk"
+          ],
+          "notes": "NIST news — filter for AI RMF and profile publications"
+        },
+        {
+          "url": "https://github.com/usnistgov/AI-RMF/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "profile",
+            "playbook",
+            "release"
+          ],
+          "notes": "usnistgov/AI-RMF GitHub releases for playbook and profile updates"
+        }
       ],
       "draft_landing_url": "https://airc.nist.gov/home",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://airc.nist.gov/home"],
-      "doc_patterns": [".pdf", ".xlsx", ".csv", ".json", ".zip"]
+      "crawl_seeds": [
+        "https://airc.nist.gov/home"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".csv",
+        ".json",
+        ".zip"
+      ]
     },
     "ccpa-cppa": {
       "label": "CCPA / CPPA Rulemaking (California Consumer Privacy Act)",
@@ -635,14 +1243,32 @@
       "last_changed": "2025-01-01",
       "notes": "CPPA actively finalizing rules on automated decision-making (ADMT), cybersecurity audits, and risk assessments. Final rules expected 2025-2026. Maps to NIST 800-53 PT/RA/SI families.",
       "announcement_feeds": [
-        {"url": "https://cppa.ca.gov/rss/rss.xml", "type": "rss", "filter_keywords": ["rulemaking", "ADMT", "cybersecurity audit", "risk assessment", "regulations"], "notes": "CPPA news feed — primary for active rulemaking status on ADMT and security requirements"}
+        {
+          "url": "https://cppa.ca.gov/rss/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "rulemaking",
+            "ADMT",
+            "cybersecurity audit",
+            "risk assessment",
+            "regulations"
+          ],
+          "notes": "CPPA news feed — primary for active rulemaking status on ADMT and security requirements"
+        }
       ],
       "draft_landing_url": "https://cppa.ca.gov/regulations/consumer_privacy_act.html",
       "draft_status": "second_draft",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://cppa.ca.gov/regulations/"],
-      "doc_patterns": [".pdf", ".xlsx", ".csv", ".zip"]
+      "crawl_seeds": [
+        "https://cppa.ca.gov/regulations/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".csv",
+        ".zip"
+      ]
     },
     "iso-27701": {
       "label": "ISO/IEC 27701:2019 (Privacy Information Management)",
@@ -657,15 +1283,39 @@
       "last_changed": "2019-08-06",
       "notes": "Extension to ISO 27001/27002 for PIMS. Maps GDPR, CCPA, and 45 CFR requirements to ISMS controls. Amendment to align with ISO 27001:2022 in development by ISO/IEC JTC 1/SC 27.",
       "announcement_feeds": [
-        {"url": "https://www.iso.org/rss/news.xml", "type": "rss", "filter_keywords": ["27701", "privacy information management", "PIMS"], "notes": "ISO press — filter for 27701 amendment or revision announcements"},
-        {"url": "https://www.iso.org/committee/45306/x/catalogue/rss", "type": "rss", "filter_keywords": ["27701", "privacy"], "notes": "ISO/IEC JTC 1/SC 27 (Security) committee publications feed"}
+        {
+          "url": "https://www.iso.org/rss/news.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "27701",
+            "privacy information management",
+            "PIMS"
+          ],
+          "notes": "ISO press — filter for 27701 amendment or revision announcements"
+        },
+        {
+          "url": "https://www.iso.org/committee/45306/x/catalogue/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "27701",
+            "privacy"
+          ],
+          "notes": "ISO/IEC JTC 1/SC 27 (Security) committee publications feed"
+        }
       ],
       "draft_landing_url": "https://www.iso.org/standard/71670.html",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://www.iso.org/standard/71670.html"],
-      "doc_patterns": [".pdf", ".xlsx", ".csv", ".zip"]
+      "crawl_seeds": [
+        "https://www.iso.org/standard/71670.html"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".csv",
+        ".zip"
+      ]
     },
     "oscal-format": {
       "label": "OSCAL (Open Security Controls Assessment Language) Schema",
@@ -684,15 +1334,42 @@
       "last_changed": "2023-06-22",
       "notes": "Critical for grc.db build pipeline — OSCAL schema changes may require catalog re-ingestion via oscal_diff.py. OSCAL v2.0 (metaschema-native) in long-term development. Monitor for breaking schema changes that affect NIST_SP-800-53_rev5_catalog.json.",
       "announcement_feeds": [
-        {"url": "https://github.com/usnistgov/OSCAL/releases.atom", "type": "atom", "filter_keywords": ["v1", "v2", "schema", "catalog", "breaking"], "notes": "usnistgov/OSCAL GitHub releases Atom — primary signal for schema changes affecting ingestion"},
-        {"url": "https://pages.nist.gov/OSCAL/feed.xml", "type": "rss", "filter_keywords": ["release", "schema", "breaking change"], "notes": "OSCAL project news feed"}
+        {
+          "url": "https://github.com/usnistgov/OSCAL/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "v1",
+            "v2",
+            "schema",
+            "catalog",
+            "breaking"
+          ],
+          "notes": "usnistgov/OSCAL GitHub releases Atom — primary signal for schema changes affecting ingestion"
+        },
+        {
+          "url": "https://pages.nist.gov/OSCAL/feed.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "release",
+            "schema",
+            "breaking change"
+          ],
+          "notes": "OSCAL project news feed"
+        }
       ],
       "draft_landing_url": "https://pages.nist.gov/OSCAL/",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://pages.nist.gov/OSCAL/"],
-      "doc_patterns": [".json", ".xml", ".yaml", ".zip"]
+      "crawl_seeds": [
+        "https://pages.nist.gov/OSCAL/"
+      ],
+      "doc_patterns": [
+        ".json",
+        ".xml",
+        ".yaml",
+        ".zip"
+      ]
     },
     "fedramp-20x": {
       "label": "FedRAMP 20x / Key Security Indicators (KSI) Pilot",
@@ -711,15 +1388,43 @@
       "last_changed": "2025-03-01",
       "notes": "FedRAMP 20x replaces traditional continuous monitoring with automated OSCAL-native KSI assessments. Separate from fedramp (authorization templates). KSIs represent a new mapping layer between technical telemetry and 800-53 controls.",
       "announcement_feeds": [
-        {"url": "https://www.fedramp.gov/feed.xml", "type": "rss", "filter_keywords": ["20x", "KSI", "key security indicator", "automated", "pilot"], "notes": "FedRAMP.gov news — primary for 20x pilot milestones and KSI publication"},
-        {"url": "https://github.com/GSA/fedramp-automation/releases.atom", "type": "atom", "filter_keywords": ["KSI", "20x", "pilot"], "notes": "GitHub releases for KSI artifacts and OSCAL templates"}
+        {
+          "url": "https://www.fedramp.gov/feed.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "20x",
+            "KSI",
+            "key security indicator",
+            "automated",
+            "pilot"
+          ],
+          "notes": "FedRAMP.gov news — primary for 20x pilot milestones and KSI publication"
+        },
+        {
+          "url": "https://github.com/GSA/fedramp-automation/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "KSI",
+            "20x",
+            "pilot"
+          ],
+          "notes": "GitHub releases for KSI artifacts and OSCAL templates"
+        }
       ],
       "draft_landing_url": "https://www.fedramp.gov/20x/",
       "draft_status": "ipd",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://www.fedramp.gov/20x/"],
-      "doc_patterns": [".pdf", ".xlsx", ".json", ".yaml", ".zip"]
+      "crawl_seeds": [
+        "https://www.fedramp.gov/20x/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".yaml",
+        ".zip"
+      ]
     },
     "enisa-pub": {
       "label": "ENISA Publications (all topics)",
@@ -736,14 +1441,33 @@
       "last_changed": "2025-01-01",
       "notes": "Broad catch-all for ENISA technical guidance: NIS2 implementing acts, cloud security, critical infrastructure, AI security. High-signal for EU-headquartered customers. Filters by topic area in announcement_monitor.py.",
       "announcement_feeds": [
-        {"url": "https://www.enisa.europa.eu/media/rss", "type": "rss", "filter_keywords": ["NIS2", "cloud", "AI", "critical infrastructure", "guidelines", "report"], "notes": "ENISA publications feed — primary source for all ENISA technical guidance and reports"}
+        {
+          "url": "https://www.enisa.europa.eu/media/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "NIS2",
+            "cloud",
+            "AI",
+            "critical infrastructure",
+            "guidelines",
+            "report"
+          ],
+          "notes": "ENISA publications feed — primary source for all ENISA technical guidance and reports"
+        }
       ],
       "draft_landing_url": "https://www.enisa.europa.eu/publications",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://www.enisa.europa.eu/publications"],
-      "doc_patterns": [".pdf", ".xlsx", ".csv", ".zip"]
+      "crawl_seeds": [
+        "https://www.enisa.europa.eu/publications"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".csv",
+        ".zip"
+      ]
     },
     "ncsc-guidance": {
       "label": "NCSC (UK) Technical Guidance",
@@ -760,14 +1484,1564 @@
       "last_changed": "2025-01-01",
       "notes": "Practical defensive security guidance from GCHQ/NCSC. Important for UK-headquartered customers. Maps loosely to UK GDPR / Cyber Essentials. Cyber Essentials certification scheme maps to CIS Controls IG1.",
       "announcement_feeds": [
-        {"url": "https://www.ncsc.gov.uk/feeds/all", "type": "rss", "filter_keywords": ["guidance", "advisory", "cyber essentials", "security", "critical"], "notes": "NCSC all-topics feed — catches new guidance publications, advisories, and Cyber Essentials scheme updates"}
+        {
+          "url": "https://www.ncsc.gov.uk/feeds/all",
+          "type": "rss",
+          "filter_keywords": [
+            "guidance",
+            "advisory",
+            "cyber essentials",
+            "security",
+            "critical"
+          ],
+          "notes": "NCSC all-topics feed — catches new guidance publications, advisories, and Cyber Essentials scheme updates"
+        }
       ],
       "draft_landing_url": "https://www.ncsc.gov.uk/section/advice-guidance/all-topics",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
-      "crawl_seeds": ["https://www.ncsc.gov.uk/section/advice-guidance/all-topics"],
-      "doc_patterns": [".pdf", ".xlsx", ".csv", ".zip"]
+      "crawl_seeds": [
+        "https://www.ncsc.gov.uk/section/advice-guidance/all-topics"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".csv",
+        ".zip"
+      ]
+    },
+    "cisa-kev": {
+      "label": "CISA Known Exploited Vulnerabilities Catalog",
+      "authority": "primary",
+      "framework_id": "cisa-kev",
+      "current_version": "2026-06-30",
+      "urls": {
+        "kev_json": "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json",
+        "kev_csv": "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.csv",
+        "github_mirror": "https://github.com/cisagov/kev-data",
+        "landing": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
+      },
+      "check_strategy": "github_release",
+      "notes": "CISA RSS feeds DEPRECATED May 12, 2025. Use GitHub mirror (cisagov/kev-data) as primary update signal. Daily refresh.",
+      "last_checked": null,
+      "last_changed": "2026-06-30",
+      "announcement_feeds": [
+        {
+          "url": "https://github.com/cisagov/kev-data",
+          "type": "github_release",
+          "filter_keywords": [
+            "KEV",
+            "known exploited"
+          ],
+          "notes": "GitHub mirror — preferred over deprecated CISA RSS"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [
+        "cisa-kev-catalog"
+      ],
+      "crawl_seeds": [
+        "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
+      ],
+      "doc_patterns": [
+        ".json",
+        ".csv"
+      ]
+    },
+    "cisa-cpg": {
+      "label": "CISA Cross-Sector Cybersecurity Performance Goals",
+      "authority": "primary",
+      "framework_id": "cisa-cpg",
+      "current_version": "v2.0",
+      "urls": {
+        "landing": "https://www.cisa.gov/cross-sector-cybersecurity-performance-goals",
+        "xlsx_matrix": "https://www.cisa.gov/resources-tools/resources/complete-cpgs-matrixspreadsheet"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2023-03-01",
+      "announcement_feeds": [
+        {
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=cybersecurity-and-infrastructure-security-agency",
+          "type": "rss",
+          "filter_keywords": [
+            "CPG",
+            "performance goals",
+            "cross-sector"
+          ],
+          "notes": "Federal Register CISA feed"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [
+        "cisa-cpg-matrix"
+      ],
+      "crawl_seeds": [
+        "https://www.cisa.gov/cross-sector-cybersecurity-performance-goals"
+      ],
+      "doc_patterns": [
+        ".xlsx",
+        ".pdf"
+      ]
+    },
+    "cisa-scubagear": {
+      "label": "CISA ScubaGear M365 Secure Configuration Baselines",
+      "authority": "primary",
+      "framework_id": "cisa-scubagear",
+      "current_version": "latest",
+      "urls": {
+        "github": "https://github.com/cisagov/ScubaGear",
+        "releases": "https://github.com/cisagov/ScubaGear/releases"
+      },
+      "check_strategy": "github_release",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [
+        {
+          "url": "https://github.com/cisagov/ScubaGear",
+          "type": "github_release",
+          "filter_keywords": [
+            "ScubaGear",
+            "M365",
+            "baseline"
+          ],
+          "notes": "GitHub releases"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://github.com/cisagov/ScubaGear/releases"
+      ],
+      "doc_patterns": [
+        ".json",
+        ".yaml",
+        ".ps1"
+      ]
+    },
+    "cisa-csaf": {
+      "label": "CISA Common Security Advisory Framework (CSAF)",
+      "authority": "primary",
+      "framework_id": "cisa-csaf",
+      "current_version": "latest",
+      "urls": {
+        "github": "https://github.com/cisagov/CSAF",
+        "landing": "https://www.cisa.gov/resources-tools/programs/csaf"
+      },
+      "check_strategy": "github_release",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [
+        {
+          "url": "https://github.com/cisagov/CSAF",
+          "type": "github_release",
+          "filter_keywords": [
+            "CSAF",
+            "advisory"
+          ],
+          "notes": "GitHub releases for machine-readable advisories"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.cisa.gov/news-events/ics-advisories"
+      ],
+      "doc_patterns": [
+        ".json"
+      ]
+    },
+    "disa-cci-trackr": {
+      "label": "CCI Trackr Public API (DISA CCIs + 800-53 mappings)",
+      "authority": "secondary",
+      "framework_id": "disa-cci-trackr",
+      "current_version": "Rev 5",
+      "urls": {
+        "api": "https://cyber.trackr.live/cci",
+        "single_cci": "https://cyber.trackr.live/cci/{cci_id}",
+        "landing": "https://cyber.trackr.live"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "Public REST JSON API (no CAC required) for 3,551 DISA CCIs with 800-53 mappings. Preferred over SAML-gated DISA portal for programmatic access.",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [
+        "disa-cci-trackr"
+      ],
+      "crawl_seeds": [
+        "https://cyber.trackr.live/cci"
+      ],
+      "doc_patterns": [
+        ".json"
+      ]
+    },
+    "dod-zig": {
+      "label": "DoD Zero Trust Implementation Guidelines",
+      "authority": "primary",
+      "framework_id": "dod-zig",
+      "current_version": "v2 (Jan 2026)",
+      "urls": {
+        "discovery": "https://media.defense.gov/2024/Jul/25/2003510911/-1/-1/1/DOD_ZT_DISCOVERY_GUIDE_V2.PDF",
+        "phase_one": "https://media.defense.gov/2024/Jul/25/2003510908/-1/-1/1/DOD_ZT_PHASE_ONE_GUIDE_V2.PDF",
+        "phase_two": "https://media.defense.gov/2024/Jul/25/2003510909/-1/-1/1/DOD_ZT_PHASE_TWO_GUIDE_V2.PDF",
+        "landing": "https://dodcio.defense.gov/Library/"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2026-01-01",
+      "announcement_feeds": [
+        {
+          "url": "https://dodcio.defense.gov/Library/",
+          "type": "poll_landing",
+          "filter_keywords": [
+            "zero trust",
+            "ZIG",
+            "ZTA"
+          ],
+          "notes": "DoD CIO Library landing page"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://dodcio.defense.gov/Library/"
+      ],
+      "doc_patterns": [
+        ".pdf"
+      ]
+    },
+    "jsig": {
+      "label": "Joint SAP Implementation Guide",
+      "authority": "primary",
+      "framework_id": "jsig",
+      "current_version": "current",
+      "urls": {
+        "landing": "https://www.dni.gov/index.php/who-we-are/organizations/ic-cio/ic-cio-related-menus/ic-cio-related-links/ic-technical-specifications-and-implementation-guides"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "Classified annex; public version available from DNI. DoD SAP programs.",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.dni.gov/index.php/who-we-are/organizations/ic-cio"
+      ],
+      "doc_patterns": [
+        ".pdf"
+      ]
+    },
+    "icd-503": {
+      "label": "ICD 503 — IC IT Systems Security Risk Management",
+      "authority": "primary",
+      "framework_id": "icd-503",
+      "current_version": "current",
+      "urls": {
+        "landing": "https://www.dni.gov/index.php/who-we-are/organizations/ic-cio/ic-cio-related-menus/ic-cio-related-links/ic-technical-specifications-and-implementation-guides"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "Intelligence community IT security baseline. NIST 800-53 tailored for IC.",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.dni.gov/index.php/who-we-are/organizations/ic-cio"
+      ],
+      "doc_patterns": [
+        ".pdf"
+      ]
+    },
+    "mitre-attack": {
+      "label": "MITRE ATT&CK Enterprise Framework",
+      "authority": "primary",
+      "framework_id": "mitre-attack",
+      "current_version": "v16 (Oct 2024)",
+      "urls": {
+        "stix_github": "https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json",
+        "taxii": "https://cti-taxii.mitre.org/taxii/",
+        "landing": "https://attack.mitre.org",
+        "nist_mapping": "https://www.nist.gov/system/files/documents/2023/09/12/SP800-53_ATT%26CK_v13_v1.xlsx"
+      },
+      "check_strategy": "github_release",
+      "last_checked": null,
+      "last_changed": "2024-10-14",
+      "announcement_feeds": [
+        {
+          "url": "https://github.com/mitre/cti",
+          "type": "github_release",
+          "filter_keywords": [
+            "ATT&CK",
+            "enterprise-attack"
+          ],
+          "notes": "mitre/cti GitHub releases for STIX bundle updates"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [
+        "mitre-attack-stix"
+      ],
+      "crawl_seeds": [
+        "https://attack.mitre.org/resources/attack-data-and-tools/"
+      ],
+      "doc_patterns": [
+        ".json",
+        ".xlsx"
+      ]
+    },
+    "mitre-d3fend": {
+      "label": "MITRE D3FEND Defensive Countermeasures",
+      "authority": "primary",
+      "framework_id": "mitre-d3fend",
+      "current_version": "latest",
+      "urls": {
+        "json_ld": "https://d3fend.mitre.org/ontologies/d3fend.json",
+        "landing": "https://d3fend.mitre.org"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://d3fend.mitre.org"
+      ],
+      "doc_patterns": [
+        ".json"
+      ]
+    },
+    "mitre-capec": {
+      "label": "MITRE CAPEC — Common Attack Pattern Enumeration and Classification",
+      "authority": "primary",
+      "framework_id": "mitre-capec",
+      "current_version": "v3.9",
+      "urls": {
+        "xml": "https://capec.mitre.org/data/xml/capec_latest.xml",
+        "landing": "https://capec.mitre.org/data/downloads.html"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://capec.mitre.org/data/downloads.html"
+      ],
+      "doc_patterns": [
+        ".xml",
+        ".zip"
+      ]
+    },
+    "mitre-cwe": {
+      "label": "MITRE CWE — Common Weakness Enumeration",
+      "authority": "primary",
+      "framework_id": "mitre-cwe",
+      "current_version": "v4.15",
+      "urls": {
+        "xml": "https://cwe.mitre.org/data/xml/cwec_latest.xml.zip",
+        "landing": "https://cwe.mitre.org/data/downloads.html"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://cwe.mitre.org/data/downloads.html"
+      ],
+      "doc_patterns": [
+        ".xml",
+        ".zip"
+      ]
+    },
+    "nvd-cve": {
+      "label": "NVD CVE Feed (API 2.0)",
+      "authority": "primary",
+      "framework_id": "nvd-cve",
+      "current_version": "2.0",
+      "urls": {
+        "api": "https://services.nvd.nist.gov/rest/json/cves/2.0",
+        "landing": "https://nvd.nist.gov/developers/vulnerabilities"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "NVD v1.x JSON gz feeds deprecated. Use API 2.0 with incremental date-range pulls (lastModStartDate/lastModEndDate params). No API key required for light use.",
+      "last_checked": null,
+      "last_changed": "2024-01-01",
+      "announcement_feeds": [
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "NVD",
+            "CVE",
+            "vulnerability"
+          ],
+          "notes": "NIST cybersecurity news for NVD changes"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [
+        "nvd-cve-feed"
+      ],
+      "crawl_seeds": [
+        "https://nvd.nist.gov/developers/vulnerabilities"
+      ],
+      "doc_patterns": [
+        ".json"
+      ]
+    },
+    "nist-privacy-fw": {
+      "label": "NIST Privacy Framework v1.0",
+      "authority": "primary",
+      "framework_id": "nist-privacy-fw",
+      "current_version": "v1.0 (Jan 2020)",
+      "urls": {
+        "xlsx": "https://www.nist.gov/system/files/documents/2020/01/16/NIST-Privacy-Framework-V1.0-Core.xlsx",
+        "landing": "https://www.nist.gov/privacy-framework"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2020-01-16",
+      "announcement_feeds": [
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "privacy framework",
+            "PFW"
+          ],
+          "notes": "NIST news for privacy framework updates"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [
+        "nist-privacy-fw"
+      ],
+      "crawl_seeds": [
+        "https://www.nist.gov/privacy-framework/resources"
+      ],
+      "doc_patterns": [
+        ".xlsx",
+        ".pdf"
+      ]
+    },
+    "ny-dfs-500": {
+      "label": "NY DFS 23 NYCRR Part 500 — Cybersecurity for Financial Services",
+      "authority": "primary",
+      "framework_id": "ny-dfs-500",
+      "current_version": "Amended Nov 2023",
+      "urls": {
+        "landing": "https://www.dfs.ny.gov/industry_guidance/cybersecurity",
+        "regulation": "https://www.dfs.ny.gov/docs/legal/regulations/adoptions/dfsrf500txt.pdf",
+        "checklist": "https://www.dfs.ny.gov/system/files/documents/2024/08/Cyber-WD-Part500-Requirement-Checklist.pdf",
+        "ecfr": "https://govt.westlaw.com/nycrr/Browse/Home/NewYork/NewYorkCodesRulesandRegulations?guid=I5be30d2007f811e79d43a037eefd0011"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2023-11-01",
+      "announcement_feeds": [
+        {
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=new-york-state-department-of-financial-services",
+          "type": "rss",
+          "filter_keywords": [
+            "500",
+            "cybersecurity",
+            "financial"
+          ],
+          "notes": "Federal Register NYDFS feed"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.dfs.ny.gov/industry_guidance/cybersecurity"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx"
+      ]
+    },
+    "glba-safeguards": {
+      "label": "GLBA / FTC Safeguards Rule (16 CFR Part 314)",
+      "authority": "primary",
+      "framework_id": "glba-safeguards",
+      "current_version": "Amended Dec 2021",
+      "urls": {
+        "ecfr": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-314",
+        "ftc_guidance": "https://www.ftc.gov/legal-library/browse/rules/safeguards-rule",
+        "landing": "https://www.ftc.gov/business-guidance/privacy-security/gramm-leach-bliley-act"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2021-12-09",
+      "announcement_feeds": [
+        {
+          "url": "https://www.ftc.gov/ftc-rss-feeds.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "GLBA",
+            "Safeguards Rule",
+            "16 CFR 314"
+          ],
+          "notes": "FTC RSS feed for Safeguards Rule updates"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-314"
+      ],
+      "doc_patterns": [
+        ".pdf"
+      ]
+    },
+    "ffiec-handbook": {
+      "label": "FFIEC IT Examination Handbook",
+      "authority": "primary",
+      "framework_id": "ffiec-handbook",
+      "current_version": "current",
+      "urls": {
+        "landing": "https://ithandbook.ffiec.gov/",
+        "info_security_booklet": "https://ithandbook.ffiec.gov/media/resources/6/IT_Information-Security.pdf",
+        "audit_booklet": "https://ithandbook.ffiec.gov/media/resources/3/IT_Audit.pdf",
+        "bcp_booklet": "https://ithandbook.ffiec.gov/media/resources/4/IT_Business-Continuity-Management.pdf"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "Replaces sunset FFIEC CAT (Aug 31, 2025). Information Security booklet is the primary control framework; Audit + BCP as supplementary.",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [
+        {
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=federal-financial-institutions-examination-council",
+          "type": "rss",
+          "filter_keywords": [
+            "FFIEC",
+            "examination",
+            "IT handbook"
+          ],
+          "notes": "Federal Register FFIEC feed"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://ithandbook.ffiec.gov/"
+      ],
+      "doc_patterns": [
+        ".pdf"
+      ]
+    },
+    "ffiec-cat": {
+      "label": "FFIEC Cybersecurity Assessment Tool (SUNSET)",
+      "authority": "primary",
+      "framework_id": "ffiec-cat",
+      "current_version": "May 2017",
+      "urls": {
+        "landing": "https://www.ffiec.gov/cyberassessmenttool.htm"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "SUNSET August 31, 2025. Confirmed by Federal Reserve SR Letter 24-7. Replaced by FFIEC IT Examination Handbook. Retained for historical reference only.",
+      "last_checked": null,
+      "last_changed": "2017-05-01",
+      "announcement_feeds": [],
+      "draft_status": "retired",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [],
+      "doc_patterns": [
+        ".xlsx",
+        ".pdf"
+      ]
+    },
+    "sec-cyber-17cfr": {
+      "label": "SEC Cybersecurity Disclosure Rules (17 CFR 229/240)",
+      "authority": "primary",
+      "framework_id": "sec-cyber-17cfr",
+      "current_version": "Final Rule (Jul 2023)",
+      "urls": {
+        "ecfr_229": "https://www.ecfr.gov/current/title-17/chapter-II/part-229",
+        "ecfr_240": "https://www.ecfr.gov/current/title-17/chapter-II/part-240",
+        "sec_release": "https://www.sec.gov/rules/final/2023/33-11216.pdf",
+        "landing": "https://www.sec.gov/rulemaking/cybersecurity"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "Item 1.05 of Form 8-K — material cybersecurity incident disclosure. Item 106 of Reg S-K — governance disclosures. Effective Dec 15, 2023.",
+      "last_checked": null,
+      "last_changed": "2023-07-26",
+      "announcement_feeds": [
+        {
+          "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom",
+          "type": "atom",
+          "filter_keywords": [
+            "cybersecurity",
+            "1.05",
+            "material"
+          ],
+          "notes": "SEC EDGAR 8-K Atom feed — filter for Item 1.05"
+        },
+        {
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=securities-and-exchange-commission",
+          "type": "rss",
+          "filter_keywords": [
+            "cybersecurity",
+            "disclosure",
+            "incident"
+          ],
+          "notes": "Federal Register SEC feed"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.sec.gov/rulemaking/cybersecurity"
+      ],
+      "doc_patterns": [
+        ".pdf"
+      ]
+    },
+    "sec-edgar-8k": {
+      "label": "SEC EDGAR 8-K Item 1.05 Cyber Incident Disclosures",
+      "authority": "primary",
+      "framework_id": "sec-edgar-8k",
+      "current_version": "ongoing",
+      "urls": {
+        "submissions_api": "https://data.sec.gov/submissions/",
+        "full_text_search": "https://efts.sec.gov/LATEST/search-index?q=%221.05%22&forms=8-K",
+        "landing": "https://www.sec.gov/cgi-bin/browse-edgar"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "Machine-readable 8-K Item 1.05 filings via EDGAR Submissions API (data.sec.gov). No API key required. Search: efts.sec.gov full-text search.",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [
+        {
+          "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom",
+          "type": "atom",
+          "filter_keywords": [
+            "1.05",
+            "cybersecurity",
+            "ransomware",
+            "breach"
+          ],
+          "notes": "EDGAR 8-K Atom feed"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [
+        "edgar-8k-cyber"
+      ],
+      "crawl_seeds": [
+        "https://efts.sec.gov/LATEST/search-index?q=%221.05%22&forms=8-K"
+      ],
+      "doc_patterns": [
+        ".json",
+        ".htm"
+      ]
+    },
+    "finra-guidance": {
+      "label": "FINRA Cybersecurity Guidance and Annual Oversight Report",
+      "authority": "primary",
+      "framework_id": "finra-guidance",
+      "current_version": "2024 Annual Report",
+      "urls": {
+        "landing": "https://www.finra.org/rules-guidance/key-topics/cybersecurity",
+        "small_firm_checklist": "https://www.finra.org/sites/default/files/smallfirm_cybersecurity_checklist.xlsx",
+        "annual_report": "https://www.finra.org/rules-guidance/guidance/reports/report-cybersecurity-practices"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [
+        {
+          "url": "https://www.finra.org/rss/news",
+          "type": "rss",
+          "filter_keywords": [
+            "cybersecurity",
+            "cyber",
+            "data security"
+          ],
+          "notes": "FINRA news RSS"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [
+        "finra-small-firm-checklist"
+      ],
+      "crawl_seeds": [
+        "https://www.finra.org/rules-guidance/key-topics/cybersecurity"
+      ],
+      "doc_patterns": [
+        ".xlsx",
+        ".pdf"
+      ]
+    },
+    "occ-bulletins": {
+      "label": "OCC Cybersecurity Supervision Work Program",
+      "authority": "primary",
+      "framework_id": "occ-bulletins",
+      "current_version": "Bulletin 2023-22",
+      "urls": {
+        "bulletin_2023_22": "https://www.occ.treas.gov/news-issuances/bulletins/2023/bulletin-2023-22.html",
+        "landing": "https://www.occ.treas.gov/topics/consumers-and-communities/technology/cybersecurity.html"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2023-07-01",
+      "announcement_feeds": [
+        {
+          "url": "https://www.occ.treas.gov/news-issuances/news-releases/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "cybersecurity",
+            "technology",
+            "bulletin"
+          ],
+          "notes": "OCC news RSS"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.occ.treas.gov/news-issuances/bulletins/index-bulletins.html"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".html"
+      ]
+    },
+    "fdic-it": {
+      "label": "FDIC IT Risk Management and Cybersecurity Guidance",
+      "authority": "primary",
+      "framework_id": "fdic-it",
+      "current_version": "FIL-58-2024",
+      "urls": {
+        "fil_58_2024": "https://www.fdic.gov/news/financial-institution-letters/2024/fil24058.html",
+        "landing": "https://www.fdic.gov/supervision-and-examinations/risk-management/information-technology"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2024-01-01",
+      "announcement_feeds": [
+        {
+          "url": "https://www.fdic.gov/news/press-releases/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "cybersecurity",
+            "technology",
+            "information security"
+          ],
+          "notes": "FDIC press release RSS"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.fdic.gov/supervision-and-examinations/risk-management/information-technology"
+      ],
+      "doc_patterns": [
+        ".pdf"
+      ]
+    },
+    "federal-reserve-cyber": {
+      "label": "Federal Reserve Cybersecurity Supervisory Guidance",
+      "authority": "primary",
+      "framework_id": "federal-reserve-cyber",
+      "current_version": "SR 24-24 (Dec 2024)",
+      "urls": {
+        "sr_24_7": "https://www.federalreserve.gov/supervisionreg/srletters/sr2407.htm",
+        "sr_24_24": "https://www.federalreserve.gov/supervisionreg/srletters/sr2424.htm",
+        "landing": "https://www.federalreserve.gov/supervisionreg/topics/cybersecurity.htm"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "SR 24-7 confirms FFIEC CAT sunset and recommends FFIEC IT Handbook. SR 24-24 covers updated cyber supervisory program.",
+      "last_checked": null,
+      "last_changed": "2024-12-01",
+      "announcement_feeds": [
+        {
+          "url": "https://www.federalreserve.gov/feeds/press_all.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "cybersecurity",
+            "SR letter",
+            "technology risk"
+          ],
+          "notes": "Federal Reserve press release feed"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.federalreserve.gov/supervisionreg/topics/cybersecurity.htm"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".html"
+      ]
+    },
+    "fincen-aml": {
+      "label": "FinCEN AML/BSA Cybersecurity Guidance",
+      "authority": "primary",
+      "framework_id": "fincen-aml",
+      "current_version": "current",
+      "urls": {
+        "advisories": "https://www.fincen.gov/resources/advisories",
+        "aml_examination": "https://www.ffiec.gov/bsa_aml_infobase/pages_manual/MANUAL.htm"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [
+        {
+          "url": "https://www.fincen.gov/news/news-releases/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "cybersecurity",
+            "cyber",
+            "advisory"
+          ],
+          "notes": "FinCEN news RSS"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.fincen.gov/resources/advisories"
+      ],
+      "doc_patterns": [
+        ".pdf"
+      ]
+    },
+    "circia": {
+      "label": "CIRCIA — Cyber Incident Reporting for Critical Infrastructure Act",
+      "authority": "primary",
+      "framework_id": "circia",
+      "current_version": "NPRM (Mar 2024); Final Rule pending",
+      "urls": {
+        "uscode": "https://uscode.house.gov/view.xhtml?req=granuleid%3AUSC-prelim-title6-section681b",
+        "cisa_landing": "https://www.cisa.gov/circia",
+        "nprm_fr": "https://www.federalregister.gov/documents/2024/04/04/2024-06526/cyber-incident-reporting-for-critical-infrastructure-act-of-2022-circia"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "Final rule targeted May 2026. Mandates 72-hour incident reports and 24-hour ransomware payment reports for critical infrastructure.",
+      "last_checked": null,
+      "last_changed": "2024-03-27",
+      "announcement_feeds": [
+        {
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=cybersecurity-and-infrastructure-security-agency",
+          "type": "rss",
+          "filter_keywords": [
+            "CIRCIA",
+            "incident reporting",
+            "6 USC"
+          ],
+          "notes": "Federal Register CISA feed for CIRCIA rulemaking"
+        }
+      ],
+      "draft_status": "ipd",
+      "public_comment_deadline": "2024-06-03",
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.cisa.gov/circia"
+      ],
+      "doc_patterns": [
+        ".pdf"
+      ]
+    },
+    "nerc-cip": {
+      "label": "NERC CIP Cybersecurity Standards",
+      "authority": "primary",
+      "framework_id": "nerc-cip",
+      "current_version": "current",
+      "urls": {
+        "landing": "https://www.nerc.com/pa/Stand/Pages/CIPStandards.aspx",
+        "nist_crosswalk": "https://www.nerc.com/globalassets/programs/compliance/nist-csf-v1.1-to-nerc-cip-final.xlsx"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "Quarterly updates. XLSX crosswalk to NIST CSF v1.1 available. Standards numbered CIP-002 through CIP-014.",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [
+        {
+          "url": "https://www.nerc.com/pa/Stand/Pages/rss.aspx",
+          "type": "rss",
+          "filter_keywords": [
+            "CIP",
+            "cybersecurity"
+          ],
+          "notes": "NERC standards RSS"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [
+        "nerc-cip-nist-crosswalk"
+      ],
+      "crawl_seeds": [
+        "https://www.nerc.com/pa/Stand/Pages/CIPStandards.aspx"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx"
+      ]
+    },
+    "sox-itgc": {
+      "label": "SOX ITGC — PCAOB AS 2201 Integrated Audit",
+      "authority": "primary",
+      "framework_id": "sox-itgc",
+      "current_version": "AS 2201 (updated effective Dec 15, 2026)",
+      "urls": {
+        "pcaob": "https://pcaobus.org/Oversight/Standards/Auditing-Standards/Details/AS2201",
+        "landing": "https://pcaobus.org/standards"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "PCAOB AS 2201 covers ICFR assessment including ITGC. Updated standard effective Dec 15, 2026.",
+      "last_checked": null,
+      "last_changed": "2024-01-01",
+      "announcement_feeds": [
+        {
+          "url": "https://www.pcaobus.org/rss/standards",
+          "type": "rss",
+          "filter_keywords": [
+            "AS 2201",
+            "ITGC",
+            "integrated audit"
+          ],
+          "notes": "PCAOB standards RSS"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://pcaobus.org/Oversight/Standards/Auditing-Standards"
+      ],
+      "doc_patterns": [
+        ".pdf"
+      ]
+    },
+    "cfaa": {
+      "label": "Computer Fraud and Abuse Act (18 USC § 1030)",
+      "authority": "primary",
+      "framework_id": "cfaa",
+      "current_version": "current",
+      "urls": {
+        "uscode": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1030",
+        "govinfo": "https://www.govinfo.gov/link/uscode/18/1030"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "Primary federal cybercrime statute. Criminal and civil liability for unauthorized computer access. Amendments tracked via Congress.gov.",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [
+        {
+          "url": "https://gpo.congress.gov/",
+          "type": "poll_landing",
+          "filter_keywords": [
+            "1030",
+            "CFAA",
+            "computer fraud"
+          ],
+          "notes": "Congress.gov for bill amendments"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1030"
+      ],
+      "doc_patterns": [
+        ".htm",
+        ".pdf"
+      ]
+    },
+    "ecpa": {
+      "label": "Electronic Communications Privacy Act (18 USC § 2510 et seq.)",
+      "authority": "primary",
+      "framework_id": "ecpa",
+      "current_version": "current",
+      "urls": {
+        "uscode": "https://uscode.house.gov/view.xhtml?path=%2Fprelim%40title18%2Fpart1%2Fchapter119",
+        "govinfo": "https://www.govinfo.gov/link/uscode/18/2510"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://uscode.house.gov/view.xhtml?path=%2Fprelim%40title18%2Fpart1%2Fchapter119"
+      ],
+      "doc_patterns": [
+        ".htm",
+        ".pdf"
+      ]
+    },
+    "dtsa": {
+      "label": "Defend Trade Secrets Act (18 USC § 1836)",
+      "authority": "primary",
+      "framework_id": "dtsa",
+      "current_version": "current",
+      "urls": {
+        "uscode": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1836"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1836"
+      ],
+      "doc_patterns": [
+        ".htm"
+      ]
+    },
+    "eea": {
+      "label": "Economic Espionage Act (18 USC §§ 1831–1839)",
+      "authority": "primary",
+      "framework_id": "eea",
+      "current_version": "current",
+      "urls": {
+        "uscode": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1831"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1831"
+      ],
+      "doc_patterns": [
+        ".htm"
+      ]
+    },
+    "wire-fraud-cyber": {
+      "label": "Wire Fraud Statute — cybercrime application (18 USC § 1343)",
+      "authority": "primary",
+      "framework_id": "wire-fraud-cyber",
+      "current_version": "current",
+      "urls": {
+        "uscode": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1343"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1343"
+      ],
+      "doc_patterns": [
+        ".htm"
+      ]
+    },
+    "colorado-cpa": {
+      "label": "Colorado Privacy Act",
+      "authority": "primary",
+      "framework_id": "colorado-cpa",
+      "current_version": "Effective Jul 2023",
+      "urls": {
+        "landing": "https://coag.gov/resources/colorado-privacy-act/",
+        "statute": "https://leg.colorado.gov/bills/sb21-190"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2023-07-01",
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://coag.gov/resources/colorado-privacy-act/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".html"
+      ]
+    },
+    "virginia-cdpa": {
+      "label": "Virginia Consumer Data Protection Act (CDPA)",
+      "authority": "primary",
+      "framework_id": "virginia-cdpa",
+      "current_version": "Effective Jan 2023",
+      "urls": {
+        "landing": "https://law.lis.virginia.gov/vacodefull/toc.aspx?1=59.1-571",
+        "statute": "https://lis.virginia.gov/cgi-bin/legp604.exe?212+sum+HB2307"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2023-01-01",
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://law.lis.virginia.gov/vacodefull/toc.aspx?1=59.1-571"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".html"
+      ]
+    },
+    "texas-tdpsa": {
+      "label": "Texas Data Privacy and Security Act (TDPSA)",
+      "authority": "primary",
+      "framework_id": "texas-tdpsa",
+      "current_version": "Effective Jul 2024",
+      "urls": {
+        "landing": "https://capitol.texas.gov/BillLookup/History.aspx?LegSess=88R&Bill=HB4",
+        "statute": "https://statutes.capitol.texas.gov/Docs/BC/htm/BC.541.htm"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2024-07-01",
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://statutes.capitol.texas.gov/Docs/BC/htm/BC.541.htm"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".html"
+      ]
+    },
+    "ny-shield": {
+      "label": "NY SHIELD Act — Stop Hacks and Improve Electronic Data Security",
+      "authority": "primary",
+      "framework_id": "ny-shield",
+      "current_version": "Effective Mar 2020",
+      "urls": {
+        "landing": "https://ag.ny.gov/data-breach",
+        "statute": "https://www.nysenate.gov/legislation/bills/2019/s5575"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2020-03-21",
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://ag.ny.gov/data-breach"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".html"
+      ]
+    },
+    "illinois-bipa": {
+      "label": "Illinois Biometric Information Privacy Act (BIPA, 740 ILCS 14)",
+      "authority": "primary",
+      "framework_id": "illinois-bipa",
+      "current_version": "Amended 2024",
+      "urls": {
+        "landing": "https://www.ilga.gov/legislation/ilcs/ilcs3.asp?ActID=3004&ChapterID=57"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2024-01-01",
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.ilga.gov/legislation/ilcs/ilcs3.asp?ActID=3004&ChapterID=57"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".html"
+      ]
+    },
+    "washington-mhmd": {
+      "label": "Washington My Health My Data Act",
+      "authority": "primary",
+      "framework_id": "washington-mhmd",
+      "current_version": "Effective Mar 2024",
+      "urls": {
+        "landing": "https://app.leg.wa.gov/billsummary?BillNumber=1155&Initiative=false&Year=2023",
+        "rulemaking": "https://www.atg.wa.gov/my-health-my-data-act"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2024-03-31",
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://app.leg.wa.gov/billsummary?BillNumber=1155&Initiative=false&Year=2023"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".html"
+      ]
+    },
+    "ma-201-cmr-17": {
+      "label": "Massachusetts 201 CMR 17.00 — Standards for Personal Information Protection",
+      "authority": "primary",
+      "framework_id": "ma-201-cmr-17",
+      "current_version": "Amended 2010",
+      "urls": {
+        "landing": "https://www.mass.gov/regulations/201-CMR-17-standards-for-the-protection-of-personal-information"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2010-03-01",
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.mass.gov/regulations/201-CMR-17-standards-for-the-protection-of-personal-information"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".html"
+      ]
+    },
+    "gdpr": {
+      "label": "EU GDPR (Regulation 2016/679)",
+      "authority": "primary",
+      "framework_id": "gdpr",
+      "current_version": "2016/679 (effective May 2018)",
+      "urls": {
+        "eli": "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng",
+        "celex_html": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679",
+        "sparql": "https://publications.europa.eu/webapi/rdf/sparql"
+      },
+      "check_strategy": "rss_feed",
+      "last_checked": null,
+      "last_changed": "2018-05-25",
+      "announcement_feeds": [
+        {
+          "url": "https://eur-lex.europa.eu/RSSXSL/sfeed_EULAW.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "GDPR",
+            "2016/679",
+            "data protection"
+          ],
+          "notes": "EUR-Lex Official Journal feed"
+        },
+        {
+          "url": "https://www.edpb.europa.eu/feed/news_en",
+          "type": "atom",
+          "filter_keywords": [
+            "GDPR",
+            "adequacy",
+            "guidelines"
+          ],
+          "notes": "EDPB news — implementation guidelines and enforcement decisions"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [
+        "eu-gdpr"
+      ],
+      "crawl_seeds": [
+        "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng"
+      ],
+      "doc_patterns": [
+        ".html",
+        ".xml",
+        ".pdf"
+      ]
+    },
+    "enisa-ecsf": {
+      "label": "ENISA European Cybersecurity Skills Framework (ECSF)",
+      "authority": "primary",
+      "framework_id": "enisa-ecsf",
+      "current_version": "v1.0",
+      "urls": {
+        "github": "https://enisaeu.github.io/ECSF/",
+        "json": "https://raw.githubusercontent.com/enisaeu/ECSF/main/",
+        "landing": "https://www.enisa.europa.eu/topics/cybersecurity-education/european-cybersecurity-skills-framework"
+      },
+      "check_strategy": "github_release",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [
+        {
+          "url": "https://www.enisa.europa.eu/media/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "ECSF",
+            "skills framework"
+          ],
+          "notes": "ENISA media RSS"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://enisaeu.github.io/ECSF/"
+      ],
+      "doc_patterns": [
+        ".json",
+        ".pdf"
+      ]
+    },
+    "uk-ncsc-caf": {
+      "label": "UK NCSC Cyber Assessment Framework (CAF)",
+      "authority": "primary",
+      "framework_id": "uk-ncsc-caf",
+      "current_version": "v3.1",
+      "urls": {
+        "landing": "https://www.ncsc.gov.uk/collection/cyber-assessment-framework"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [
+        {
+          "url": "https://www.ncsc.gov.uk/feeds/all",
+          "type": "atom",
+          "filter_keywords": [
+            "CAF",
+            "cyber assessment framework"
+          ],
+          "notes": "NCSC all updates feed"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.ncsc.gov.uk/collection/cyber-assessment-framework"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx"
+      ]
+    },
+    "mas-trm": {
+      "label": "Singapore MAS Technology Risk Management Guidelines",
+      "authority": "primary",
+      "framework_id": "mas-trm",
+      "current_version": "Jan 2021",
+      "urls": {
+        "pdf": "https://www.mas.gov.sg/-/media/MAS/Regulations-and-Financial-Stability/Regulatory-and-Supervisory-Framework/Risk-Management/TRM-Guidelines-18-January-2021.pdf",
+        "landing": "https://www.mas.gov.sg/regulation/guidelines/technology-risk-management-guidelines"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2021-01-18",
+      "announcement_feeds": [
+        {
+          "url": "https://www.mas.gov.sg/rss/publications",
+          "type": "rss",
+          "filter_keywords": [
+            "TRM",
+            "technology risk",
+            "MAS"
+          ],
+          "notes": "MAS publications feed"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.mas.gov.sg/regulation/guidelines/technology-risk-management-guidelines"
+      ],
+      "doc_patterns": [
+        ".pdf"
+      ]
+    },
+    "apra-cps234": {
+      "label": "Australia APRA CPS 234 Information Security",
+      "authority": "primary",
+      "framework_id": "apra-cps234",
+      "current_version": "Jul 2019",
+      "urls": {
+        "pdf": "https://www.apra.gov.au/sites/default/files/cps_234_july_2019_for_public_release_0.pdf",
+        "landing": "https://www.apra.gov.au/cps-234-information-security"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2019-07-01",
+      "announcement_feeds": [
+        {
+          "url": "https://www.apra.gov.au/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "CPS 234",
+            "information security",
+            "cybersecurity"
+          ],
+          "notes": "APRA publications feed"
+        }
+      ],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.apra.gov.au/cps-234-information-security"
+      ],
+      "doc_patterns": [
+        ".pdf"
+      ]
+    },
+    "asd-essential8": {
+      "label": "Australian Signals Directorate Essential Eight Maturity Model",
+      "authority": "primary",
+      "framework_id": "asd-essential8",
+      "current_version": "Nov 2025",
+      "urls": {
+        "landing": "https://www.cyber.gov.au/resources-business-and-government/essential-cyber-security/essential-eight",
+        "maturity_model": "https://www.cyber.gov.au/sites/default/files/2025-11/essential-eight-maturity-model.pdf"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2025-11-01",
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.cyber.gov.au/resources-business-and-government/essential-cyber-security/essential-eight"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx"
+      ]
+    },
+    "asd-ism": {
+      "label": "Australian Signals Directorate Information Security Manual (ISM)",
+      "authority": "primary",
+      "framework_id": "asd-ism",
+      "current_version": "Mar 2025",
+      "urls": {
+        "landing": "https://www.cyber.gov.au/resources-business-and-government/essential-cyber-security/ism",
+        "xlsx": "https://www.cyber.gov.au/sites/default/files/2025-03/ISM%20-%20March%202025%20Excel.xlsx",
+        "oscal": "https://www.cyber.gov.au/sites/default/files/2025-03/ISM%20-%20March%202025%20OSCAL.json"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "Annual release cycle (March). Available in both XLSX and OSCAL JSON format. ISM controls map to NIST 800-53 families.",
+      "last_checked": null,
+      "last_changed": "2025-03-01",
+      "announcement_feeds": [],
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [
+        "asd-ism-xlsx"
+      ],
+      "crawl_seeds": [
+        "https://www.cyber.gov.au/resources-business-and-government/essential-cyber-security/ism"
+      ],
+      "doc_patterns": [
+        ".xlsx",
+        ".json",
+        ".pdf"
+      ]
+    },
+    "canada-pipeda": {
+      "label": "Canada PIPEDA / Bill C-27 (CPPA)",
+      "authority": "primary",
+      "framework_id": "canada-pipeda",
+      "current_version": "PIPEDA current; Bill C-27 in progress",
+      "urls": {
+        "pipeda": "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/",
+        "bill_c27": "https://www.parl.ca/legisinfo/en/bill/44-1/c-27",
+        "xml": "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/index.xml"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "PIPEDA may be superseded by Bill C-27 (Consumer Privacy Protection Act). Monitor both.",
+      "last_checked": null,
+      "last_changed": null,
+      "announcement_feeds": [
+        {
+          "url": "https://www.priv.gc.ca/en/opc-news/news-and-announcements/rss/",
+          "type": "rss",
+          "filter_keywords": [
+            "PIPEDA",
+            "C-27",
+            "CPPA"
+          ],
+          "notes": "Office of the Privacy Commissioner of Canada"
+        }
+      ],
+      "draft_status": "ipd",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/"
+      ],
+      "doc_patterns": [
+        ".xml",
+        ".html",
+        ".pdf"
+      ]
+    },
+    "india-dpdp": {
+      "label": "India Digital Personal Data Protection Act 2023",
+      "authority": "primary",
+      "framework_id": "india-dpdp",
+      "current_version": "Aug 2023 (implementing rules pending)",
+      "urls": {
+        "pdf": "https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf",
+        "landing": "https://www.meity.gov.in/data-protection-framework"
+      },
+      "check_strategy": "poll_landing",
+      "notes": "Implementing rules under development as of 2026. Monitor for rule promulgation.",
+      "last_checked": null,
+      "last_changed": "2023-08-11",
+      "announcement_feeds": [],
+      "draft_status": "ipd",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.meity.gov.in/data-protection-framework"
+      ],
+      "doc_patterns": [
+        ".pdf"
+      ]
     }
   },
   "check_schedule": {

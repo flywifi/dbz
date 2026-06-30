@@ -255,7 +255,7 @@
       "format": "xlsx",
       "sheet": "CSF Cross-Reference",
       "header_row": 0,
-      "version": "HITRUST CSF v11.4.0, March 2025",
+      "version": "HITRUST CSF v11.5.0",
       "retrieved": "2025-03",
       "role": "hitrust_to_all_frameworks",
       "column_roles": {
@@ -508,7 +508,7 @@
       "id": "csa-ccm-v4",
       "file": "canonical-sources/ccm-v4/CCM/primary-dataset.yaml",
       "format": "yaml",
-      "version": "CSA CCM v4.0.12",
+      "version": "CSA CCM v4.1",
       "retrieved": "2024-06-03",
       "role": "csa_ccm",
       "column_roles": {
