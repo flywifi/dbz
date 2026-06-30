@@ -41,6 +41,16 @@
             "revision"
           ],
           "notes": "NIST Cybersecurity Insights blog"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "800-53",
+            "SP 800-53",
+            "control catalog"
+          ],
+          "notes": "NIST cybersecurity news \u2014 filter for 800-53 mentions [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final",
@@ -88,6 +98,16 @@
             "800-53 B"
           ],
           "notes": "NIST Cybersecurity Insights blog RSS (replaces deprecated /news-events/cybersecurity/rss)"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "800-53B",
+            "baselines",
+            "800-53 B"
+          ],
+          "notes": "NIST cybersecurity news \u2014 filter for 800-53B mentions [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://csrc.nist.gov/pubs/sp/800/53/b/upd1/final",
@@ -145,6 +165,26 @@
             "CMMC"
           ],
           "notes": "Federal Register DoD RSS (replaces acq.osd.mil/cmmc/rss.xml which has SSL issues)"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "800-171",
+            "CUI",
+            "controlled unclassified"
+          ],
+          "notes": "Filter for 800-171 / CUI mentions [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        },
+        {
+          "url": "https://www.acq.osd.mil/cmmc/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "800-171",
+            "Rev 3",
+            "CMMC"
+          ],
+          "notes": "OUSD(A&S) CMMC news \u2014 catches DFARS/CMMC\u2192800-171 Rev 3 alignment news [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://csrc.nist.gov/pubs/sp/800/171/r3/final",
@@ -188,6 +228,16 @@
             "CUI"
           ],
           "notes": "NIST Cybersecurity Insights blog RSS (replaces deprecated /news-events/cybersecurity/rss)"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "800-172",
+            "enhanced security",
+            "CUI"
+          ],
+          "notes": "Filter for 800-172 mentions [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://csrc.nist.gov/pubs/sp/800/172/final",
@@ -234,6 +284,26 @@
             "certification"
           ],
           "notes": "Federal Register DoD RSS (replaces acq.osd.mil/cmmc/rss.xml which has SSL issues)"
+        },
+        {
+          "url": "https://www.acq.osd.mil/cmmc/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "CMMC",
+            "DFARS",
+            "certification"
+          ],
+          "notes": "OUSD(A&S) CMMC program news [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        },
+        {
+          "url": "https://www.dcsa.mil/rss/news/",
+          "type": "rss",
+          "filter_keywords": [
+            "CMMC",
+            "DCSA",
+            "certification"
+          ],
+          "notes": "DCSA announcements affecting CMMC assessment process [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://www.acq.osd.mil/cmmc/",
@@ -285,6 +355,26 @@
             "KSI"
           ],
           "notes": "Federal Register GSA publications RSS (replaces fedramp.gov/feed.xml which returned 404)"
+        },
+        {
+          "url": "https://www.fedramp.gov/feed.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "baseline",
+            "authorization",
+            "20x",
+            "KSI"
+          ],
+          "notes": "FedRAMP.gov news feed [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        },
+        {
+          "url": "https://github.com/GSA/fedramp-automation/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "baseline",
+            "OSCAL"
+          ],
+          "notes": "GSA fedramp-automation GitHub releases Atom feed [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://www.fedramp.gov/20x/",
@@ -321,7 +411,30 @@
       "last_checked": null,
       "last_changed": "2025-03-01",
       "notes": "v11.5.0 adds CMMC 2.0, DORA, ISO 29151, CMS ARS v5.1 mappings. Previously had v11.4.0.",
-      "announcement_feeds": [],
+      "announcement_feeds": [
+        {
+          "url": "https://hitrustalliance.net/feed/",
+          "type": "rss",
+          "filter_keywords": [
+            "CSF",
+            "version",
+            "update",
+            "release"
+          ],
+          "notes": "HITRUST Community Blog RSS [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        },
+        {
+          "url": "https://hitrustalliance.net/category/news/feed/",
+          "type": "rss",
+          "filter_keywords": [
+            "CSF",
+            "v11",
+            "v12",
+            "update"
+          ],
+          "notes": "HITRUST news category feed [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        }
+      ],
       "draft_landing_url": "https://hitrustalliance.net/csf/",
       "draft_status": "none",
       "public_comment_deadline": null,
@@ -366,6 +479,26 @@
             "informative reference"
           ],
           "notes": "NIST Cybersecurity Insights blog RSS (replaces deprecated /news-events/cybersecurity/rss)"
+        },
+        {
+          "url": "https://www.iso.org/rss/news.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "27001",
+            "27002",
+            "information security"
+          ],
+          "notes": "ISO press releases \u2014 filter for 27001/27002 mentions [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "OLIR",
+            "ISO 27001",
+            "informative reference"
+          ],
+          "notes": "NIST OLIR updates for ISO 27001 crosswalk refreshes [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://www.iso.org/standard/27001",
@@ -403,7 +536,18 @@
       "last_checked": null,
       "last_changed": "2022-01-01",
       "notes": "CCI list maps to NIST 800-53 r4. Bridge via sp800-53r4-to-r5-comparison-workbook.xlsx.",
-      "announcement_feeds": [],
+      "announcement_feeds": [
+        {
+          "url": "https://public.cyber.mil/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "CCI",
+            "STIG",
+            "control correlation"
+          ],
+          "notes": "DISA Cyber.mil news \u2014 filter for CCI updates [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        }
+      ],
       "draft_landing_url": "https://public.cyber.mil/stigs/cci/",
       "draft_status": "none",
       "public_comment_deadline": null,
@@ -452,6 +596,15 @@
             "STAR"
           ],
           "notes": "CSA blog and news feed"
+        },
+        {
+          "url": "https://github.com/cloudsecurityalliance/cloud-controls-matrix/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "v4",
+            "CCM"
+          ],
+          "notes": "GitHub releases Atom for CCM v4 point releases [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://cloudsecurityalliance.org/research/cloud-controls-matrix/",
@@ -486,7 +639,28 @@
       "last_checked": null,
       "last_changed": "2022-04-01",
       "notes": "2022 update added criteria for cybersecurity risk management. ER crosswalk data from compliance-report-analyzer covers SOC 2 T1 and T2.",
-      "announcement_feeds": [],
+      "announcement_feeds": [
+        {
+          "url": "https://www.aicpa-cima.com/news/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "SOC 2",
+            "Trust Services",
+            "TSC",
+            "criteria"
+          ],
+          "notes": "AICPA-CIMA news \u2014 filter for SOC/TSC updates [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        },
+        {
+          "url": "https://www.aicpa-cima.com/publications/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "SOC",
+            "Trust Services"
+          ],
+          "notes": "AICPA publications feed [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        }
+      ],
       "draft_landing_url": "https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services",
       "draft_status": "none",
       "public_comment_deadline": null,
@@ -531,6 +705,28 @@
             "enforcement"
           ],
           "notes": "Federal Register HHS RSS (replaces hhs.gov/rss/hipaa-news.xml which returned 403)"
+        },
+        {
+          "url": "https://www.hhs.gov/rss/hipaa-news.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "Security Rule",
+            "NPRM",
+            "final rule",
+            "enforcement"
+          ],
+          "notes": "HHS HIPAA-specific news RSS [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        },
+        {
+          "url": "https://www.hhs.gov/about/news/rss/ocr-news.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "HIPAA",
+            "Security Rule",
+            "breach",
+            "enforcement"
+          ],
+          "notes": "OCR enforcement and rule updates [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://www.hhs.gov/hipaa/for-professionals/security/guidance/federal-register-notice-hipaa-security-rule-nprm/index.html",
@@ -586,6 +782,26 @@
             "artificial intelligence act"
           ],
           "notes": "EDPB decisions/guidelines (replaces EU Parliament RSS which returned 404)"
+        },
+        {
+          "url": "https://digital-strategy.ec.europa.eu/en/rss/news",
+          "type": "rss",
+          "filter_keywords": [
+            "AI Act",
+            "artificial intelligence",
+            "GPAI",
+            "high-risk"
+          ],
+          "notes": "EC Digital Strategy news \u2014 primary channel for AI Act obligations timeline [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        },
+        {
+          "url": "https://www.europarl.europa.eu/rss/en/pressreleases.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "AI Act",
+            "artificial intelligence act"
+          ],
+          "notes": "EP press releases for legislative milestones [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
@@ -629,6 +845,27 @@
             "cybersecurity directive"
           ],
           "notes": "CISA Federal Register RSS (EU digital strategy RSS has malformed XML)"
+        },
+        {
+          "url": "https://www.enisa.europa.eu/media/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "NIS2",
+            "incident",
+            "reporting",
+            "implementing"
+          ],
+          "notes": "ENISA publications \u2014 key for NIS2 technical guidance and implementing acts [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        },
+        {
+          "url": "https://digital-strategy.ec.europa.eu/en/rss/news",
+          "type": "rss",
+          "filter_keywords": [
+            "NIS2",
+            "network and information",
+            "cybersecurity directive"
+          ],
+          "notes": "EC Digital Strategy NIS2 news [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://digital-strategy.ec.europa.eu/en/policies/nis2-directive",
@@ -671,6 +908,27 @@
             "RTS"
           ],
           "notes": "ECB press release RSS (covers DORA-relevant supervisory announcements)"
+        },
+        {
+          "url": "https://www.eiopa.europa.eu/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "DORA",
+            "digital operational resilience",
+            "ICT",
+            "RTS"
+          ],
+          "notes": "EIOPA news \u2014 primary for DORA implementing standards (RTS/ITS) [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        },
+        {
+          "url": "https://www.eba.europa.eu/rss/news",
+          "type": "rss",
+          "filter_keywords": [
+            "DORA",
+            "digital resilience",
+            "ICT risk"
+          ],
+          "notes": "EBA news for banking-sector DORA guidance [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://www.eiopa.europa.eu/digital-operational-resilience-act-dora_en",
@@ -712,6 +970,17 @@
             "DUAA"
           ],
           "notes": "DSIT (DCMS successor) for legislative updates"
+        },
+        {
+          "url": "https://ico.org.uk/about-the-ico/media-centre/news-and-blog/feed/",
+          "type": "rss",
+          "filter_keywords": [
+            "UK GDPR",
+            "data protection",
+            "guidance",
+            "enforcement"
+          ],
+          "notes": "ICO news and blog \u2014 primary for UK GDPR interpretation and enforcement [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/",
@@ -742,7 +1011,28 @@
       "last_checked": null,
       "last_changed": "2023-12-01",
       "notes": "First certifiable AI management system standard. Complements EU AI Act / NIST AI RMF. Bridge via ISO 23894.",
-      "announcement_feeds": [],
+      "announcement_feeds": [
+        {
+          "url": "https://www.iso.org/rss/news.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "42001",
+            "AI management",
+            "artificial intelligence management"
+          ],
+          "notes": "ISO press \u2014 filter for 42001 mentions or AI management system news [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        },
+        {
+          "url": "https://www.iso.org/committee/6794475/x/catalogue/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "42001",
+            "AI",
+            "management"
+          ],
+          "notes": "ISO/IEC JTC 1/SC 42 (AI) committee publications feed [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        }
+      ],
       "draft_landing_url": "https://www.iso.org/standard/81230.html",
       "draft_status": "none",
       "public_comment_deadline": null,
@@ -839,6 +1129,28 @@
             "M/589"
           ],
           "notes": "CISA Federal Register RSS (EU digital strategy RSS has malformed XML)"
+        },
+        {
+          "url": "https://eur-lex.europa.eu/RSSXSL/sfeed_EULAW.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "artificial intelligence",
+            "AI Act",
+            "2024/1689"
+          ],
+          "notes": "EUR-Lex new acts \u2014 catches implementing and delegated regulations under the AI Act [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        },
+        {
+          "url": "https://digital-strategy.ec.europa.eu/en/rss/news",
+          "type": "rss",
+          "filter_keywords": [
+            "AI Office",
+            "GPAI",
+            "implementing",
+            "standardization",
+            "M/589"
+          ],
+          "notes": "EC Digital Strategy \u2014 primary for AI Office announcements and standardization news [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://digital-strategy.ec.europa.eu/en/policies/ai-office",
@@ -1039,6 +1351,15 @@
             "CCM 5.0"
           ],
           "notes": "CSA blog \u2014 primary channel for v5 preview/release announcements"
+        },
+        {
+          "url": "https://github.com/cloudsecurityalliance/cloud-controls-matrix/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "v5",
+            "5.0"
+          ],
+          "notes": "GitHub releases \u2014 catch v5 pre-releases and RCs [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://cloudsecurityalliance.org/star/",
@@ -1087,6 +1408,27 @@
             "artificial intelligence risk"
           ],
           "notes": "NIST Cybersecurity Insights RSS (replaces /news-events/news/rss which returned 404)"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/news/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "AI RMF",
+            "AI 100-1",
+            "AI 600-1",
+            "artificial intelligence risk"
+          ],
+          "notes": "NIST news \u2014 filter for AI RMF and profile publications [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        },
+        {
+          "url": "https://github.com/usnistgov/AI-RMF/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "profile",
+            "playbook",
+            "release"
+          ],
+          "notes": "usnistgov/AI-RMF GitHub releases for playbook and profile updates [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://airc.nist.gov/home",
@@ -1120,7 +1462,20 @@
       "last_checked": null,
       "last_changed": "2025-01-01",
       "notes": "CPPA actively finalizing rules on automated decision-making (ADMT), cybersecurity audits, and risk assessments. Final rules expected 2025-2026. Maps to NIST 800-53 PT/RA/SI families.",
-      "announcement_feeds": [],
+      "announcement_feeds": [
+        {
+          "url": "https://cppa.ca.gov/rss/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "rulemaking",
+            "ADMT",
+            "cybersecurity audit",
+            "risk assessment",
+            "regulations"
+          ],
+          "notes": "CPPA news feed \u2014 primary for active rulemaking status on ADMT and security requirements [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        }
+      ],
       "draft_landing_url": "https://cppa.ca.gov/regulations/consumer_privacy_act.html",
       "draft_status": "second_draft",
       "public_comment_deadline": null,
@@ -1149,7 +1504,27 @@
       "last_checked": null,
       "last_changed": "2019-08-06",
       "notes": "Extension to ISO 27001/27002 for PIMS. Maps GDPR, CCPA, and 45 CFR requirements to ISMS controls. Amendment to align with ISO 27001:2022 in development by ISO/IEC JTC 1/SC 27.",
-      "announcement_feeds": [],
+      "announcement_feeds": [
+        {
+          "url": "https://www.iso.org/rss/news.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "27701",
+            "privacy information management",
+            "PIMS"
+          ],
+          "notes": "ISO press \u2014 filter for 27701 amendment or revision announcements [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        },
+        {
+          "url": "https://www.iso.org/committee/45306/x/catalogue/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "27701",
+            "privacy"
+          ],
+          "notes": "ISO/IEC JTC 1/SC 27 (Security) committee publications feed [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        }
+      ],
       "draft_landing_url": "https://www.iso.org/standard/71670.html",
       "draft_status": "none",
       "public_comment_deadline": null,
@@ -1204,6 +1579,16 @@
             "breaking change"
           ],
           "notes": "NIST Cybersecurity Insights RSS (replaces pages.nist.gov/OSCAL/feed.xml which returned 404)"
+        },
+        {
+          "url": "https://pages.nist.gov/OSCAL/feed.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "release",
+            "schema",
+            "breaking change"
+          ],
+          "notes": "OSCAL project news feed [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://pages.nist.gov/OSCAL/",
@@ -1250,6 +1635,28 @@
             "pilot"
           ],
           "notes": "Federal Register GSA publications RSS (replaces fedramp.gov/feed.xml which returned 404)"
+        },
+        {
+          "url": "https://www.fedramp.gov/feed.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "20x",
+            "KSI",
+            "key security indicator",
+            "automated",
+            "pilot"
+          ],
+          "notes": "FedRAMP.gov news \u2014 primary for 20x pilot milestones and KSI publication [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        },
+        {
+          "url": "https://github.com/GSA/fedramp-automation/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "KSI",
+            "20x",
+            "pilot"
+          ],
+          "notes": "GitHub releases for KSI artifacts and OSCAL templates [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://www.fedramp.gov/20x/",
@@ -1283,7 +1690,21 @@
       "last_checked": null,
       "last_changed": "2025-01-01",
       "notes": "Broad catch-all for ENISA technical guidance: NIS2 implementing acts, cloud security, critical infrastructure, AI security. High-signal for EU-headquartered customers. Filters by topic area in announcement_monitor.py.",
-      "announcement_feeds": [],
+      "announcement_feeds": [
+        {
+          "url": "https://www.enisa.europa.eu/media/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "NIS2",
+            "cloud",
+            "AI",
+            "critical infrastructure",
+            "guidelines",
+            "report"
+          ],
+          "notes": "ENISA publications feed \u2014 primary source for all ENISA technical guidance and reports [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        }
+      ],
       "draft_landing_url": "https://www.enisa.europa.eu/publications",
       "draft_status": "none",
       "public_comment_deadline": null,
@@ -1326,6 +1747,18 @@
             "critical"
           ],
           "notes": "NCSC UK all guidance RSS API endpoint (replaces /feeds/all which returned 404)"
+        },
+        {
+          "url": "https://www.ncsc.gov.uk/feeds/all",
+          "type": "rss",
+          "filter_keywords": [
+            "guidance",
+            "advisory",
+            "cyber essentials",
+            "security",
+            "critical"
+          ],
+          "notes": "NCSC all-topics feed \u2014 catches new guidance publications, advisories, and Cyber Essentials scheme updates [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://www.ncsc.gov.uk/section/advice-guidance/all-topics",
@@ -1543,7 +1976,18 @@
       "check_strategy": "poll_landing",
       "last_checked": null,
       "last_changed": "2026-01-01",
-      "announcement_feeds": [],
+      "announcement_feeds": [
+        {
+          "url": "https://dodcio.defense.gov/Library/",
+          "type": "poll_landing",
+          "filter_keywords": [
+            "zero trust",
+            "ZIG",
+            "ZTA"
+          ],
+          "notes": "DoD CIO Library landing page [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        }
+      ],
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
@@ -1747,6 +2191,16 @@
             "vulnerability"
           ],
           "notes": "NIST Cybersecurity Insights blog RSS (replaces deprecated /news-events/cybersecurity/rss)"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "NVD",
+            "CVE",
+            "vulnerability"
+          ],
+          "notes": "NIST cybersecurity news for NVD changes [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_status": "none",
@@ -1784,6 +2238,15 @@
             "PFW"
           ],
           "notes": "NIST Cybersecurity Insights blog RSS (replaces deprecated /news-events/cybersecurity/rss)"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "privacy framework",
+            "PFW"
+          ],
+          "notes": "NIST news for privacy framework updates [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_status": "none",
@@ -1863,6 +2326,16 @@
             "16 CFR 314"
           ],
           "notes": "Federal Register FTC RSS (replaces ftc.gov/ftc-rss-feeds.xml which returned 404)"
+        },
+        {
+          "url": "https://www.ftc.gov/ftc-rss-feeds.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "GLBA",
+            "Safeguards Rule",
+            "16 CFR 314"
+          ],
+          "notes": "FTC RSS feed for Safeguards Rule updates [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_status": "none",
@@ -2054,6 +2527,16 @@
             "data security"
           ],
           "notes": "FINRA Regulatory Notices RSS (replaces finra.org/rss/news which returned 404)"
+        },
+        {
+          "url": "https://www.finra.org/rss/news",
+          "type": "rss",
+          "filter_keywords": [
+            "cybersecurity",
+            "cyber",
+            "data security"
+          ],
+          "notes": "FINRA news RSS [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_status": "none",
@@ -2093,6 +2576,16 @@
             "bulletin"
           ],
           "notes": "Federal Register OCC RSS (replaces occ.treas.gov RSS which returned 404)"
+        },
+        {
+          "url": "https://www.occ.treas.gov/news-issuances/news-releases/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "cybersecurity",
+            "technology",
+            "bulletin"
+          ],
+          "notes": "OCC news RSS [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_status": "none",
@@ -2130,6 +2623,16 @@
             "information security"
           ],
           "notes": "FDIC main RSS (replaces /news/press-releases/rss.xml which returned 404)"
+        },
+        {
+          "url": "https://www.fdic.gov/news/press-releases/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "cybersecurity",
+            "technology",
+            "information security"
+          ],
+          "notes": "FDIC press release RSS [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_status": "none",
@@ -2205,6 +2708,16 @@
             "advisory"
           ],
           "notes": "Federal Register FinCEN RSS (replaces fincen.gov/news/news-releases/rss which returned 404)"
+        },
+        {
+          "url": "https://www.fincen.gov/news/news-releases/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "cybersecurity",
+            "cyber",
+            "advisory"
+          ],
+          "notes": "FinCEN news RSS [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_status": "none",
@@ -2271,7 +2784,17 @@
       "notes": "Quarterly updates. XLSX crosswalk to NIST CSF v1.1 available. Standards numbered CIP-002 through CIP-014.",
       "last_checked": null,
       "last_changed": null,
-      "announcement_feeds": [],
+      "announcement_feeds": [
+        {
+          "url": "https://www.nerc.com/pa/Stand/Pages/rss.aspx",
+          "type": "rss",
+          "filter_keywords": [
+            "CIP",
+            "cybersecurity"
+          ],
+          "notes": "NERC standards RSS [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        }
+      ],
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [
@@ -2300,7 +2823,18 @@
       "notes": "PCAOB AS 2201 covers ICFR assessment including ITGC. Updated standard effective Dec 15, 2026.",
       "last_checked": null,
       "last_changed": "2024-01-01",
-      "announcement_feeds": [],
+      "announcement_feeds": [
+        {
+          "url": "https://www.pcaobus.org/rss/standards",
+          "type": "rss",
+          "filter_keywords": [
+            "AS 2201",
+            "ITGC",
+            "integrated audit"
+          ],
+          "notes": "PCAOB standards RSS [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        }
+      ],
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
@@ -2652,6 +3186,16 @@
             "guidelines"
           ],
           "notes": "EDPB news \u2014 implementation guidelines and enforcement decisions"
+        },
+        {
+          "url": "https://eur-lex.europa.eu/RSSXSL/sfeed_EULAW.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "GDPR",
+            "2016/679",
+            "data protection"
+          ],
+          "notes": "EUR-Lex Official Journal feed [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_status": "none",
@@ -2683,7 +3227,17 @@
       "check_strategy": "github_release",
       "last_checked": null,
       "last_changed": null,
-      "announcement_feeds": [],
+      "announcement_feeds": [
+        {
+          "url": "https://www.enisa.europa.eu/media/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "ECSF",
+            "skills framework"
+          ],
+          "notes": "ENISA media RSS [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        }
+      ],
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
@@ -2718,6 +3272,15 @@
             "cyber assessment framework"
           ],
           "notes": "NCSC UK all guidance RSS API endpoint (replaces /feeds/all which returned 404)"
+        },
+        {
+          "url": "https://www.ncsc.gov.uk/feeds/all",
+          "type": "atom",
+          "filter_keywords": [
+            "CAF",
+            "cyber assessment framework"
+          ],
+          "notes": "NCSC all updates feed [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_status": "none",
@@ -2876,7 +3439,18 @@
       "notes": "PIPEDA may be superseded by Bill C-27 (Consumer Privacy Protection Act). Monitor both.",
       "last_checked": null,
       "last_changed": null,
-      "announcement_feeds": [],
+      "announcement_feeds": [
+        {
+          "url": "https://www.priv.gc.ca/en/opc-news/news-and-announcements/rss/",
+          "type": "rss",
+          "filter_keywords": [
+            "PIPEDA",
+            "C-27",
+            "CPPA"
+          ],
+          "notes": "Office of the Privacy Commissioner of Canada [canonical URL \u2014 may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+        }
+      ],
       "draft_status": "ipd",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
