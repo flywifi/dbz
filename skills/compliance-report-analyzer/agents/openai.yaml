@@ -1,0 +1,3 @@
+interface:
+  display_name: "Compliance Report Analyzer"
+  short_description: "Extract controls, mappings, and exceptions from core audit artifacts."

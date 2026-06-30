@@ -1,0 +1,12 @@
+interface:
+  display_name: Claim And Output Validator
+  short_description: local deterministic validation first, with optional export into eval tools later
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

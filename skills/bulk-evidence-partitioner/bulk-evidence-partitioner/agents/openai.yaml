@@ -1,0 +1,12 @@
+interface:
+  display_name: Bulk Evidence Partitioner
+  short_description: partition large local corpora first, with optional upgraded parsing when available
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

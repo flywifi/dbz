@@ -1,0 +1,1164 @@
+{
+  "fedramp_context": {
+    "authorization_boundary": "Cloud Service Offering (CSO)",
+    "baselines": {
+      "li_saas": {
+        "authorization_status": "Required",
+        "description": "Li-SaaS requires the full Base Control (Parts a-k) but no enhancements.",
+        "base_control_requirements": [
+          {
+            "part_id": "a",
+            "title": "Identify Account Types",
+            "requirement_description": "Identify and select the following types of information system accounts to support organizational missions/business functions...",
+            "fedramp_audit_procedure_id": "AC-2.1",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if the organization identifies and selects information system account types.",
+            "evidence_request": "Access Control Policy (Section: Account Types)",
+            "mapped_ccis": [
+              "CCI-000007"
+            ]
+          },
+          {
+            "part_id": "b",
+            "title": "Assign Account Managers",
+            "requirement_description": "Assign account managers for information system accounts.",
+            "fedramp_audit_procedure_id": "AC-2.2",
+            "nist_examination_method": [
+              "Examine",
+              "Interview"
+            ],
+            "assessment_objective": "Determine if account managers are assigned for all information system accounts.",
+            "evidence_request": "List of System Owners/Account Managers; Interview notes.",
+            "mapped_ccis": [
+              "CCI-000008"
+            ]
+          },
+          {
+            "part_id": "c",
+            "title": "Establish Group Conditions",
+            "requirement_description": "Establish conditions for group and role membership.",
+            "fedramp_audit_procedure_id": "AC-2.3",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if conditions for group and role membership are established.",
+            "evidence_request": "RBAC Matrix; Role Definition Procedures.",
+            "mapped_ccis": [
+              "CCI-000008"
+            ]
+          },
+          {
+            "part_id": "d",
+            "title": "Specify Authorized Users",
+            "requirement_description": "Specify authorized users of the information system, group and role membership, and access authorizations.",
+            "fedramp_audit_procedure_id": "AC-2.4",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if authorized users and privileges are specified for each account.",
+            "evidence_request": "System User List (Active Directory / Okta Export).",
+            "mapped_ccis": [
+              "CCI-000009"
+            ]
+          },
+          {
+            "part_id": "e",
+            "title": "Authorize Creation",
+            "requirement_description": "Require approvals by [Assignment: organization-defined personnel or roles] for requests to create information system accounts.",
+            "fedramp_audit_procedure_id": "AC-2.5",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if approvals are required prior to account creation.",
+            "evidence_request": "Sample of New User Approval Tickets (Jira/ServiceNow).",
+            "mapped_ccis": [
+              "CCI-000010"
+            ]
+          },
+          {
+            "part_id": "f",
+            "title": "Manage Lifecycle",
+            "requirement_description": "Create, enable, modify, disable, and remove information system accounts in accordance with [Assignment: organization-defined procedures or conditions].",
+            "fedramp_audit_procedure_id": "AC-2.6",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if accounts are managed in accordance with defined procedures.",
+            "evidence_request": "Provisioning Logs; Deprovisioning Logs.",
+            "mapped_ccis": [
+              "CCI-000011"
+            ]
+          },
+          {
+            "part_id": "g",
+            "title": "Monitor Usage",
+            "requirement_description": "Monitor the use of information system accounts.",
+            "fedramp_audit_procedure_id": "AC-2.7",
+            "nist_examination_method": [
+              "Examine",
+              "Test"
+            ],
+            "assessment_objective": "Determine if account usage is monitored.",
+            "evidence_request": "SIEM Dashboard Screenshots; Usage Reports.",
+            "mapped_ccis": [
+              "CCI-000012"
+            ]
+          },
+          {
+            "part_id": "h",
+            "title": "Notify on Termination",
+            "requirement_description": "Notify account managers when accounts are no longer required, users are terminated or transferred, or individual information system usage or need-to-know changes.",
+            "fedramp_audit_procedure_id": "AC-2.8",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if account managers are notified within the organization-defined time period.",
+            "evidence_request": "Termination Tickets showing notification workflow.",
+            "mapped_ccis": [
+              "CCI-000013"
+            ]
+          },
+          {
+            "part_id": "i",
+            "title": "Authorize Based on Usage",
+            "requirement_description": "Authorize access to the information system based on a valid access authorization, intended system usage, and other attributes as required by the organization.",
+            "fedramp_audit_procedure_id": "AC-2.9",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if access is authorized based on intended usage.",
+            "evidence_request": "Access Authorization Records (SAR forms).",
+            "mapped_ccis": [
+              "CCI-000014"
+            ]
+          },
+          {
+            "part_id": "j",
+            "title": "Review Accounts",
+            "requirement_description": "Review accounts for compliance with account management requirements [Assignment: organization-defined frequency].",
+            "fedramp_audit_procedure_id": "AC-2.10",
+            "nist_examination_method": [
+              "Examine",
+              "Test"
+            ],
+            "assessment_objective": "Determine if accounts are reviewed at the defined frequency.",
+            "evidence_request": "User Access Review (UAR) completion evidence.",
+            "mapped_ccis": [
+              "CCI-000012"
+            ]
+          },
+          {
+            "part_id": "k",
+            "title": "Reissue Shared Credentials",
+            "requirement_description": "Establish a process for reissuing shared/group account credentials (if deployed) when individuals are removed from the group.",
+            "fedramp_audit_procedure_id": "AC-2.11",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if a process exists for reissuing shared credentials upon member departure.",
+            "evidence_request": "SOP for Shared Accounts; Evidence of password rotation.",
+            "mapped_ccis": [
+              "CCI-000011"
+            ]
+          }
+        ],
+        "required_enhancements": []
+      },
+      "low": {
+        "authorization_status": "Required",
+        "description": "Low Baseline requires the full Base Control (Parts a-k) but no enhancements.",
+        "base_control_requirements": [
+          {
+            "part_id": "a",
+            "title": "Identify Account Types",
+            "requirement_description": "Identify and select the following types of information system accounts to support organizational missions/business functions...",
+            "fedramp_audit_procedure_id": "AC-2.1",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if the organization identifies and selects information system account types.",
+            "evidence_request": "Access Control Policy (Section: Account Types)",
+            "mapped_ccis": [
+              "CCI-000007"
+            ]
+          },
+          {
+            "part_id": "b",
+            "title": "Assign Account Managers",
+            "requirement_description": "Assign account managers for information system accounts.",
+            "fedramp_audit_procedure_id": "AC-2.2",
+            "nist_examination_method": [
+              "Examine",
+              "Interview"
+            ],
+            "assessment_objective": "Determine if account managers are assigned for all information system accounts.",
+            "evidence_request": "List of System Owners/Account Managers; Interview notes.",
+            "mapped_ccis": [
+              "CCI-000008"
+            ]
+          },
+          {
+            "part_id": "c",
+            "title": "Establish Group Conditions",
+            "requirement_description": "Establish conditions for group and role membership.",
+            "fedramp_audit_procedure_id": "AC-2.3",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if conditions for group and role membership are established.",
+            "evidence_request": "RBAC Matrix; Role Definition Procedures.",
+            "mapped_ccis": [
+              "CCI-000008"
+            ]
+          },
+          {
+            "part_id": "d",
+            "title": "Specify Authorized Users",
+            "requirement_description": "Specify authorized users of the information system, group and role membership, and access authorizations.",
+            "fedramp_audit_procedure_id": "AC-2.4",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if authorized users and privileges are specified for each account.",
+            "evidence_request": "System User List (Active Directory / Okta Export).",
+            "mapped_ccis": [
+              "CCI-000009"
+            ]
+          },
+          {
+            "part_id": "e",
+            "title": "Authorize Creation",
+            "requirement_description": "Require approvals by [Assignment: organization-defined personnel or roles] for requests to create information system accounts.",
+            "fedramp_audit_procedure_id": "AC-2.5",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if approvals are required prior to account creation.",
+            "evidence_request": "Sample of New User Approval Tickets (Jira/ServiceNow).",
+            "mapped_ccis": [
+              "CCI-000010"
+            ]
+          },
+          {
+            "part_id": "f",
+            "title": "Manage Lifecycle",
+            "requirement_description": "Create, enable, modify, disable, and remove information system accounts in accordance with [Assignment: organization-defined procedures or conditions].",
+            "fedramp_audit_procedure_id": "AC-2.6",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if accounts are managed in accordance with defined procedures.",
+            "evidence_request": "Provisioning Logs; Deprovisioning Logs.",
+            "mapped_ccis": [
+              "CCI-000011"
+            ]
+          },
+          {
+            "part_id": "g",
+            "title": "Monitor Usage",
+            "requirement_description": "Monitor the use of information system accounts.",
+            "fedramp_audit_procedure_id": "AC-2.7",
+            "nist_examination_method": [
+              "Examine",
+              "Test"
+            ],
+            "assessment_objective": "Determine if account usage is monitored.",
+            "evidence_request": "SIEM Dashboard Screenshots; Usage Reports.",
+            "mapped_ccis": [
+              "CCI-000012"
+            ]
+          },
+          {
+            "part_id": "h",
+            "title": "Notify on Termination",
+            "requirement_description": "Notify account managers when accounts are no longer required, users are terminated or transferred, or individual information system usage or need-to-know changes.",
+            "fedramp_audit_procedure_id": "AC-2.8",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if account managers are notified within the organization-defined time period.",
+            "evidence_request": "Termination Tickets showing notification workflow.",
+            "mapped_ccis": [
+              "CCI-000013"
+            ]
+          },
+          {
+            "part_id": "i",
+            "title": "Authorize Based on Usage",
+            "requirement_description": "Authorize access to the information system based on a valid access authorization, intended system usage, and other attributes as required by the organization.",
+            "fedramp_audit_procedure_id": "AC-2.9",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if access is authorized based on intended usage.",
+            "evidence_request": "Access Authorization Records (SAR forms).",
+            "mapped_ccis": [
+              "CCI-000014"
+            ]
+          },
+          {
+            "part_id": "j",
+            "title": "Review Accounts",
+            "requirement_description": "Review accounts for compliance with account management requirements [Assignment: organization-defined frequency].",
+            "fedramp_audit_procedure_id": "AC-2.10",
+            "nist_examination_method": [
+              "Examine",
+              "Test"
+            ],
+            "assessment_objective": "Determine if accounts are reviewed at the defined frequency.",
+            "evidence_request": "User Access Review (UAR) completion evidence.",
+            "mapped_ccis": [
+              "CCI-000012"
+            ]
+          },
+          {
+            "part_id": "k",
+            "title": "Reissue Shared Credentials",
+            "requirement_description": "Establish a process for reissuing shared/group account credentials (if deployed) when individuals are removed from the group.",
+            "fedramp_audit_procedure_id": "AC-2.11",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if a process exists for reissuing shared credentials upon member departure.",
+            "evidence_request": "SOP for Shared Accounts; Evidence of password rotation.",
+            "mapped_ccis": [
+              "CCI-000011"
+            ]
+          }
+        ],
+        "required_enhancements": []
+      },
+      "moderate": {
+        "authorization_status": "Required",
+        "description": "Moderate requires the Full Base Control (a-k) PLUS Enhancements (1-4).",
+        "base_control_requirements": [
+          {
+            "part_id": "a",
+            "title": "Identify Account Types",
+            "requirement_description": "Identify and select the following types of information system accounts to support organizational missions/business functions...",
+            "fedramp_audit_procedure_id": "AC-2.1",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if account types are identified.",
+            "evidence_request": "Access Control Policy (Section: Account Types)",
+            "mapped_ccis": [
+              "CCI-000007"
+            ]
+          },
+          {
+            "part_id": "b",
+            "title": "Assign Account Managers",
+            "requirement_description": "Assign account managers for information system accounts.",
+            "fedramp_audit_procedure_id": "AC-2.2",
+            "nist_examination_method": [
+              "Examine",
+              "Interview"
+            ],
+            "assessment_objective": "Determine if account managers are assigned.",
+            "evidence_request": "List of System Owners/Account Managers; Interview notes.",
+            "mapped_ccis": [
+              "CCI-000008"
+            ]
+          },
+          {
+            "part_id": "c",
+            "title": "Establish Group Conditions",
+            "requirement_description": "Establish conditions for group and role membership.",
+            "fedramp_audit_procedure_id": "AC-2.3",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if group membership conditions are established.",
+            "evidence_request": "RBAC Matrix; Role Definition Procedures.",
+            "mapped_ccis": [
+              "CCI-000008"
+            ]
+          },
+          {
+            "part_id": "d",
+            "title": "Specify Authorized Users",
+            "requirement_description": "Specify authorized users of the information system, group and role membership, and access authorizations.",
+            "fedramp_audit_procedure_id": "AC-2.4",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if authorized users and privileges are specified for each account.",
+            "evidence_request": "System User List (Active Directory / Okta Export).",
+            "mapped_ccis": [
+              "CCI-000009"
+            ]
+          },
+          {
+            "part_id": "e",
+            "title": "Authorize Creation",
+            "requirement_description": "Require approvals by [Assignment: organization-defined personnel or roles] for requests to create information system accounts.",
+            "fedramp_audit_procedure_id": "AC-2.5",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if approvals are required prior to account creation.",
+            "evidence_request": "Sample of New User Approval Tickets (Jira/ServiceNow).",
+            "mapped_ccis": [
+              "CCI-000010"
+            ]
+          },
+          {
+            "part_id": "f",
+            "title": "Manage Lifecycle",
+            "requirement_description": "Create, enable, modify, disable, and remove information system accounts in accordance with [Assignment: organization-defined procedures or conditions].",
+            "fedramp_audit_procedure_id": "AC-2.6",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if accounts are managed in accordance with defined procedures.",
+            "evidence_request": "Provisioning Logs; Deprovisioning Logs.",
+            "mapped_ccis": [
+              "CCI-000011"
+            ]
+          },
+          {
+            "part_id": "g",
+            "title": "Monitor Usage",
+            "requirement_description": "Monitor the use of information system accounts.",
+            "fedramp_audit_procedure_id": "AC-2.7",
+            "nist_examination_method": [
+              "Examine",
+              "Test"
+            ],
+            "assessment_objective": "Determine if account usage is monitored.",
+            "evidence_request": "SIEM Dashboard Screenshots; Usage Reports.",
+            "mapped_ccis": [
+              "CCI-000012"
+            ]
+          },
+          {
+            "part_id": "h",
+            "title": "Notify on Termination",
+            "requirement_description": "Notify account managers when accounts are no longer required, users are terminated or transferred, or individual information system usage or need-to-know changes.",
+            "fedramp_audit_procedure_id": "AC-2.8",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if account managers are notified within the organization-defined time period.",
+            "evidence_request": "Termination Tickets showing notification workflow.",
+            "mapped_ccis": [
+              "CCI-000013"
+            ]
+          },
+          {
+            "part_id": "i",
+            "title": "Authorize Based on Usage",
+            "requirement_description": "Authorize access to the information system based on a valid access authorization, intended system usage, and other attributes as required by the organization.",
+            "fedramp_audit_procedure_id": "AC-2.9",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if access is authorized based on intended usage.",
+            "evidence_request": "Access Authorization Records (SAR forms).",
+            "mapped_ccis": [
+              "CCI-000014"
+            ]
+          },
+          {
+            "part_id": "j",
+            "title": "Review Accounts",
+            "requirement_description": "Review accounts for compliance with account management requirements [Assignment: organization-defined frequency].",
+            "fedramp_audit_procedure_id": "AC-2.10",
+            "nist_examination_method": [
+              "Examine",
+              "Test"
+            ],
+            "assessment_objective": "Determine if accounts are reviewed at the defined frequency.",
+            "evidence_request": "User Access Review (UAR) completion evidence.",
+            "mapped_ccis": [
+              "CCI-000012"
+            ]
+          },
+          {
+            "part_id": "k",
+            "title": "Reissue Shared Credentials",
+            "requirement_description": "Establish a process for reissuing shared/group account credentials (if deployed) when individuals are removed from the group.",
+            "fedramp_audit_procedure_id": "AC-2.11",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if a process exists for reissuing shared credentials upon member departure.",
+            "evidence_request": "SOP for Shared Accounts; Evidence of password rotation.",
+            "mapped_ccis": [
+              "CCI-000011"
+            ]
+          }
+        ],
+        "required_enhancements": [
+          {
+            "id": "AC-2(1)",
+            "title": "Automated System Account Management",
+            "requirement_description": "Employ automated mechanisms to support the management of information system accounts.",
+            "fedramp_audit_procedure_id": "AC-2(1).1",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if the organization employs automated mechanisms for account management.",
+            "evidence_request": "IdP SCIM Configuration screenshots.",
+            "mapped_ccis": [
+              "CCI-000015"
+            ]
+          },
+          {
+            "id": "AC-2(2)",
+            "title": "Removal of Temporary / Emergency Accounts",
+            "requirement_description": "Automatically remove or disable temporary and emergency accounts after a defined time period.",
+            "fedramp_audit_procedure_id": "AC-2(2).1",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if temp accounts are auto-removed after the defined period.",
+            "evidence_request": "Config showing TTL for guest accounts.",
+            "mapped_ccis": [
+              "CCI-000016"
+            ]
+          },
+          {
+            "id": "AC-2(3)",
+            "title": "Disable Inactive Accounts",
+            "requirement_description": "Automatically disable inactive accounts after [Assignment: time period].",
+            "fedramp_audit_procedure_id": "AC-2(3).1",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if inactive accounts are auto-disabled after 90 days.",
+            "evidence_request": "Screenshot of 'Suspend after 90 days' setting.",
+            "mapped_ccis": [
+              "CCI-000017"
+            ]
+          },
+          {
+            "id": "AC-2(4)",
+            "title": "Automated Audit Actions",
+            "requirement_description": "Automatically audit account creation, modification, enabling, disabling, and removal actions.",
+            "fedramp_audit_procedure_id": "AC-2(4).1",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if account actions (create, modify, disable) are automatically audited.",
+            "evidence_request": "Audit Log Export showing Lifecycle Events.",
+            "mapped_ccis": [
+              "CCI-000018",
+              "CCI-002130"
+            ]
+          }
+        ]
+      },
+      "high": {
+        "authorization_status": "Required",
+        "description": "High requires Base + Enhancements (1-5), (9), (11-13).",
+        "base_control_requirements": [
+          {
+            "part_id": "a",
+            "title": "Identify Account Types",
+            "requirement_description": "Identify and select the following types of information system accounts to support organizational missions/business functions...",
+            "fedramp_audit_procedure_id": "AC-2.1",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if account types are identified.",
+            "evidence_request": "Access Control Policy (Section: Account Types)",
+            "mapped_ccis": [
+              "CCI-000007"
+            ]
+          },
+          {
+            "part_id": "b",
+            "title": "Assign Account Managers",
+            "requirement_description": "Assign account managers for information system accounts.",
+            "fedramp_audit_procedure_id": "AC-2.2",
+            "nist_examination_method": [
+              "Examine",
+              "Interview"
+            ],
+            "assessment_objective": "Determine if account managers are assigned.",
+            "evidence_request": "List of System Owners/Account Managers; Interview notes.",
+            "mapped_ccis": [
+              "CCI-000008"
+            ]
+          },
+          {
+            "part_id": "c",
+            "title": "Establish Group Conditions",
+            "requirement_description": "Establish conditions for group and role membership.",
+            "fedramp_audit_procedure_id": "AC-2.3",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if group membership conditions are established.",
+            "evidence_request": "RBAC Matrix; Role Definition Procedures.",
+            "mapped_ccis": [
+              "CCI-000008"
+            ]
+          },
+          {
+            "part_id": "d",
+            "title": "Specify Authorized Users",
+            "requirement_description": "Specify authorized users of the information system, group and role membership, and access authorizations.",
+            "fedramp_audit_procedure_id": "AC-2.4",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if authorized users and privileges are specified.",
+            "evidence_request": "System User List (Active Directory / Okta Export).",
+            "mapped_ccis": [
+              "CCI-000009"
+            ]
+          },
+          {
+            "part_id": "e",
+            "title": "Authorize Creation",
+            "requirement_description": "Require approvals by [Assignment: organization-defined personnel or roles] for requests to create information system accounts.",
+            "fedramp_audit_procedure_id": "AC-2.5",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if approvals are required for account creation.",
+            "evidence_request": "Sample of 5 recent New User Approval Tickets.",
+            "mapped_ccis": [
+              "CCI-000010"
+            ]
+          },
+          {
+            "part_id": "f",
+            "title": "Manage Lifecycle",
+            "requirement_description": "Create, enable, modify, disable, and remove information system accounts in accordance with [Assignment: organization-defined procedures or conditions].",
+            "fedramp_audit_procedure_id": "AC-2.6",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if accounts are managed according to procedures.",
+            "evidence_request": "IdP Logs showing provisioning/deprovisioning events.",
+            "mapped_ccis": [
+              "CCI-000011"
+            ]
+          },
+          {
+            "part_id": "g",
+            "title": "Monitor Usage",
+            "requirement_description": "Monitor the use of information system accounts.",
+            "fedramp_audit_procedure_id": "AC-2.7",
+            "nist_examination_method": [
+              "Examine",
+              "Test"
+            ],
+            "assessment_objective": "Determine if account usage is monitored.",
+            "evidence_request": "SIEM Dashboard Screenshots; Usage Reports.",
+            "mapped_ccis": [
+              "CCI-000012"
+            ]
+          },
+          {
+            "part_id": "h",
+            "title": "Notify on Termination",
+            "requirement_description": "Notify account managers when accounts are no longer required, users are terminated or transferred, or individual information system usage or need-to-know changes.",
+            "fedramp_audit_procedure_id": "AC-2.8",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if account managers are notified within the organization-defined time period.",
+            "evidence_request": "Sample of Termination Tickets showing notification workflow.",
+            "mapped_ccis": [
+              "CCI-000013"
+            ]
+          },
+          {
+            "part_id": "i",
+            "title": "Authorize Based on Usage",
+            "requirement_description": "Authorize access to the information system based on a valid access authorization, intended system usage, and other attributes as required by the organization.",
+            "fedramp_audit_procedure_id": "AC-2.9",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if access is authorized based on intended usage.",
+            "evidence_request": "Access Authorization Records (SAR forms).",
+            "mapped_ccis": [
+              "CCI-000014"
+            ]
+          },
+          {
+            "part_id": "j",
+            "title": "Review Accounts",
+            "requirement_description": "Review accounts for compliance with account management requirements [Assignment: organization-defined frequency].",
+            "fedramp_audit_procedure_id": "AC-2.10",
+            "nist_examination_method": [
+              "Examine",
+              "Test"
+            ],
+            "assessment_objective": "Determine if accounts are reviewed at the defined frequency.",
+            "evidence_request": "User Access Review (UAR) completion evidence.",
+            "mapped_ccis": [
+              "CCI-000012"
+            ]
+          },
+          {
+            "part_id": "k",
+            "title": "Reissue Shared Credentials",
+            "requirement_description": "Establish a process for reissuing shared/group account credentials (if deployed) when individuals are removed from the group.",
+            "fedramp_audit_procedure_id": "AC-2.11",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if a process exists for reissuing shared credentials upon member departure.",
+            "evidence_request": "SOP for Shared Accounts; Evidence of password rotation.",
+            "mapped_ccis": [
+              "CCI-000011"
+            ]
+          }
+        ],
+        "required_enhancements": [
+          {
+            "id": "AC-2(1)",
+            "title": "Automated System Account Management",
+            "requirement_description": "Employ automated mechanisms to support the management of information system accounts.",
+            "fedramp_audit_procedure_id": "AC-2(1).1",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if the organization employs automated mechanisms for account management.",
+            "evidence_request": "IdP SCIM Configuration screenshots.",
+            "mapped_ccis": [
+              "CCI-000015"
+            ]
+          },
+          {
+            "id": "AC-2(2)",
+            "title": "Removal of Temporary / Emergency Accounts",
+            "requirement_description": "Automatically remove or disable temporary and emergency accounts after a defined time period.",
+            "fedramp_audit_procedure_id": "AC-2(2).1",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if temp accounts are auto-removed after the defined period.",
+            "evidence_request": "Config showing TTL for guest accounts.",
+            "mapped_ccis": [
+              "CCI-000016"
+            ]
+          },
+          {
+            "id": "AC-2(3)",
+            "title": "Disable Inactive Accounts",
+            "requirement_description": "Automatically disable inactive accounts after [Assignment: time period].",
+            "fedramp_audit_procedure_id": "AC-2(3).1",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if inactive accounts are auto-disabled after 90 days.",
+            "evidence_request": "Screenshot of 'Suspend after 90 days' setting.",
+            "mapped_ccis": [
+              "CCI-000017"
+            ]
+          },
+          {
+            "id": "AC-2(4)",
+            "title": "Automated Audit Actions",
+            "requirement_description": "Automatically audit account creation, modification, enabling, disabling, and removal actions.",
+            "fedramp_audit_procedure_id": "AC-2(4).1",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if account actions (create, modify, disable) are automatically audited.",
+            "evidence_request": "Audit Log Export showing Lifecycle Events.",
+            "mapped_ccis": [
+              "CCI-000018",
+              "CCI-002130"
+            ]
+          },
+          {
+            "id": "AC-2(5)",
+            "title": "Inactivity Logout",
+            "requirement_description": "Log out users after a defined period of inactivity.",
+            "fedramp_audit_procedure_id": "AC-2(5).1",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if users are logged out after inactivity.",
+            "evidence_request": "Screenshot of session timeout settings (e.g., 15 minutes).",
+            "mapped_ccis": [
+              "CCI-000019"
+            ]
+          },
+          {
+            "id": "AC-2(9)",
+            "title": "Restrictions on Shared/Group Accounts",
+            "requirement_description": "Prohibit shared/group accounts unless specifically authorized.",
+            "fedramp_audit_procedure_id": "AC-2(9).1",
+            "nist_examination_method": [
+              "Examine"
+            ],
+            "assessment_objective": "Determine if shared accounts are restricted.",
+            "evidence_request": "Shared Account Exception List.",
+            "mapped_ccis": [
+              "CCI-002142"
+            ]
+          },
+          {
+            "id": "AC-2(11)",
+            "title": "Usage Conditions",
+            "requirement_description": "Enforce usage conditions such as time-of-day or location-based access.",
+            "fedramp_audit_procedure_id": "AC-2(11).1",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if usage conditions are enforced.",
+            "evidence_request": "Conditional Access Policy screenshots.",
+            "mapped_ccis": [
+              "CCI-002145"
+            ]
+          },
+          {
+            "id": "AC-2(12)",
+            "title": "Account Monitoring / Atypical Usage",
+            "requirement_description": "Monitor accounts for atypical usage.",
+            "fedramp_audit_procedure_id": "AC-2(12).1",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if atypical usage is monitored.",
+            "evidence_request": "UEBA Dashboard / Alert Configurations.",
+            "mapped_ccis": [
+              "CCI-002146"
+            ]
+          },
+          {
+            "id": "AC-2(13)",
+            "title": "Disable Accounts for High-Risk Individuals",
+            "requirement_description": "Disable accounts of users posing a significant risk within [Assignment: time period].",
+            "fedramp_audit_procedure_id": "AC-2(13).1",
+            "nist_examination_method": [
+              "Test"
+            ],
+            "assessment_objective": "Determine if high-risk accounts are disabled within timeframe.",
+            "evidence_request": "Emergency Offboarding Procedure; Evidence of testing kill-switch.",
+            "mapped_ccis": [
+              "CCI-002143"
+            ]
+          }
+        ]
+      }
+    },
+    "fedramp_20x_automation": {
+      "is_automation_ready": true,
+      "oscal_component": "identity_provider",
+      "automated_control_parts": [
+        {
+          "id": "AC-2(3)",
+          "title": "Disable Inactive Accounts",
+          "automation_description": "Automated validation of account inactivity threshold configuration via API.",
+          "oscal_rule_id": "chk_account_inactivity",
+          "data_source": "IdP API (Okta/AzureAD)",
+          "mapped_ccis": [
+            "CCI-000017"
+          ]
+        },
+        {
+          "id": "AC-2(4)",
+          "title": "Automated Audit Actions",
+          "automation_description": "Automated verification that audit logging is enabled for account management events.",
+          "oscal_rule_id": "chk_account_audit_enabled",
+          "data_source": "SIEM API",
+          "mapped_ccis": [
+            "CCI-000018",
+            "CCI-002130"
+          ]
+        }
+      ]
+    }
+  },
+  "hipaa_context": {
+    "legal_mandates": [
+      {
+        "citation": "45 CFR \u00a7 164.308(a)(4)(ii)(B)",
+        "mandate_title": "Access Authorization",
+        "hipaa_implementation_spec": "Addressable (Flexible)",
+        "requirement_description": "Implement policies and procedures for granting access to electronic protected health information (ePHI).",
+        "assessment_objective": "Ensure procedures exist for granting access.",
+        "nist_examination_method": [
+          "Examine"
+        ],
+        "evidence_request": "Access Authorization Procedure.",
+        "mapped_ccis": [
+          "CCI-000010",
+          "CCI-000014"
+        ]
+      },
+      {
+        "citation": "45 CFR \u00a7 164.308(a)(4)(ii)(C)",
+        "mandate_title": "Access Establishment and Modification",
+        "hipaa_implementation_spec": "Addressable (Flexible)",
+        "requirement_description": "Implement policies and procedures that establish, document, review, and modify a user's right of access.",
+        "assessment_objective": "Ensure access rights are reviewed and modified.",
+        "nist_examination_method": [
+          "Examine"
+        ],
+        "evidence_request": "User Access Review Logs.",
+        "mapped_ccis": [
+          "CCI-000011",
+          "CCI-000013"
+        ]
+      }
+    ],
+    "nprm_2025_proposed_updates": {
+      "mandates": [
+        {
+          "topic": "Cybersecurity Performance Goals (CPG)",
+          "requirement_description": "Covered entities must implement automated privileged access management (PAM).",
+          "nist_examination_method": [
+            "Test"
+          ],
+          "evidence_request": "PAM Solution Configuration.",
+          "mapped_ccis": [
+            "CCI-000015",
+            "CCI-000017",
+            "CCI-002136"
+          ]
+        }
+      ]
+    }
+  },
+  "nist_cui_context": {
+    "nist_sp_800_171_r3": {
+      "description": "Protecting CUI in Nonfederal Systems",
+      "requirements": [
+        {
+          "req_id": "3.1.1",
+          "requirement_description": "Limit system access to authorized users, processes acting on behalf of authorized users, and devices (including other systems).",
+          "cmmc_target_level": "Level 1 (Foundational) & Level 2 (Advanced)",
+          "assessment_objective": "System access is limited to authorized users.",
+          "nist_examination_method": [
+            "Examine",
+            "Test"
+          ],
+          "evidence_request": "Access Control Policy; Authorized User List; System Logic for Auth.",
+          "mapped_ccis": [
+            "CCI-000009",
+            "CCI-000010",
+            "CCI-000014"
+          ]
+        },
+        {
+          "req_id": "3.1.2",
+          "requirement_description": "Limit system access to the types of transactions and functions that authorized users are permitted to execute.",
+          "cmmc_target_level": "Level 2 (Advanced)",
+          "assessment_objective": "System access is limited to permitted transactions and functions.",
+          "nist_examination_method": [
+            "Examine",
+            "Test"
+          ],
+          "evidence_request": "RBAC Matrix; Privileged User List.",
+          "mapped_ccis": [
+            "CCI-000007",
+            "CCI-000011"
+          ]
+        },
+        {
+          "req_id": "3.1.4",
+          "requirement_description": "Separate the duties of individuals to reduce the risk of malevolent activity without collusion.",
+          "cmmc_target_level": "Level 2 (Advanced)",
+          "assessment_objective": "Duties are separated to prevent malicious collusion.",
+          "nist_examination_method": [
+            "Examine"
+          ],
+          "evidence_request": "Separation of Duties (SoD) Matrix; Access Logs showing distinct roles.",
+          "mapped_ccis": [
+            "CCI-000008"
+          ]
+        },
+        {
+          "req_id": "3.1.5",
+          "requirement_description": "Employ the principle of least privilege, including for specific security functions and privileged accounts.",
+          "cmmc_target_level": "Level 2 (Advanced)",
+          "assessment_objective": "Privileged accounts are restricted to least privilege.",
+          "nist_examination_method": [
+            "Examine",
+            "Interview"
+          ],
+          "evidence_request": "Privileged Account Inventory; Authorization Forms showing 'Least Privilege' check.",
+          "mapped_ccis": [
+            "CCI-000009",
+            "CCI-002136"
+          ]
+        },
+        {
+          "req_id": "3.1.11",
+          "requirement_description": "Terminate (automatically) a user session after a defined condition.",
+          "cmmc_target_level": "Level 2 (Advanced)",
+          "assessment_objective": "Sessions are terminated automatically.",
+          "nist_examination_method": [
+            "Test"
+          ],
+          "evidence_request": "Configuration Screenshot of Session Timeout.",
+          "mapped_ccis": [
+            "CCI-000019"
+          ]
+        }
+      ]
+    },
+    "nist_sp_800_172": {
+      "description": "Enhanced Security Requirements for CUI (APT Defense)",
+      "requirements": [
+        {
+          "req_id": "3.1.2e",
+          "requirement_description": "Manage system accounts for high-value assets or high-impact programs (Enhanced).",
+          "cmmc_target_level": "Level 3 (Expert)",
+          "assessment_objective": "Automated mechanisms are employed to manage system accounts.",
+          "rationale": "Manual management is too slow for APT defense. Automation required.",
+          "nist_examination_method": [
+            "Test"
+          ],
+          "evidence_request": "Screenshot of Automation Tooling (e.g., Ansible, SailPoint) configurations.",
+          "mapped_ccis": [
+            "CCI-000015",
+            "CCI-000016",
+            "CCI-000017",
+            "CCI-000018"
+          ]
+        },
+        {
+          "req_id": "3.1.3e",
+          "requirement_description": "Employ automated mechanisms to detect and prevent the use of high-risk accounts.",
+          "cmmc_target_level": "Level 3 (Expert)",
+          "assessment_objective": "High-risk accounts are detected and blocked automatically.",
+          "nist_examination_method": [
+            "Test"
+          ],
+          "evidence_request": "UEBA Configuration; Alert Logs for High-Risk Account usage.",
+          "mapped_ccis": [
+            "CCI-002146",
+            "CCI-002143"
+          ]
+        }
+      ]
+    }
+  },
+  "soc_context": {
+    "soc1": {
+      "report_type": "SSAE 18 (Financial Reporting)",
+      "control_objectives": [
+        {
+          "id": "ITGC-01",
+          "name": "Logical Access - Provisioning",
+          "audit_evidence": {
+            "type_1_design": {
+              "soc_testing_nature": [
+                "Inspection"
+              ],
+              "assessment_objective": "Verify design of provisioning controls.",
+              "evidence_request": "Logical Access Policy; Ticket Workflow Configuration screenshot.",
+              "mapped_ccis": [
+                "CCI-000010"
+              ]
+            },
+            "type_2_operating": {
+              "soc_testing_nature": [
+                "Reperformance",
+                "Inspection"
+              ],
+              "assessment_objective": "Verify operating effectiveness of provisioning.",
+              "sample_methodology": "AICPA Sampling Guide (25-40 items)",
+              "evidence_request": "Population of New Hires (CSV); Sampled Approval Tickets (PDF).",
+              "mapped_ccis": [
+                "CCI-000010",
+                "CCI-000011"
+              ]
+            }
+          }
+        },
+        {
+          "id": "ITGC-02",
+          "name": "Logical Access - Revocation",
+          "audit_evidence": {
+            "type_2_operating": {
+              "soc_testing_nature": [
+                "Reperformance"
+              ],
+              "sample_methodology": "Random sample of 25 terminations",
+              "evidence_request": "HR Termination List (CSV); System Logs (PDF).",
+              "mapped_ccis": [
+                "CCI-000013",
+                "CCI-000017"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "soc2": {
+      "framework_version": "2017 Trust Services Criteria",
+      "relevant_criteria": [
+        {
+          "criteria_id": "CC6.1",
+          "soc2_trust_service_category": "Security",
+          "soc2_criteria_title": "Logical Access Security",
+          "control_focus": "General Access Management",
+          "audit_evidence": {
+            "type_1_design": {
+              "soc_testing_nature": [
+                "Inspection"
+              ],
+              "assessment_objective": "Verify access security design.",
+              "evidence_request": "Access Policy; Screenshot of RBAC settings.",
+              "mapped_ccis": [
+                "CCI-000007",
+                "CCI-000010"
+              ]
+            },
+            "type_2_operating": {
+              "soc_testing_nature": [
+                "Observation",
+                "Inspection"
+              ],
+              "assessment_objective": "Verify access security effectiveness.",
+              "sample_methodology": "Population-based (25-45 items)",
+              "evidence_request": "New Hire Population; Termination Population; Evidence of timely removal.",
+              "mapped_ccis": [
+                "CCI-000011",
+                "CCI-000013",
+                "CCI-000016"
+              ]
+            }
+          }
+        },
+        {
+          "criteria_id": "CC6.2",
+          "soc2_trust_service_category": "Security",
+          "soc2_criteria_title": "User Registration",
+          "control_focus": "Provisioning & Auth before Access",
+          "audit_evidence": {
+            "type_1_design": {
+              "soc_testing_nature": [
+                "Inspection"
+              ],
+              "assessment_objective": "Verify registration design.",
+              "evidence_request": "Screenshot of IdP 'New User' flow.",
+              "mapped_ccis": [
+                "CCI-000010"
+              ]
+            },
+            "type_2_operating": {
+              "soc_testing_nature": [
+                "Inspection",
+                "Sampling"
+              ],
+              "assessment_objective": "Verify registration effectiveness.",
+              "evidence_request": "Population of New External Users (CSV); Sampled Tickets (PDF).",
+              "instruction": "Upload CSV of all external users. Auditor will select samples.",
+              "mapped_ccis": [
+                "CCI-000009",
+                "CCI-000014"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

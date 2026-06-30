@@ -1,0 +1,12 @@
+interface:
+  display_name: Public Web Evidence Crawler
+  short_description: use native web research first, optional firecrawl or self-hosted crawling when available
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

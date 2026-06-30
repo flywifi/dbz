@@ -1,0 +1,424 @@
+{
+  "schema_version": "3.0",
+  "description": "Examples of enhanced framework structure for precise overlap calculation",
+  
+  "frameworks": {
+    
+    "soc2_tsc": {
+      "framework_id": "soc2_tsc_2017_2022",
+      "name": "AICPA Trust Services Criteria (SOC 2)",
+      "version": "2017 with 2022 Points of Focus",
+      "region": "Global",
+      "domain": "attestation",
+      "has_tiers": false,
+      "has_optional_addons": true,
+      "components": [
+        {
+          "component_id": "soc2_security",
+          "component_name": "Security (Common Criteria)",
+          "scope_type": "baseline",
+          "parent_framework": null,
+          "tsc_category": "security",
+          "is_required_for_certification": true,
+          "control_id_pattern": "CC1.* through CC9.*",
+          "nist_800_53_mapping": ["AC-1", "AC-2", "AC-3", "AC-6", "AT-1", "AU-1", "CA-1", "CM-1"],
+          "notes": "Common Criteria (CC) are REQUIRED for all SOC 2 reports"
+        },
+        {
+          "component_id": "soc2_availability",
+          "component_name": "Availability",
+          "scope_type": "optional_addon",
+          "parent_framework": "soc2_security",
+          "tsc_category": "availability",
+          "is_required_for_certification": false,
+          "control_id_pattern": "A1.*",
+          "nist_800_53_mapping": ["CP-1", "CP-2", "CP-7", "CP-8", "CP-9", "SC-5"],
+          "incremental_controls_note": "Adds capacity planning, recovery objectives, continuity controls"
+        },
+        {
+          "component_id": "soc2_processing_integrity",
+          "component_name": "Processing Integrity",
+          "scope_type": "optional_addon",
+          "parent_framework": "soc2_security",
+          "tsc_category": "processing_integrity",
+          "is_required_for_certification": false,
+          "control_id_pattern": "PI1.*",
+          "nist_800_53_mapping": ["SI-1", "SI-4", "SI-7", "SA-3", "SA-4"],
+          "incremental_controls_note": "Adds data processing accuracy, completeness, timeliness controls"
+        },
+        {
+          "component_id": "soc2_confidentiality",
+          "component_name": "Confidentiality",
+          "scope_type": "optional_addon",
+          "parent_framework": "soc2_security",
+          "tsc_category": "confidentiality",
+          "is_required_for_certification": false,
+          "control_id_pattern": "C1.*",
+          "nist_800_53_mapping": ["SC-8", "SC-12", "SC-13", "SC-28", "MP-1", "MP-4"],
+          "incremental_controls_note": "Adds data classification, encryption, secure disposal controls"
+        },
+        {
+          "component_id": "soc2_privacy",
+          "component_name": "Privacy",
+          "scope_type": "optional_addon",
+          "parent_framework": "soc2_security",
+          "tsc_category": "privacy",
+          "is_required_for_certification": false,
+          "control_id_pattern": "P1.* through P8.*",
+          "nist_800_53_mapping": ["PT-1", "PT-2", "PT-3", "PT-4", "PT-5", "PM-20", "PM-25"],
+          "incremental_controls_note": "Adds notice, choice/consent, collection, retention controls"
+        }
+      ]
+    },
+    
+    "fedramp_r5": {
+      "framework_id": "fedramp_r5",
+      "name": "FedRAMP Rev 5",
+      "version": "Rev 5",
+      "region": "US-Federal",
+      "domain": "government_cloud",
+      "has_tiers": true,
+      "has_optional_addons": false,
+      "components": [
+        {
+          "component_id": "fedramp_r5_low",
+          "component_name": "FedRAMP Low",
+          "scope_type": "tier",
+          "parent_framework": "nist_800_53_r5",
+          "tier": {
+            "tier_name": "Low",
+            "tier_ordinal": 1,
+            "includes_lower_tiers": false
+          },
+          "is_required_for_certification": true,
+          "control_count": 125,
+          "notes": "Low-impact SaaS systems (public, non-sensitive data)"
+        },
+        {
+          "component_id": "fedramp_r5_moderate", 
+          "component_name": "FedRAMP Moderate",
+          "scope_type": "tier",
+          "parent_framework": "nist_800_53_r5",
+          "tier": {
+            "tier_name": "Moderate",
+            "tier_ordinal": 2,
+            "includes_lower_tiers": true
+          },
+          "is_required_for_certification": true,
+          "control_count": 325,
+          "incremental_control_count": 200,
+          "notes": "Most common level - CUI, PII, sensitive but not classified"
+        },
+        {
+          "component_id": "fedramp_r5_high",
+          "component_name": "FedRAMP High",
+          "scope_type": "tier",
+          "parent_framework": "nist_800_53_r5",
+          "tier": {
+            "tier_name": "High",
+            "tier_ordinal": 3,
+            "includes_lower_tiers": true
+          },
+          "is_required_for_certification": true,
+          "control_count": 421,
+          "incremental_control_count": 96,
+          "notes": "Law enforcement, healthcare, financial - high-impact federal data"
+        },
+        {
+          "component_id": "fedramp_r5_li_saas",
+          "component_name": "FedRAMP LI-SaaS (Low Impact SaaS)",
+          "scope_type": "tier",
+          "parent_framework": "nist_800_53_r5",
+          "tier": {
+            "tier_name": "LI-SaaS",
+            "tier_ordinal": 0,
+            "includes_lower_tiers": false
+          },
+          "is_required_for_certification": true,
+          "control_count": 36,
+          "notes": "Streamlined for low-risk SaaS - collaboration tools, project mgmt"
+        }
+      ]
+    },
+    
+    "hitrust_csf": {
+      "framework_id": "hitrust_csf_v11",
+      "name": "HITRUST CSF",
+      "version": "v11",
+      "region": "Global",
+      "domain": "healthcare_security",
+      "has_tiers": true,
+      "has_optional_addons": false,
+      "components": [
+        {
+          "component_id": "hitrust_e1",
+          "component_name": "HITRUST e1 (Essential)",
+          "scope_type": "tier",
+          "parent_framework": null,
+          "tier": {
+            "tier_name": "e1",
+            "tier_ordinal": 1,
+            "includes_lower_tiers": false
+          },
+          "is_required_for_certification": true,
+          "control_count": 44,
+          "valid_for_years": 1,
+          "notes": "Foundational cybersecurity hygiene - 44 requirement statements, 1-year validity"
+        },
+        {
+          "component_id": "hitrust_i1",
+          "component_name": "HITRUST i1 (Implemented)",
+          "scope_type": "tier",
+          "parent_framework": "hitrust_e1",
+          "tier": {
+            "tier_name": "i1",
+            "tier_ordinal": 2,
+            "includes_lower_tiers": true
+          },
+          "is_required_for_certification": true,
+          "control_count": 182,
+          "incremental_control_count": 138,
+          "valid_for_years": 1,
+          "notes": "Leading security practices - includes all e1 + 138 more, 1-year validity"
+        },
+        {
+          "component_id": "hitrust_r2",
+          "component_name": "HITRUST r2 (Risk-based, 2-year)",
+          "scope_type": "tier",
+          "parent_framework": "hitrust_i1",
+          "tier": {
+            "tier_name": "r2",
+            "tier_ordinal": 3,
+            "includes_lower_tiers": true
+          },
+          "is_required_for_certification": true,
+          "control_count": "variable (risk-based selection)",
+          "valid_for_years": 2,
+          "notes": "Comprehensive risk-based - controls selected based on org risk factors"
+        }
+      ]
+    },
+    
+    "cmmc_2": {
+      "framework_id": "cmmc_2_0",
+      "name": "CMMC 2.0",
+      "version": "2.0",
+      "region": "US-Federal",
+      "domain": "defense_contracting",
+      "has_tiers": true,
+      "has_optional_addons": true,
+      "components": [
+        {
+          "component_id": "cmmc2_level1",
+          "component_name": "CMMC Level 1 (Foundational)",
+          "scope_type": "tier",
+          "parent_framework": null,
+          "tier": {
+            "tier_name": "Level 1",
+            "tier_ordinal": 1,
+            "includes_lower_tiers": false
+          },
+          "is_required_for_certification": true,
+          "control_count": 17,
+          "nist_mapping": "Subset of FAR 52.204-21 (15 practices)",
+          "assessment_type": "Self-assessment (annual)"
+        },
+        {
+          "component_id": "cmmc2_level1_aos",
+          "component_name": "CMMC Level 1 Assessment Objectives",
+          "scope_type": "optional_addon",
+          "parent_framework": "cmmc2_level1",
+          "is_required_for_certification": false,
+          "notes": "Detailed assessment objectives for Level 1 practices"
+        },
+        {
+          "component_id": "cmmc2_level2",
+          "component_name": "CMMC Level 2 (Advanced)",
+          "scope_type": "tier",
+          "parent_framework": "cmmc2_level1",
+          "tier": {
+            "tier_name": "Level 2",
+            "tier_ordinal": 2,
+            "includes_lower_tiers": true
+          },
+          "is_required_for_certification": true,
+          "control_count": 110,
+          "incremental_control_count": 93,
+          "nist_mapping": "NIST 800-171 Rev 2 (110 practices)",
+          "assessment_type": "Third-party assessment (triennial)"
+        },
+        {
+          "component_id": "cmmc2_level3",
+          "component_name": "CMMC Level 3 (Expert)",
+          "scope_type": "tier",
+          "parent_framework": "cmmc2_level2",
+          "tier": {
+            "tier_name": "Level 3",
+            "tier_ordinal": 3,
+            "includes_lower_tiers": true
+          },
+          "is_required_for_certification": true,
+          "control_count": 134,
+          "incremental_control_count": 24,
+          "nist_mapping": "NIST 800-171 + selected NIST 800-172 controls",
+          "assessment_type": "Government-led assessment"
+        }
+      ]
+    },
+    
+    "nist_800_53_overlays": {
+      "framework_id": "nist_overlays",
+      "name": "NIST 800-53 Overlay Collection",
+      "version": "Various",
+      "region": "US-Federal",
+      "domain": "security_baseline",
+      "has_tiers": true,
+      "has_optional_addons": true,
+      "components": [
+        {
+          "component_id": "nist_800_172",
+          "component_name": "NIST 800-172 Enhanced Security",
+          "scope_type": "overlay",
+          "parent_framework": "nist_800_171_r2",
+          "is_required_for_certification": false,
+          "notes": "Enhanced requirements for protecting CUI from APTs - builds on 800-171"
+        },
+        {
+          "component_id": "nist_800_82_ot_low",
+          "component_name": "NIST 800-82 OT Overlay (Low)",
+          "scope_type": "overlay",
+          "parent_framework": "nist_800_53_r5",
+          "tier": {
+            "tier_name": "Low",
+            "tier_ordinal": 1,
+            "includes_lower_tiers": false
+          },
+          "domain": "operational_technology",
+          "notes": "ICS/OT-specific tailoring of 800-53 for low-impact systems"
+        },
+        {
+          "component_id": "nist_800_82_ot_moderate",
+          "component_name": "NIST 800-82 OT Overlay (Moderate)",
+          "scope_type": "overlay",
+          "parent_framework": "nist_800_53_r5",
+          "tier": {
+            "tier_name": "Moderate",
+            "tier_ordinal": 2,
+            "includes_lower_tiers": true
+          },
+          "domain": "operational_technology"
+        },
+        {
+          "component_id": "nist_800_82_ot_high",
+          "component_name": "NIST 800-82 OT Overlay (High)",
+          "scope_type": "overlay",
+          "parent_framework": "nist_800_53_r5",
+          "tier": {
+            "tier_name": "High",
+            "tier_ordinal": 3,
+            "includes_lower_tiers": true
+          },
+          "domain": "operational_technology"
+        },
+        {
+          "component_id": "nist_800_53b_privacy",
+          "component_name": "NIST 800-53B Privacy Baseline",
+          "scope_type": "overlay",
+          "parent_framework": "nist_800_53_r5",
+          "domain": "privacy",
+          "notes": "Privacy-specific controls from PT family and privacy-related controls across other families"
+        }
+      ]
+    },
+    
+    "iso_27001_annexes": {
+      "framework_id": "iso_27001_2022",
+      "name": "ISO/IEC 27001:2022",
+      "version": "2022",
+      "region": "Global",
+      "domain": "isms",
+      "has_tiers": false,
+      "has_optional_addons": true,
+      "components": [
+        {
+          "component_id": "iso27001_clauses",
+          "component_name": "ISO 27001 Clauses 4-10 (Management System)",
+          "scope_type": "baseline",
+          "parent_framework": null,
+          "is_required_for_certification": true,
+          "control_count": 7,
+          "notes": "ISMS establishment, implementation, maintenance, improvement requirements"
+        },
+        {
+          "component_id": "iso27001_annex_a",
+          "component_name": "ISO 27001 Annex A (Reference Controls)",
+          "scope_type": "annex",
+          "parent_framework": "iso27001_clauses",
+          "is_required_for_certification": true,
+          "control_count": 93,
+          "notes": "93 controls in 4 categories - organization must apply based on risk assessment (Statement of Applicability)"
+        },
+        {
+          "component_id": "iso27017_cloud",
+          "component_name": "ISO 27017 (Cloud Security)",
+          "scope_type": "optional_addon",
+          "parent_framework": "iso27001_annex_a",
+          "is_required_for_certification": false,
+          "notes": "Additional guidance for cloud service providers and customers"
+        },
+        {
+          "component_id": "iso27018_pii_cloud",
+          "component_name": "ISO 27018 (PII in Public Cloud)",
+          "scope_type": "optional_addon",
+          "parent_framework": "iso27001_annex_a",
+          "is_required_for_certification": false,
+          "notes": "Protection of personally identifiable information in public clouds"
+        },
+        {
+          "component_id": "iso27701_privacy",
+          "component_name": "ISO 27701 (Privacy Information Management)",
+          "scope_type": "optional_addon",
+          "parent_framework": "iso27001_annex_a",
+          "is_required_for_certification": false,
+          "notes": "Extension for privacy - PIMS requirements for PII controllers and processors"
+        }
+      ]
+    },
+    
+    "eu_regulations": {
+      "framework_id": "eu_cyber_regs",
+      "name": "EU Cybersecurity Regulations",
+      "version": "2024",
+      "region": "EMEA",
+      "domain": "regulation",
+      "has_tiers": false,
+      "has_optional_addons": true,
+      "components": [
+        {
+          "component_id": "nis2_baseline",
+          "component_name": "NIS2 Directive Baseline Requirements",
+          "scope_type": "baseline",
+          "parent_framework": null,
+          "is_required_for_certification": true,
+          "notes": "Core cybersecurity risk management measures for essential/important entities"
+        },
+        {
+          "component_id": "nis2_annex",
+          "component_name": "NIS2 Annex (Sector-Specific)",
+          "scope_type": "annex",
+          "parent_framework": "nis2_baseline",
+          "is_required_for_certification": true,
+          "notes": "Sector-specific requirements for energy, transport, banking, health, etc."
+        },
+        {
+          "component_id": "cra_annexes",
+          "component_name": "EU Cyber Resiliency Act Annexes",
+          "scope_type": "annex",
+          "parent_framework": null,
+          "is_required_for_certification": true,
+          "notes": "Product with digital elements - different annexes for different product categories"
+        }
+      ]
+    }
+  }
+}

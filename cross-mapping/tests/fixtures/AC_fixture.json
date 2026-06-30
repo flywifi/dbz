@@ -1,0 +1,2441 @@
+{
+  "AC-1": {
+    "schema_version": "1.1.0",
+    "catalog_source": "NIST 800-53 Rev 5.0",
+    "generated_at": "2026-06-30T01:41:30.476376+00:00",
+    "id": "AC-1",
+    "family": "AC",
+    "title": "Policy and Procedures",
+    "text": "a. Develop, document, and disseminate to [Assignment: organization-defined personnel or roles]:\n1. [Selection (one or more): Organization-level; Mission/business process-level; System-level] access control policy that:\n(a) Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and\n(b) Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and\n2. Procedures to facilitate the implementation of the access control policy and the associated access controls;\nb. Designate an [Assignment: organization-defined official] to manage the development, documentation, and dissemination of the access control policy and procedures; and\nc. Review and update the current access control:\n1. Policy [Assignment: organization-defined frequency] and following [Assignment: organization-defined events]; and\n2. Procedures [Assignment: organization-defined frequency] and following [Assignment: organization-defined events].",
+    "discussion": "Access control policy and procedures address the controls in the AC family that are implemented within systems and organizations. The risk management strategy is an important factor in establishing such policies and procedures. Policies and procedures contribute to security and privacy assurance. Therefore, it is important that security and privacy programs collaborate on the development of access control policy and procedures. Security and privacy program policies and procedures at the organization level are preferable, in general, and may obviate the need for mission- or system-specific policies and procedures. The policy can be included as part of the general security and privacy policy or be represented by multiple policies reflecting the complex nature of organizations. Procedures can be established for security and privacy programs, for mission or business processes, and for systems, if needed. Procedures describe how the policies or controls are implemented and can be directed at the individual or role that is the object of the procedure. Procedures can be documented in system security and privacy plans or in one or more separate documents. Events that may precipitate an update to access control policy and procedures include assessment or audit findings, security incidents or breaches, or changes in laws, executive orders, directives, regulations, policies, standards, and guidelines. Simply restating controls does not constitute an organizational policy or procedure.",
+    "related_controls": "IA-1, PM-9, PM-24, PS-8, SI-12 .",
+    "parameters": [
+      {
+        "id": "param-1",
+        "type": "assignment",
+        "label": "organization-defined personnel or roles",
+        "position": 41
+      },
+      {
+        "id": "param-2",
+        "type": "selection",
+        "label": "Organization-level; Mission/business process-level; System-level",
+        "position": 99
+      },
+      {
+        "id": "param-3",
+        "type": "assignment",
+        "label": "organization-defined official",
+        "position": 613
+      },
+      {
+        "id": "param-4",
+        "type": "assignment",
+        "label": "organization-defined frequency",
+        "position": 825
+      },
+      {
+        "id": "param-5",
+        "type": "assignment",
+        "label": "organization-defined events",
+        "position": 884
+      },
+      {
+        "id": "param-6",
+        "type": "assignment",
+        "label": "organization-defined frequency",
+        "position": 945
+      },
+      {
+        "id": "param-7",
+        "type": "assignment",
+        "label": "organization-defined events",
+        "position": 1004
+      }
+    ],
+    "baselines": {
+      "privacy": true,
+      "low": true,
+      "moderate": true,
+      "high": true
+    },
+    "compliance_scope": {
+      "fedramp_levels": [
+        "low",
+        "moderate",
+        "high"
+      ],
+      "privacy_baseline": true,
+      "mapped_frameworks": [
+        "DISA CCI",
+        "HITRUST CSF",
+        "ISO/IEC 27001:2022"
+      ],
+      "framework_count": 3
+    },
+    "enhancements": [],
+    "mapped_ccis": [
+      "CCI-000001",
+      "CCI-000002",
+      "CCI-000003",
+      "CCI-000004",
+      "CCI-000005",
+      "CCI-000006",
+      "CCI-001545",
+      "CCI-001546",
+      "CCI-002106",
+      "CCI-002107",
+      "CCI-002108",
+      "CCI-002109"
+    ],
+    "iso_27001_mappings": [
+      {
+        "iso_id": "5.2",
+        "relationship_type": "",
+        "strength": "",
+        "fulfilled_by": "",
+        "source_sheet": "Relationships-AC"
+      },
+      {
+        "iso_id": "5.3",
+        "relationship_type": "",
+        "strength": "",
+        "fulfilled_by": "",
+        "source_sheet": "Relationships-AC"
+      },
+      {
+        "iso_id": "7.5.1",
+        "relationship_type": "",
+        "strength": "",
+        "fulfilled_by": "",
+        "source_sheet": "Relationships-AC"
+      },
+      {
+        "iso_id": "7.5.2",
+        "relationship_type": "",
+        "strength": "",
+        "fulfilled_by": "",
+        "source_sheet": "Relationships-AC"
+      },
+      {
+        "iso_id": "7.5.3",
+        "relationship_type": "",
+        "strength": "",
+        "fulfilled_by": "",
+        "source_sheet": "Relationships-AC"
+      },
+      {
+        "iso_id": "A.5.1",
+        "relationship_type": "",
+        "strength": "",
+        "fulfilled_by": "",
+        "source_sheet": "Relationships-AC"
+      },
+      {
+        "iso_id": "A.5.2",
+        "relationship_type": "",
+        "strength": "",
+        "fulfilled_by": "",
+        "source_sheet": "Relationships-AC"
+      },
+      {
+        "iso_id": "A.5.4",
+        "relationship_type": "",
+        "strength": "",
+        "fulfilled_by": "",
+        "source_sheet": "Relationships-AC"
+      },
+      {
+        "iso_id": "A.5.15",
+        "relationship_type": "",
+        "strength": "",
+        "fulfilled_by": "",
+        "source_sheet": "Relationships-AC"
+      },
+      {
+        "iso_id": "A.5.31",
+        "relationship_type": "",
+        "strength": "",
+        "fulfilled_by": "",
+        "source_sheet": "Relationships-AC"
+      },
+      {
+        "iso_id": "A.5.36",
+        "relationship_type": "",
+        "strength": "",
+        "fulfilled_by": "",
+        "source_sheet": "Relationships-AC"
+      },
+      {
+        "iso_id": "A.5.37",
+        "relationship_type": "",
+        "strength": "",
+        "fulfilled_by": "",
+        "source_sheet": "Relationships-AC"
+      }
+    ],
+    "cmmc_mappings": [],
+    "hitrust_mappings": [
+      "01.a Access Control Policy"
+    ],
+    "unified_mappings": [
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000001",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000002",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000003",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000004",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000005",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000006",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001545",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001546",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002106",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002107",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002108",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002109",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "ISO/IEC 27001:2022",
+        "framework_version": "2022",
+        "control_id": "5.2",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→ISO 27001",
+        "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+        "notes": ""
+      },
+      {
+        "framework": "ISO/IEC 27001:2022",
+        "framework_version": "2022",
+        "control_id": "5.3",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→ISO 27001",
+        "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+        "notes": ""
+      },
+      {
+        "framework": "ISO/IEC 27001:2022",
+        "framework_version": "2022",
+        "control_id": "7.5.1",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→ISO 27001",
+        "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+        "notes": ""
+      },
+      {
+        "framework": "ISO/IEC 27001:2022",
+        "framework_version": "2022",
+        "control_id": "7.5.2",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→ISO 27001",
+        "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+        "notes": ""
+      },
+      {
+        "framework": "ISO/IEC 27001:2022",
+        "framework_version": "2022",
+        "control_id": "7.5.3",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→ISO 27001",
+        "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+        "notes": ""
+      },
+      {
+        "framework": "ISO/IEC 27001:2022",
+        "framework_version": "2022",
+        "control_id": "A.5.1",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→ISO 27001",
+        "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+        "notes": ""
+      },
+      {
+        "framework": "ISO/IEC 27001:2022",
+        "framework_version": "2022",
+        "control_id": "A.5.2",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→ISO 27001",
+        "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+        "notes": ""
+      },
+      {
+        "framework": "ISO/IEC 27001:2022",
+        "framework_version": "2022",
+        "control_id": "A.5.4",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→ISO 27001",
+        "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+        "notes": ""
+      },
+      {
+        "framework": "ISO/IEC 27001:2022",
+        "framework_version": "2022",
+        "control_id": "A.5.15",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→ISO 27001",
+        "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+        "notes": ""
+      },
+      {
+        "framework": "ISO/IEC 27001:2022",
+        "framework_version": "2022",
+        "control_id": "A.5.31",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→ISO 27001",
+        "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+        "notes": ""
+      },
+      {
+        "framework": "ISO/IEC 27001:2022",
+        "framework_version": "2022",
+        "control_id": "A.5.36",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→ISO 27001",
+        "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+        "notes": ""
+      },
+      {
+        "framework": "ISO/IEC 27001:2022",
+        "framework_version": "2022",
+        "control_id": "A.5.37",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→ISO 27001",
+        "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+        "notes": ""
+      },
+      {
+        "framework": "HITRUST CSF",
+        "framework_version": "v11.4.0",
+        "control_id": "01.a Access Control Policy",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→HITRUST",
+        "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+        "notes": ""
+      }
+    ]
+  },
+  "AC-2": {
+    "schema_version": "1.1.0",
+    "catalog_source": "NIST 800-53 Rev 5.0",
+    "generated_at": "2026-06-30T01:41:30.476376+00:00",
+    "id": "AC-2",
+    "family": "AC",
+    "title": "Account Management",
+    "text": "a. Define and document the types of accounts allowed and specifically prohibited for use within the system;\nb. Assign account managers;\nc. Require [Assignment: organization-defined prerequisites and criteria] for group and role membership;\nd. Specify:\n1. Authorized users of the system;\n2. Group and role membership; and\n3. Access authorizations (i.e., privileges) and [Assignment: organization-defined attributes (as required)] for each account;\ne. Require approvals by [Assignment: organization-defined personnel or roles] for requests to create accounts;\nf. Create, enable, modify, disable, and remove accounts in accordance with [Assignment: organization-defined policy, procedures, prerequisites, and criteria];\ng. Monitor the use of accounts;\nh. Notify account managers and [Assignment: organization-defined personnel or roles] within:\n1. [Assignment: organization-defined time period] when accounts are no longer required;\n2. [Assignment: organization-defined time period] when users are terminated or transferred; and\n3. [Assignment: organization-defined time period] when system usage or need-to-know changes for an individual;\ni. Authorize access to the system based on:\n1. A valid access authorization;\n2. Intended system usage; and\n3. [Assignment: organization-defined attributes (as required)];\nj. Review accounts for compliance with account management requirements [Assignment: organization-defined frequency];\nk. Establish and implement a process for changing shared or group account authenticators (if deployed) when individuals are removed from the group; and\nl. Align account management processes with personnel termination and transfer processes.",
+    "discussion": "Examples of system account types include individual, shared, group, system, guest, anonymous, emergency, developer, temporary, and service. Identification of authorized system users and the specification of access privileges reflect the requirements in other controls in the security plan. Users requiring administrative privileges on system accounts receive additional scrutiny by organizational personnel responsible for approving such accounts and privileged access, including system owner, mission or business owner, senior agency information security officer, or senior agency official for privacy. Types of accounts that organizations may wish to prohibit due to increased risk include shared, group, emergency, anonymous, temporary, and guest accounts.\nWhere access involves personally identifiable information, security programs collaborate with the senior agency official for privacy to establish the specific conditions for group and role membership; specify authorized users, group and role membership, and access authorizations for each account; and create, adjust, or remove system accounts in accordance with organizational policies. Policies can include such information as account expiration dates or other factors that trigger the disabling of accounts. Organizations may choose to define access privileges or other attributes by account, type of account, or a combination of the two. Examples of other attributes required for authorizing access include restrictions on time of day, day of week, and point of origin. In defining other system account attributes, organizations consider system-related requirements and mission/business requirements. Failure to consider these factors could affect system availability.\nTemporary and emergency accounts are intended for short-term use. Organizations establish temporary accounts as part of normal account activation procedures when there is a need for short-term accounts without the demand for immediacy in account activation. Organizations establish emergency accounts in response to crisis situations and with the need for rapid account activation. Therefore, emergency account activation may bypass normal account authorization processes. Emergency and temporary accounts are not to be confused with infrequently used accounts, including local logon accounts used for special tasks or when network resources are unavailable (may also be known as accounts of last resort). Such accounts remain available and are not subject to automatic disabling or removal dates. Conditions for disabling or deactivating accounts include when shared/group, emergency, or temporary accounts are no longer required and when individuals are transferred or terminated. Changing shared/group authenticators when members leave the group is intended to ensure that former group members do not retain access to the shared or group account. Some types of system accounts may require specialized training.",
+    "related_controls": "AC-3, AC-5, AC-6, AC-17, AC-18, AC-20, AC-24, AU-2, AU-12, CM-5, IA-2, IA-4, IA-5, IA-8, MA-3, MA-5, PE-2, PL-4, PS-2, PS-4, PS-5, PS-7, PT-2, PT-3, SC-7, SC-12, SC-13, SC-37.",
+    "parameters": [
+      {
+        "id": "param-1",
+        "type": "assignment",
+        "label": "organization-defined prerequisites and criteria",
+        "position": 147
+      },
+      {
+        "id": "param-2",
+        "type": "assignment",
+        "label": "organization-defined attributes (as required)",
+        "position": 369
+      },
+      {
+        "id": "param-3",
+        "type": "assignment",
+        "label": "organization-defined personnel or roles",
+        "position": 471
+      },
+      {
+        "id": "param-4",
+        "type": "assignment",
+        "label": "organization-defined policy, procedures, prerequisites, and criteria",
+        "position": 633
+      },
+      {
+        "id": "param-5",
+        "type": "assignment",
+        "label": "organization-defined personnel or roles",
+        "position": 780
+      },
+      {
+        "id": "param-6",
+        "type": "assignment",
+        "label": "organization-defined time period",
+        "position": 845
+      },
+      {
+        "id": "param-7",
+        "type": "assignment",
+        "label": "organization-defined time period",
+        "position": 933
+      },
+      {
+        "id": "param-8",
+        "type": "assignment",
+        "label": "organization-defined time period",
+        "position": 1029
+      },
+      {
+        "id": "param-9",
+        "type": "assignment",
+        "label": "organization-defined attributes (as required)",
+        "position": 1247
+      },
+      {
+        "id": "param-10",
+        "type": "assignment",
+        "label": "organization-defined frequency",
+        "position": 1379
+      }
+    ],
+    "baselines": {
+      "privacy": false,
+      "low": true,
+      "moderate": true,
+      "high": true
+    },
+    "compliance_scope": {
+      "fedramp_levels": [
+        "low",
+        "moderate",
+        "high"
+      ],
+      "privacy_baseline": false,
+      "mapped_frameworks": [
+        "CMMC 2.0 / NIST 800-171",
+        "DISA CCI",
+        "HITRUST CSF",
+        "ISO/IEC 27001:2022",
+        "NIST SP 800-171"
+      ],
+      "framework_count": 5
+    },
+    "enhancements": [
+      {
+        "schema_version": "1.1.0",
+        "id": "AC-2(1)",
+        "title": "Account Management | Automated System Account Management",
+        "text": "Support the management of system accounts using [Assignment: organization-defined automated mechanisms].",
+        "discussion": "Automated system account management includes using automated mechanisms to create, enable, modify, disable, and remove accounts; notify account managers when an account is created, enabled, modified, disabled, or removed, or when users are terminated or transferred; monitor system account usage; and report atypical system account usage. Automated mechanisms can include internal system functions and email, telephonic, and text messaging notifications.",
+        "parameters": [
+          {
+            "id": "param-1",
+            "type": "assignment",
+            "label": "organization-defined automated mechanisms",
+            "position": 48
+          }
+        ],
+        "baselines": {
+          "privacy": false,
+          "low": false,
+          "moderate": true,
+          "high": true
+        },
+        "compliance_scope": {
+          "fedramp_levels": [
+            "moderate",
+            "high"
+          ],
+          "privacy_baseline": false,
+          "mapped_frameworks": [
+            "HITRUST CSF"
+          ],
+          "framework_count": 1
+        },
+        "mapped_ccis": [],
+        "iso_27001_mappings": [],
+        "cmmc_mappings": [],
+        "hitrust_mappings": [
+          "01.b User Registration"
+        ],
+        "unified_mappings": [
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "01.b User Registration",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "schema_version": "1.1.0",
+        "id": "AC-2(2)",
+        "title": "Account Management | Automated Temporary and Emergency Account Management",
+        "text": "Automatically [Selection: remove; disable] temporary and emergency accounts after [Assignment: organization-defined time period for each type of account].",
+        "discussion": "Management of temporary and emergency accounts includes the removal or disabling of such accounts automatically after a predefined time period rather than at the convenience of the system administrator. Automatic removal or disabling of accounts provides a more consistent implementation.",
+        "parameters": [
+          {
+            "id": "param-1",
+            "type": "selection",
+            "label": "remove; disable",
+            "position": 14
+          },
+          {
+            "id": "param-2",
+            "type": "assignment",
+            "label": "organization-defined time period for each type of account",
+            "position": 82
+          }
+        ],
+        "baselines": {
+          "privacy": false,
+          "low": false,
+          "moderate": true,
+          "high": true
+        },
+        "compliance_scope": {
+          "fedramp_levels": [
+            "moderate",
+            "high"
+          ],
+          "privacy_baseline": false,
+          "mapped_frameworks": [
+            "HITRUST CSF"
+          ],
+          "framework_count": 1
+        },
+        "mapped_ccis": [],
+        "iso_27001_mappings": [],
+        "cmmc_mappings": [],
+        "hitrust_mappings": [
+          "01.b User Registration"
+        ],
+        "unified_mappings": [
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "01.b User Registration",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "schema_version": "1.1.0",
+        "id": "AC-2(3)",
+        "title": "Account Management | Disable Accounts",
+        "text": "Disable accounts within [Assignment: organization-defined time period] when the accounts: \n(a) Have expired;\n(b) Are no longer associated with a user or individual;\n(c) Are in violation of organizational policy; or\n(d) Have been inactive for [Assignment: organization-defined time period].",
+        "discussion": "Disabling expired, inactive, or otherwise anomalous accounts supports the concepts of least privilege and least functionality which reduce the attack surface of the system.",
+        "parameters": [
+          {
+            "id": "param-1",
+            "type": "assignment",
+            "label": "organization-defined time period",
+            "position": 24
+          },
+          {
+            "id": "param-2",
+            "type": "assignment",
+            "label": "organization-defined time period",
+            "position": 242
+          }
+        ],
+        "baselines": {
+          "privacy": false,
+          "low": false,
+          "moderate": true,
+          "high": true
+        },
+        "compliance_scope": {
+          "fedramp_levels": [
+            "moderate",
+            "high"
+          ],
+          "privacy_baseline": false,
+          "mapped_frameworks": [
+            "CMMC 2.0 / NIST 800-171",
+            "HITRUST CSF",
+            "NIST SP 800-171"
+          ],
+          "framework_count": 3
+        },
+        "mapped_ccis": [],
+        "iso_27001_mappings": [],
+        "cmmc_mappings": [
+          {
+            "cmmc_practice": "IA.L2-3.5.6(a.)",
+            "nist_171a_objective": "Determine if a period of inactivity after which an identifier is disabled is defined.",
+            "relationship_strength": "Equal"
+          },
+          {
+            "cmmc_practice": "IA.L2-3.5.6(b.)",
+            "nist_171a_objective": "Determine if identifiers are disabled after the defined period of inactivity",
+            "relationship_strength": "Equal"
+          }
+        ],
+        "hitrust_mappings": [
+          "01.b User Registration",
+          "01.e Review of User Access Rights"
+        ],
+        "unified_mappings": [
+          {
+            "framework": "CMMC 2.0 / NIST 800-171",
+            "framework_version": "800-171 Rev 2 (CMMC 2.0)",
+            "control_id": "IA.L2-3.5.6(a.)",
+            "relationship_type": "mapped_to",
+            "strength": "Equal",
+            "direction": "NIST→CMMC",
+            "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk",
+            "notes": "Determine if a period of inactivity after which an identifier is disabled is defined."
+          },
+          {
+            "framework": "NIST SP 800-171",
+            "framework_version": "Rev 2",
+            "control_id": "3.5.6",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→800-171",
+            "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk (derived)",
+            "notes": ""
+          },
+          {
+            "framework": "CMMC 2.0 / NIST 800-171",
+            "framework_version": "800-171 Rev 2 (CMMC 2.0)",
+            "control_id": "IA.L2-3.5.6(b.)",
+            "relationship_type": "mapped_to",
+            "strength": "Equal",
+            "direction": "NIST→CMMC",
+            "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk",
+            "notes": "Determine if identifiers are disabled after the defined period of inactivity"
+          },
+          {
+            "framework": "NIST SP 800-171",
+            "framework_version": "Rev 2",
+            "control_id": "3.5.6",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→800-171",
+            "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk (derived)",
+            "notes": ""
+          },
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "01.b User Registration",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          },
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "01.e Review of User Access Rights",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "schema_version": "1.1.0",
+        "id": "AC-2(4)",
+        "title": "Account Management | Automated Audit Actions",
+        "text": "Automatically audit account creation, modification, enabling, disabling, and removal actions.",
+        "discussion": "Account management audit records are defined in accordance with AU-2 and reviewed, analyzed, and reported in accordance with AU-6.",
+        "parameters": [],
+        "baselines": {
+          "privacy": false,
+          "low": false,
+          "moderate": true,
+          "high": true
+        },
+        "compliance_scope": {
+          "fedramp_levels": [
+            "moderate",
+            "high"
+          ],
+          "privacy_baseline": false,
+          "mapped_frameworks": [
+            "HITRUST CSF"
+          ],
+          "framework_count": 1
+        },
+        "mapped_ccis": [],
+        "iso_27001_mappings": [],
+        "cmmc_mappings": [],
+        "hitrust_mappings": [
+          "09.aa Audit Logging"
+        ],
+        "unified_mappings": [
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "09.aa Audit Logging",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "schema_version": "1.1.0",
+        "id": "AC-2(5)",
+        "title": "Account Management | Inactivity Logout",
+        "text": "Require that users log out when [Assignment: organization-defined time period of expected inactivity or description of when to log out].",
+        "discussion": "Inactivity logout is behavior- or policy-based and requires users to take physical action to log out when they are expecting inactivity longer than the defined period. Automatic enforcement of inactivity logout is addressed by AC-11.",
+        "parameters": [
+          {
+            "id": "param-1",
+            "type": "assignment",
+            "label": "organization-defined time period of expected inactivity or description of when to log out",
+            "position": 32
+          }
+        ],
+        "baselines": {
+          "privacy": false,
+          "low": false,
+          "moderate": true,
+          "high": true
+        },
+        "compliance_scope": {
+          "fedramp_levels": [
+            "moderate",
+            "high"
+          ],
+          "privacy_baseline": false,
+          "mapped_frameworks": [
+            "HITRUST CSF"
+          ],
+          "framework_count": 1
+        },
+        "mapped_ccis": [],
+        "iso_27001_mappings": [],
+        "cmmc_mappings": [],
+        "hitrust_mappings": [
+          "01.t Session Time-out"
+        ],
+        "unified_mappings": [
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "01.t Session Time-out",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "schema_version": "1.1.0",
+        "id": "AC-2(6)",
+        "title": "Account Management | Dynamic Privilege Management",
+        "text": "Implement [Assignment: organization-defined dynamic privilege management capabilities].",
+        "discussion": "In contrast to access control approaches that employ static accounts and predefined user privileges, dynamic access control approaches rely on runtime access control decisions facilitated by dynamic privilege management, such as attribute-based access control. While user identities remain relatively constant over time, user privileges typically change more frequently based on ongoing mission or business requirements and the operational needs of organizations. An example of dynamic privilege management is the immediate revocation of privileges from users as opposed to requiring that users terminate and restart their sessions to reflect changes in privileges. Dynamic privilege management can also include mechanisms that change user privileges based on dynamic rules as opposed to editing specific user profiles. Examples include automatic adjustments of user privileges if they are operating out of their normal work times, if their job function or assignment changes, or if systems are under duress or in emergency situations. Dynamic privilege management includes the effects of privilege changes, for example, when there are changes to encryption keys used for communications.",
+        "parameters": [
+          {
+            "id": "param-1",
+            "type": "assignment",
+            "label": "organization-defined dynamic privilege management capabilities",
+            "position": 10
+          }
+        ],
+        "baselines": {
+          "privacy": false,
+          "low": false,
+          "moderate": false,
+          "high": false
+        },
+        "compliance_scope": {
+          "fedramp_levels": [],
+          "privacy_baseline": false,
+          "mapped_frameworks": [
+            "HITRUST CSF"
+          ],
+          "framework_count": 1
+        },
+        "mapped_ccis": [],
+        "iso_27001_mappings": [],
+        "cmmc_mappings": [],
+        "hitrust_mappings": [
+          "01.q User Identification and Authentication",
+          "01.t Session Time-out"
+        ],
+        "unified_mappings": [
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "01.q User Identification and Authentication",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          },
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "01.t Session Time-out",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "schema_version": "1.1.0",
+        "id": "AC-2(7)",
+        "title": "Account Management | Privileged User Accounts",
+        "text": "(a) Establish and administer privileged user accounts in accordance with [Selection: a role-based access scheme; an attribute-based access scheme];\n(b) Monitor privileged role or attribute assignments;\n(c) Monitor changes to roles or attributes; and\n(d) Revoke access when privileged role or attribute assignments are no longer appropriate.",
+        "discussion": "Privileged roles are organization-defined roles assigned to individuals that allow those individuals to perform certain security-relevant functions that ordinary users are not authorized to perform. Privileged roles include key management, account management, database administration, system and network administration, and web administration. A role-based access scheme organizes permitted system access and privileges into roles. In contrast, an attribute-based access scheme specifies allowed system access and privileges based on attributes.",
+        "parameters": [
+          {
+            "id": "param-1",
+            "type": "selection",
+            "label": "a role-based access scheme; an attribute-based access scheme",
+            "position": 73
+          }
+        ],
+        "baselines": {
+          "privacy": false,
+          "low": false,
+          "moderate": false,
+          "high": false
+        },
+        "compliance_scope": {
+          "fedramp_levels": [],
+          "privacy_baseline": false,
+          "mapped_frameworks": [
+            "CMMC 2.0 / NIST 800-171",
+            "HITRUST CSF",
+            "NIST SP 800-171"
+          ],
+          "framework_count": 3
+        },
+        "mapped_ccis": [],
+        "iso_27001_mappings": [],
+        "cmmc_mappings": [
+          {
+            "cmmc_practice": "AC.L2-3.1.7(b.)",
+            "nist_171a_objective": "Determine if non-privileged users are defined;",
+            "relationship_strength": "Moderate"
+          }
+        ],
+        "hitrust_mappings": [
+          "01.c Privilege Management",
+          "01.e Review of User Access Rights",
+          "09.ab Monitoring System Use"
+        ],
+        "unified_mappings": [
+          {
+            "framework": "CMMC 2.0 / NIST 800-171",
+            "framework_version": "800-171 Rev 2 (CMMC 2.0)",
+            "control_id": "AC.L2-3.1.7(b.)",
+            "relationship_type": "mapped_to",
+            "strength": "Moderate",
+            "direction": "NIST→CMMC",
+            "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk",
+            "notes": "Determine if non-privileged users are defined;"
+          },
+          {
+            "framework": "NIST SP 800-171",
+            "framework_version": "Rev 2",
+            "control_id": "3.1.7",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→800-171",
+            "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk (derived)",
+            "notes": ""
+          },
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "01.c Privilege Management",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          },
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "01.e Review of User Access Rights",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          },
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "09.ab Monitoring System Use",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "schema_version": "1.1.0",
+        "id": "AC-2(8)",
+        "title": "Account Management | Dynamic Account Management",
+        "text": "Create, activate, manage, and deactivate [Assignment: organization-defined system accounts] dynamically.",
+        "discussion": "Approaches for dynamically creating, activating, managing, and deactivating system accounts rely on automatically provisioning the accounts at runtime for entities that were previously unknown. Organizations plan for the dynamic management, creation, activation, and deactivation of system accounts by establishing trust relationships, business rules, and mechanisms with appropriate authorities to validate related authorizations and privileges.",
+        "parameters": [
+          {
+            "id": "param-1",
+            "type": "assignment",
+            "label": "organization-defined system accounts",
+            "position": 41
+          }
+        ],
+        "baselines": {
+          "privacy": false,
+          "low": false,
+          "moderate": false,
+          "high": false
+        },
+        "compliance_scope": {
+          "fedramp_levels": [],
+          "privacy_baseline": false,
+          "mapped_frameworks": [
+            "HITRUST CSF"
+          ],
+          "framework_count": 1
+        },
+        "mapped_ccis": [],
+        "iso_27001_mappings": [],
+        "cmmc_mappings": [],
+        "hitrust_mappings": [
+          "01.b User Registration"
+        ],
+        "unified_mappings": [
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "01.b User Registration",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "schema_version": "1.1.0",
+        "id": "AC-2(9)",
+        "title": "Account Management | Restrictions on Use of Shared and Group Accounts",
+        "text": "Only permit the use of shared and group accounts that meet [Assignment: organization-defined conditions for establishing shared and group accounts].",
+        "discussion": "Before permitting the use of shared or group accounts, organizations consider the increased risk due to the lack of accountability with such accounts.",
+        "parameters": [
+          {
+            "id": "param-1",
+            "type": "assignment",
+            "label": "organization-defined conditions for establishing shared and group accounts",
+            "position": 59
+          }
+        ],
+        "baselines": {
+          "privacy": false,
+          "low": false,
+          "moderate": false,
+          "high": false
+        },
+        "compliance_scope": {
+          "fedramp_levels": [],
+          "privacy_baseline": false,
+          "mapped_frameworks": [
+            "HITRUST CSF"
+          ],
+          "framework_count": 1
+        },
+        "mapped_ccis": [],
+        "iso_27001_mappings": [],
+        "cmmc_mappings": [],
+        "hitrust_mappings": [
+          "01.q User Identification and Authentication"
+        ],
+        "unified_mappings": [
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "01.q User Identification and Authentication",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "schema_version": "1.1.0",
+        "id": "AC-2(11)",
+        "title": "Account Management | Usage Conditions",
+        "text": "Enforce [Assignment: organization-defined circumstances and/or usage conditions] for  [Assignment: organization-defined system accounts].",
+        "discussion": "Specifying and enforcing usage conditions helps to enforce the principle of least privilege, increase user accountability, and enable effective account monitoring. Account monitoring includes alerts generated if the account is used in violation of organizational parameters. Organizations can describe specific conditions or circumstances under which system accounts can be used, such as by restricting usage to certain days of the week, time of day, or specific durations of time.",
+        "parameters": [
+          {
+            "id": "param-1",
+            "type": "assignment",
+            "label": "organization-defined circumstances and/or usage conditions",
+            "position": 8
+          },
+          {
+            "id": "param-2",
+            "type": "assignment",
+            "label": "organization-defined system accounts",
+            "position": 86
+          }
+        ],
+        "baselines": {
+          "privacy": false,
+          "low": false,
+          "moderate": false,
+          "high": true
+        },
+        "compliance_scope": {
+          "fedramp_levels": [
+            "high"
+          ],
+          "privacy_baseline": false,
+          "mapped_frameworks": [
+            "HITRUST CSF"
+          ],
+          "framework_count": 1
+        },
+        "mapped_ccis": [],
+        "iso_27001_mappings": [],
+        "cmmc_mappings": [],
+        "hitrust_mappings": [
+          "01.a Access Control Policy"
+        ],
+        "unified_mappings": [
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "01.a Access Control Policy",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "schema_version": "1.1.0",
+        "id": "AC-2(12)",
+        "title": "Account Management | Account Monitoring for Atypical Usage",
+        "text": "(a) Monitor system accounts for [Assignment: organization-defined atypical usage]; and\n(b) Report atypical usage of system accounts to [Assignment: organization-defined personnel or roles].",
+        "discussion": "Atypical usage includes accessing systems at certain times of the day or from locations that are not consistent with the normal usage patterns of individuals. Monitoring for atypical usage may reveal rogue behavior by individuals or an attack in progress. Account monitoring may inadvertently create privacy risks since data collected to identify atypical usage may reveal previously unknown information about the behavior of individuals. Organizations assess and document privacy risks from monitoring accounts for atypical usage in their privacy impact assessment and make determinations that are in alignment with their privacy program plan.",
+        "parameters": [
+          {
+            "id": "param-1",
+            "type": "assignment",
+            "label": "organization-defined atypical usage",
+            "position": 32
+          },
+          {
+            "id": "param-2",
+            "type": "assignment",
+            "label": "organization-defined personnel or roles",
+            "position": 135
+          }
+        ],
+        "baselines": {
+          "privacy": false,
+          "low": false,
+          "moderate": false,
+          "high": true
+        },
+        "compliance_scope": {
+          "fedramp_levels": [
+            "high"
+          ],
+          "privacy_baseline": false,
+          "mapped_frameworks": [
+            "HITRUST CSF",
+            "ISO/IEC 27001:2022"
+          ],
+          "framework_count": 2
+        },
+        "mapped_ccis": [],
+        "iso_27001_mappings": [
+          {
+            "iso_id": "A.8.16",
+            "relationship_type": "",
+            "strength": "",
+            "fulfilled_by": "",
+            "source_sheet": "Relationships-AC"
+          }
+        ],
+        "cmmc_mappings": [],
+        "hitrust_mappings": [
+          "09.ab Monitoring System Use"
+        ],
+        "unified_mappings": [
+          {
+            "framework": "ISO/IEC 27001:2022",
+            "framework_version": "2022",
+            "control_id": "A.8.16",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→ISO 27001",
+            "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+            "notes": ""
+          },
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "09.ab Monitoring System Use",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "schema_version": "1.1.0",
+        "id": "AC-2(13)",
+        "title": "Account Management | Disable Accounts for High-risk Individuals",
+        "text": "Disable accounts of individuals within [Assignment: organization-defined time period] of discovery of [Assignment: organization-defined significant risks].",
+        "discussion": "Users who pose a significant security and/or privacy risk include individuals for whom reliable evidence indicates either the intention to use authorized access to systems to cause harm or through whom adversaries will cause harm. Such harm includes adverse impacts to organizational operations, organizational assets, individuals, other organizations, or the Nation. Close coordination among system administrators, legal staff, human resource managers, and authorizing officials is essential when disabling system accounts for high-risk individuals.",
+        "parameters": [
+          {
+            "id": "param-1",
+            "type": "assignment",
+            "label": "organization-defined time period",
+            "position": 39
+          },
+          {
+            "id": "param-2",
+            "type": "assignment",
+            "label": "organization-defined significant risks",
+            "position": 102
+          }
+        ],
+        "baselines": {
+          "privacy": false,
+          "low": false,
+          "moderate": true,
+          "high": true
+        },
+        "compliance_scope": {
+          "fedramp_levels": [
+            "moderate",
+            "high"
+          ],
+          "privacy_baseline": false,
+          "mapped_frameworks": [
+            "HITRUST CSF"
+          ],
+          "framework_count": 1
+        },
+        "mapped_ccis": [],
+        "iso_27001_mappings": [],
+        "cmmc_mappings": [],
+        "hitrust_mappings": [
+          "01.b User Registration"
+        ],
+        "unified_mappings": [
+          {
+            "framework": "HITRUST CSF",
+            "framework_version": "v11.4.0",
+            "control_id": "01.b User Registration",
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→HITRUST",
+            "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "schema_version": "1.1.0",
+        "id": "AC-2(10)",
+        "title": "Account Management | Shared and Group Account Credential Change",
+        "text": "[Withdrawn: Incorporated into AC-2k.]",
+        "discussion": "",
+        "parameters": [],
+        "baselines": {
+          "privacy": false,
+          "low": false,
+          "moderate": false,
+          "high": false
+        },
+        "compliance_scope": {
+          "fedramp_levels": [],
+          "privacy_baseline": false,
+          "mapped_frameworks": [],
+          "framework_count": 0
+        },
+        "mapped_ccis": [],
+        "iso_27001_mappings": [],
+        "cmmc_mappings": [],
+        "hitrust_mappings": [],
+        "unified_mappings": []
+      }
+    ],
+    "mapped_ccis": [
+      "CCI-000007",
+      "CCI-000008",
+      "CCI-000009",
+      "CCI-000010",
+      "CCI-000011",
+      "CCI-000012",
+      "CCI-000013",
+      "CCI-000014",
+      "CCI-000015",
+      "CCI-000016",
+      "CCI-000017",
+      "CCI-000018",
+      "CCI-000019",
+      "CCI-000020",
+      "CCI-000208",
+      "CCI-000217",
+      "CCI-000237",
+      "CCI-001354",
+      "CCI-001355",
+      "CCI-001356",
+      "CCI-001357",
+      "CCI-001358",
+      "CCI-001359",
+      "CCI-001360",
+      "CCI-001361",
+      "CCI-001365",
+      "CCI-001403",
+      "CCI-001404",
+      "CCI-001405",
+      "CCI-001406",
+      "CCI-001407",
+      "CCI-001547",
+      "CCI-001682",
+      "CCI-001683",
+      "CCI-001684",
+      "CCI-001685",
+      "CCI-001686",
+      "CCI-002110",
+      "CCI-002111",
+      "CCI-002112",
+      "CCI-002113",
+      "CCI-002114",
+      "CCI-002115",
+      "CCI-002116",
+      "CCI-002117",
+      "CCI-002118",
+      "CCI-002119",
+      "CCI-002120",
+      "CCI-002121",
+      "CCI-002122",
+      "CCI-002123",
+      "CCI-002124",
+      "CCI-002125",
+      "CCI-002126",
+      "CCI-002127",
+      "CCI-002128",
+      "CCI-002129",
+      "CCI-002130",
+      "CCI-002131",
+      "CCI-002132",
+      "CCI-002133",
+      "CCI-002134",
+      "CCI-002135",
+      "CCI-002136",
+      "CCI-002137",
+      "CCI-002138",
+      "CCI-002139",
+      "CCI-002140",
+      "CCI-002141",
+      "CCI-002142",
+      "CCI-002143",
+      "CCI-002144",
+      "CCI-002145",
+      "CCI-002146",
+      "CCI-002147",
+      "CCI-002148",
+      "CCI-002149",
+      "CCI-002150",
+      "CCI-002151"
+    ],
+    "iso_27001_mappings": [
+      {
+        "iso_id": "A.5.16",
+        "relationship_type": "",
+        "strength": "",
+        "fulfilled_by": "",
+        "source_sheet": "Relationships-AC"
+      },
+      {
+        "iso_id": "A.5.18",
+        "relationship_type": "",
+        "strength": "",
+        "fulfilled_by": "",
+        "source_sheet": "Relationships-AC"
+      },
+      {
+        "iso_id": "A.8.2",
+        "relationship_type": "",
+        "strength": "",
+        "fulfilled_by": "",
+        "source_sheet": "Relationships-AC"
+      }
+    ],
+    "cmmc_mappings": [
+      {
+        "cmmc_practice": "AC.L1-3.1.1(a.)",
+        "nist_171a_objective": "Determine if authorized users are identified;",
+        "relationship_strength": "Equal"
+      },
+      {
+        "cmmc_practice": "AC.L1-3.1.1(d.)",
+        "nist_171a_objective": "Determine if system access is limited to authorized users;",
+        "relationship_strength": "Equal"
+      },
+      {
+        "cmmc_practice": "AC.L1-3.1.2(a.)",
+        "nist_171a_objective": "Determine if the types of transactions and functions that authorized users are permitted to execute are defined; and",
+        "relationship_strength": "Equal"
+      },
+      {
+        "cmmc_practice": "IA.L1-3.5.2(a.)",
+        "nist_171a_objective": "Determine if the identity of each user is authenticated or verified as a prerequisite to system access;",
+        "relationship_strength": "Strong"
+      },
+      {
+        "cmmc_practice": "IA.L1-3.5.2(a.)",
+        "nist_171a_objective": "Determine if the identity of each user is authenticated or verified as a prerequisite to system access;",
+        "relationship_strength": "Strong"
+      }
+    ],
+    "hitrust_mappings": [
+      "01.b User Registration",
+      "01.c Privilege Management",
+      "01.e Review of User Access Rights",
+      "01.q User Identification and Authentication",
+      "02.g Termination or Change Responsibilities",
+      "09.c Segregation of Duties",
+      "09.ab Monitoring System Use"
+    ],
+    "unified_mappings": [
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000007",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000008",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000009",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000010",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000011",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000012",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000013",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000014",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000015",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000016",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000017",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000018",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000019",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000020",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000208",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000217",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-000237",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001354",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001355",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001356",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001357",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001358",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001359",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001360",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001361",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001365",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001403",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001404",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001405",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001406",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001407",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001547",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001682",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001683",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001684",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001685",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-001686",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002110",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002111",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002112",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002113",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002114",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002115",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002116",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002117",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002118",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002119",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002120",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002121",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002122",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002123",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002124",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002125",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002126",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002127",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002128",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002129",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002130",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002131",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002132",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002133",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002134",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002135",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002136",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002137",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002138",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002139",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002140",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002141",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002142",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002143",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002144",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002145",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002146",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002147",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002148",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002149",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002150",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "DISA CCI",
+        "framework_version": "Rev 5",
+        "control_id": "CCI-002151",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→DISA CCI",
+        "mapping_source": "DISA CCI List Rev 5 + NIST r4→r5 bridge",
+        "notes": ""
+      },
+      {
+        "framework": "ISO/IEC 27001:2022",
+        "framework_version": "2022",
+        "control_id": "A.5.16",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→ISO 27001",
+        "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+        "notes": ""
+      },
+      {
+        "framework": "ISO/IEC 27001:2022",
+        "framework_version": "2022",
+        "control_id": "A.5.18",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→ISO 27001",
+        "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+        "notes": ""
+      },
+      {
+        "framework": "ISO/IEC 27001:2022",
+        "framework_version": "2022",
+        "control_id": "A.8.2",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→ISO 27001",
+        "mapping_source": "NIST OLIR STRM (sp800-53r5-to-iso-27001-mapping-2022)",
+        "notes": ""
+      },
+      {
+        "framework": "CMMC 2.0 / NIST 800-171",
+        "framework_version": "800-171 Rev 2 (CMMC 2.0)",
+        "control_id": "AC.L1-3.1.1(a.)",
+        "relationship_type": "mapped_to",
+        "strength": "Equal",
+        "direction": "NIST→CMMC",
+        "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk",
+        "notes": "Determine if authorized users are identified;"
+      },
+      {
+        "framework": "NIST SP 800-171",
+        "framework_version": "Rev 2",
+        "control_id": "3.1.1",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→800-171",
+        "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk (derived)",
+        "notes": ""
+      },
+      {
+        "framework": "CMMC 2.0 / NIST 800-171",
+        "framework_version": "800-171 Rev 2 (CMMC 2.0)",
+        "control_id": "AC.L1-3.1.1(d.)",
+        "relationship_type": "mapped_to",
+        "strength": "Equal",
+        "direction": "NIST→CMMC",
+        "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk",
+        "notes": "Determine if system access is limited to authorized users;"
+      },
+      {
+        "framework": "NIST SP 800-171",
+        "framework_version": "Rev 2",
+        "control_id": "3.1.1",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→800-171",
+        "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk (derived)",
+        "notes": ""
+      },
+      {
+        "framework": "CMMC 2.0 / NIST 800-171",
+        "framework_version": "800-171 Rev 2 (CMMC 2.0)",
+        "control_id": "AC.L1-3.1.2(a.)",
+        "relationship_type": "mapped_to",
+        "strength": "Equal",
+        "direction": "NIST→CMMC",
+        "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk",
+        "notes": "Determine if the types of transactions and functions that authorized users are permitted to execute are defined; and"
+      },
+      {
+        "framework": "NIST SP 800-171",
+        "framework_version": "Rev 2",
+        "control_id": "3.1.2",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→800-171",
+        "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk (derived)",
+        "notes": ""
+      },
+      {
+        "framework": "CMMC 2.0 / NIST 800-171",
+        "framework_version": "800-171 Rev 2 (CMMC 2.0)",
+        "control_id": "IA.L1-3.5.2(a.)",
+        "relationship_type": "mapped_to",
+        "strength": "Strong",
+        "direction": "NIST→CMMC",
+        "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk",
+        "notes": "Determine if the identity of each user is authenticated or verified as a prerequisite to system access;"
+      },
+      {
+        "framework": "NIST SP 800-171",
+        "framework_version": "Rev 2",
+        "control_id": "3.5.2",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→800-171",
+        "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk (derived)",
+        "notes": ""
+      },
+      {
+        "framework": "CMMC 2.0 / NIST 800-171",
+        "framework_version": "800-171 Rev 2 (CMMC 2.0)",
+        "control_id": "IA.L1-3.5.2(a.)",
+        "relationship_type": "mapped_to",
+        "strength": "Strong",
+        "direction": "NIST→CMMC",
+        "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk",
+        "notes": "Determine if the identity of each user is authenticated or verified as a prerequisite to system access;"
+      },
+      {
+        "framework": "NIST SP 800-171",
+        "framework_version": "Rev 2",
+        "control_id": "3.5.2",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→800-171",
+        "mapping_source": "NIST CMMC/800-171/800-53 Crosswalk (derived)",
+        "notes": ""
+      },
+      {
+        "framework": "HITRUST CSF",
+        "framework_version": "v11.4.0",
+        "control_id": "01.b User Registration",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→HITRUST",
+        "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+        "notes": ""
+      },
+      {
+        "framework": "HITRUST CSF",
+        "framework_version": "v11.4.0",
+        "control_id": "01.c Privilege Management",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→HITRUST",
+        "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+        "notes": ""
+      },
+      {
+        "framework": "HITRUST CSF",
+        "framework_version": "v11.4.0",
+        "control_id": "01.e Review of User Access Rights",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→HITRUST",
+        "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+        "notes": ""
+      },
+      {
+        "framework": "HITRUST CSF",
+        "framework_version": "v11.4.0",
+        "control_id": "01.q User Identification and Authentication",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→HITRUST",
+        "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+        "notes": ""
+      },
+      {
+        "framework": "HITRUST CSF",
+        "framework_version": "v11.4.0",
+        "control_id": "02.g Termination or Change Responsibilities",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→HITRUST",
+        "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+        "notes": ""
+      },
+      {
+        "framework": "HITRUST CSF",
+        "framework_version": "v11.4.0",
+        "control_id": "09.c Segregation of Duties",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→HITRUST",
+        "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+        "notes": ""
+      },
+      {
+        "framework": "HITRUST CSF",
+        "framework_version": "v11.4.0",
+        "control_id": "09.ab Monitoring System Use",
+        "relationship_type": "mapped_to",
+        "strength": "",
+        "direction": "NIST→HITRUST",
+        "mapping_source": "HITRUST CSF v11.4 Authoritative Sources Cross-Reference (March 2025)",
+        "notes": ""
+      }
+    ]
+  }
+}

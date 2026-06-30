@@ -1,0 +1,639 @@
+{
+  "_schema_version": "1.0",
+  "_generated": "2026-06-30",
+  "_purpose": "Per-source sheet, column, header-row, and version pins for every ingestion source. This is the durable fix for column-name drift. All loader code must read column names from here — never hardcode them.",
+  "sources": [
+    {
+      "id": "nist-800-53-r5-catalog",
+      "file": "canonical-sources/source_data/sp800-53r5- Excell full control-catalog.xlsx",
+      "format": "xlsx",
+      "sheet": "SP 800-53 Revision 5",
+      "header_row": 0,
+      "version": "NIST SP 800-53 Rev 5.0",
+      "retrieved": "2024",
+      "role": "nist_catalog",
+      "column_roles": {
+        "Control Identifier": "id",
+        "Control (or Control Enhancement) Name": "title",
+        "Control Text": "text",
+        "Discussion": "discussion",
+        "Related Controls": "related_controls"
+      },
+      "notes": "Enhancements (e.g. AC-2(1)) are their own rows under Control Identifier — do NOT split a packed Enhancements cell. Group rows by base control ID to build the parent/child relationship."
+    },
+    {
+      "id": "nist-800-53-r5-1-1",
+      "file": "canonical-sources/source_data/CONTROLS WITH EXPLANATIONS - Baseline and enhancements - SP_800_53_r5.11.xlsx",
+      "format": "xlsx",
+      "sheet": "SP 800-53 Rev 5.1.1",
+      "header_row": 0,
+      "version": "NIST SP 800-53 Rev 5.1.1",
+      "retrieved": "2024",
+      "role": "nist_catalog_with_baselines",
+      "column_roles": {
+        "Control Family": "family",
+        "Control (or Control Enhancement) Identifier": "id",
+        "Control (or Control Enhancement) Name": "title",
+        "Control Statement": "text",
+        "Discussion": "discussion",
+        "Related Controls": "related_controls",
+        "Privacy Baseline": "privacy_baseline",
+        "Security Baseline - Low": "baseline_low",
+        "Security Baseline - Moderate": "baseline_moderate",
+        "Security Baseline - High": "baseline_high"
+      },
+      "notes": "Preferred over r5.0 catalog because it includes baseline flags inline. Same row-per-control model — enhancements are separate rows."
+    },
+    {
+      "id": "nist-800-53b-baselines",
+      "file": "canonical-sources/source_data/sp800-53b-control-baselines.xlsx",
+      "format": "xlsx",
+      "sheet": "SP 800-53B",
+      "header_row": 0,
+      "version": "NIST SP 800-53B",
+      "retrieved": "2024",
+      "role": "nist_baselines",
+      "column_roles": {
+        "SORT-AS": "sort_key",
+        "Control Identifier": "id",
+        "Control (or Control Enhancement) Name": "title",
+        "Withdrawn": "withdrawn",
+        "Privacy Baseline": "privacy_baseline",
+        "Security Control Baseline - Low": "baseline_low",
+        "Security Control Baseline - Moderate": "baseline_moderate",
+        "Security Control Baseline - High": "baseline_high"
+      },
+      "notes": "Use when only baseline membership is needed. The r5.1.1 catalog (above) includes the same data plus control text — prefer that for full builds."
+    },
+    {
+      "id": "nist-800-53-workbook",
+      "file": "canonical-sources/source_data/SP_800_53_53r5 workbook.xlsx",
+      "format": "xlsx",
+      "sheet": "SP 800-53 Rev 5.1.1",
+      "header_row": 0,
+      "version": "NIST SP 800-53 Rev 5.1.1",
+      "retrieved": "2024",
+      "role": "nist_catalog_with_baselines",
+      "column_roles": {
+        "Control Family": "family",
+        "Control (or Control Enhancement) Identifier": "id",
+        "Control (or Control Enhancement) Name": "title",
+        "Control Statement": "text",
+        "Discussion": "discussion",
+        "Related Controls": "related_controls",
+        "Privacy Baseline": "privacy_baseline",
+        "Security Baseline - Low": "baseline_low",
+        "Security Baseline - Moderate": "baseline_moderate",
+        "Security Baseline - High": "baseline_high"
+      },
+      "notes": "Appears to be the same dataset as the r5.1.1 file. Use either; nist-800-53-r5-1-1 is the canonical choice."
+    },
+    {
+      "id": "nist-800-53b-baselines-compared",
+      "file": "canonical-sources/source_data/sp800-53b (r5) -control-baselines compared.xlsx",
+      "format": "xlsx",
+      "sheet": "SP 800-53B",
+      "header_row": 0,
+      "version": "NIST SP 800-53B",
+      "retrieved": "2024",
+      "role": "nist_baselines",
+      "column_roles": {},
+      "notes": "inspect_needed — header row may be offset. Contains baseline comparison vs prior revision.",
+      "inspect_needed": true
+    },
+    {
+      "id": "nist-r4-to-r5-bridge",
+      "file": "canonical-sources/source_data/sp800-53r4-to-r5-comparison-workbook.xlsx",
+      "format": "xlsx",
+      "sheet": "Rev4 Rev5 Compared",
+      "header_row": 1,
+      "version": "NIST SP 800-53 Rev 4 to Rev 5 Comparison",
+      "retrieved": "2024",
+      "role": "cci_r4_to_r5_bridge",
+      "column_roles": {
+        "ID": "r5_id",
+        "TITLE": "title",
+        "Privacy": "privacy_baseline",
+        "L": "baseline_low",
+        "M": "baseline_moderate",
+        "H": "baseline_high",
+        "More than editorial or administrative change? (Y/N)": "substantive_change",
+        "Changed Elements": "change_summary",
+        "Change Details": "change_details"
+      },
+      "notes": "header_row=1 because row 0 contains merged section labels ('NIST SP 800-53 Rev 5 Controls', etc.) — the actual column headers are on row 1. Use this file as the CCI bridge: DISA CCI List maps CCI → r4 control IDs; join via this workbook's r4→r5 mapping to get clean r5 IDs."
+    },
+    {
+      "id": "disa-cci-list",
+      "file": "canonical-sources/source_data/stig-mapping-to-nist-800-53.xlsx",
+      "format": "xlsx",
+      "sheet": "U_CCI_List",
+      "header_row": 1,
+      "version": "DISA CCI List Rev 5",
+      "retrieved": "2024",
+      "role": "cci_to_nist_r4",
+      "column_roles": {
+        "CCI": "cci_id",
+        "/cci_items/cci_item/definition": "definition",
+        "index": "nist_r4_ref",
+        "title": "source_document",
+        "creator": "creator",
+        "status": "status"
+      },
+      "notes": "header_row=1 because row 0 is a title/blank row. The 'index' column contains 800-53 r4 control references (e.g. 'AC-1 a', 'AC-1.2 (i)'). Bridge to r5 via nist-r4-to-r5-bridge. Multiple rows per CCI are expected (one per 800-53 reference)."
+    },
+    {
+      "id": "nist-800-172",
+      "file": "canonical-sources/source_data/sp800-172-enhanced-security-reqs.xlsx",
+      "format": "xlsx",
+      "sheet": "SP 800-172",
+      "header_row": 0,
+      "version": "NIST SP 800-172",
+      "retrieved": "2024",
+      "role": "nist_800_172",
+      "column_roles": {
+        "Family": "family",
+        "Identifier": "id",
+        "Sort-As": "sort_key",
+        "Enhanced Security Requirements": "text",
+        "Discussion": "discussion",
+        "Protection Strategy": "protection_strategy"
+      },
+      "notes": "Use sheet 'SP 800-172' — NOT the 'README' sheet. Contains CUI enhanced security requirements beyond 800-171."
+    },
+    {
+      "id": "cmmc-800-171-53-crosswalk",
+      "file": "canonical-sources/source_data/NIST BASED CONTROLS CROSS MAPPING CMMC_ 800-171_800-53.xlsx",
+      "format": "xlsx",
+      "sheet": "Crosswalk",
+      "header_row": 0,
+      "version": "CMMC 2.0 / NIST SP 800-171A / 800-53 Rev 5",
+      "retrieved": "2024",
+      "role": "cmmc_to_nist",
+      "column_roles": {
+        "Order": "sort_order",
+        "CMMC Practice": "cmmc_practice",
+        "SP 800-171A Assessment Objective": "nist_171a_objective",
+        "Rev 5 \nSP 800-53 Control": "nist_53r5_id",
+        "Rev 5 \n800-53A Objectives ": "nist_53a_objective",
+        "SP 800-53 Rev 5 \nAssessment Objective": "nist_53r5_assessment_objective",
+        "Appendix C": "appendix_c_ref",
+        "FedRAMP Moderate specifications": "fedramp_moderate_notes",
+        "Mapping -171 to -53": "mapping_171_to_53",
+        "Relationship Strength": "relationship_strength"
+      },
+      "notes": "Column names contain embedded newlines (e.g. 'Rev 5 \\nSP 800-53 Control') — use exact string including the newline when reading via pandas."
+    },
+    {
+      "id": "nist-171a-53a-crosswalk",
+      "file": "canonical-sources/source_data/NIST+SP+800-171A+vs+-53A+Objective+Crosswalk+(Rev+2).xlsx",
+      "format": "xlsx",
+      "sheet": "Crosswalk",
+      "header_row": 0,
+      "version": "NIST SP 800-171A Rev 2",
+      "retrieved": "2024",
+      "role": "nist_171a_to_53a",
+      "column_roles": {
+        "Order": "sort_order",
+        "CMMC Practice": "cmmc_practice",
+        "SP 800-171A Assessment Objective": "nist_171a_objective",
+        "Rev 5 \nSP 800-53 Control": "nist_53r5_id",
+        "Rev 5 \n800-53A Objectives ": "nist_53a_objective",
+        "SP 800-53 Rev 5 \nAssessment Objective": "nist_53r5_assessment_objective",
+        "Appendix C": "appendix_c_ref",
+        "FedRAMP Moderate specifications": "fedramp_moderate_notes"
+      },
+      "notes": "Same column structure as cmmc-800-171-53-crosswalk. Rev 2 of the crosswalk. Prefer this for 800-171A to 800-53 objective-level mappings."
+    },
+    {
+      "id": "nist-800-53r5-to-iso-27001-olir",
+      "file": "canonical-sources/source_data/sp800-53r5-to-iso-27001-mapping-2022-OLIR-2023-10-12-UPDATED.xlsx",
+      "format": "xlsx",
+      "sheet_pattern": "Relationships-{FAMILY}",
+      "sheets_example": ["Relationships-AC", "AT", "AU", "CA", "CM", "CP", "IA", "IR", "MA", "MP", "PE", "PL", "PM", "PS", "RA", "SA", "SC", "SI", "SR"],
+      "header_row": 0,
+      "version": "NIST IR 8477 / ISO/IEC 27001:2022 OLIR, Updated 2023-10-12",
+      "retrieved": "2024",
+      "role": "nist_to_iso_27001",
+      "column_roles": {
+        "SP 800-53 Control Number\n(Focal Document Element)": "nist_id",
+        "SP 800-53 Control or Control Enhancement\n(Focal Document Element Description)": "nist_title",
+        "Security Control Baseline": "baseline",
+        "Rationale": "rationale",
+        "Relationship": "relationship_type",
+        "Reference Document Element": "iso_id",
+        "Reference Document Element Description": "iso_description",
+        "Fulfilled By (Y/N)": "fulfilled_by",
+        "Strength of Relationship (optional)": "strength"
+      },
+      "notes": "STRM (Set Theory Relationship Mapping) format per NIST IR 8477. Each NIST family has its own sheet (Relationships-AC, AT, etc.). Iterate over all Relationships-* sheets to build complete mapping. 'relationship_type' values: subset, superset, equal, intersect, disjoint. 'strength' is optional (1-10 or descriptive)."
+    },
+    {
+      "id": "hitrust-csf-cross-reference",
+      "file": "canonical-sources/source_data/HITRUST CSF v11.4.0 Authoritative Sources Cross-Reference_ms_March2025.xlsx",
+      "format": "xlsx",
+      "sheet": "CSF Cross-Reference",
+      "header_row": 0,
+      "version": "HITRUST CSF v11.4.0, March 2025",
+      "retrieved": "2025-03",
+      "role": "hitrust_to_all_frameworks",
+      "column_roles": {
+        "HITRUST CSF v11.4.0": "hitrust_id",
+        "AICPA Trust Services Criteria": "tsc_id",
+        "CIS CSC v8.0": "cis_v8_id",
+        "NIST SP 800-53 R5": "nist_53r5_id",
+        "ISO/IEC 27001:2022": "iso_27001_2022_id",
+        "HIPAA/HITECH": "hipaa_id",
+        "FedRAMP Moderate": "fedramp_moderate_id",
+        "NIST SP 800-171 r2": "nist_171r2_id",
+        "CMMC v2.0": "cmmc_v2_id",
+        "SOC 2": "soc2_id"
+      },
+      "notes": "64-column wide matrix. Col 0 = HITRUST CSF v11.4.0 (hitrust_id). All remaining columns are framework names — read dynamically rather than hardcoding. Use March 2025 file (not the 'copy -' variant which may be older). Some cells contain multiple IDs separated by newlines or semicolons.",
+      "total_columns": 64
+    },
+    {
+      "id": "hitrust-csf-cross-reference-old",
+      "file": "canonical-sources/source_data/copy - HITRUST CSF v11.4.0 Authoritative Sources Cross-Reference.xlsx",
+      "format": "xlsx",
+      "role": "deprecated",
+      "notes": "Older copy — use hitrust-csf-cross-reference (March 2025) instead."
+    },
+    {
+      "id": "hitrust-srm-baseline",
+      "file": "canonical-sources/source_data/HITRUST-SRM-V1.4.3_Baseline-Template-PUB.xlsm",
+      "format": "xlsm",
+      "role": "hitrust_srm",
+      "notes": "inspect_needed — XLSM format (Excel with macros). Contains HITRUST SRM v1.4.3 baseline template. Use openpyxl with keep_vba=False.",
+      "inspect_needed": true
+    },
+    {
+      "id": "hitrust-srm-aws",
+      "file": "canonical-sources/source_data/HITRUST-SRM-V1.4.3_AWS_2023(v11.0.1)-PUB.xlsm",
+      "format": "xlsm",
+      "role": "hitrust_srm_cloud",
+      "notes": "inspect_needed — AWS-specific SRM. Contains cloud-provider-specific HITRUST mappings.",
+      "inspect_needed": true
+    },
+    {
+      "id": "hitrust-srm-azure",
+      "file": "canonical-sources/source_data/HITRUST-SRM-V1.4.3_MicrosoftAzure_2023(v11.0.1)-PUB.xlsm",
+      "format": "xlsm",
+      "role": "hitrust_srm_cloud",
+      "notes": "inspect_needed — Azure-specific SRM.",
+      "inspect_needed": true
+    },
+    {
+      "id": "aicpa-tsp-to-hitrust",
+      "file": "canonical-sources/source_data/Mapping-of-2017-AICPA-TSP-to-HITRUST-CSFv11.4.0.xlsx",
+      "format": "xlsx",
+      "sheet": "CSF to AICPA Mapping",
+      "header_row": 0,
+      "version": "AICPA TSP 2017 to HITRUST CSF v11.4.0",
+      "retrieved": "2024",
+      "role": "soc2_tsc_to_hitrust",
+      "column_roles": {},
+      "notes": "inspect_needed — wide matrix with merged/multi-level headers. Column 0 = HITRUST CSF control. Remaining columns are SOC 2 TSP criteria. Need multi-level header handling.",
+      "inspect_needed": true
+    },
+    {
+      "id": "nist-csf2-mapping",
+      "file": "canonical-sources/source_data/csf2.0 FULL MAPPING WITH EXAMPLES.xlsx",
+      "format": "xlsx",
+      "sheet": "CSF 2.0",
+      "header_row": 0,
+      "version": "NIST CSF 2.0",
+      "retrieved": "2024",
+      "role": "csf2_crosswalk",
+      "column_roles": {},
+      "notes": "inspect_needed — first two columns appear unnamed suggesting multi-level or merged header row. Contains CSF 2.0 subcategory → NIST 800-53 mappings.",
+      "inspect_needed": true
+    },
+    {
+      "id": "nist-csf2-concept-crosswalk",
+      "file": "canonical-sources/source_data/Cybersecurity_Framework_v2-0_Concept_Crosswalk_800-53_final.xlsx",
+      "format": "xlsx",
+      "role": "csf2_to_nist53",
+      "notes": "inspect_needed — official NIST CSF 2.0 → 800-53 concept crosswalk.",
+      "inspect_needed": true
+    },
+    {
+      "id": "nist-csf2-implementation-examples",
+      "file": "canonical-sources/source_data/a_NIST PUBLICATION - CSF 2.0-Implementation_Examples.xlsx",
+      "format": "xlsx",
+      "sheet": "Sheet1",
+      "header_row": 0,
+      "version": "NIST CSF 2.0",
+      "retrieved": "2024",
+      "role": "csf2_implementation_examples",
+      "column_roles": {
+        "Function": "csf_function",
+        "Category": "csf_category",
+        "Subcategory": "csf_subcategory",
+        "Implementation Examples": "implementation_examples"
+      },
+      "notes": "Straight forward 4-column structure. Use for CSF 2.0 implementation guidance enrichment."
+    },
+    {
+      "id": "nist-800-53-cui-overlay",
+      "file": "canonical-sources/source_data/sp800-53rev5 and SP800-71r3_CUI_overlay_with _necessary_additions.xlsx",
+      "format": "xlsx",
+      "role": "cui_overlay",
+      "notes": "inspect_needed — CUI overlay for 800-53 r5. Sheet 'CUI Overlay' is the data sheet.",
+      "inspect_needed": true
+    },
+    {
+      "id": "nist-800-53-71r3-overlay",
+      "file": "canonical-sources/source_data/NIST CONTROLS CROSS MAPPING sp800-53rev5 and SP800-71r3_overlay_with _necessary_additions.xlsx",
+      "format": "xlsx",
+      "role": "nist_71r3_overlay",
+      "notes": "inspect_needed — SP 800-71r3 overlay with necessary additions.",
+      "inspect_needed": true
+    },
+    {
+      "id": "nist-800-53-collaboration-index",
+      "file": "canonical-sources/source_data/sp800-53-collaboration-index-template.xlsx",
+      "format": "xlsx",
+      "role": "collaboration_index",
+      "notes": "inspect_needed — NIST 800-53 collaboration/comment index template.",
+      "inspect_needed": true
+    },
+    {
+      "id": "nist-800-53-to-sp800-213a",
+      "file": "canonical-sources/source_data/sp800-53r5 to sp800-213A.csv",
+      "format": "csv",
+      "header_row": 0,
+      "version": "NIST SP 800-53 Rev 5 to SP 800-213A",
+      "retrieved": "2024",
+      "role": "iot_controls",
+      "notes": "inspect_needed — 800-213A is the IoT Federal Profile. CSV format.",
+      "inspect_needed": true
+    },
+    {
+      "id": "nist-800-53-to-sp800-213a-xlsx",
+      "file": "canonical-sources/source_data/sp800-53r5 to sp800-213A.csv.xlsx",
+      "format": "xlsx",
+      "role": "iot_controls",
+      "notes": "inspect_needed — Excel version of 800-213A mapping.",
+      "inspect_needed": true
+    },
+    {
+      "id": "federal-baseline-daapm",
+      "file": "canonical-sources/source_data/FEDERAL BASELINE AND OVERLAY MAPPING  DAAPM Appendix A Security Controls Version 2_2.xlsx",
+      "format": "xlsx",
+      "role": "federal_overlay_daapm",
+      "notes": "inspect_needed — DAAPM (DoD Information Security Risk Management Manual) Appendix A overlays.",
+      "inspect_needed": true
+    },
+    {
+      "id": "nist-cmmc-self-assessment",
+      "file": "canonical-sources/source_data/NIST-800-171-CMMC-Level-3-Self-Assessment-Calculator.xlsx",
+      "format": "xlsx",
+      "role": "cmmc_self_assessment",
+      "notes": "inspect_needed — CMMC Level 3 self-assessment scoring calculator.",
+      "inspect_needed": true
+    },
+    {
+      "id": "nist-r5-full-workbook",
+      "file": "canonical-sources/source_data/SP_800_53_53r5 workbook.xlsx",
+      "format": "xlsx",
+      "sheet": "SP 800-53 Rev 5.1.1",
+      "header_row": 0,
+      "version": "NIST SP 800-53 Rev 5.1.1",
+      "retrieved": "2024",
+      "role": "nist_catalog_with_baselines",
+      "notes": "See nist-800-53-r5-1-1 — same dataset."
+    },
+    {
+      "id": "nist-r4-appendix-j-privacy",
+      "file": "canonical-sources/source_data/sp800-53rev4-appendix_J_to-rev5-comparison.xlsx",
+      "format": "xlsx",
+      "role": "r4_privacy_to_r5_bridge",
+      "notes": "inspect_needed — maps r4 Appendix J privacy controls to r5 equivalents.",
+      "inspect_needed": true
+    },
+    {
+      "id": "nist-53b-control-baselines-compared",
+      "file": "canonical-sources/source_data/sp800-53b compared.xlsx",
+      "format": "xlsx",
+      "role": "baseline_comparison",
+      "notes": "inspect_needed — comparison of baselines across revisions.",
+      "inspect_needed": true
+    },
+    {
+      "id": "csa-ccm-v4",
+      "file": "canonical-sources/ccm-v4/CCM/primary-dataset.yaml",
+      "format": "yaml",
+      "version": "CSA CCM v4.0.12",
+      "retrieved": "2024-06-03",
+      "role": "csa_ccm",
+      "column_roles": {
+        "domains[].id": "domain_id",
+        "domains[].title": "domain_title",
+        "domains[].controls[].id": "control_id",
+        "domains[].controls[].title": "control_title",
+        "domains[].controls[].specification": "control_text"
+      },
+      "notes": "YAML structure: {name, version, url, domains: [{id, title, controls: [{id, title, specification}]}]}. 17 domains. License: CC-BY. JSON equivalent at CCM/primary-dataset.json. NIST 800-53 mapping in CCM/mappings/ (if present) or CAIQ dataset."
+    }
+  ],
+  "er_crosswalk_csvs": {
+    "_description": "ER/local-control crosswalk CSVs from compliance-report-analyzer. Each row is one ER control. 'Local Controls (Linked)' and 'Framework (from Local Controls (Linked))' are comma-separated positionally-aligned lists — split both by comma to get per-framework control pairs.",
+    "files": [
+      {
+        "id": "er-soc1-t1",
+        "file": "cross-mapping/core-audit/mappings/SOC 1 T1.csv",
+        "format": "csv",
+        "frameworks_covered": ["SOC 1"],
+        "column_roles": {
+          "Reference ID": "er_id",
+          "Category": "er_category",
+          "Name": "er_name",
+          "Tiers - Level 1 (from Child ERS(s))": "tier",
+          "Local Controls (Linked)": "local_control_ids_csv",
+          "Framework (from Local Controls (Linked))": "frameworks_csv",
+          "Sort Order": "sort_order"
+        }
+      },
+      {
+        "id": "er-soc1-t2",
+        "file": "cross-mapping/core-audit/mappings/SOC 1 T2.csv",
+        "format": "csv",
+        "frameworks_covered": ["SOC 1"],
+        "column_roles": {
+          "Reference ID": "er_id",
+          "Category": "er_category",
+          "Name": "er_name",
+          "Tiers - Level 1 (from Child ERS(s))": "tier",
+          "Local Controls (Linked)": "local_control_ids_csv",
+          "Framework (from Local Controls (Linked))": "frameworks_csv",
+          "Sort Order": "sort_order"
+        }
+      },
+      {
+        "id": "er-soc2-t1",
+        "file": "cross-mapping/core-audit/mappings/SOC 2 T1.csv",
+        "format": "csv",
+        "frameworks_covered": ["SOC 2", "ISO 27001/2 (2022)"],
+        "column_roles": {
+          "Reference ID": "er_id",
+          "Category": "er_category",
+          "Name": "er_name",
+          "Tiers - Level 1 (from Child ERS(s))": "tier",
+          "Local Controls (Linked)": "local_control_ids_csv",
+          "Framework (from Local Controls (Linked))": "frameworks_csv",
+          "Sort Order": "sort_order"
+        }
+      },
+      {
+        "id": "er-soc2-t2",
+        "file": "cross-mapping/core-audit/mappings/SOC 2 T2.csv",
+        "format": "csv",
+        "frameworks_covered": ["SOC 2", "ISO 27001/2 (2022)", "HIPAA", "HITRUST e1"],
+        "column_roles": {
+          "Reference ID": "er_id",
+          "Category": "er_category",
+          "Name": "er_name",
+          "Tiers - Level 1 (from Child ERS(s))": "tier",
+          "Local Controls (Linked)": "local_control_ids_csv",
+          "Framework (from Local Controls (Linked))": "frameworks_csv",
+          "Sort Order": "sort_order"
+        }
+      },
+      {
+        "id": "er-iso-27001",
+        "file": "cross-mapping/core-audit/mappings/ISO 27001.csv",
+        "format": "csv",
+        "frameworks_covered": ["ISO 27001/2 (2022)"],
+        "column_roles": {
+          "Reference ID": "er_id",
+          "Category": "er_category",
+          "Name": "er_name",
+          "Local Controls (Linked)": "local_control_ids_csv",
+          "Framework (from Local Controls (Linked))": "frameworks_csv",
+          "Sort Order": "sort_order"
+        }
+      },
+      {
+        "id": "er-hipaa",
+        "file": "cross-mapping/core-audit/mappings/HIPAA Security.csv",
+        "format": "csv",
+        "frameworks_covered": ["HIPAA Security"],
+        "column_roles": {
+          "Reference ID": "er_id",
+          "Category": "er_category",
+          "Name": "er_name",
+          "Local Controls (Linked)": "local_control_ids_csv",
+          "Framework (from Local Controls (Linked))": "frameworks_csv",
+          "Sort Order": "sort_order"
+        }
+      },
+      {
+        "id": "er-soc2-t2-iso-27001-combo",
+        "file": "cross-mapping/core-audit/mappings/SOC 2 T2 & ISO 27001.csv",
+        "format": "csv",
+        "frameworks_covered": ["SOC 2", "ISO 27001/2 (2022)"],
+        "role": "overlap_oracle",
+        "column_roles": {
+          "Reference ID": "er_id",
+          "Category": "er_category",
+          "Name": "er_name",
+          "Tiers - Level 1 (from Child ERS(s))": "tier",
+          "Local Controls (Linked)": "local_control_ids_csv",
+          "Framework (from Local Controls (Linked))": "frameworks_csv",
+          "Sort Order": "sort_order"
+        },
+        "notes": "Pre-built SOC 2 T2 ↔ ISO 27001 combination crosswalk. Use as the validation oracle for overlap engine: computed SOC 2 ↔ ISO 27001 shared-ER count must reconcile against this file."
+      },
+      {
+        "id": "er-soc2-t1-iso-27001-combo",
+        "file": "cross-mapping/core-audit/mappings/SOC 2 T1 & ISO 27001.csv",
+        "format": "csv",
+        "frameworks_covered": ["SOC 2", "ISO 27001/2 (2022)"],
+        "role": "overlap_oracle"
+      },
+      {
+        "id": "er-soc2-t1-hipaa-combo",
+        "file": "cross-mapping/core-audit/mappings/SOC 2 T1 & HIPAA S.csv",
+        "format": "csv",
+        "frameworks_covered": ["SOC 2", "HIPAA Security"],
+        "role": "overlap_oracle"
+      }
+    ]
+  },
+  "overlap_data": {
+    "_description": "Customer-success overlap datasets for HIPAA↔HITRUST and SOC2↔HITRUST analysis.",
+    "files": [
+      {
+        "id": "hipaa-hitrust-overlap-full",
+        "file": "overlap-data/hipaa_hitrust_e1_granular_overlap_with_45cfr_enhanced_split_columns.xlsx",
+        "format": "xlsx",
+        "role": "hipaa_hitrust_overlap",
+        "notes": "Most complete version (14 sheets). Includes Action_Item_Overlap, Normalized_Tuples, HIPAA_45CFR_Mapping, Source_Register, Pair_Summary. Use this as the primary HIPAA↔HITRUST overlap source."
+      },
+      {
+        "id": "hipaa-hitrust-overlap-basic",
+        "file": "overlap-data/hipaa_hitrust_e1_granular_overlap_with_45cfr.xlsx",
+        "format": "xlsx",
+        "role": "hipaa_hitrust_overlap",
+        "notes": "Earlier version without split columns. Use full version above."
+      },
+      {
+        "id": "actionitem-citation-map",
+        "file": "overlap-data/actionitem_citation_map.csv",
+        "format": "csv",
+        "header_row": 0,
+        "role": "hipaa_45cfr_citations",
+        "column_roles": {
+          "Source File": "source_file",
+          "Reference ID": "reference_id",
+          "Category": "category",
+          "Action Item": "action_item",
+          "HIPAA Control": "hipaa_control",
+          "Related HITRUST e1 Controls": "hitrust_e1_controls",
+          "45_CFR_Citation": "cfr_citation",
+          "HIPAA_Requirement_Title": "hipaa_req_title",
+          "Implementation_Type": "implementation_type"
+        },
+        "notes": "80 rows. Maps HIPAA action items to HITRUST e1 controls and 45 CFR citations."
+      },
+      {
+        "id": "hipaa-citations-register",
+        "file": "overlap-data/official_hipaa_citations_register.csv",
+        "format": "csv",
+        "header_row": 0,
+        "role": "hipaa_regulatory_reference",
+        "column_roles": {
+          "45_CFR_Citation": "cfr_citation",
+          "HIPAA_Requirement_Title": "requirement_title",
+          "Safeguard_Family": "safeguard_family",
+          "Official_Section_URL": "hhs_url",
+          "HHS_Audit_Protocol_URL": "hhs_audit_url"
+        },
+        "notes": "27 rows. Official HIPAA 45 CFR citation register. Use as validation oracle for HIPAA citation traceability."
+      },
+      {
+        "id": "soc2-hitrust-crosswalk",
+        "file": "overlap-data/SOC 2 T2 & HITRUST e1.csv",
+        "format": "csv",
+        "header_row": 0,
+        "role": "soc2_hitrust_overlap",
+        "column_roles": {
+          "Reference ID": "er_id",
+          "Category": "er_category",
+          "Name": "er_name",
+          "Local Controls (Linked)": "local_control_ids_csv",
+          "Framework (from Local Controls (Linked))": "frameworks_csv"
+        },
+        "notes": "81 rows. SOC 2 T2 ↔ HITRUST e1 combination crosswalk. Same ER-anchored structure as core-audit CSVs."
+      },
+      {
+        "id": "gdpr-soc2-template",
+        "file": "overlap-data/GDPR_SOC2_template.xlsx",
+        "format": "xlsx",
+        "role": "gdpr_soc2_overlap",
+        "notes": "inspect_needed — GDPR action items guidance / SOC 2 template."
+      }
+    ]
+  }
+}

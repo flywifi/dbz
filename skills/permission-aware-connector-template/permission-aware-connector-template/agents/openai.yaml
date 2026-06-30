@@ -1,0 +1,12 @@
+interface:
+  display_name: Permission Aware Connector Template
+  short_description: design basic no-oauth templates and full authz variants from the same contracts
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

@@ -1,0 +1,4 @@
+principal,resource,action,scope,effect
+end_user,account,read,own_account,allow
+teammate,document,read,team_account,allow
+admin,admin_control,administer,global,allow

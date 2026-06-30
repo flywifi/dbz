@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Enhanced Framework Mapping Schema v3.0",
+  "description": "Schema to track baseline vs. optional controls, overlays, tiers, annexes, and TSCs for precise audit overlap calculation",
+  
+  "definitions": {
+    "scope_type": {
+      "type": "string",
+      "enum": ["baseline", "optional_addon", "overlay", "annex", "tier", "enhancement"],
+      "description": "Defines the relationship of this component to its parent framework"
+    },
+    
+    "tsc_category": {
+      "type": "string", 
+      "enum": ["security", "availability", "processing_integrity", "confidentiality", "privacy", "all"],
+      "description": "SOC 2 Trust Service Criteria category"
+    },
+    
+    "tier_level": {
+      "type": "object",
+      "properties": {
+        "tier_name": {
+          "type": "string",
+          "description": "e.g., 'Low', 'Moderate', 'High', 'e1', 'i1', 'r2', 'Level 1'"
+        },
+        "tier_ordinal": {
+          "type": "integer",
+          "description": "Numeric ordering (1=lowest, higher=more controls)"
+        },
+        "includes_lower_tiers": {
+          "type": "boolean",
+          "description": "Whether this tier includes all controls from lower tiers"
+        }
+      }
+    },
+    
+    "framework_component": {
+      "type": "object",
+      "required": ["component_id", "scope_type", "controls"],
+      "properties": {
+        "component_id": {
+          "type": "string",
+          "description": "Unique identifier for this component"
+        },
+        "component_name": {
+          "type": "string"
+        },
+        "scope_type": {
+          "$ref": "#/definitions/scope_type"
+        },
+        "parent_framework": {
+          "type": "string",
+          "description": "The framework this extends/belongs to (null if standalone)"
+        },
+        "tier": {
+          "$ref": "#/definitions/tier_level"
+        },
+        "tsc_category": {
+          "$ref": "#/definitions/tsc_category"
+        },
+        "is_required_for_certification": {
+          "type": "boolean",
+          "description": "Whether this component is mandatory for certification"
+        },
+        "controls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of control IDs in this component"
+        },
+        "incremental_controls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Controls ADDED by this component beyond parent/lower tier"
+        }
+      }
+    }
+  },
+  
+  "type": "object",
+  "properties": {
+    "frameworks": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["framework_id", "name", "components"],
+        "properties": {
+          "framework_id": {"type": "string"},
+          "name": {"type": "string"},
+          "version": {"type": "string"},
+          "region": {"type": "string"},
+          "domain": {"type": "string"},
+          "has_tiers": {"type": "boolean"},
+          "has_optional_addons": {"type": "boolean"},
+          "components": {
+            "type": "array",
+            "items": {"$ref": "#/definitions/framework_component"}
+          }
+        }
+      }
+    }
+  }
+}

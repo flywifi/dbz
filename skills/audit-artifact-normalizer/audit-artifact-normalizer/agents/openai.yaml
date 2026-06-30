@@ -1,0 +1,12 @@
+interface:
+  display_name: Audit Artifact Normalizer
+  short_description: normalize audit evidence with local-first fallback and optional higher-fidelity parsers
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true
