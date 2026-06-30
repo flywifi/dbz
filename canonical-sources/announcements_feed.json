@@ -1,8 +1,1033 @@
 {
   "schema_version": "1.0.0",
-  "_purpose": "Structured announcements from standards-body RSS/Atom feeds. Populated by announcement_monitor.py. Early-warning signals that precede file changes in canonical-sources/ by weeks.",
-  "_usage": "Entries with human_reviewed=false are automated signals; set to true after a human verifies on the primary source. action_items drive re-pinning in source_manifest.json.",
-  "generated_at": null,
+  "_purpose": "Structured announcements from standards-body RSS/Atom feeds. Populated by announcement_monitor.py.",
+  "generated_at": "2026-06-30T18:34:37Z",
   "window_days": 180,
-  "entries": []
+  "entries": [
+    {
+      "entry_id": "88d188c581b3cbf4",
+      "framework_ids": [
+        "nist-800-53"
+      ],
+      "title": "Advancing Product Security: New IoT Guidance and New Engagement",
+      "published_at": null,
+      "url": "https://www.nist.gov/blogs/cybersecurity-insights/advancing-product-security-new-iot-guidance-and-new-engagement",
+      "source_feed": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
+      "change_type": "draft_release",
+      "keywords_matched": [
+        "initial public draft",
+        "ipd",
+        "draft"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "9cdc846e0a51e745",
+      "framework_ids": [
+        "nist-800-53"
+      ],
+      "title": "Sharpening the Focus on Product Requirements and Cybersecurity Risks: Updating Foundational Activities for IoT Product Manufacturers",
+      "published_at": null,
+      "url": "https://www.nist.gov/blogs/cybersecurity-insights/sharpening-focus-product-requirements-and-cybersecurity-risks-updating",
+      "source_feed": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
+      "change_type": "draft_release",
+      "keywords_matched": [
+        "update",
+        "initial public draft",
+        "draft",
+        "comment period",
+        "feedback"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "189a3c3106ce0db8",
+      "framework_ids": [
+        "nist-800-53"
+      ],
+      "title": "Let’s get Digital! Updated Digital Identity Guidelines are Here!",
+      "published_at": null,
+      "url": "https://www.nist.gov/blogs/cybersecurity-insights/lets-get-digital-updated-digital-identity-guidelines-are-here",
+      "source_feed": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "050041638ef7da59",
+      "framework_ids": [
+        "nist-800-53"
+      ],
+      "title": "Latest NICE Framework Update Offers Improvements for the Cybersecurity Workforce",
+      "published_at": null,
+      "url": "https://www.nist.gov/blogs/cybersecurity-insights/latest-nice-framework-update-offers-improvements-cybersecurity",
+      "source_feed": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
+      "change_type": "informational",
+      "keywords_matched": [
+        "update"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "62739d01fc1494cf",
+      "framework_ids": [
+        "csa-ccm"
+      ],
+      "title": "Cloud Security Alliance Extends AI Assurance Leadership Into Agentic AI With Addition of AIUC-1 Certification to STAR Registry",
+      "published_at": null,
+      "url": "https://cloudsecurityalliance.org/articles/csa-extends-leadership-into-agentic-ai-with-addition-of-aiuc-1-certification-to-star-registry",
+      "source_feed": "https://cloudsecurityalliance.org/feed",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "09a6f04fa33945c5",
+      "framework_ids": [
+        "csa-ccm"
+      ],
+      "title": "Top 6 Claude Security Risks to Watch as AI Becomes Your Employees' Operating System",
+      "published_at": null,
+      "url": "https://cloudsecurityalliance.org/articles/top-6-claude-security-risks-to-watch-as-ai-becomes-your-employees-operating-system",
+      "source_feed": "https://cloudsecurityalliance.org/feed",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "4f213d645c53adc1",
+      "framework_ids": [
+        "pci-dss"
+      ],
+      "title": "Request for Comments: PCI Data Security Standard (PCI DSS) v4.0.1",
+      "published_at": null,
+      "url": "https://blog.pcisecuritystandards.org/request-for-comments-pci-data-security-standard-pci-dss-v4.0.1",
+      "source_feed": "https://blog.pcisecuritystandards.org/rss.xml",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "1595b668d7c88add",
+      "framework_ids": [
+        "cis-controls"
+      ],
+      "title": "CIS Controls Accreditation Drives Global Cybersecurity Standards",
+      "published_at": null,
+      "url": "https://www.cisecurity.org/insights/blog/cis-controls-accreditation-drives-global-cybersecurity-standards",
+      "source_feed": "https://www.cisecurity.org/feed/",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "40d7b41b90411815",
+      "framework_ids": [
+        "cis-controls"
+      ],
+      "title": "CIS Controls Community Volunteer Spotlight: Diego Bolatti",
+      "published_at": null,
+      "url": "https://www.cisecurity.org/insights/blog/cis-controls-community-volunteer-spotlight-diego-bolatti",
+      "source_feed": "https://www.cisecurity.org/feed/",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "c7815155a85d5e4e",
+      "framework_ids": [
+        "cis-controls"
+      ],
+      "title": "Cybersecurity Hygiene Reinforced by the 2026 Verizon DBIR",
+      "published_at": null,
+      "url": "https://www.cisecurity.org/insights/blog/cybersecurity-hygiene-reinforced-by-the-2026-verizon-dbir",
+      "source_feed": "https://www.cisecurity.org/feed/",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "b987b9eb36cd516b",
+      "framework_ids": [
+        "cis-controls"
+      ],
+      "title": "Securing the AI Ecosystem Begins at the Model Layer",
+      "published_at": null,
+      "url": "https://www.cisecurity.org/insights/blog/securing-ai-ecosystem-begins-model-layer",
+      "source_feed": "https://www.cisecurity.org/feed/",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "838a65577fc5fbd1",
+      "framework_ids": [
+        "cis-controls"
+      ],
+      "title": "Applying the CIS Controls to Real‑World AI Environments",
+      "published_at": null,
+      "url": "https://www.cisecurity.org/insights/blog/applying-controls-real-world-ai-environments",
+      "source_feed": "https://www.cisecurity.org/feed/",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "62739d01fc1494cf",
+      "framework_ids": [
+        "csa-star-ccm5"
+      ],
+      "title": "Cloud Security Alliance Extends AI Assurance Leadership Into Agentic AI With Addition of AIUC-1 Certification to STAR Registry",
+      "published_at": null,
+      "url": "https://cloudsecurityalliance.org/articles/csa-extends-leadership-into-agentic-ai-with-addition-of-aiuc-1-certification-to-star-registry",
+      "source_feed": "https://cloudsecurityalliance.org/feed",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "09a6f04fa33945c5",
+      "framework_ids": [
+        "csa-star-ccm5"
+      ],
+      "title": "Top 6 Claude Security Risks to Watch as AI Becomes Your Employees' Operating System",
+      "published_at": null,
+      "url": "https://cloudsecurityalliance.org/articles/top-6-claude-security-risks-to-watch-as-ai-becomes-your-employees-operating-system",
+      "source_feed": "https://cloudsecurityalliance.org/feed",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "939de7ef43d5e008",
+      "framework_ids": [
+        "ny-dfs-500"
+      ],
+      "title": "Airworthiness Directives; The Boeing Company Airplanes",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13206/airworthiness-directives-the-boeing-company-airplanes",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=new-york-state-department-of-financial-services",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "e4d6e55a60eaf894",
+      "framework_ids": [
+        "ny-dfs-500"
+      ],
+      "title": "Funding Opportunities: Small Dollar Loan Program: FY 2026 Funding Round",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13200/funding-opportunities-small-dollar-loan-program-fy-2026-funding-round",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=new-york-state-department-of-financial-services",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "53d22c87d37edaad",
+      "framework_ids": [
+        "ny-dfs-500"
+      ],
+      "title": "Funding Opportunities: Bank Enterprise Award Program (BEA) Program: FY 2026 Funding Round",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13199/funding-opportunities-bank-enterprise-award-program-bea-program-fy-2026-funding-round",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=new-york-state-department-of-financial-services",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "984ff8fe28757eab",
+      "framework_ids": [
+        "ny-dfs-500"
+      ],
+      "title": "Funding Opportunities: Bond Guarantee Program, FY 2026; Notice of Guarantee Availability",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13172/funding-opportunities-bond-guarantee-program-fy-2026-notice-of-guarantee-availability",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=new-york-state-department-of-financial-services",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "2688c722fe002613",
+      "framework_ids": [
+        "ny-dfs-500"
+      ],
+      "title": "60-Day Notice for the Blanket Justification for National Endowment for the Arts Funding Application Guidelines and Requirements",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13122/60-day-notice-for-the-blanket-justification-for-national-endowment-for-the-arts-funding-application",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=new-york-state-department-of-financial-services",
+      "change_type": "informational",
+      "keywords_matched": [
+        "consultation"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "9c73ef819e5c6529",
+      "framework_ids": [
+        "ny-dfs-500"
+      ],
+      "title": "Self-Regulatory Organizations; Municipal Securities Rulemaking Board; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change Consisting of Amendments to MSRB Rule G-28, on Transactions With Employees and Partners of Other Municipal Securities Professionals, To Harmonize and Better Align With FINRA Rule 3210, on Accounts at Other Broker-Dealers and Financial Institutions",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13112/self-regulatory-organizations-municipal-securities-rulemaking-board-notice-of-filing-and-immediate",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=new-york-state-department-of-financial-services",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "d4355743d8c23eaa",
+      "framework_ids": [
+        "ny-dfs-500"
+      ],
+      "title": "Airworthiness Directives; Airbus Canada Limited Partnership (Type Certificate Previously Held by C Series Aircraft Limited Partnership (CSALP); Bombardier, Inc.) Airplanes",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13023/airworthiness-directives-airbus-canada-limited-partnership-type-certificate-previously-held-by-c",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=new-york-state-department-of-financial-services",
+      "change_type": "informational",
+      "keywords_matched": [
+        "final"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "95381422cce02c2b",
+      "framework_ids": [
+        "sec-cyber-17cfr"
+      ],
+      "title": "Hours of Service: Lone Star Haz Mat Response, LLC; Application for Exemption",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13189/hours-of-service-lone-star-haz-mat-response-llc-application-for-exemption",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=securities-and-exchange-commission",
+      "change_type": "public_comment",
+      "keywords_matched": [
+        "public comment"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "0130f81affe7b96c",
+      "framework_ids": [
+        "sec-cyber-17cfr"
+      ],
+      "title": "Administrative Declaration of a Disaster for the State of Pennsylvania",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13157/administrative-declaration-of-a-disaster-for-the-state-of-pennsylvania",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=securities-and-exchange-commission",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "fdf4b934ff2edf62",
+      "framework_ids": [
+        "sec-cyber-17cfr"
+      ],
+      "title": "Disclosure of Information",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13123/disclosure-of-information",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=securities-and-exchange-commission",
+      "change_type": "informational",
+      "keywords_matched": [
+        "update"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "24a5548d23dd3305",
+      "framework_ids": [
+        "sec-cyber-17cfr"
+      ],
+      "title": "Agency Information Collection Activities; Submission to the Office of Management and Budget for Review and Approval; Comment Request; Foreign Gifts and Contracts Disclosures",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13078/agency-information-collection-activities-submission-to-the-office-of-management-and-budget-for",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=securities-and-exchange-commission",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "50adf377c645e786",
+      "framework_ids": [
+        "sec-cyber-17cfr"
+      ],
+      "title": "Takes of Marine Mammals Incidental to Specified Activities; Taking Marine Mammals Incidental to Turnagain Marine Construction's Douglas Island Cruise Ship Terminal Near Juneau, Alaska",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13055/takes-of-marine-mammals-incidental-to-specified-activities-taking-marine-mammals-incidental-to",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=securities-and-exchange-commission",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "7d869dd658c8e158",
+      "framework_ids": [
+        "sec-cyber-17cfr"
+      ],
+      "title": "Fisheries Off West Coast States; Coastal Pelagic Species Fisheries; Annual Specifications; 2026-2027 Annual Specifications and Management Measures for Pacific Sardine",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13054/fisheries-off-west-coast-states-coastal-pelagic-species-fisheries-annual-specifications-2026-2027",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=securities-and-exchange-commission",
+      "change_type": "informational",
+      "keywords_matched": [
+        "minor"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "7f9614a594df7f38",
+      "framework_ids": [
+        "sec-cyber-17cfr"
+      ],
+      "title": "Security Zone; Potomac River, Tidal Basin and Adjacent Waters; Washington, DC",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13032/security-zone-potomac-river-tidal-basin-and-adjacent-waters-washington-dc",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=securities-and-exchange-commission",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "2f0a6e820c75f5c3",
+      "framework_ids": [
+        "gdpr"
+      ],
+      "title": "Supporting GDPR consistency: EDPB launches dedicated form",
+      "published_at": null,
+      "url": "https://www.edpb.europa.eu/news/supporting-gdpr-consistency-edpb-launches-dedicated-form_en",
+      "source_feed": "https://www.edpb.europa.eu/feed/news_en",
+      "change_type": "informational",
+      "keywords_matched": [
+        "launches"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "dc3a9a84ac833fe4",
+      "framework_ids": [
+        "gdpr"
+      ],
+      "title": "EDPB gets a new look: discover the new website and brand identity",
+      "published_at": null,
+      "url": "https://www.edpb.europa.eu/news/edpb-gets-a-new-look-discover-the-new-website-and-brand-identity_en",
+      "source_feed": "https://www.edpb.europa.eu/feed/news_en",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "ca945f032ec9305b",
+      "framework_ids": [
+        "nspm-12"
+      ],
+      "title": "Privacy Act of 1974; System of Records",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13042/privacy-act-of-1974-system-of-records",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=executive-office-of-the-president",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "6a72784caa911bfa",
+      "framework_ids": [
+        "fedramp"
+      ],
+      "title": "Radar Data Pilot Program",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13211/radar-data-pilot-program",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=general-services-administration",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "391b82f1b30ba9e5",
+      "framework_ids": [
+        "fedramp"
+      ],
+      "title": "Endangered Species; Receipt of Recovery Permit Applications",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13053/endangered-species-receipt-of-recovery-permit-applications",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=general-services-administration",
+      "change_type": "public_comment",
+      "keywords_matched": [
+        "public comment period",
+        "comment period",
+        "public comment"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "577ca71171619a89",
+      "framework_ids": [
+        "hipaa"
+      ],
+      "title": "New Jersey Transit's Request To Amend Its Positive Train Control Safety Plan and Positive Train Control System",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13184/new-jersey-transits-request-to-amend-its-positive-train-control-safety-plan-and-positive-train",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
+      "change_type": "major_revision",
+      "keywords_matched": [
+        "rev 7",
+        "release",
+        "update"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "e8b321679cf67e27",
+      "framework_ids": [
+        "hipaa"
+      ],
+      "title": "Notification of Cancelled Adjustment of Civil Monetary Penalties for Inflation",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13163/notification-of-cancelled-adjustment-of-civil-monetary-penalties-for-inflation",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "6d21a25a4cfdfb61",
+      "framework_ids": [
+        "hipaa"
+      ],
+      "title": "Suitability and Fitness",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13154/suitability-and-fitness",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
+      "change_type": "major_revision",
+      "keywords_matched": [
+        "final rule",
+        "final"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "0410a905f4a6b292",
+      "framework_ids": [
+        "hipaa"
+      ],
+      "title": "Marine Casualty Reporting on the Outer Continental Shelf",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13137/marine-casualty-reporting-on-the-outer-continental-shelf",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
+      "change_type": "major_revision",
+      "keywords_matched": [
+        "final rule",
+        "final"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "23e4bf7f04dad4e8",
+      "framework_ids": [
+        "hipaa"
+      ],
+      "title": "Submission for Office of Management and Budget Review; Adoption and Foster Care Analysis and Reporting System (AFCARS)",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13134/submission-for-office-of-management-and-budget-review-adoption-and-foster-care-analysis-and",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
+      "change_type": "major_revision",
+      "keywords_matched": [
+        "final rule",
+        "final"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "23023aeab790da4b",
+      "framework_ids": [
+        "hipaa"
+      ],
+      "title": "Designation-Restrict the Operation of Unmanned Aircraft in Close Proximity to a Fixed Site Facility; Extension of Comment Period",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13126/designation-restrict-the-operation-of-unmanned-aircraft-in-close-proximity-to-a-fixed-site-facility",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
+      "change_type": "public_comment",
+      "keywords_matched": [
+        "comment period"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "1daf3a213115eb94",
+      "framework_ids": [
+        "hipaa"
+      ],
+      "title": "Allocation of Assets in Single-Employer Plans; Interest Assumptions for Valuing Benefits",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13124/allocation-of-assets-in-single-employer-plans-interest-assumptions-for-valuing-benefits",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
+      "change_type": "major_revision",
+      "keywords_matched": [
+        "final rule",
+        "final"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "abb35503158d02f0",
+      "framework_ids": [
+        "hipaa"
+      ],
+      "title": "Technical Guidelines for the Production of Regenerative Agricultural Biofuel Feedstocks",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13092/technical-guidelines-for-the-production-of-regenerative-agricultural-biofuel-feedstocks",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
+      "change_type": "major_revision",
+      "keywords_matched": [
+        "final rule",
+        "final"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "164e0e7e248462c7",
+      "framework_ids": [
+        "hipaa"
+      ],
+      "title": "Alien Registration Form and Evidence of Registration",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13057/alien-registration-form-and-evidence-of-registration",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
+      "change_type": "major_revision",
+      "keywords_matched": [
+        "final rule",
+        "final"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "8066c7303233f66c",
+      "framework_ids": [
+        "hipaa"
+      ],
+      "title": "Safety Zones; Annual Events in the Captain of the Port Detroit Zone",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13050/safety-zones-annual-events-in-the-captain-of-the-port-detroit-zone",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "90d98bfa282230f3",
+      "framework_ids": [
+        "hipaa"
+      ],
+      "title": "Agency Information Collection Activities: Requests for Comments; Clearance for Renewal of Information Collection: Privacy International Civil Aviation Organization (ICAO) Address",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13035/agency-information-collection-activities-requests-for-comments-clearance-for-renewal-of-information",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "6a72784caa911bfa",
+      "framework_ids": [
+        "fedramp-20x"
+      ],
+      "title": "Radar Data Pilot Program",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13211/radar-data-pilot-program",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=general-services-administration",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "ac267ea838f41e31",
+      "framework_ids": [
+        "fedramp-20x"
+      ],
+      "title": "Notice of Public Comments on Section 133 of the Expanding Public Lands Outdoor Recreation Experiences (EXPLORE) Act",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13095/notice-of-public-comments-on-section-133-of-the-expanding-public-lands-outdoor-recreation",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=general-services-administration",
+      "change_type": "public_comment",
+      "keywords_matched": [
+        "public comment"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "3577a0628db82c02",
+      "framework_ids": [
+        "ncsc-guidance"
+      ],
+      "title": "NCSC CEO: Hostile states linked to three-quarters of cyber attacks affecting UK's critical systems",
+      "published_at": null,
+      "url": "https://www.ncsc.gov.uk/news/ncsc-ceo-hostile-states-linked-to-three-quarters-of-cyber-attacks",
+      "source_feed": "https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "e96b901ff7cf1563",
+      "framework_ids": [
+        "ncsc-guidance"
+      ],
+      "title": "Designing secure access with ZTNA",
+      "published_at": null,
+      "url": "https://www.ncsc.gov.uk/blogs/designing-secure-access-with-ztna",
+      "source_feed": "https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "2f3b2e51c0543ac0",
+      "framework_ids": [
+        "ncsc-guidance"
+      ],
+      "title": "10 questions to ask when using AI models to find vulnerabilities",
+      "published_at": null,
+      "url": "https://www.ncsc.gov.uk/blogs/10-questions-ask-using-ai-models-find-vulnerabilities",
+      "source_feed": "https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "ce32fec4bf5d26a9",
+      "framework_ids": [
+        "ncsc-guidance"
+      ],
+      "title": "Could your choice of metrics be harming your SOC?",
+      "published_at": null,
+      "url": "https://www.ncsc.gov.uk/blogs/could-your-choice-of-metrics-be-harming-your-soc",
+      "source_feed": "https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "7ce0797725e6702b",
+      "framework_ids": [
+        "ncsc-guidance"
+      ],
+      "title": "International cyber agencies share fresh advice to defend against China-linked covert networks",
+      "published_at": null,
+      "url": "https://www.ncsc.gov.uk/news/international-cyber-agencies-fresh-advice-defend-against-china-linked-covert-networks",
+      "source_feed": "https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "e1a08b1ce891e533",
+      "framework_ids": [
+        "ncsc-guidance"
+      ],
+      "title": "New cross domain guidance for government, industry and the wider security community",
+      "published_at": null,
+      "url": "https://www.ncsc.gov.uk/blogs/new-cross-domain-guidance-for-government-industry-and-the-wider-security-community",
+      "source_feed": "https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "258dbfa245dab281",
+      "framework_ids": [
+        "ncsc-guidance"
+      ],
+      "title": "Cyber chief: UK faces \"perfect storm\" for cyber security",
+      "published_at": null,
+      "url": "https://www.ncsc.gov.uk/news/cyber-chief-uk-faces-perfect-storm-for-cyber-security",
+      "source_feed": "https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "1868a0772e033e50",
+      "framework_ids": [
+        "gdpr"
+      ],
+      "title": "One-Stop-Shop case digest on right to object and right to erasure updated",
+      "published_at": null,
+      "url": "https://www.edpb.europa.eu/news/one-stop-shop-case-digest-on-right-to-object-and-right-to-erasure-updated_en",
+      "source_feed": "https://www.edpb.europa.eu/feed/news_en",
+      "change_type": "informational",
+      "keywords_matched": [
+        "update"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "4836fe32a4b04a3f",
+      "framework_ids": [
+        "nist-csf"
+      ],
+      "title": "Reflections from the Second NIST Cyber AI Profile Workshop",
+      "published_at": null,
+      "url": "https://www.nist.gov/blogs/cybersecurity-insights/reflections-second-nist-cyber-ai-profile-workshop",
+      "source_feed": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
+      "change_type": "draft_release",
+      "keywords_matched": [
+        "draft",
+        "preview"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "a013147b0d5a3dc0",
+      "framework_ids": [
+        "nist-csf"
+      ],
+      "title": "Celebrating Two Years of CSF 2.0!",
+      "published_at": null,
+      "url": "https://www.nist.gov/blogs/cybersecurity-insights/celebrating-two-years-csf-20",
+      "source_feed": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "51806ccfa874bbb1",
+      "framework_ids": [
+        "nist-csf"
+      ],
+      "title": "Cybersecurity and AI: Integrating and Building on Existing NIST Guidelines",
+      "published_at": null,
+      "url": "https://www.nist.gov/blogs/cybersecurity-insights/cybersecurity-and-ai-integrating-and-building-existing-nist-guidelines",
+      "source_feed": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
+      "change_type": "informational",
+      "keywords_matched": [
+        "feedback"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "a9dabcce7c772a6b",
+      "framework_ids": [
+        "nist-csf"
+      ],
+      "title": "Celebrating 1 Year of CSF 2.0",
+      "published_at": null,
+      "url": "https://www.nist.gov/blogs/cybersecurity-insights/celebrating-1-year-csf-20",
+      "source_feed": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
+      "change_type": "informational",
+      "keywords_matched": [
+        "release"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "1245889aa203c28d",
+      "framework_ids": [
+        "nist-csf"
+      ],
+      "title": "NIST’s International Cybersecurity and Privacy Engagement Update – Mexico City, RSA Conference, and More",
+      "published_at": null,
+      "url": "https://www.nist.gov/blogs/cybersecurity-insights/nists-international-cybersecurity-and-privacy-engagement-update-mexico",
+      "source_feed": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
+      "change_type": "major_revision",
+      "keywords_matched": [
+        "version 2.0",
+        "release",
+        "update"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "c5ac089f336ecf6b",
+      "framework_ids": [
+        "eu-dora"
+      ],
+      "title": "ECB reports on progress towards euro adoption",
+      "published_at": null,
+      "url": "https://www.ecb.europa.eu//press/pr/date/2026/html/ecb.pr260624~ec1dcac037.en.html",
+      "source_feed": "https://www.ecb.europa.eu/rss/press.html",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "37b7254ee35ebad4",
+      "framework_ids": [
+        "nist-ai-rmf"
+      ],
+      "title": "Managing Cybersecurity and Privacy Risks in the Age of Artificial Intelligence: Launching a New Program at NIST",
+      "published_at": null,
+      "url": "https://www.nist.gov/blogs/cybersecurity-insights/managing-cybersecurity-and-privacy-risks-age-artificial-intelligence",
+      "source_feed": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
+      "change_type": "informational",
+      "keywords_matched": [
+        "launching"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "013683112f71d143",
+      "framework_ids": [
+        "oscal-format"
+      ],
+      "title": "Kicking-Off with a December 4th Workshop, NIST is Revisiting and Revising Foundational Cybersecurity Activities for IoT Device Manufacturers, NIST IR 8259!",
+      "published_at": null,
+      "url": "https://www.nist.gov/blogs/cybersecurity-insights/kicking-december-4th-workshop-nist-revisiting-and-revising-foundational",
+      "source_feed": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
+      "change_type": "informational",
+      "keywords_matched": [
+        "released"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "253c7252fe1fec4b",
+      "framework_ids": [
+        "fincen-aml"
+      ],
+      "title": "Internal Revenue Service Advisory Council; Public Meeting",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13168/internal-revenue-service-advisory-council-public-meeting",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=financial-crimes-enforcement-network",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "9c6b93578cf10c90",
+      "framework_ids": [
+        "fincen-aml"
+      ],
+      "title": "Notice of Charter Renewal of the Advisory Committee on International Postal and Delivery Services (IPoDS)",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13141/notice-of-charter-renewal-of-the-advisory-committee-on-international-postal-and-delivery-services",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=financial-crimes-enforcement-network",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "51291887f8b1118d",
+      "framework_ids": [
+        "fincen-aml"
+      ],
+      "title": "Notice of Issuance of Staff Implementation Guidance 64.1, Guidance for Implementing SFFAS 64: Management's Discussion and Analysis",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13138/notice-of-issuance-of-staff-implementation-guidance-641-guidance-for-implementing-sffas-64",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=financial-crimes-enforcement-network",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "bd2a0acf4b0aa476",
+      "framework_ids": [
+        "fincen-aml"
+      ],
+      "title": "Cellular, Tissue, and Gene Therapies Advisory Committee; Notice of Meeting; Establishment of a Public Docket; Request for Comments-Biologics License Application (BLA) 125842 From Capricor, Inc. for Deramiocel (Human Allogeneic Cardiosphere-Derived Cells)",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13096/cellular-tissue-and-gene-therapies-advisory-committee-notice-of-meeting-establishment-of-a-public",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=financial-crimes-enforcement-network",
+      "change_type": "public_comment",
+      "keywords_matched": [
+        "public comment"
+      ],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "dc0b16405b033e86",
+      "framework_ids": [
+        "fincen-aml"
+      ],
+      "title": "Advisory Committee on Breast Cancer in Young Women; Notice of Charter Renewal",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13049/advisory-committee-on-breast-cancer-in-young-women-notice-of-charter-renewal",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=financial-crimes-enforcement-network",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    },
+    {
+      "entry_id": "d92f9e4ab9666d9b",
+      "framework_ids": [
+        "fincen-aml"
+      ],
+      "title": "Meeting of the U.S. Naval Academy Board of Visitors",
+      "published_at": null,
+      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13048/meeting-of-the-us-naval-academy-board-of-visitors",
+      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=financial-crimes-enforcement-network",
+      "change_type": "informational",
+      "keywords_matched": [],
+      "human_reviewed": false,
+      "action_items": []
+    }
+  ]
 }
