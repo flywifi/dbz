@@ -29,7 +29,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 REGISTRY_PATH = REPO_ROOT / "canonical-sources" / "feed_registry.json"
 OUTPUT_PATH = REPO_ROOT / "canonical-sources" / "announcements_feed.json"
 
-WINDOW_DAYS_DEFAULT = 180
+WINDOW_DAYS_DEFAULT = 730  # 2 years — captures NPRM→final rule cycles, version transitions
 TIMEOUT = 20
 USER_AGENT = "dbz-announcement-monitor/1.0 (GRC cross-mapping research)"
 
