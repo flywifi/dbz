@@ -1,6 +1,7 @@
 # GRC Source Inventory
 
 Authoritative source registry for the GRC cross-mapping engine. Last updated: 2026-06-30.
+Last audit: 2026-06-30 (4-agent deep research audit; see Feed Registry Audit section below).
 
 All `human_review_required: true`. Never fabricate control IDs or crosswalk relationships.
 
@@ -322,3 +323,111 @@ https://www.federalreserve.gov/feeds/press_all.xml
 | `nvd_api_loader.py` | `engine/` | NVD CVE API 2.0 | `canonical-sources/nvd-cve-{date}.json` |
 | `edgar_loader.py` | `engine/` | SEC EDGAR Search API | `canonical-sources/edgar-8k-cyber.json` |
 | `build_db.py` | `engine/` | All of the above | `cross-mapping/output/grc.db` |
+| `cprt_traverser.py` | `engine/` | NIST CPRT API | `canonical-sources/cprt_gap_report.json` |
+| `olir_crawler.py` | `engine/` | NIST CPRT OLIR API | `canonical-sources/olirs/` + source_manifest.json update |
+| `pdf_structure_extractor.py` | `engine/` | Local PDF files | `canonical-sources/fips/{pub_id}-structured.json` |
+
+---
+
+## NIST Normative References
+
+Publications normatively referenced in NIST SP 800-53 Rev 5.2.0 OSCAL catalog text (found in
+control discussion fields), not yet fully ingested. Grouped by ingestion tier.
+
+### Tier A: Monitor-Only (feed_registry entries added 2026-06-30)
+
+These publications are cited by name or subject in 800-53 control discussions but their
+content is policy/guidance-level, not control-ID-structured. Version monitoring is sufficient;
+no ingestion loader required.
+
+| Publication | Controls That Cite It | Version Signal | feed_registry ID |
+|---|---|---|---|
+| **SP 800-37 Rev 2** (RMF) | PM-7, CA-6, CA-7 | csrc.nist.gov publication date | `nist-sp-800-37` |
+| **SP 800-63-3** (Digital Identity) | IA-8, IA-9, MA-4 | csrc.nist.gov publication date | `nist-sp-800-63` |
+| **SP 800-63A Rev 3** (Enrollment) | IA-8(1) PIV proofing | csrc.nist.gov publication date | `nist-sp-800-63a` |
+| **SP 800-63B Rev 3** (Authentication) | IA-2 MFA, IA-5 authenticators | csrc.nist.gov publication date | `nist-sp-800-63b` |
+| **SP 800-56A Rev 3** (Key Agreement) | SC-12, SC-12(3) | csrc.nist.gov publication date | `nist-sp-800-56a` |
+| **SP 800-57 Pt 1 Rev 5** (Key Mgmt) | SC-12, SC-12(1) | csrc.nist.gov publication date | `nist-sp-800-57pt1` |
+| **SP 800-160 Vol 2 Rev 1** (Cyber Resiliency) | PL-8, SA-17 | csrc.nist.gov publication date | `nist-sp-800-160-2` |
+| **SP 800-166** (Derived PIV) | IA-8(2) derived PIV | csrc.nist.gov publication date | `nist-sp-800-166` |
+| **SP 800-189** (BGP Route Filtering) | SI-18, SC-5 | csrc.nist.gov publication date | `nist-sp-800-189` |
+| **SP 800-213A** (IoT Federal Profile) | IR-9, AC-20 | csrc.nist.gov publication date | `nist-sp-800-213a` |
+| **FIPS 140-3** (CMVP) | SC-13, IA-7, SC-8(1), SC-28(1) | csrc.nist.gov publication date | `fips-140-3` |
+| **FIPS 199** (Categorization) | RA-2 (foundational) | csrc.nist.gov publication date | `fips-199` |
+| **FIPS 200** (Min Requirements) | Underpins all baselines | csrc.nist.gov publication date | `fips-200` |
+| **FIPS 201-3** (PIV) | IA-2(12), IA-5(2), IA-8(1)-(4) | csrc.nist.gov publication date | `fips-201-3` |
+| **NIST IR 8477** (STRM Methodology) | OLIRs / crosswalk methodology | csrc.nist.gov publication date | `nist-ir-8477` |
+| **ISO/IEC 15408** (Common Criteria) | SA-17, SA-11 (NIAP) | niap-ccevs.org product list | `iso-15408` |
+
+### CCI Provenance for Normative References
+
+| Publication | Primary CCI Tier | Key CCIs | Notes |
+|---|---|---|---|
+| FIPS 201-3 (PIV) | **Confirmed-Direct** | CCI-001948, CCI-000203, CCI-001768/769 | Highest-confidence; "PIV credentials" and "FICAM" named in CCI text |
+| SP 800-63B (Auth) | **Confirmed-Subject** | CCI-000765/766 (MFA), CCI-000185–216 (authenticators) | "Multifactor authentication" and "authenticator" language; CCI-001764 names SP 800-63 |
+| FIPS 140-3 (CMVP) | **Confirmed-Subject** | CCI-002450–002453 (SC-13), CCI-000803/804 (IA-7) | "FIPS-validated cryptography" language; FIPS 140-2→3 transition is Implied-Bridge |
+| SP 800-57 Pt1 (Key Mgmt) | **Confirmed-Subject** | CCI-002449 (SC-12) | "Key establishment and key management" subject match |
+| SP 800-37 (RMF) | **Implied-Bridge** | CCI-000076–079 (CA-6), CCI-000174–178 (CA-7) | "Authorization to operate" / "continuous monitoring" language; pub not named |
+| SP 800-160 Vol 2 | **Implied-Bridge** | CCI-001771/772 (PL-8), CCI-002218–224 (SA-17) | "Security architecture" heuristic; 800-160 Vol 1 is primary citation |
+| FIPS 199/200 | **Not-Applicable** | None | Policy/categorization level; no control-implementation CCIs |
+| ISO/IEC 15408 | **Implied-Heuristic** | CCI-002218–224 (SA-17) | "Developer security architecture" → CC EAL chain; not named in CCI text |
+
+### Tier B: Planned Loaders (not yet implemented)
+
+| Publication | Format | Proposed Loader | DB Table | Notes |
+|---|---|---|---|---|
+| SP 800-63B (CPRT JSON) | NIST CPRT API | `generate_controls_800_63b.py` | `nist_800_63b_requirements` | AAL-level requirements; `cci_provenance` field per row |
+| FIPS 140-3 CMVP list | CSV (NIST CMVP) | `fips_cmvp_loader.py` | `fips_140_validations` | Module-level: vendor, level, algorithms; queryable via `dbz_query.py sc13 --fips-level 3` |
+| NIAP Product List | HTML (niap-ccevs.org) | `niap_loader.py` | `niap_validated_products` | PP/EAL claims; cross-reference to SA-17 CCIs |
+
+---
+
+## Feed Registry Audit (2026-06-30)
+
+### Issues Fixed
+
+| Issue ID | Severity | Description | Status |
+|---|---|---|---|
+| FRA-1 | CRITICAL | `github_repo` missing from 5 `github_release` entries (cisa-kev, cisa-scubagear, cisa-csaf, mitre-attack, enisa-ecsf) | **Fixed** — field added to all 5 entries |
+| FRA-2 | CRITICAL | NIST CSF 2.0 missing from feed_registry despite being in source_manifest and generating 1,396 unified_mappings | **Fixed** — `nist-csf` entry added |
+| FRA-3 | HIGH | NSM-8 rescinded Jun 2026 not in registry; NSPM-12 (successor) not in registry | **Fixed** — `nsm-8` marked retired, `nspm-12` added |
+| FRA-4 | HIGH | `version_signal` missing from 78/79 entries | **Partially fixed** — field populated on new Tier A entries; full sweep of existing 79 entries pending |
+| FRA-5 | HIGH | `next_expected_version` missing for known upcoming versions | **Fixed** — added to `nist-800-171`, `fedramp`, `hitrust` |
+| FRA-6 | MEDIUM | `csa-star-ccm5` description references outdated v4.0.12 | **Fixed** — notes updated to v4.1 |
+
+### Registry Growth
+
+| Date | Entry Count | Notes |
+|---|---|---|
+| Session start | 31 | Pre-expansion baseline |
+| After Phase 6 | 82 | US financial, criminal statutes, state laws, APAC, EU entries added |
+| After Phase 7 (2026-06-30) | **98** | +16 Tier A NIST normative references; +NSM-8 retired, NSPM-12, nist-csf |
+
+### Source Duplicate Entries (source_manifest.json)
+
+The following entries in source_manifest.json reference the same underlying file. They are retained for backwards compatibility but marked as reference-only:
+
+| Duplicate Key | Primary Key | Note |
+|---|---|---|
+| `nist-800-53-workbook` | `nist-800-53-r5-1-1` | Same XLSX file |
+| `nist-r5-full-workbook` | `nist-800-53-r5-1-1` | Same XLSX file |
+| `nist-800-53b-baselines-compared` (#5 and #30) | `nist-53b-control-baselines-compared` | Duplicated entry |
+
+---
+
+## Automated Update Pipeline
+
+| Layer | Script | Trigger | Sources |
+|---|---|---|---|
+| Daily | `kev_loader.py` | Cron / manual | CISA KEV JSON (primary or GitHub mirror) |
+| Daily | `nvd_api_loader.py` | Cron / manual | NVD CVE API 2.0 (incremental by `lastModified`) |
+| Daily | `edgar_loader.py` | Cron / manual | SEC EDGAR 8-K Item 1.05 (incremental by filed date) |
+| Weekly | `announcement_monitor.py` | Cron / manual | All RSS/Atom feeds in feed_registry |
+| Weekly | `oscal_diff.py --check-remote` | Cron / manual | usnistgov/oscal-content GitHub |
+| Weekly | `olir_crawler.py --auto-download` | Cron / manual | NIST CPRT OLIR catalog |
+| Weekly | `eurlex_loader.py --all` | Cron / manual | EUR-Lex ELI endpoints |
+| Weekly | `ecfr_loader.py --all-configured-parts` | Cron / manual | eCFR versioner API |
+| Weekly | `attack_stix_loader.py --check-version` | Cron / manual | mitre/cti GitHub releases |
+| On-demand | `cprt_traverser.py` | Manual | NIST CPRT publications API |
+| On-demand | `pdf_structure_extractor.py` | Manual | Local PDF files |
+| After any loader | `build_db.py` | Manual | All canonical-sources/ |
