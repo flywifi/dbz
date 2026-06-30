@@ -15,6 +15,7 @@ Usage:
 import argparse
 import hashlib
 import json
+import logging
 import re
 import sys
 import xml.etree.ElementTree as ET
@@ -28,10 +29,40 @@ from urllib.request import Request, urlopen
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 REGISTRY_PATH = REPO_ROOT / "canonical-sources" / "feed_registry.json"
 OUTPUT_PATH = REPO_ROOT / "canonical-sources" / "announcements_feed.json"
+LOGS_DIR = REPO_ROOT / "logs"
 
 WINDOW_DAYS_DEFAULT = 180  # standard look-back; pass --days 730 for 2-year historical scans
 TIMEOUT = 20
 USER_AGENT = "dbz-announcement-monitor/1.0 (GRC cross-mapping research)"
+
+_log = logging.getLogger("announcement_monitor")
+
+
+def setup_logging(log_dir: Path = LOGS_DIR) -> None:
+    """Configure file + console logging. Called once from main()."""
+    log_dir.mkdir(parents=True, exist_ok=True)
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    log_path = log_dir / f"announcement_monitor_{date_str}.log"
+
+    _log.setLevel(logging.DEBUG)
+
+    # File handler — INFO+ with timestamps
+    fh = logging.FileHandler(log_path, encoding="utf-8")
+    fh.setLevel(logging.INFO)
+    fh.setFormatter(logging.Formatter(
+        "%(asctime)s [%(levelname)-7s] %(message)s",
+        datefmt="%Y-%m-%dT%H:%M:%SZ",
+    ))
+    _log.addHandler(fh)
+
+    # Console handler — WARNING+ only (errors/warnings stay visible on stderr;
+    # progress/info output comes from explicit print() calls below)
+    ch = logging.StreamHandler(sys.stderr)
+    ch.setLevel(logging.WARNING)
+    ch.setFormatter(logging.Formatter("[%(levelname)s] %(message)s"))
+    _log.addHandler(ch)
+
+    _log.info("Log file: %s", log_path)
 
 # Regex scoring rules for change_type classification.
 # Each entry: list of (pattern, weight) pairs.
@@ -183,10 +214,13 @@ def _fetch_xml(url: str) -> Optional[bytes]:
         with urlopen(req, timeout=TIMEOUT) as resp:
             return resp.read()
     except HTTPError as e:
+        _log.warning("HTTP %d %s", e.code, url)
         print(f"  [WARN] HTTP {e.code} {url}", file=sys.stderr)
     except URLError as e:
+        _log.warning("URLError %s: %s", url, e.reason)
         print(f"  [WARN] URLError {url}: {e.reason}", file=sys.stderr)
     except Exception as e:
+        _log.warning("Fetch error %s: %s", url, e)
         print(f"  [WARN] Error {url}: {e}", file=sys.stderr)
     return None
 
@@ -242,6 +276,7 @@ def fetch_announcements(feed_cfg: dict, window_days: int) -> list[dict]:
     try:
         root = ET.fromstring(raw)
     except ET.ParseError as e:
+        _log.warning("XML parse error %s: %s", url, e)
         print(f"  [WARN] XML parse error {url}: {e}", file=sys.stderr)
         return []
 
@@ -321,6 +356,7 @@ def merge_with_existing(new_entries: list[dict], output_path: Path) -> tuple[lis
             doc = json.loads(output_path.read_text(encoding="utf-8"))
             existing_entries = doc.get("entries", [])
         except Exception as e:
+            _log.warning("Could not read existing %s: %s", output_path, e)
             print(f"[WARN] Could not read existing {output_path}: {e}", file=sys.stderr)
 
     truly_new = deduplicate(new_entries, existing_entries)
@@ -335,6 +371,7 @@ def run(args: argparse.Namespace) -> int:
     try:
         registry = json.loads(registry_path.read_text(encoding="utf-8"))
     except Exception as e:
+        _log.error("Cannot read feed registry %s: %s", registry_path, e)
         print(f"[ERROR] Cannot read feed registry {registry_path}: {e}", file=sys.stderr)
         return 1
 
@@ -342,8 +379,12 @@ def run(args: argparse.Namespace) -> int:
     target_ids = [args.feed] if args.feed else list(feeds.keys())
 
     if args.feed and args.feed not in feeds:
+        _log.error("Unknown feed id: %r. Available: %s", args.feed, ", ".join(feeds))
         print(f"[ERROR] Unknown feed id: {args.feed!r}. Available: {', '.join(feeds)}", file=sys.stderr)
         return 1
+
+    mode = "DRY-RUN" if args.dry_run else "LIVE"
+    _log.info("Starting %s run — %d feeds targeted, window=%d days", mode, len(target_ids), args.days)
 
     all_new: list[dict] = []
     skipped = 0
@@ -355,14 +396,22 @@ def run(args: argparse.Namespace) -> int:
             skipped += 1
             continue
         print(f"\n[{fw_id}] {entry.get('label', fw_id)}")
+        _log.info("[%s] %s — %d feed URL(s)", fw_id, entry.get("label", fw_id), len(af_list))
         for af in af_list:
             results = process_feed_entry(fw_id, af, args.days, args.dry_run)
+            _log.info("  %s → %d entries matched", af["url"], len(results))
             all_new.extend(results)
 
-    print(f"\n{'[DRY-RUN] ' if args.dry_run else ''}Found {len(all_new)} matching entries across feeds ({skipped} feeds skipped — no announcement_feeds configured)")
+    summary = (
+        f"{'[DRY-RUN] ' if args.dry_run else ''}Found {len(all_new)} matching entries "
+        f"across feeds ({skipped} feeds skipped — no announcement_feeds configured)"
+    )
+    print(f"\n{summary}")
+    _log.info(summary)
 
     if args.dry_run:
         print("[DRY-RUN] No files written.")
+        _log.info("DRY-RUN complete — no files written.")
         return 0
 
     merged, added = merge_with_existing(all_new, output_path)
@@ -374,7 +423,9 @@ def run(args: argparse.Namespace) -> int:
         "entries": sorted(merged, key=lambda e: e.get("published_at") or "", reverse=True),
     }
     output_path.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"Wrote {len(merged)} total entries ({added} new) → {output_path}")
+    msg = f"Wrote {len(merged)} total entries ({added} new) → {output_path}"
+    print(msg)
+    _log.info(msg)
     return 0
 
 
@@ -412,7 +463,15 @@ def main() -> int:
         metavar="PATH",
         help="Path to announcements_feed.json output",
     )
-    return run(parser.parse_args())
+    parser.add_argument(
+        "--log-dir",
+        default=str(LOGS_DIR),
+        metavar="DIR",
+        help=f"Directory for log files (default: {LOGS_DIR})",
+    )
+    args = parser.parse_args()
+    setup_logging(Path(args.log_dir))
+    return run(args)
 
 
 if __name__ == "__main__":
