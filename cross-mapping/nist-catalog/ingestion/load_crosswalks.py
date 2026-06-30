@@ -459,3 +459,101 @@ def load_international_via_hitrust() -> Dict[str, List[dict]]:
                 })
 
     return result
+
+
+# ── CUI overlay (NIST 800-53r5 + 800-171r3) ──────────────────────────────────
+
+@lru_cache(maxsize=1)
+def load_cui_overlay() -> Dict[str, dict]:
+    """
+    Load the CUI tailoring overlay.
+
+    Each NIST control gets a tailoring decision (CUI/NCO/FED/ORC) and an
+    optional SP 800-171 Rev 3 cross-reference.
+
+    Returns dict[nist_id → {tailoring: "CUI"|..., nist_171r3_ref: "03.15.01"|""}]
+    """
+    src = "nist-800-53-cui-overlay"
+    path = source_path(src)
+    if not path.exists():
+        raise FileNotFoundError(f"CUI overlay not found: {path}")
+
+    sn = sheet_name(src)
+    hr = header_row(src)
+    skiprows = list(range(hr)) if hr else None
+    df = pd.read_excel(path, sheet_name=sn, skiprows=skiprows)
+    df.columns = [str(c).strip() if isinstance(c, str) else c for c in df.columns]
+
+    sort_col = "Unique Sort ID (800-53r5)"
+    tail_col = "Tailoring Decision"
+    ref_171_col = "SP 800-171 Rev 3 Security Requirement"
+
+    result: Dict[str, dict] = {}
+    for _, row in df.iterrows():
+        sort_id = str(row.get(sort_col, "")).strip()
+        if not sort_id or sort_id == "nan":
+            continue
+
+        parts = sort_id.split("-")
+        if len(parts) < 3:
+            continue
+        family = parts[0]
+        base_num = parts[1].lstrip("0") or "0"
+        enh_num = parts[2].lstrip("0") if len(parts) > 2 else ""
+
+        if len(parts) >= 4 and parts[3] != "00":
+            continue
+
+        nist_id = f"{family}-{base_num}"
+        if enh_num and enh_num != "00":
+            nist_id = f"{nist_id}({enh_num})"
+
+        tailoring = str(row.get(tail_col, "")).strip()
+        ref_171 = str(row.get(ref_171_col, "")).strip()
+        if ref_171 == "nan":
+            ref_171 = ""
+        if ref_171:
+            m = re.match(r"([\d.]+)", ref_171)
+            ref_171 = m.group(1) if m else ""
+
+        if nist_id not in result:
+            result[nist_id] = {
+                "tailoring": tailoring,
+                "nist_171r3_ref": ref_171,
+            }
+
+    return result
+
+
+# ── SP 800-213A (IoT Federal Profile) ──────────────────────────────────────────
+
+@lru_cache(maxsize=1)
+def load_iot_mapping() -> Dict[str, List[str]]:
+    """
+    Load NIST 800-53 r5 → SP 800-213A IoT Federal Profile mapping.
+
+    Returns dict[nist_id → list of IoT technical capability references]
+    (e.g. ["DO:SMP(5e)", "DO:SMP(5f)", ...])
+    """
+    src = "nist-800-53-to-sp800-213a"
+    path = source_path(src)
+    if not path.exists():
+        raise FileNotFoundError(f"SP 800-213A mapping not found: {path}")
+
+    df = pd.read_csv(path)
+    df.columns = [str(c).strip() for c in df.columns]
+
+    result: Dict[str, List[str]] = {}
+    for _, row in df.iterrows():
+        nist_raw = str(row.get("References", "")).strip()
+        iot_raw = str(row.get("SP 800-213A", "")).strip()
+        if not nist_raw or nist_raw == "nan" or not iot_raw or iot_raw == "nan":
+            continue
+        nist_id = _normalize_nist_id(nist_raw)
+        if not nist_id or not re.match(r"^[A-Z]{2,3}-\d+", nist_id):
+            continue
+        refs = [x.strip() for x in re.split(r",\s*", iot_raw) if x.strip()]
+        if refs:
+            result[nist_id] = refs
+
+    return result

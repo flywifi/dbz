@@ -366,9 +366,20 @@
       "id": "nist-800-53-cui-overlay",
       "file": "canonical-sources/source_data/sp800-53rev5 and SP800-71r3_CUI_overlay_with _necessary_additions.xlsx",
       "format": "xlsx",
+      "sheet": "CUI Overlay",
+      "header_row": 0,
+      "version": "NIST SP 800-53 Rev 5 / SP 800-171 Rev 3 CUI Overlay",
+      "retrieved": "2024",
       "role": "cui_overlay",
-      "notes": "inspect_needed — CUI overlay for 800-53 r5. Sheet 'CUI Overlay' is the data sheet.",
-      "inspect_needed": true
+      "column_roles": {
+        "Unique Sort ID (800-53r5)": "sort_id",
+        "SP 800-53 Rev 5 Control & Control Enhancement": "nist_text",
+        "Tailoring Decision": "tailoring",
+        "Unique Sort ID (800-171r3)": "sort_id_171",
+        "SP 800-171 Rev 3 Security Requirement": "nist_171r3_text",
+        "Additional Tailoring ": "additional_tailoring"
+      },
+      "notes": "1138 rows (statement-level). Sort ID format: AC-01-00-00 (family-ctrl-enh-part). Tailoring values: CUI (558), NCO (458), FED (75), ORC (46). Control-level aggregation done in loader."
     },
     {
       "id": "nist-800-53-71r3-overlay",
@@ -391,11 +402,14 @@
       "file": "canonical-sources/source_data/sp800-53r5 to sp800-213A.csv",
       "format": "csv",
       "header_row": 0,
-      "version": "NIST SP 800-53 Rev 5 to SP 800-213A",
+      "version": "NIST SP 800-53 Rev 5 to SP 800-213A (IoT Federal Profile)",
       "retrieved": "2024",
       "role": "iot_controls",
-      "notes": "inspect_needed — 800-213A is the IoT Federal Profile. CSV format.",
-      "inspect_needed": true
+      "column_roles": {
+        "References": "nist_id",
+        "SP 800-213A": "iot_refs"
+      },
+      "notes": "1029 rows, 2 columns. Row 0 = header, row 1 = metadata. 166 controls have IoT references (format: 'DO:SMP(5e), DO:SMP(5f), ...'). Family header rows (e.g. 'AC') have no IoT ref."
     },
     {
       "id": "nist-800-53-to-sp800-213a-xlsx",

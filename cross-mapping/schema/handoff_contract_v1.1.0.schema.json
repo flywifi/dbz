@@ -38,6 +38,7 @@
           "items": {"type": "string", "enum": ["low", "moderate", "high"]}
         },
         "privacy_baseline": {"type": "boolean"},
+        "cui_applicable": {"type": "boolean", "description": "True when the CUI overlay marks this control as applicable to CUI environments (tailoring=CUI)."},
         "mapped_frameworks": {"type": "array", "items": {"type": "string"}},
         "framework_count": {"type": "integer", "minimum": 0}
       },

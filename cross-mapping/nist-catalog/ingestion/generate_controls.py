@@ -74,6 +74,8 @@ def _build_unified_mappings(
     hitrust_ids: List[str],
     intl_records: Optional[List[dict]] = None,
     csf2_records: Optional[List[dict]] = None,
+    iot_refs: Optional[List[str]] = None,
+    cui_record: Optional[dict] = None,
 ) -> List[dict]:
     """
     Consolidate all cross-framework mappings into a single typed list.
@@ -183,10 +185,35 @@ def _build_unified_mappings(
             "notes": f"category={rec.get('category','')}; jurisdiction={rec.get('jurisdiction','')}; via={rec.get('via','')}",
         })
 
+    for ref in (iot_refs or []):
+        unified.append({
+            "framework": "NIST SP 800-213A (IoT)",
+            "framework_version": "SP 800-213A",
+            "control_id": ref,
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→SP 800-213A",
+            "mapping_source": "NIST SP 800-53r5 to SP 800-213A crosswalk",
+            "notes": "",
+        })
+
+    if cui_record and cui_record.get("nist_171r3_ref"):
+        unified.append({
+            "framework": "NIST SP 800-171 Rev 3",
+            "framework_version": "Rev 3",
+            "control_id": cui_record["nist_171r3_ref"],
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→800-171r3",
+            "mapping_source": "CUI Overlay (800-53r5 + 800-171r3)",
+            "notes": f"tailoring={cui_record.get('tailoring', '')}",
+        })
+
     return unified
 
 
-def _compliance_scope(baselines: dict, unified_mappings: List[dict]) -> dict:
+def _compliance_scope(baselines: dict, unified_mappings: List[dict],
+                      cui_record: Optional[dict] = None) -> dict:
     """
     Summary of which compliance frameworks / tiers this control applies to.
     Used by the sales/CS overlap engine for quick filtering.
@@ -194,12 +221,14 @@ def _compliance_scope(baselines: dict, unified_mappings: List[dict]) -> dict:
     frameworks = sorted({m["framework"] for m in unified_mappings if m["control_id"]})
     fedramp_levels = [lvl for lvl in ("low", "moderate", "high")
                       if baselines.get(lvl)]
-    return {
+    scope = {
         "fedramp_levels": fedramp_levels,
         "privacy_baseline": bool(baselines.get("privacy")),
+        "cui_applicable": (cui_record or {}).get("tailoring", "") == "CUI",
         "mapped_frameworks": frameworks,
         "framework_count": len(frameworks),
     }
+    return scope
 
 
 # ── lazy loaders ───────────────────────────────────────────────────────────────
@@ -239,6 +268,16 @@ def _load_csf2():
     return load_csf2_mapping()
 
 
+def _load_cui():
+    from load_crosswalks import load_cui_overlay
+    return load_cui_overlay()
+
+
+def _load_iot():
+    from load_crosswalks import load_iot_mapping
+    return load_iot_mapping()
+
+
 # ── assembly ───────────────────────────────────────────────────────────────────
 
 def assemble_control(
@@ -250,6 +289,8 @@ def assemble_control(
     hitrust_map: dict,
     intl_map: dict = None,
     csf2_map: dict = None,
+    iot_map: dict = None,
+    cui_map: dict = None,
     generated_at: str = "",
 ) -> dict:
     """
@@ -269,16 +310,20 @@ def assemble_control(
 
     intl_map = intl_map or {}
     csf2_map = csf2_map or {}
+    iot_map = iot_map or {}
+    cui_map = cui_map or {}
     cci_ids     = cci_idx.get(ctrl_id, [])
     iso_records = iso_map.get(ctrl_id, [])
     cmmc_records = cmmc_map.get(ctrl_id, [])
     hitrust_ids  = hitrust_map.get(ctrl_id, [])
     intl_records = intl_map.get(ctrl_id, [])
     csf2_records = csf2_map.get(ctrl_id, [])
+    iot_refs     = iot_map.get(ctrl_id, [])
+    cui_record   = cui_map.get(ctrl_id)
 
     unified = _build_unified_mappings(
         ctrl_id, cci_ids, iso_records, cmmc_records, hitrust_ids,
-        intl_records, csf2_records)
+        intl_records, csf2_records, iot_refs, cui_record)
 
     record = {
         # ── Identity ──────────────────────────────────────────────────────
@@ -302,7 +347,7 @@ def assemble_control(
         "baselines": baselines,
 
         # ── Compliance scope summary (fast filter for overlap engine) ──────
-        "compliance_scope": _compliance_scope(baselines, unified),
+        "compliance_scope": _compliance_scope(baselines, unified, cui_record),
 
         # ── Enhancements (populated below) ────────────────────────────────
         "enhancements": [],
@@ -330,8 +375,11 @@ def assemble_control(
         enh_hitrust = hitrust_map.get(enh_id, [])
         enh_intl   = intl_map.get(enh_id, [])
         enh_csf2   = csf2_map.get(enh_id, [])
+        enh_iot    = iot_map.get(enh_id, [])
+        enh_cui    = cui_map.get(enh_id)
         enh_unified = _build_unified_mappings(
-            enh_id, enh_cci, enh_iso, enh_cmmc, enh_hitrust, enh_intl, enh_csf2
+            enh_id, enh_cci, enh_iso, enh_cmmc, enh_hitrust, enh_intl, enh_csf2,
+            enh_iot, enh_cui
         )
         enh_baselines = enh.get("baselines", {})
 
@@ -343,7 +391,7 @@ def assemble_control(
             "discussion": enh.get("discussion", ""),
             "parameters": _extract_parameters(enh_text),
             "baselines": enh_baselines,
-            "compliance_scope": _compliance_scope(enh_baselines, enh_unified),
+            "compliance_scope": _compliance_scope(enh_baselines, enh_unified, enh_cui),
             "mapped_ccis": enh_cci,
             "iso_27001_mappings": enh_iso,
             "cmmc_mappings": enh_cmmc,
@@ -384,6 +432,8 @@ def main():
     hitrust_map = {}
     intl_map   = {}
     csf2_map   = {}
+    iot_map    = {}
+    cui_map    = {}
 
     if not args.skip_cci:
         print("[*] Loading CCI index …")
@@ -433,12 +483,30 @@ def main():
         except Exception as e:
             print(f"    [warn] {e} — CSF 2.0 direct mappings will be empty")
 
+        print("[*] Loading SP 800-213A IoT Federal Profile …")
+        try:
+            iot_map = _load_iot()
+            print(f"    {len(iot_map)} NIST IDs with IoT capability references")
+        except Exception as e:
+            print(f"    [warn] {e} — IoT mappings will be empty")
+
+        print("[*] Loading CUI overlay (800-53r5 + 800-171r3) …")
+        try:
+            cui_map = _load_cui()
+            cui_count = sum(1 for v in cui_map.values() if v.get("tailoring") == "CUI")
+            r3_count = sum(1 for v in cui_map.values() if v.get("nist_171r3_ref"))
+            print(f"    {len(cui_map)} NIST IDs with CUI overlay ({cui_count} CUI-applicable, "
+                  f"{r3_count} with 800-171r3 refs)")
+        except Exception as e:
+            print(f"    [warn] {e} — CUI overlay will be empty")
+
     print("[*] Assembling output …")
     output: dict = {}
     for ctrl_id, catalog_record in catalog.items():
         output[ctrl_id] = assemble_control(
             ctrl_id, catalog_record, cci_idx, iso_map, cmmc_map, hitrust_map,
-            intl_map=intl_map, csf2_map=csf2_map, generated_at=generated_at,
+            intl_map=intl_map, csf2_map=csf2_map, iot_map=iot_map,
+            cui_map=cui_map, generated_at=generated_at,
         )
 
     if args.family:
