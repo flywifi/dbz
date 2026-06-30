@@ -1,7 +1,6 @@
 # GRC Source Inventory
 
 Authoritative source registry for the GRC cross-mapping engine. Last updated: 2026-06-30.
-Last audit: 2026-06-30 (4-agent deep research audit; see Feed Registry Audit section below).
 
 All `human_review_required: true`. Never fabricate control IDs or crosswalk relationships.
 
@@ -379,39 +378,6 @@ no ingestion loader required.
 | SP 800-63B (CPRT JSON) | NIST CPRT API | `generate_controls_800_63b.py` | `nist_800_63b_requirements` | AAL-level requirements; `cci_provenance` field per row |
 | FIPS 140-3 CMVP list | CSV (NIST CMVP) | `fips_cmvp_loader.py` | `fips_140_validations` | Module-level: vendor, level, algorithms; queryable via `dbz_query.py sc13 --fips-level 3` |
 | NIAP Product List | HTML (niap-ccevs.org) | `niap_loader.py` | `niap_validated_products` | PP/EAL claims; cross-reference to SA-17 CCIs |
-
----
-
-## Feed Registry Audit (2026-06-30)
-
-### Issues Fixed
-
-| Issue ID | Severity | Description | Status |
-|---|---|---|---|
-| FRA-1 | CRITICAL | `github_repo` missing from 5 `github_release` entries (cisa-kev, cisa-scubagear, cisa-csaf, mitre-attack, enisa-ecsf) | **Fixed** — field added to all 5 entries |
-| FRA-2 | CRITICAL | NIST CSF 2.0 missing from feed_registry despite being in source_manifest and generating 1,396 unified_mappings | **Fixed** — `nist-csf` entry added |
-| FRA-3 | HIGH | NSM-8 rescinded Jun 2026 not in registry; NSPM-12 (successor) not in registry | **Fixed** — `nsm-8` marked retired, `nspm-12` added |
-| FRA-4 | HIGH | `version_signal` missing from 78/79 entries | **Partially fixed** — field populated on new Tier A entries; full sweep of existing 79 entries pending |
-| FRA-5 | HIGH | `next_expected_version` missing for known upcoming versions | **Fixed** — added to `nist-800-171`, `fedramp`, `hitrust` |
-| FRA-6 | MEDIUM | `csa-star-ccm5` description references outdated v4.0.12 | **Fixed** — notes updated to v4.1 |
-
-### Registry Growth
-
-| Date | Entry Count | Notes |
-|---|---|---|
-| Session start | 31 | Pre-expansion baseline |
-| After Phase 6 | 82 | US financial, criminal statutes, state laws, APAC, EU entries added |
-| After Phase 7 (2026-06-30) | **98** | +16 Tier A NIST normative references; +NSM-8 retired, NSPM-12, nist-csf |
-
-### Source Duplicate Entries (source_manifest.json)
-
-The following entries in source_manifest.json reference the same underlying file. They are retained for backwards compatibility but marked as reference-only:
-
-| Duplicate Key | Primary Key | Note |
-|---|---|---|
-| `nist-800-53-workbook` | `nist-800-53-r5-1-1` | Same XLSX file |
-| `nist-r5-full-workbook` | `nist-800-53-r5-1-1` | Same XLSX file |
-| `nist-800-53b-baselines-compared` (#5 and #30) | `nist-53b-control-baselines-compared` | Duplicated entry |
 
 ---
 
