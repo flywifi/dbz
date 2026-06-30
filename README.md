@@ -37,9 +37,3 @@ python cross-mapping/tests/validate_catalog.py
 ## Source data
 
 31 authoritative spreadsheets in `canonical-sources/source_data/`. See `canonical-sources/source_manifest.json` for the exact sheet name, header row, and column roles for each file.
-
-## Development branch
-
-`claude/grc-backend-enhancements-0yxff6` — never push directly to `main`.
-
-See `CLAUDE.md` for full conventions.
