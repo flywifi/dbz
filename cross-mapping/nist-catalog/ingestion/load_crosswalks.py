@@ -557,3 +557,85 @@ def load_iot_mapping() -> Dict[str, List[str]]:
             result[nist_id] = refs
 
     return result
+
+
+# ── DAAPM Appendix A (DoD DCSA classified-system baselines) ──────────────────
+
+@lru_cache(maxsize=1)
+def load_daapm_baselines() -> Dict[str, List[str]]:
+    """
+    Load DAAPM Appendix A baseline membership for DCSA classified systems.
+
+    Returns dict[nist_id → list of DCSA baseline names]
+    e.g. {"AC-1": ["MLL", "HLL"]}  (MLL = Moderate-Low-Low, HLL = High-Low-Low)
+    """
+    src = "federal-baseline-daapm"
+    path = source_path(src)
+    if not path.exists():
+        raise FileNotFoundError(f"DAAPM baseline not found: {path}")
+
+    result: Dict[str, List[str]] = {}
+    for baseline_name, sheet in [("MLL", "SecurityControls_MLL"),
+                                  ("HLL", "Security Controls_HLL")]:
+        # header is at row index 2 (rows 0-1 are empty / title)
+        df = pd.read_excel(path, sheet_name=sheet, header=2)
+        df.columns = [str(c).strip() for c in df.columns]
+        ctrl_col = "Control Number"
+        if ctrl_col not in df.columns:
+            continue
+        for raw in df[ctrl_col].dropna():
+            nist_id = _normalize_nist_id(str(raw).strip())
+            if not nist_id or not re.match(r"^[A-Z]{2,3}-\d+", nist_id):
+                continue
+            if nist_id not in result:
+                result[nist_id] = []
+            if baseline_name not in result[nist_id]:
+                result[nist_id].append(baseline_name)
+
+    return result
+
+
+# ── NIST SP 800-53 r4 Appendix J → r5 privacy control bridge ─────────────────
+
+@lru_cache(maxsize=1)
+def load_appendix_j_bridge() -> Dict[str, List[str]]:
+    """
+    Load NIST SP 800-53 r4 Appendix J → r5 privacy control bridge (26 pairs).
+
+    Inverted: returns dict[r5_nist_id → list of r4 Appendix J IDs]
+    e.g. {"PT-2": ["AP-1"], "PM-3": ["AR-1"], ...}
+    """
+    src = "nist-r4-appendix-j-privacy"
+    path = source_path(src)
+    if not path.exists():
+        raise FileNotFoundError(f"Appendix J bridge not found: {path}")
+
+    df = pd.read_excel(path, sheet_name="SP 800-53 Rev 4 App J to Rev 5", header=0)
+    df.columns = [str(c).strip() for c in df.columns]
+    r4_col = df.columns[0]
+    r5_col = df.columns[1]
+
+    result: Dict[str, List[str]] = {}
+    for _, row in df.iterrows():
+        r4_raw = str(row[r4_col]).strip()
+        r5_raw = str(row[r5_col]).strip()
+        if not r4_raw or r4_raw == "nan" or not r5_raw or r5_raw == "nan":
+            continue
+        if r5_raw.lower().startswith("no specific control"):
+            continue
+
+        m4 = re.match(r"^([A-Z]{1,2}-\d+)", r4_raw)
+        if not m4:
+            continue
+        r4_id = m4.group(1)
+
+        for line in r5_raw.split("\n"):
+            m5 = re.match(r"^([A-Z]{2,3}-\d+(?:\(\d+\))?)", line.strip())
+            if m5:
+                r5_id = _normalize_nist_id(m5.group(1))
+                if r5_id:
+                    result.setdefault(r5_id, [])
+                    if r4_id not in result[r5_id]:
+                        result[r5_id].append(r4_id)
+
+    return result

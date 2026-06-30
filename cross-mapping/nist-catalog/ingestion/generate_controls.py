@@ -76,6 +76,8 @@ def _build_unified_mappings(
     csf2_records: Optional[List[dict]] = None,
     iot_refs: Optional[List[str]] = None,
     cui_record: Optional[dict] = None,
+    daapm_baselines: Optional[List[str]] = None,
+    appendix_j_ids: Optional[List[str]] = None,
 ) -> List[dict]:
     """
     Consolidate all cross-framework mappings into a single typed list.
@@ -209,6 +211,30 @@ def _build_unified_mappings(
             "notes": f"tailoring={cui_record.get('tailoring', '')}",
         })
 
+    for baseline in (daapm_baselines or []):
+        unified.append({
+            "framework": "DAAPM Appendix A (DoD DCSA)",
+            "framework_version": "v2.2",
+            "control_id": ctrl_id,
+            "relationship_type": "mapped_to",
+            "strength": "",
+            "direction": "NIST→DAAPM",
+            "mapping_source": "DAAPM Appendix A v2.2 Security Controls",
+            "notes": f"daapm_baseline={baseline}",
+        })
+
+    for r4_id in (appendix_j_ids or []):
+        unified.append({
+            "framework": "NIST SP 800-53 Rev 4 (Appendix J)",
+            "framework_version": "Rev 4 Appendix J",
+            "control_id": r4_id,
+            "relationship_type": "Superset",
+            "strength": "",
+            "direction": "r4 Appendix J → r5",
+            "mapping_source": "NIST SP 800-53 r4 Appendix J to r5 comparison",
+            "notes": "",
+        })
+
     return unified
 
 
@@ -278,6 +304,16 @@ def _load_iot():
     return load_iot_mapping()
 
 
+def _load_daapm():
+    from load_crosswalks import load_daapm_baselines
+    return load_daapm_baselines()
+
+
+def _load_appendix_j():
+    from load_crosswalks import load_appendix_j_bridge
+    return load_appendix_j_bridge()
+
+
 # ── assembly ───────────────────────────────────────────────────────────────────
 
 def assemble_control(
@@ -291,6 +327,8 @@ def assemble_control(
     csf2_map: dict = None,
     iot_map: dict = None,
     cui_map: dict = None,
+    daapm_map: dict = None,
+    appendix_j_map: dict = None,
     generated_at: str = "",
 ) -> dict:
     """
@@ -312,18 +350,23 @@ def assemble_control(
     csf2_map = csf2_map or {}
     iot_map = iot_map or {}
     cui_map = cui_map or {}
-    cci_ids     = cci_idx.get(ctrl_id, [])
-    iso_records = iso_map.get(ctrl_id, [])
-    cmmc_records = cmmc_map.get(ctrl_id, [])
-    hitrust_ids  = hitrust_map.get(ctrl_id, [])
-    intl_records = intl_map.get(ctrl_id, [])
-    csf2_records = csf2_map.get(ctrl_id, [])
-    iot_refs     = iot_map.get(ctrl_id, [])
-    cui_record   = cui_map.get(ctrl_id)
+    daapm_map = daapm_map or {}
+    appendix_j_map = appendix_j_map or {}
+    cci_ids         = cci_idx.get(ctrl_id, [])
+    iso_records     = iso_map.get(ctrl_id, [])
+    cmmc_records    = cmmc_map.get(ctrl_id, [])
+    hitrust_ids     = hitrust_map.get(ctrl_id, [])
+    intl_records    = intl_map.get(ctrl_id, [])
+    csf2_records    = csf2_map.get(ctrl_id, [])
+    iot_refs        = iot_map.get(ctrl_id, [])
+    cui_record      = cui_map.get(ctrl_id)
+    daapm_baselines = daapm_map.get(ctrl_id, [])
+    appendix_j_ids  = appendix_j_map.get(ctrl_id, [])
 
     unified = _build_unified_mappings(
         ctrl_id, cci_ids, iso_records, cmmc_records, hitrust_ids,
-        intl_records, csf2_records, iot_refs, cui_record)
+        intl_records, csf2_records, iot_refs, cui_record,
+        daapm_baselines, appendix_j_ids)
 
     record = {
         # ── Identity ──────────────────────────────────────────────────────
@@ -377,9 +420,11 @@ def assemble_control(
         enh_csf2   = csf2_map.get(enh_id, [])
         enh_iot    = iot_map.get(enh_id, [])
         enh_cui    = cui_map.get(enh_id)
+        enh_daapm  = daapm_map.get(enh_id, [])
+        enh_apj    = appendix_j_map.get(enh_id, [])
         enh_unified = _build_unified_mappings(
             enh_id, enh_cci, enh_iso, enh_cmmc, enh_hitrust, enh_intl, enh_csf2,
-            enh_iot, enh_cui
+            enh_iot, enh_cui, enh_daapm, enh_apj
         )
         enh_baselines = enh.get("baselines", {})
 
@@ -434,6 +479,8 @@ def main():
     csf2_map   = {}
     iot_map    = {}
     cui_map    = {}
+    daapm_map  = {}
+    appendix_j_map = {}
 
     if not args.skip_cci:
         print("[*] Loading CCI index …")
@@ -500,13 +547,31 @@ def main():
         except Exception as e:
             print(f"    [warn] {e} — CUI overlay will be empty")
 
+        print("[*] Loading DAAPM Appendix A (DoD DCSA classified-system baselines) …")
+        try:
+            daapm_map = _load_daapm()
+            mll_count = sum(1 for v in daapm_map.values() if "MLL" in v)
+            hll_count = sum(1 for v in daapm_map.values() if "HLL" in v)
+            print(f"    {len(daapm_map)} NIST IDs in DAAPM "
+                  f"({mll_count} MLL, {hll_count} HLL)")
+        except Exception as e:
+            print(f"    [warn] {e} — DAAPM baselines will be empty")
+
+        print("[*] Loading r4 Appendix J → r5 privacy bridge …")
+        try:
+            appendix_j_map = _load_appendix_j()
+            print(f"    {len(appendix_j_map)} r5 controls have r4 Appendix J equivalents")
+        except Exception as e:
+            print(f"    [warn] {e} — Appendix J bridge will be empty")
+
     print("[*] Assembling output …")
     output: dict = {}
     for ctrl_id, catalog_record in catalog.items():
         output[ctrl_id] = assemble_control(
             ctrl_id, catalog_record, cci_idx, iso_map, cmmc_map, hitrust_map,
             intl_map=intl_map, csf2_map=csf2_map, iot_map=iot_map,
-            cui_map=cui_map, generated_at=generated_at,
+            cui_map=cui_map, daapm_map=daapm_map, appendix_j_map=appendix_j_map,
+            generated_at=generated_at,
         )
 
     if args.family:

@@ -98,8 +98,9 @@
       "retrieved": "2024",
       "role": "nist_baselines",
       "column_roles": {},
-      "notes": "inspect_needed — header row may be offset. Contains baseline comparison vs prior revision.",
-      "inspect_needed": true
+      "notes": "Cross-revision comparison of 800-53B baselines. Baseline membership already loaded by nist-800-53b-baselines. Use that entry for full builds; this file is reference-only.",
+      "reference_only": true,
+      "redundant_of": "nist-800-53b-baselines"
     },
     {
       "id": "nist-r4-to-r5-bridge",
@@ -284,24 +285,30 @@
       "file": "canonical-sources/source_data/HITRUST-SRM-V1.4.3_Baseline-Template-PUB.xlsm",
       "format": "xlsm",
       "role": "hitrust_srm",
-      "notes": "inspect_needed — XLSM format (Excel with macros). Contains HITRUST SRM v1.4.3 baseline template. Use openpyxl with keep_vba=False.",
-      "inspect_needed": true
+      "notes": "HITRUST SRM v1.4.3 baseline template. Contains inheritability flags and CVID/BUID control IDs only — NO cross-framework mapping columns. Cross-framework data is in hitrust-csf-cross-reference. Load with openpyxl keep_vba=False, skiprows=6. CVID format: 0001.0 (4-digit decimal).",
+      "reference_only": true,
+      "sheet": "HITRUST-SRM-V1.4.3_Baseline-Tem",
+      "header_row": 6
     },
     {
       "id": "hitrust-srm-aws",
       "file": "canonical-sources/source_data/HITRUST-SRM-V1.4.3_AWS_2023(v11.0.1)-PUB.xlsm",
       "format": "xlsm",
       "role": "hitrust_srm_cloud",
-      "notes": "inspect_needed — AWS-specific SRM. Contains cloud-provider-specific HITRUST mappings.",
-      "inspect_needed": true
+      "notes": "HITRUST SRM v1.4.3 AWS cloud provider variant. Same structure as baseline SRM; AWS-specific column data only. No cross-framework mappings. Reference-only.",
+      "reference_only": true,
+      "sheet": "AWS_SRM_2023",
+      "header_row": 7
     },
     {
       "id": "hitrust-srm-azure",
       "file": "canonical-sources/source_data/HITRUST-SRM-V1.4.3_MicrosoftAzure_2023(v11.0.1)-PUB.xlsm",
       "format": "xlsm",
       "role": "hitrust_srm_cloud",
-      "notes": "inspect_needed — Azure-specific SRM.",
-      "inspect_needed": true
+      "notes": "HITRUST SRM v1.4.3 Azure cloud provider variant. Same structure as baseline SRM; Azure-specific column data only. No cross-framework mappings. Reference-only.",
+      "reference_only": true,
+      "sheet": "MicrosoftAzure_SRM_2023",
+      "header_row": 7
     },
     {
       "id": "aicpa-tsp-to-hitrust",
@@ -313,8 +320,8 @@
       "retrieved": "2024",
       "role": "soc2_tsc_to_hitrust",
       "column_roles": {},
-      "notes": "inspect_needed — wide matrix with merged/multi-level headers. Column 0 = HITRUST CSF control. Remaining columns are SOC 2 TSP criteria. Need multi-level header handling.",
-      "inspect_needed": true
+      "notes": "HITRUST CSF v11.4.0 → AICPA 2017 TSP → SOC 2 CC criteria matrix. 487 merged cell ranges, 283 columns, multi-level headers. Deferred — requires custom openpyxl merge-resolution logic.",
+      "deferred": true
     },
     {
       "id": "nist-csf2-mapping",
@@ -326,8 +333,9 @@
       "retrieved": "2024",
       "role": "csf2_crosswalk",
       "column_roles": {},
-      "notes": "inspect_needed — first two columns appear unnamed suggesting multi-level or merged header row. Contains CSF 2.0 subcategory → NIST 800-53 mappings.",
-      "inspect_needed": true
+      "notes": "Community-style full mapping. Superseded by nist-csf2-concept-crosswalk (official NIST STRM format). That entry is already loaded by load_csf2_mapping().",
+      "reference_only": true,
+      "redundant_of": "nist-csf2-concept-crosswalk"
     },
     {
       "id": "nist-csf2-concept-crosswalk",
@@ -386,16 +394,17 @@
       "file": "canonical-sources/source_data/NIST CONTROLS CROSS MAPPING sp800-53rev5 and SP800-71r3_overlay_with _necessary_additions.xlsx",
       "format": "xlsx",
       "role": "nist_71r3_overlay",
-      "notes": "inspect_needed — SP 800-71r3 overlay with necessary additions.",
-      "inspect_needed": true
+      "notes": "Duplicate of nist-800-53-cui-overlay (same file, same data). Use nist-800-53-cui-overlay loader instead.",
+      "reference_only": true,
+      "redundant_of": "nist-800-53-cui-overlay"
     },
     {
       "id": "nist-800-53-collaboration-index",
       "file": "canonical-sources/source_data/sp800-53-collaboration-index-template.xlsx",
       "format": "xlsx",
       "role": "collaboration_index",
-      "notes": "inspect_needed — NIST 800-53 collaboration/comment index template.",
-      "inspect_needed": true
+      "notes": "Organizational template for annotating privacy/security collaboration needs. Template slots are mostly empty. Not a mapping source.",
+      "reference_only": true
     },
     {
       "id": "nist-800-53-to-sp800-213a",
@@ -416,24 +425,40 @@
       "file": "canonical-sources/source_data/sp800-53r5 to sp800-213A.csv.xlsx",
       "format": "xlsx",
       "role": "iot_controls",
-      "notes": "inspect_needed — Excel version of 800-213A mapping.",
-      "inspect_needed": true
+      "notes": "XLSX container of the same data as nist-800-53-to-sp800-213a (CSV). CSV version is already loaded. Redundant.",
+      "reference_only": true,
+      "redundant_of": "nist-800-53-to-sp800-213a"
     },
     {
       "id": "federal-baseline-daapm",
       "file": "canonical-sources/source_data/FEDERAL BASELINE AND OVERLAY MAPPING  DAAPM Appendix A Security Controls Version 2_2.xlsx",
       "format": "xlsx",
       "role": "federal_overlay_daapm",
-      "notes": "inspect_needed — DAAPM (DoD Information Security Risk Management Manual) Appendix A overlays.",
-      "inspect_needed": true
+      "notes": "DCSA classified-system baselines. MLL=Moderate-Low-Low, HLL=High-Low-Low. Header at row index 2 (rows 0-1 are blank/title). Col A is empty padding; data starts col B.",
+      "sheet": "SecurityControls_MLL",
+      "header_row": 2,
+      "version": "DAAPM Appendix A v2.2 (DoD DCSA)",
+      "retrieved": "2024",
+      "column_roles": {
+        "Control Number": "nist_id",
+        "Family": "family",
+        "Control Class": "control_class",
+        "Control Title": "title",
+        "DCSA Supplemental Guidance": "dcsa_guidance"
+      },
+      "sheets": [
+        "SecurityControls_MLL",
+        "Security Controls_HLL",
+        "SecurityControlsAll_CCI"
+      ]
     },
     {
       "id": "nist-cmmc-self-assessment",
       "file": "canonical-sources/source_data/NIST-800-171-CMMC-Level-3-Self-Assessment-Calculator.xlsx",
       "format": "xlsx",
       "role": "cmmc_self_assessment",
-      "notes": "inspect_needed — CMMC Level 3 self-assessment scoring calculator.",
-      "inspect_needed": true
+      "notes": "CMMC Level 3 scoring calculator (SecureHalo vendor tool). Tracks implementation scoring, not control catalog data. Not a mapping source.",
+      "reference_only": true
     },
     {
       "id": "nist-r5-full-workbook",
@@ -451,16 +476,24 @@
       "file": "canonical-sources/source_data/sp800-53rev4-appendix_J_to-rev5-comparison.xlsx",
       "format": "xlsx",
       "role": "r4_privacy_to_r5_bridge",
-      "notes": "inspect_needed — maps r4 Appendix J privacy controls to r5 equivalents.",
-      "inspect_needed": true
+      "notes": "26 r4 Appendix J privacy controls (AP-1 through UL-2) mapped to r5 equivalents. Col B is newline-separated r5 controls. Skip rows where col B starts with 'No specific control'.",
+      "sheet": "SP 800-53 Rev 4 App J to Rev 5",
+      "header_row": 0,
+      "version": "NIST SP 800-53 Rev 4 Appendix J",
+      "retrieved": "2024",
+      "column_roles": {
+        "800-53 Rev. 4 (Appendix J) Control  ": "r4_id_label",
+        "800-53 Rev. 5 Controls": "r5_id_labels"
+      }
     },
     {
       "id": "nist-53b-control-baselines-compared",
       "file": "canonical-sources/source_data/sp800-53b compared.xlsx",
       "format": "xlsx",
       "role": "baseline_comparison",
-      "notes": "inspect_needed — comparison of baselines across revisions.",
-      "inspect_needed": true
+      "notes": "Duplicate of nist-800-53b-baselines. Use that entry instead.",
+      "reference_only": true,
+      "redundant_of": "nist-800-53b-baselines"
     },
     {
       "id": "oscal-v5.2.0-supplement",
