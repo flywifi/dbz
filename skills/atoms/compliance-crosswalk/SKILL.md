@@ -62,6 +62,9 @@ with full provenance so downstream systems can audit the mapping chain.
 }
 ```
 
+`confidence` reflects the mapping's provenance: `"high"` is reserved for Confirmed-Direct
+OLIR STRM mappings; transitive or heuristic mappings must be `"medium"` or `"low"`.
+
 ## Do NOT use this atom for
 - Fabricating control IDs, relationship types, or strength values not in the source data
 - Computing overlap % between two frameworks (use overlap-query)

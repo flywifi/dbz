@@ -82,6 +82,10 @@ Frameworks monitored are defined in `canonical-sources/feed_registry.json` (31 e
 }
 ```
 
+A framework enters `action_required` only when the file signal's `confidence` is ≥ 0.7 OR an
+announcement `change_type` is `major_revision`/`minor_update`; below that it stays in
+`unchanged_ids`. (The example above shows `confidence: 0.9`, well over the threshold.)
+
 ### `change_type` vocabulary (announcement signals)
 
 | Type | Trigger keywords |
