@@ -24,10 +24,17 @@ control B", but which specific requirement inside a control is shared.
 - **NIST 800-53 ↔ ISO 27001:2022** — the official NIST OLIR crosswalk (`direct_olir`). The
   relationship (equal / subset / superset / intersect) is derived from mapping cardinality,
   since this OLIR release leaves the relationship column empty.
+- **CMMC 2.0 ↔ NIST SP 800-171 r2 ↔ 800-53 r5** — the CMMC/800-171A/800-53A crosswalk
+  (`cmmc171`). Source-stated STRM relationships (Equal / Subset of / Superset of / Intersects
+  with) from the "Mapping -171 to -53" column. Sub-part resolution via the 800-53A assessment-
+  objective column (`AC-02d.01` → `AC-2 d.1`). ODP references (`IA-03_ODP[01]`) are linked to
+  canonical OSCAL param ids. FedRAMP Moderate pinned values are extracted from the same file
+  (partial gap fill). Confidence 0.95, hop 1, needs_confirmation=0.
 - **SOC 2, ISO, HIPAA, GDPR, CMMC, FedRAMP, CIS, 800-171** — the HITRUST v11.4 authoritative-
   sources cross-reference (`hitrust_hub`), whose NIST cells resolve to sub-parts. SOC 2 is
   anchored on the AICPA Trust Services Criteria (2017) — the specific testable criteria a SOC 2
-  audit evaluates against.
+  audit evaluates against. For CMMC 2.0 and 800-171, the engine picks the stronger `cmmc171`
+  edge (0.95) over the weaker hub edge (0.65) via `_framework_best_conf`.
 - **CCIs** — the DISA CCI list maps each CCI to a NIST 800-53 sub-part, so any framework that
   reaches a sub-part inherits its CCIs.
 - **ODP values** — the DAAPM (DoD) baseline pins concrete parameter values (e.g. AC-2(2) → 72
@@ -53,8 +60,9 @@ as unknown, never guessed.
   FedRAMP axes; for commercial pairs the honest denominator is the 800-53 sub-part via the
   HITRUST hub (lower confidence).
 - Parameter (ODP) comparison is only decidable where two frameworks both pin a value; FedRAMP
-  parameter values are not yet loaded, and commercial frameworks do not pin NIST ODPs, so those
-  comparisons are reported as undetermined.
+  parameter values are partially loaded (37 values from the CMMC crosswalk's FedRAMP column),
+  and commercial frameworks do not pin NIST ODPs, so many comparisons are still reported as
+  undetermined.
 
 ## Uncertainty ledger + confirmation cascade
 Every review-worthy uncertainty (overlap pair, ODP value, conflict, agent dissent) is recorded

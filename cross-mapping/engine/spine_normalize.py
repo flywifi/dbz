@@ -132,6 +132,105 @@ def parse_hitrust_ref(raw: str) -> List[Tuple[str, Optional[str]]]:
     return [(cid, path)]
 
 
+# 171A/53A objective id: 'AC-02d.01', 'AC-06(01)(a)[01]', 'IA-03_ODP[01]', 'AC-05_ODP'
+_OBJ_ODP_RE = re.compile(
+    r"^([A-Z]{2,3})-(\d{1,3})(?:\((\d{1,3})\))?_ODP(?:\[(\d+)\])?\s*$")
+_OBJ_CTRL_RE = re.compile(
+    r"^([A-Z]{2,3})-(\d{1,3})(?:\((\d{1,3})\))?")
+_OBJ_SUFFIX_TOK = re.compile(r"[a-z]|\d+")
+
+
+def _odp_to_oscal(fam: str, num: int, enh: Optional[int], idx: Optional[int]) -> str:
+    """Convert crosswalk ODP ref to canonical OSCAL param id."""
+    base = f"{fam.lower()}-{num:02d}"
+    if enh is not None:
+        base += f".{enh:02d}"
+    if idx is not None:
+        return f"{base}_odp.{idx:02d}"
+    return f"{base}_odp"
+
+
+def parse_objective(raw: str) -> List[Tuple[str, Optional[str], Optional[str]]]:
+    """
+    Parse a 171A/53A objective column value into [(control_id, subpart_path, odp_ref)].
+
+    Three formats:
+      Sub-part:  'AC-02d.01'           -> [('AC-2', 'd.1', None)]
+                 'AC-06(01)(a)[01]'    -> [('AC-6(1)', 'a.1', None)]
+                 'AC-07a.'             -> [('AC-7', 'a', None)]
+                 'CM-06b'              -> [('CM-6', 'b', None)]
+      ODP ref:   'IA-03_ODP[01]'       -> [('IA-3', None, 'ia-03_odp.01')]
+                 'AC-05_ODP'           -> [('AC-5', None, 'ac-05_odp')]
+      Special:   'Withdrawn' / bare    -> [] / [(ctrl, None, None)]
+    """
+    if not isinstance(raw, str):
+        return []
+    s = raw.strip()
+    if not s or s.lower() == "nan" or s.lower() == "withdrawn":
+        return []
+
+    # ODP reference?
+    m = _OBJ_ODP_RE.match(s)
+    if m:
+        fam, num_s, enh_s, idx_s = m.group(1), m.group(2), m.group(3), m.group(4)
+        num = int(num_s)
+        enh = int(enh_s) if enh_s else None
+        idx = int(idx_s) if idx_s else None
+        cid = f"{fam}-{num}"
+        if enh is not None:
+            cid += f"({enh})"
+        odp_ref = _odp_to_oscal(fam, num, enh, idx)
+        return [(cid, None, odp_ref)]
+
+    # Sub-part or bare control/enhancement
+    cm = _OBJ_CTRL_RE.match(s)
+    if not cm:
+        return []
+    fam, num_s, enh_s = cm.group(1), cm.group(2), cm.group(3)
+    cid = f"{fam}-{int(num_s)}"
+    if enh_s is not None:
+        cid += f"({int(enh_s)})"
+
+    remainder = s[cm.end():].strip().rstrip(".")
+    if not remainder:
+        return [(cid, None, None)]
+
+    # Remainder has sub-part info mixing letters, digits, dots, parens, brackets.
+    # Strategy: split on structural delimiters (dot, paren-groups, bracket-groups)
+    # to get an ordered sequence of tokens, then join with dots.
+    toks: List[str] = []
+    buf = remainder
+    while buf:
+        buf = buf.lstrip(". ")
+        if not buf:
+            break
+        if buf[0] == "(":
+            end = buf.find(")")
+            inner = buf[1:end] if end > 0 else buf[1:]
+            for t in _OBJ_SUFFIX_TOK.findall(inner.lower()):
+                toks.append(str(int(t)) if t.isdigit() else t)
+            buf = buf[end + 1:] if end > 0 else ""
+        elif buf[0] == "[":
+            end = buf.find("]")
+            inner = buf[1:end] if end > 0 else buf[1:]
+            for t in _OBJ_SUFFIX_TOK.findall(inner.lower()):
+                toks.append(str(int(t)) if t.isdigit() else t)
+            buf = buf[end + 1:] if end > 0 else ""
+        else:
+            m2 = re.match(r"([a-zA-Z]+|\d+)", buf)
+            if m2:
+                t = m2.group(1).lower()
+                toks.append(str(int(t)) if t.isdigit() else t)
+                buf = buf[m2.end():]
+            else:
+                buf = buf[1:]
+
+    if not toks:
+        return [(cid, None, None)]
+    path = ".".join(toks)
+    return [(cid, path, None)]
+
+
 def parse_cui_sort_id(raw: str) -> Optional[Tuple[str, int]]:
     """
     Parse a CUI-overlay sort id 'FAMILY-CTRL-ENH-PART' into (control_id, part_ordinal).

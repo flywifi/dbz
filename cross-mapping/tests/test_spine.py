@@ -42,6 +42,19 @@ check(SN.parse_cci_index("AC-2(1) b") == [("AC-2(1)", "b")], "cci enh sub-part")
 check(SN.parse_cci_index("AC-1.2 (i)") == [("AC-1", None)], "cci objective form -> control-level")
 check(SN.canon_subpart("AC-2", "d.1") == "AC-2 d.1", "canon_subpart join")
 
+# parse_objective: 171A/53A assessment objective normalizer
+check(SN.parse_objective("AC-02d.01") == [("AC-2", "d.1", None)], "obj AC-02d.01 -> d.1")
+check(SN.parse_objective("CM-06b") == [("CM-6", "b", None)], "obj CM-06b -> b")
+check(SN.parse_objective("AC-07a.") == [("AC-7", "a", None)], "obj AC-07a. trailing dot stripped")
+check(SN.parse_objective("AC-06(01)(a)[01]") == [("AC-6(1)", "a.1", None)], "obj enh paren/bracket")
+check(SN.parse_objective("SI-04(04)(b)[02]") == [("SI-4(4)", "b.2", None)], "obj SI-04(04)(b)[02]")
+check(SN.parse_objective("IA-03_ODP[01]") == [("IA-3", None, "ia-03_odp.01")], "obj ODP indexed")
+check(SN.parse_objective("AC-05_ODP") == [("AC-5", None, "ac-05_odp")], "obj ODP bare")
+check(SN.parse_objective("AC-06(01)_ODP[01]") == [("AC-6(1)", None, "ac-06.01_odp.01")], "obj ODP enh")
+check(SN.parse_objective("Withdrawn") == [], "obj Withdrawn -> empty")
+check(SN.parse_objective("AC-03") == [("AC-3", None, None)], "obj bare control")
+check(SN.parse_objective("") == [], "obj empty -> empty")
+
 # ── 2. Spine loaders against the real catalog + CCI list ───────────────────────
 ctrl_rows, enh_rows, param_rows, _ = B.load_catalog(B.DEFAULT_CATALOG)
 catalog_ids = {r["nist_id"] for r in ctrl_rows} | {r["id"] for r in enh_rows}
@@ -106,6 +119,23 @@ check(all(e["needs_confirmation"] == 1 for e in hub_edges), "hub edges flagged n
 check(all(e["confidence"] == 0.65 for e in hub_edges), "hub edges confidence 0.65")
 check(any(e["framework"] == "SOC 2" and e["r5_control"] == "AC-2" and e["r5_subpart"] for e in hub_edges),
       "SOC 2 projects to an AC-2 sub-part via the hub")
+
+# ── 4b. CMMC/800-171 crosswalk (Phase 2b) ─────────────────────────────────────
+cmmc_edges, fedramp_odp_rows, cmmc_stats = SL.load_cmmc171_projection(catalog_ids)
+check(cmmc_stats["edges"] > 0, f"cmmc171: >0 edges (got {cmmc_stats['edges']})")
+check(cmmc_stats["cmmc_edges"] > 0, "cmmc171: CMMC 2.0 edges present")
+check(cmmc_stats["nist171_edges"] > 0, "cmmc171: NIST SP 800-171 r2 edges present")
+check(all(e["provenance"] == "cmmc171" for e in cmmc_edges), "cmmc171 edges all provenance=cmmc171")
+check(all(e["confidence"] == 0.95 for e in cmmc_edges), "cmmc171 edges confidence 0.95")
+check(all(e["relationship_basis"] == "source_stated" for e in cmmc_edges), "cmmc171 edges basis=source_stated")
+check(all(e["needs_confirmation"] == 0 for e in cmmc_edges), "cmmc171 edges no confirmation needed")
+_cmmc_rels = {e["relationship"] for e in cmmc_edges}
+check("equal" in _cmmc_rels, "cmmc171: 'equal' relationship present")
+check("intersect" in _cmmc_rels or "subset" in _cmmc_rels, "cmmc171: non-equal relationship present")
+check(any(e["framework"] == "CMMC 2.0" and e["r5_subpart"] for e in cmmc_edges),
+      "cmmc171: CMMC 2.0 projects to sub-part level")
+check(any(e["framework"] == "NIST SP 800-171 r2" and e["r5_subpart"] for e in cmmc_edges),
+      "cmmc171: NIST 171 projects to sub-part level")
 
 # ── 5. ODP values + clash detection (Phase 4) ──────────────────────────────────
 odpv_rows, odpv_stats = SL.load_odp_values(catalog_ids)
@@ -179,6 +209,19 @@ if _DB.exists():
     _c2 = sqlite3.connect(str(_DB))
     n_uid = _c2.execute("SELECT COUNT(*) FROM framework_projection WHERE uncertainty_id IS NOT NULL").fetchone()[0]
     check(n_uid > 0, "framework_projection rows carry uncertainty_id after build")
+    # cmmc171 edges in the DB
+    n_cmmc = _c2.execute("SELECT COUNT(*) FROM framework_projection WHERE provenance='cmmc171'").fetchone()[0]
+    check(n_cmmc > 0, f"DB has cmmc171 projection edges (got {n_cmmc})")
+    n_stated = _c2.execute("SELECT COUNT(*) FROM framework_projection WHERE relationship_basis='source_stated'").fetchone()[0]
+    check(n_stated > 0, f"DB has source_stated edges (got {n_stated})")
+    # CMMC 2.0 should have both hub (0.65) and cmmc171 (0.95) edges
+    cmmc_confs = set(r[0] for r in _c2.execute(
+        "SELECT DISTINCT confidence FROM framework_projection WHERE framework='CMMC 2.0'").fetchall())
+    check(0.95 in cmmc_confs, f"CMMC 2.0 has conf=0.95 edges (confs={cmmc_confs})")
+    # ODP backfill: informational — crosswalk ODP refs don't carry sub-parts,
+    # so 0 backfills is expected until richer OSCAL part data is available
+    n_odp_linked = _c2.execute("SELECT COUNT(*) FROM control_odps WHERE r5_subpart IS NOT NULL").fetchone()[0]
+    print(f"  control_odps ODP-to-subpart links: {n_odp_linked} (data gap: OSCAL parts not structured)")
     _c2.close()
 
 # ── 8. Durable ledger + health-audit detector (Phase 7) ────────────────────────

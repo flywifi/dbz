@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.2"   # v3.2: adds overlap spine (nist_subparts, cci_bridge, control_odps)
+SCHEMA_VERSION = "3.3"   # v3.3: adds CMMC/171A crosswalk (source_stated edges, ODP backfill)
 
 CHUNK = 500  # executemany batch size
 
@@ -1040,6 +1040,41 @@ def build_db(
              :hop_count, :needs_confirmation, :uncertainty_id, :status, :source_file, :source_sheet, :source_row)
     """, olir_edges, "framework_projection")
 
+    # Phase 2b: CMMC/800-171 <-> 800-53 crosswalks (source-stated relationships).
+    cmmc_edges, fedramp_odp_rows, cmmc_stats = spine_loader.load_cmmc171_projection(catalog_ids)
+    _unc.apply_confirmations_to_edges(cmmc_edges, confirmations)
+    print(f"  cmmc171 projection: edges={cmmc_stats['edges']} "
+          f"(cmmc={cmmc_stats['cmmc_edges']} 171={cmmc_stats['nist171_edges']}) "
+          f"relationships={cmmc_stats['relationships']} "
+          f"fedramp_odp_values={cmmc_stats['fedramp_values']}")
+    _executemany_chunked(conn, """
+        INSERT INTO framework_projection
+            (framework, native_id, r5_control, r5_subpart, cci_id, odp_id,
+             relationship, relationship_basis, granularity, provenance, confidence,
+             hop_count, needs_confirmation, uncertainty_id, status, source_file, source_sheet, source_row)
+        VALUES
+            (:framework, :native_id, :r5_control, :r5_subpart, :cci_id, :odp_id,
+             :relationship, :relationship_basis, :granularity, :provenance, :confidence,
+             :hop_count, :needs_confirmation, :uncertainty_id, :status, :source_file, :source_sheet, :source_row)
+    """, cmmc_edges, "framework_projection")
+
+    # Backfill control_odps.r5_subpart from crosswalk ODP links
+    odp_backfill_count = spine_loader.link_odps_to_subparts(
+        cmmc_stats.get("odp_links", []), conn)
+    print(f"  odp_backfill: {odp_backfill_count} control_odps rows linked to r5_subpart")
+
+    # FedRAMP ODP pinned values extracted from the crosswalk
+    if fedramp_odp_rows:
+        _executemany_chunked(conn, """
+            INSERT INTO odp_values
+                (control_id, odp_id, baseline, value_raw, value_norm, value_kind,
+                 extraction_confidence, needs_confirmation, source_file, source_row)
+            VALUES
+                (:control_id, :odp_id, :baseline, :value_raw, :value_norm, :value_kind,
+                 :extraction_confidence, :needs_confirmation, :source_file, :source_row)
+        """, fedramp_odp_rows, "odp_values (FedRAMP)")
+        print(f"  fedramp_odp_values: {len(fedramp_odp_rows)} pinned values (partial gap fill)")
+
     # Phase 3: HITRUST hub — SOC 2 / ISO / HIPAA / GDPR / CMMC / FedRAMP / CIS / 800-171.
     hub_rows, hub_edges, hub_stats = spine_loader.load_hitrust_hub(catalog_ids)
     cascade = _unc.apply_confirmations_to_edges(hub_edges, confirmations)
@@ -1064,7 +1099,7 @@ def build_db(
     # Phase 4: concrete ODP values pinned in DAAPM (DoD) prose.
     odpval_rows, odpval_stats = spine_loader.load_odp_values(catalog_ids)
     print(f"  odp_values: rows={odpval_stats.get('rows')} controls={odpval_stats.get('controls_with_values')}")
-    print("  odp_values data_gap: FedRAMP baselines not loaded — FedRAMP ODP values unavailable; "
+    print("  odp_values data_gap: FedRAMP baselines partially loaded (37 values from CMMC crosswalk); "
           "SOC 2 / ISO / HIPAA do not pin NIST ODPs (parameter comparison is undetermined there)")
     _executemany_chunked(conn, """
         INSERT INTO odp_values

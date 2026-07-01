@@ -33,6 +33,7 @@ from spine_normalize import (  # type: ignore
     normalize_control_id,
     parse_cci_index,
     parse_hitrust_ref,
+    parse_objective,
     canon_subpart,
 )
 
@@ -637,3 +638,210 @@ def detect_odp_clashes(odp_rows: List[dict]) -> List[dict]:
             ],
         })
     return clashes
+
+
+# ── framework_projection: CMMC/800-171 <-> 800-53 crosswalk (Phase 2b) ───────
+
+_STRM_MAP = {
+    "equal": "equal",
+    "intersects with": "intersect",
+    "subset of": "subset",
+    "superset of": "superset",
+    "no relationship": "disjoint",
+}
+
+_FEDRAMP_ODP_RE = re.compile(
+    r"([A-Z]{2,3}-\d{1,3}(?:\(\d{1,3}\))?_ODP(?:\[\d+\])?)\s*[-–—]?\s*(.+)",
+    re.I,
+)
+
+
+def load_cmmc171_projection(
+    catalog_ids: Set[str],
+) -> Tuple[List[dict], List[dict], dict]:
+    """
+    Project CMMC 2.0 and NIST SP 800-171 r2 onto the r5 spine using the
+    CMMC/800-171↔800-53 crosswalk.  Returns (projection_edges, fedramp_odp_rows, stats).
+
+    Each row produces up to two projection edges (one per framework) anchored to
+    the r5 sub-part parsed from the 53A objective column.  Relationships come from
+    the 'Mapping -171 to -53' column (STRM semantics: Equal/Subset/Superset/Intersects).
+
+    provenance='cmmc171', confidence=0.95, hop_count=1, relationship_basis='source_stated'.
+    ODP references in the objective column are collected for backfill in link_odps_to_subparts.
+    FedRAMP pinned ODP values are extracted from the FedRAMP column.
+    """
+    src = "cmmc-800-171-53-crosswalk"
+    fname = source_path(src).name
+    sname = _read_sheet_name(src)
+    df = _read_source_df(src)
+    cols = list(df.columns)
+
+    cmmc_c = _find_col(cols, col(src, "cmmc_practice"))
+    obj171_c = _find_col(cols, col(src, "nist_171a_objective"))
+    r5ctrl_c = _find_col(cols, col(src, "nist_53r5_id"))
+    obj53_c = _find_col(cols, col(src, "nist_53a_objective"))
+    strm_c = _find_col(cols, col(src, "mapping_171_to_53"))
+    qual_c = _find_col(cols, col(src, "relationship_strength"))
+    fedramp_c = _find_col(cols, col(src, "fedramp_moderate_notes"))
+
+    edges: List[dict] = []
+    fedramp_rows: List[dict] = []
+    odp_links: List[Tuple[str, str, Optional[str]]] = []  # (odp_id, control_id, subpart)
+    seen_edge: Set[Tuple[str, str, str, str]] = set()
+    seen_fedramp: Set[Tuple[str, str]] = set()
+    skipped_disjoint = 0
+    skipped_withdrawn = 0
+    rows_read = 0
+
+    for i, rec in enumerate(df.itertuples(index=False), start=0):
+        rowd = dict(zip(df.columns, rec))
+        rows_read += 1
+
+        cmmc_id = str(rowd.get(cmmc_c, "")).strip() if cmmc_c else ""
+        obj171_raw = str(rowd.get(obj171_c, "")).strip() if obj171_c else ""
+        r5ctrl_raw = str(rowd.get(r5ctrl_c, "")).strip() if r5ctrl_c else ""
+        obj53_raw = str(rowd.get(obj53_c, "")).strip() if obj53_c else ""
+
+        if cmmc_id.lower() == "nan":
+            cmmc_id = ""
+        if obj171_raw.lower() == "nan":
+            obj171_raw = ""
+        if r5ctrl_raw.lower() == "nan":
+            r5ctrl_raw = ""
+
+        # Relationship from column 8 (Mapping -171 to -53)
+        strm_raw = str(rowd.get(strm_c, "")).strip().lower() if strm_c else ""
+        if strm_raw == "nan":
+            strm_raw = ""
+        relationship = _STRM_MAP.get(strm_raw, "unspecified")
+        if relationship == "disjoint":
+            skipped_disjoint += 1
+            continue
+
+        # Relationship quality from column 9
+        qual_raw = str(rowd.get(qual_c, "")).strip() if qual_c else ""
+        if qual_raw.lower() == "nan":
+            qual_raw = ""
+
+        # Spine anchor: r5 control from the explicit column
+        r5_control = normalize_control_id(r5ctrl_raw)
+        if not r5_control or r5_control not in catalog_ids:
+            continue
+
+        # Parse the 53A objective for sub-part / ODP linkage
+        r5_subpart: Optional[str] = None
+        odp_id: Optional[str] = None
+        if obj53_raw and obj53_raw.lower() not in ("nan", "withdrawn"):
+            parsed = parse_objective(obj53_raw)
+            if not parsed:
+                skipped_withdrawn += 1
+            else:
+                _, subpath, odp_ref = parsed[0]
+                if subpath:
+                    r5_subpart = canon_subpart(r5_control, subpath)
+                if odp_ref:
+                    odp_id = odp_ref
+                    odp_links.append((odp_ref, r5_control, r5_subpart))
+        elif obj53_raw.lower() == "withdrawn":
+            skipped_withdrawn += 1
+            continue
+
+        granularity = "subpart" if r5_subpart else "control"
+
+        # Emit CMMC 2.0 edge
+        if cmmc_id:
+            key = ("CMMC 2.0", cmmc_id, r5_control, r5_subpart or "")
+            if key not in seen_edge:
+                seen_edge.add(key)
+                edges.append(_projection_row(
+                    framework="CMMC 2.0", native_id=cmmc_id,
+                    r5_control=r5_control, r5_subpart=r5_subpart,
+                    odp_id=odp_id,
+                    relationship=relationship,
+                    relationship_basis="source_stated",
+                    granularity=granularity, provenance="cmmc171",
+                    confidence=0.95, hop_count=1, needs_confirmation=0,
+                    source_file=fname, source_sheet=sname, source_row=i,
+                ))
+
+        # Emit NIST SP 800-171 r2 edge
+        if obj171_raw:
+            key = ("NIST SP 800-171 r2", obj171_raw, r5_control, r5_subpart or "")
+            if key not in seen_edge:
+                seen_edge.add(key)
+                edges.append(_projection_row(
+                    framework="NIST SP 800-171 r2", native_id=obj171_raw,
+                    r5_control=r5_control, r5_subpart=r5_subpart,
+                    odp_id=odp_id,
+                    relationship=relationship,
+                    relationship_basis="source_stated",
+                    granularity=granularity, provenance="cmmc171",
+                    confidence=0.95, hop_count=1, needs_confirmation=0,
+                    source_file=fname, source_sheet=sname, source_row=i,
+                ))
+
+        # Extract FedRAMP ODP pinned values (Step 4b)
+        fedramp_raw = str(rowd.get(fedramp_c, "")).strip() if fedramp_c else ""
+        if fedramp_raw and fedramp_raw.lower() != "nan":
+            fm = _FEDRAMP_ODP_RE.match(fedramp_raw)
+            if fm:
+                fodp_raw = fm.group(1)
+                fval = fm.group(2).strip()
+                fodp_parsed = parse_objective(fodp_raw)
+                if fodp_parsed:
+                    _, _, fodp_ref = fodp_parsed[0]
+                    if fodp_ref and fval:
+                        fkey = (r5_control, fodp_ref)
+                        if fkey not in seen_fedramp:
+                            seen_fedramp.add(fkey)
+                            fedramp_rows.append({
+                                "control_id": r5_control,
+                                "odp_id": fodp_ref,
+                                "baseline": "FedRAMP Moderate",
+                                "value_raw": fedramp_raw,
+                                "value_norm": fval,
+                                "value_kind": "pinned",
+                                "extraction_confidence": 0.7,
+                                "needs_confirmation": 1,
+                                "source_file": fname,
+                                "source_row": i,
+                            })
+
+    edges.sort(key=lambda r: (r["framework"], r["native_id"], r["r5_control"], r["r5_subpart"] or ""))
+    fedramp_rows.sort(key=lambda r: (r["control_id"], r["odp_id"]))
+    stats = {
+        "rows_read": rows_read,
+        "edges": len(edges),
+        "cmmc_edges": len([e for e in edges if e["framework"] == "CMMC 2.0"]),
+        "nist171_edges": len([e for e in edges if e["framework"] == "NIST SP 800-171 r2"]),
+        "odp_links": odp_links,
+        "fedramp_values": len(fedramp_rows),
+        "skipped_disjoint": skipped_disjoint,
+        "skipped_withdrawn": skipped_withdrawn,
+        "relationships": sorted({e["relationship"] for e in edges}),
+    }
+    return edges, fedramp_rows, stats
+
+
+def link_odps_to_subparts(
+    odp_links: List[Tuple[str, str, Optional[str]]], conn
+) -> int:
+    """
+    Backfill control_odps.r5_subpart from crosswalk ODP links.
+
+    Each triple is (odp_id, control_id, r5_subpart).  When a matching
+    control_odps row has r5_subpart IS NULL, we UPDATE it.  Returns the count
+    of rows updated.
+    """
+    updated = 0
+    for odp_id, control_id, r5_subpart in odp_links:
+        if not r5_subpart:
+            continue
+        cur = conn.execute(
+            "UPDATE control_odps SET r5_subpart = ? "
+            "WHERE odp_id = ? AND control_id = ? AND r5_subpart IS NULL",
+            (r5_subpart, odp_id, control_id),
+        )
+        updated += cur.rowcount
+    return updated
