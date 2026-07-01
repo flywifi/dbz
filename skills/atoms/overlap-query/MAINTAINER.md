@@ -2,46 +2,63 @@
 
 ## Purpose
 `SKILL.md` is the runtime contract; this file preserves non-negotiable behavior for
-`overlap-query` so a future maintainer keeps the intended scope.
+`overlap-query` so a future maintainer keeps the intended scope. The atom computes
+**spine-anchored** overlap (CCI / 800-53 sub-part), not the retired ER-set metric.
 
 ## Non-negotiable invariants
-- Overlap percentages are computed exclusively from ER crosswalk data in `grc.db` — never estimated or fabricated.
-- `human_review_required: true` in every output.
-- Jaccard index formula: `|A ∩ B| / |A ∪ B|`. Never use a weighted or directional substitute as the primary metric.
-- `a_covers_b_pct` and `b_covers_a_pct` must both be reported — they differ and both matter to compliance teams.
-- ERs across different CSV source files are NOT comparable — must reject cross-file comparisons with an explicit error.
-- Never merges two frameworks into one ER namespace; always keeps source CSV provenance.
+- The primary metric is spine-based: shared CCIs or shared 800-53 sub-parts between the two
+  frameworks' `framework_projection` footprints. Jaccard + both directional coverages are always
+  reported (`a_covers_b_pct` and `b_covers_a_pct` differ and both matter).
+- **Never error on a cross-framework comparison.** Degrade through the ladder cci → subpart →
+  control → inferred_er → `basis:"none"`. Only an unknown framework *name* returns
+  `overlap_pct: null` with `known_frameworks`.
+- **No fabrication.** Every contributing edge traces to a real `source_file`+`source_row`. A missing
+  bridge is `unknown` / `undetermined`, never a guessed `full`.
+- Provenance precedence for the primary figure: `direct_olir / cmmc171 > hitrust_hub > inferred_er >
+  transitive`. Confidence is the WEAKER side's best path (min of the two frameworks), mapped to the
+  tier vocabulary (`>=0.9 high · 0.7–0.9 medium · 0.5–0.7 low · <0.5 uncertain`).
+- Hub-mediated and inferred figures carry `needs_confirmation: true` and a caveat.
+- `human_review_required: true` in every output path.
+- ODP (parameter) divergence downgrades a per-control match to `partial`; where only one baseline
+  pins a value the status is `undetermined`, never silently treated as aligned.
 
 ## Known failure modes
-- **Cross-file ER comparison**: ER-101 from `SOC 2 T1.csv` is not the same as ER-101 from `ISO 27001.csv` — IDs only have meaning within their source file. Return an error, never a number.
-- **Scope creep**: being asked to list specific gap controls (use `gap-analysis`) or map individual controls (use `compliance-crosswalk`).
-- **Fabricating an overlap number** when frameworks are both in `grc.db` but the `er_overlap_pairs` view returns zero — the zero is correct. Never override with a heuristic estimate.
-- **Stale oracle discrepancy**: if `shared_er_count` diverges by >2 from the oracle CSV row count, surface as a regression alert in `minority_report`.
+- **Over-claiming CCI precision** for commercial pairs (SOC 2 / ISO / HIPAA / GDPR): their spine
+  path is the HITRUST hub (control-level, confidence 0.65), so CCI-exactness there is transitive —
+  surface the caveat, do not present it as authoritative.
+- **ER-only frameworks** (e.g. SOC 1, PCI DSS) have no spine path; they fall to `inferred_er`
+  (co-occurrence of shared evidence-request ids) — a labeled secondary signal, never the primary.
+- **Confidence inflation** if the pair confidence is taken as the best edge anywhere instead of the
+  weaker side's best path.
 
 ## Fragile fallbacks that must not become defaults
-- `include_er_lists: false` is the default — never include ER ID lists unless explicitly requested.
-- "interpretation" string is advisory only — never present it as a compliance opinion or audit conclusion.
+- `inferred_er` is a fallback only — never the primary basis when a spine path exists.
+- `basis:"none"` returns `overlap_pct: 0.0` (a real number), never an exception.
 
 ## Regression cases to preserve
-1. Returns `human_review_required: true` in every response.
-2. SOC 2 vs ISO 27001/2 (2022) Jaccard ≈ 78–82% (validate against oracle CSV; alert if outside this band).
-3. Returns three metrics: `jaccard_overlap_pct`, `a_covers_b_pct`, `b_covers_a_pct` — never collapses to one.
-4. Returns `framework_a_er_count` and `framework_b_er_count` (not zero) even when `include_er_lists: false`.
-5. Rejects cross-CSV comparisons with a structured error rather than returning a number.
+1. SOC 2 × ISO 27001 returns a spine basis (cci or subpart) with per-control partials that list exact
+   met and unmet sub-parts.
+2. An unbridged pair returns `basis:"none"`, `overlap_pct:0.0`, exit 0 — never an error.
+3. An unknown framework name returns `overlap_pct: null` + `known_frameworks` (input error, exit 1).
+4. Both directional coverages are reported and differ.
+5. Hub-mediated pairs carry `needs_confirmation: true` and a caveat.
 
 ## Approval-gated changes
-- Changing the Jaccard computation (currently: `|intersection| / |union|`).
-- Adding a new framework that requires a new ER CSV source.
-- Modifying the `er_overlap_pairs` view in `build_db.py`.
-- Changing the oracle CSV validation thresholds.
+- Changing the footprint definitions (`footprint_ccis` / `footprint_subparts` / `footprint_controls`)
+  or the ladder order in `spine_overlap.py`.
+- Changing the provenance→confidence constants or the tier thresholds.
+- Adding a new projected framework or bridge source.
 
 ## Minority-report policy
-When overlap percentage changes materially (>5 pp) depending on which ER relationship edges
-are included, emit `minority_report.conflicts` before returning the primary metric.
-See canonical policy: `skills/shared/minority-report.md`.
+When two provenance tiers (direct vs. hub vs. inferred_er) yield materially different overlap for the
+same pair, or a hub-mediated figure carries `needs_confirmation`, emit `minority_report.conflicts`
+with the competing citations (each side's `source_file`+`row`) and the winning tier before returning
+the primary metric. Direct beats hub beats inferred_er. See canonical policy:
+`skills/shared/minority-report.md`.
 
 ## Update checklist (every version bump)
-- [ ] Re-run oracle check: SOC 2 × ISO 27001/2 shared_er_count against `SOC 2 T2 & ISO 27001.csv`.
-- [ ] Confirm `er_overlap_pairs` view reflects current `er_mappings` table schema.
-- [ ] Smoke test: `python3 skills/atoms/overlap-query/scripts/overlap_query.py --framework-a "SOC 2" --framework-b "ISO 27001/2 (2022)" --format summary`
-- [ ] Confirm `human_review_required: true` still present in all output paths.
+- [ ] SKILL.md description still specific + scoped, with the "Do NOT use for…" clause intact.
+- [ ] `python3 tools/sync_check.py` passes.
+- [ ] `python3 cross-mapping/tests/test_spine.py` passes.
+- [ ] evals/evals.json has at least 3 cases; a case was added for any new behavior.
+- [ ] Never-error contract intact: unbridged pair returns basis:"none" exit 0.

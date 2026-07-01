@@ -242,66 +242,42 @@ def cmd_scope(args, conn: sqlite3.Connection) -> int:
 
 
 def cmd_overlap(args, conn: sqlite3.Connection) -> int:
-    """ER-based overlap between two frameworks."""
-    fw_a_candidates = _resolve_fw(args.framework_a, conn) if hasattr(args, "framework_a") else []
-    fw_b_candidates = _resolve_fw(args.framework_b, conn) if hasattr(args, "framework_b") else []
-
-    # Fall back to ER framework names (different from unified_mappings frameworks)
-    if not fw_a_candidates:
-        er_fws = conn.execute("SELECT DISTINCT framework FROM er_mappings ORDER BY framework").fetchall()
-        print("Known ER frameworks:", [r[0] for r in er_fws], file=sys.stderr)
-        fw_a_candidates = [args.framework_a]
-    if not fw_b_candidates:
-        fw_b_candidates = [args.framework_b]
-
-    fw_a = fw_a_candidates[0]
-    fw_b = fw_b_candidates[0]
-
-    ers_a = conn.execute(
-        "SELECT COUNT(DISTINCT er_id) FROM er_mappings WHERE framework = ?", (fw_a,)
-    ).fetchone()[0]
-    ers_b = conn.execute(
-        "SELECT COUNT(DISTINCT er_id) FROM er_mappings WHERE framework = ?", (fw_b,)
-    ).fetchone()[0]
-
-    # Use er_overlap_pairs view (framework_a < framework_b alphabetically)
-    a_lt_b = fw_a < fw_b
-    fa, fb = (fw_a, fw_b) if a_lt_b else (fw_b, fw_a)
-    shared = conn.execute(
-        "SELECT COUNT(DISTINCT er_id) FROM er_overlap_pairs WHERE framework_a = ? AND framework_b = ?",
-        (fa, fb),
-    ).fetchone()[0]
-
-    union = ers_a + ers_b - shared
-    jaccard = round(shared / union * 100, 1) if union else 0.0
-    a_covers_b = round(shared / ers_b * 100, 1) if ers_b else 0.0
-    b_covers_a = round(shared / ers_a * 100, 1) if ers_a else 0.0
-
-    result = {
-        "framework_a": fw_a,
-        "framework_b": fw_b,
-        "er_count_a": ers_a,
-        "er_count_b": ers_b,
-        "shared_er_count": shared,
-        "union_er_count": union,
-        "jaccard_pct": jaccard,
-        "a_covers_b_pct": a_covers_b,
-        "b_covers_a_pct": b_covers_a,
-    }
+    """CCI / sub-part-anchored overlap between two frameworks (never errors)."""
+    import spine_overlap  # type: ignore
+    basis_pref = getattr(args, "basis", "auto") or "auto"
+    want_pc = bool(getattr(args, "per_control", False))
+    result = spine_overlap.compute(conn, args.framework_a, args.framework_b,
+                                   want_per_control=want_pc, basis_pref=basis_pref)
 
     if args.format == "json":
-        print(json.dumps(result, indent=2))
-    elif args.format == "csv":
-        writer = csv_module.DictWriter(sys.stdout, fieldnames=list(result))
-        writer.writeheader()
-        writer.writerow(result)
-    else:
-        print(f"Framework A : {fw_a} ({ers_a} ER controls)")
-        print(f"Framework B : {fw_b} ({ers_b} ER controls)")
-        print(f"Shared ERs  : {shared}  (union={union})")
-        print(f"Jaccard     : {jaccard}%")
-        print(f"A covers B  : {a_covers_b}%  ({fw_a} → {fw_b})")
-        print(f"B covers A  : {b_covers_a}%  ({fw_b} → {fw_a})")
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+        return 0 if result.get("overlap_pct") is not None else 1
+
+    if result.get("overlap_pct") is None:
+        print(f"[input error] {result.get('error')}", file=sys.stderr)
+        print("Known frameworks:", ", ".join(result.get("known_frameworks", [])[:20]), file=sys.stderr)
+        return 1
+
+    print(f"Framework A : {result['framework_a']}")
+    print(f"Framework B : {result['framework_b']}")
+    print(f"Basis       : {result['basis']}  (provenance: {result.get('provenance')})")
+    print(f"Overlap     : {result['overlap_pct']}%  (Jaccard)")
+    print(f"A covers B  : {result.get('a_covers_b_pct')}%")
+    print(f"B covers A  : {result.get('b_covers_a_pct')}%")
+    print(f"Shared      : {result.get('shared_count')}  "
+          f"(A={result.get('framework_a_count')}, B={result.get('framework_b_count')})")
+    print(f"Confidence  : {result.get('confidence')} ({result.get('confidence_score')})  "
+          f"needs_confirmation={result.get('needs_confirmation')}")
+    for c in result.get("caveats", []):
+        print(f"  ! {c}")
+    if result.get("data_gap"):
+        print(f"  data_gap: {result['data_gap']}")
+    for pc in result.get("per_control", [])[:25]:
+        print(f"  [{pc['classification']:<7}] {pc['framework_a_control']:<18} "
+              f"-> {', '.join(pc['corresponds_to'][:4])}")
+        if pc["classification"] == "partial":
+            print(f"            met: {', '.join(pc['shared_subparts'][:6])}")
+            print(f"            unmet: {', '.join(pc['a_unmet_subparts'][:6])}  odp:{pc['odp']['status']}")
     return 0
 
 
@@ -830,11 +806,15 @@ def build_parser() -> argparse.ArgumentParser:
     _add_format(scope); _add_db(scope)
 
     # overlap
-    ov = subs.add_parser("overlap", help="ER-level overlap between two frameworks")
+    ov = subs.add_parser("overlap", help="CCI / sub-part-anchored overlap between two frameworks")
     ov.add_argument("--framework-a", required=True, metavar="FW_A",
                     help="First framework name (e.g. 'SOC 2')")
     ov.add_argument("--framework-b", required=True, metavar="FW_B",
                     help="Second framework name (e.g. 'ISO 27001/2 (2022)')")
+    ov.add_argument("--basis", choices=["auto", "cci", "subpart", "control"], default="auto",
+                    help="Spine basis (default: auto = finest available)")
+    ov.add_argument("--per-control", action="store_true",
+                    help="Include per-control full/partial/none breakdown")
     _add_format(ov); _add_db(ov)
 
     # search

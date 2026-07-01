@@ -424,6 +424,38 @@ CREATE TABLE IF NOT EXISTS odp_values (
 );
 CREATE INDEX IF NOT EXISTS idx_odpval_ctrl ON odp_values(control_id);
 CREATE INDEX IF NOT EXISTS idx_odpval_base ON odp_values(baseline);
+
+-- ── Precomputed pairwise overlap (Phase 5) ────────────────────────────────────
+CREATE TABLE IF NOT EXISTS overlap_matrix (
+    framework_a        TEXT NOT NULL,
+    framework_b        TEXT NOT NULL,   -- framework_a < framework_b lexicographically
+    basis              TEXT NOT NULL,   -- cci | subpart | control | inferred_er | none
+    shared_count       INTEGER NOT NULL DEFAULT 0,
+    a_count            INTEGER NOT NULL DEFAULT 0,
+    b_count            INTEGER NOT NULL DEFAULT 0,
+    jaccard_pct        REAL NOT NULL DEFAULT 0,
+    a_covers_b_pct     REAL NOT NULL DEFAULT 0,
+    b_covers_a_pct     REAL NOT NULL DEFAULT 0,
+    confidence         REAL NOT NULL DEFAULT 0,
+    needs_confirmation INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (framework_a, framework_b)
+);
+
+CREATE VIEW IF NOT EXISTS projection_overlap_subpart AS
+    SELECT a.framework AS framework_a, b.framework AS framework_b, a.r5_subpart,
+           a.native_id AS native_a, b.native_id AS native_b
+    FROM framework_projection a
+    JOIN framework_projection b
+      ON a.r5_subpart = b.r5_subpart AND a.r5_subpart IS NOT NULL
+     AND a.framework < b.framework;
+
+CREATE VIEW IF NOT EXISTS projection_overlap_cci AS
+    SELECT a.framework AS framework_a, b.framework AS framework_b, cb.cci_id,
+           a.native_id AS native_a, b.native_id AS native_b
+    FROM framework_projection a
+    JOIN framework_projection b ON a.r5_subpart = b.r5_subpart AND a.r5_subpart IS NOT NULL
+    JOIN cci_bridge cb ON cb.r5_subpart = a.r5_subpart
+    WHERE a.framework < b.framework;
 """
 
 
@@ -1241,6 +1273,38 @@ def build_db(
         print(f"  fips_140_validations: 0 rows (run fips_cmvp_loader.py to populate)")
     conn.commit()
 
+    # Precompute the pairwise overlap matrix across all spine frameworks.
+    print("\n[overlap] Precomputing overlap_matrix over spine frameworks")
+    import spine_overlap as _so  # type: ignore
+    proj_fws = [r[0] for r in conn.execute(
+        "SELECT DISTINCT framework FROM framework_projection ORDER BY framework")]
+    om_rows = []
+    for i in range(len(proj_fws)):
+        for j in range(i + 1, len(proj_fws)):
+            fa, fb = proj_fws[i], proj_fws[j]
+            res = _so.compute(conn, fa, fb)
+            om_rows.append({
+                "framework_a": fa, "framework_b": fb, "basis": res.get("basis", "none"),
+                "shared_count": res.get("shared_count", 0),
+                "a_count": res.get("framework_a_count", 0),
+                "b_count": res.get("framework_b_count", 0),
+                "jaccard_pct": res.get("overlap_pct", 0.0) or 0.0,
+                "a_covers_b_pct": res.get("a_covers_b_pct", 0.0) or 0.0,
+                "b_covers_a_pct": res.get("b_covers_a_pct", 0.0) or 0.0,
+                "confidence": res.get("confidence_score", 0.0) or 0.0,
+                "needs_confirmation": int(res.get("needs_confirmation", False)),
+            })
+    _executemany_chunked(conn, """
+        INSERT OR REPLACE INTO overlap_matrix
+            (framework_a, framework_b, basis, shared_count, a_count, b_count,
+             jaccard_pct, a_covers_b_pct, b_covers_a_pct, confidence, needs_confirmation)
+        VALUES
+            (:framework_a, :framework_b, :basis, :shared_count, :a_count, :b_count,
+             :jaccard_pct, :a_covers_b_pct, :b_covers_a_pct, :confidence, :needs_confirmation)
+    """, om_rows, "overlap_matrix")
+    conn.commit()
+    print(f"  overlap_matrix: {len(om_rows)} pairs")
+
     # ANALYZE + optional VACUUM
     print("\nRunning ANALYZE …")
     conn.execute("ANALYZE")
@@ -1258,7 +1322,7 @@ def build_db(
                 "nvd_cves", "disa_ccis", "eurlex_articles",
                 "nist_800_63b_requirements", "fips_140_validations",
                 "nist_subparts", "cci_bridge", "control_odps", "framework_projection",
-                "hitrust_hub", "odp_values"):
+                "hitrust_hub", "odp_values", "overlap_matrix"):
         row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
         counts[tbl] = row[0]
 

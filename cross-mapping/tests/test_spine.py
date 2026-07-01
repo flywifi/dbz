@@ -127,6 +127,33 @@ _clashes = SL.detect_odp_clashes(_syn)
 check(len(_clashes) == 1 and _clashes[0]["control_id"] == "AC-2(3)", "clash fires on divergent AC-2(3)")
 check(SL.detect_odp_clashes(odpv_rows) == [], "single-baseline (DAAPM only) yields no clashes")
 
+# ── 6. Overlap engine (Phase 5) — requires a built grc.db ──────────────────────
+import sqlite3  # noqa: E402
+_DB = ROOT / "cross-mapping" / "output" / "grc.db"
+if _DB.exists():
+    import spine_overlap as SO  # type: ignore
+    _c = sqlite3.connect(str(_DB))
+    r = SO.compute(_c, "SOC 2", "ISO 27001/2 (2022)", want_per_control=True)
+    check(r.get("basis") in ("cci", "subpart"), f"SOC2×ISO uses a spine basis (got {r.get('basis')})")
+    check(40.0 <= (r.get("overlap_pct") or 0) <= 70.0, f"SOC2×ISO overlap in band (got {r.get('overlap_pct')})")
+    check(r.get("needs_confirmation") is True, "SOC2×ISO (hub-mediated) needs_confirmation")
+    check(r.get("confidence") == "low", f"SOC2×ISO confidence gated by weaker hub side (got {r.get('confidence')})")
+    _partials = [p for p in r.get("per_control", []) if p["classification"] == "partial"]
+    check(_partials and _partials[0]["shared_subparts"] and _partials[0]["a_unmet_subparts"],
+          "per-control partial lists both met and unmet sub-parts")
+    # self-overlap = 100
+    rs = SO.compute(_c, "SOC 2", "SOC 2")
+    check(rs.get("overlap_pct") == 100.0, f"self-overlap is 100% (got {rs.get('overlap_pct')})")
+    # unknown name -> input error
+    ru = SO.compute(_c, "SOC 2", "totally-unknown-xyz")
+    check(ru.get("overlap_pct") is None and "error" in ru, "unknown framework -> input error")
+    # unbridged -> basis none, real zero, never raises
+    rn = SO.compute(_c, "PCI DSS v4.0", "GDPR")
+    check(rn.get("basis") == "none" and rn.get("overlap_pct") == 0.0, "unbridged pair -> basis:none 0.0 (no error)")
+    _c.close()
+else:
+    print("  (skipped Phase 5 overlap checks — grc.db not built)")
+
 # ── report ─────────────────────────────────────────────────────────────────────
 if FAILS:
     print("SPINE SELF-TEST: FAIL")
