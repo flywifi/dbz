@@ -1,0 +1,48 @@
+{
+  "atom": "task-decompose",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "Read-only extraction task — yields read-fanout with multiple scopes",
+      "input": {
+        "task": "Extract every role/title/acronym across all NIST 800-53 families",
+        "corpus_hint": "20 per-family JSON files under cross-mapping/nist-catalog/output/"
+      },
+      "expected_output": {
+        "mode": "read-fanout",
+        "scopes": {"$minItems": 2},
+        "stop_conditions": {"$exists": true},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "A read task must route to read-fanout and partition into non-overlapping scopes"
+    },
+    {
+      "id": "fail-01",
+      "label": "Underspecified task — returns error, not fabricated scopes",
+      "input": {"task": "fix it"},
+      "expected_output": {
+        "error": {"$contains": "underspecified"},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "Too vague to partition — must ask for detail, never invent scopes"
+    },
+    {
+      "id": "edge-01",
+      "label": "Canonical-update task — yields mutate mode with depth_cap 1",
+      "input": {
+        "task": "Add 5 new AI feed_registry entries and re-pin their source versions",
+        "corpus_hint": "canonical-sources/feed_registry.json"
+      },
+      "expected_output": {
+        "mode": "mutate",
+        "stop_conditions": {"depth_cap": 1},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "Editing canonical/seed data routes to mutate with no auto-recursion (depth_cap 1)"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "atom": "frontier-expand",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "New leads not in seen — become next wave, not saturated",
+      "input": {
+        "envelopes": [
+          {"task_id": "r.w1.01", "parent_task_id": null, "scope": "NIST PM family", "mode": "read-fanout", "status": "complete",
+           "findings": [], "residual_frontier": [{"scope": "NIST SA family — developer roles", "reason": "out of scope"}],
+           "provenance": {"sources_read": ["PM.json"], "method": "read"}, "confidence": "high",
+           "minority_report": null, "human_review_required": true, "metrics": {"items_found": 0}}
+        ],
+        "seen": ["nist pm family"],
+        "wave": 1,
+        "stop_conditions": {"k_dry": 1, "depth_cap": 4, "size_cap": 24},
+        "agents_so_far": 1
+      },
+      "expected_output": {
+        "next_scopes": {"$minItems": 1},
+        "saturated": false,
+        "stop_condition": null,
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "A genuinely new lead advances the recursion to the next wave"
+    },
+    {
+      "id": "fail-01",
+      "label": "All leads already seen — saturated, empty next wave",
+      "input": {
+        "envelopes": [
+          {"task_id": "r.w2.01", "parent_task_id": "r.w1.01", "scope": "NIST SA family", "mode": "read-fanout", "status": "complete",
+           "findings": [], "residual_frontier": [{"scope": "NIST PM family", "reason": "already covered"}],
+           "provenance": {"sources_read": ["SA.json"], "method": "read"}, "confidence": "high",
+           "minority_report": null, "human_review_required": true, "metrics": {"items_found": 0}}
+        ],
+        "seen": ["nist pm family", "nist sa family"],
+        "wave": 2,
+        "stop_conditions": {"k_dry": 1, "depth_cap": 4, "size_cap": 24},
+        "agents_so_far": 2
+      },
+      "expected_output": {
+        "next_scopes": {"$maxItems": 0},
+        "saturated": true,
+        "stop_condition": "saturated",
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "Every lead already in seen means the frontier is dry — the run terminates"
+    },
+    {
+      "id": "edge-01",
+      "label": "Depth cap reached — stop, leads preserved not dropped",
+      "input": {
+        "envelopes": [
+          {"task_id": "r.w4.01", "parent_task_id": "r.w3.02", "scope": "deep-4", "mode": "read-fanout", "status": "complete",
+           "findings": [], "residual_frontier": [{"scope": "deep-5 lead", "reason": "discovered late"}],
+           "provenance": {"sources_read": ["x.json"], "method": "read"}, "confidence": "medium",
+           "minority_report": null, "human_review_required": true, "metrics": {"items_found": 0}}
+        ],
+        "seen": ["deep-1", "deep-2", "deep-3", "deep-4"],
+        "wave": 4,
+        "stop_conditions": {"k_dry": 2, "depth_cap": 4, "size_cap": 24},
+        "agents_so_far": 8
+      },
+      "expected_output": {
+        "stop_condition": "depth_cap_reached",
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "At depth_cap the run stops but the un-expanded lead must be surfaced, never silently dropped"
+    }
+  ]
+}

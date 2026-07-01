@@ -283,3 +283,57 @@ Single-operation skills following the educator-tools convention (`SKILL.md` +
 
 All atom scripts auto-discover `grc.db` by walking up from CWD.
 `compliance-crosswalk` falls back to direct JSON loading if the DB is not yet built.
+
+## Multi-agent orchestration bucket (`skills/multi-agent-orchestrator/`)
+
+A reusable, drift-resistant way to run many sub-agents on one large task —
+decompose → fan out → validate → consolidate → recurse → stop. It generalizes the
+hand-run fan-out patterns (e.g. reading many sources and merging the findings) into a
+disciplined capability. The engine stays domain-agnostic; the bucket is generic
+orchestration machinery.
+
+**The load-bearing rule:** the manager reads *envelopes*, never raw sub-agent
+transcripts. Every sub-agent is forced to return the same shape
+(`skills/shared/orchestration-envelope.schema.json`), so consolidation is mechanical and
+the manager's context never fills with raw output.
+
+```
+task ──▶ task-decompose ──▶ [ wave: fan-out, one agent per scope,        ]
+                            [ each FORCED to return the envelope schema  ]
+                                     │
+                                     ▼
+                         envelope-validate  (anti-drift gate — malformed = hard stop)
+                                     │
+                                     ▼
+                         findings-consolidate  (deterministic merge: dedup by key,
+                                     │           conflicts preserved, confidence floored,
+                                     │           coverage honest)
+                                     ▼
+                         frontier-expand  (dedup residual_frontier vs seen → next wave,
+                                     │      or signal saturation)
+                                     ▼
+                         loop-until-dry ──▶ consolidated result (human_review_required: true)
+```
+
+| Contract (canonical, drift-guarded) | Purpose |
+|---|---|
+| `skills/shared/orchestration-envelope.schema.json` | the fixed agent return shape |
+| `skills/shared/frontier-model.md` | recursion + stop conditions (loop-until-dry, depth/size caps) |
+| `skills/shared/consolidation.md` | deterministic merge rules (LLM judges, script computes) |
+
+| Atom | Role |
+|---|---|
+| `task-decompose` | task → mode + non-overlapping first-wave scopes + stop conditions |
+| `envelope-validate` | structural gate; a bad envelope never enters consolidation |
+| `findings-consolidate` | deterministic merge (`scripts/consolidate.py`) — same envelopes → byte-identical output |
+| `frontier-expand` | dedup residual leads vs `seen`; produce next wave or signal saturation |
+
+**Modes** are routed by task class (`references/routing.md`): quick and deep-technical
+lookups → `read-fanout` (read-only); canonical/seed edits → `mutate` (one git worktree
+per agent, `depth_cap 1`); web/MCP reach → `external` (flag-gated). The default engine is
+the Workflow tool driven directly; the declarative `workflow.json` compiles to a Workflow
+run only when the `orchestration_hybrid_mode` flag is effective and a trigger holds
+(named/recurring workflow, deterministic replay, or agent count over the size cap).
+
+`tools/sync_check.py` guards the bucket with 4 invariants (6–9) alongside the 5 atom
+invariants.

@@ -263,6 +263,87 @@
         "human_review_required": "boolean — always true"
       },
       "tags": ["monitoring", "feed", "version", "registry", "poll"]
+    },
+    {
+      "id": "task-decompose",
+      "label": "Task Decompose",
+      "version": "1.0",
+      "path": "skills/atoms/task-decompose",
+      "script": "skills/multi-agent-orchestrator/scripts/consolidate.py",
+      "input_schema": {
+        "task": "string — the work to decompose",
+        "corpus_hint": "string? — optional description of the material to size the partition",
+        "max_scopes": "integer? — cap on first-wave scopes; default = concurrency cap (16)"
+      },
+      "output_schema": {
+        "mode": "string — read-fanout | mutate | external (from routing table)",
+        "scopes": "array — [{scope, rationale}] non-overlapping first-wave assignments",
+        "stop_conditions": "object — {k_dry, depth_cap, size_cap} resolved for this mode",
+        "minority_report": "object or null — mode ambiguity recorded here",
+        "human_review_required": "boolean — always true"
+      },
+      "tags": ["orchestration", "decompose", "fan-out", "planning"]
+    },
+    {
+      "id": "envelope-validate",
+      "label": "Envelope Validate",
+      "version": "1.0",
+      "path": "skills/atoms/envelope-validate",
+      "script": "skills/multi-agent-orchestrator/scripts/validate_envelope.py",
+      "input_schema": {
+        "envelope": "object — a single agent return to check",
+        "schema_path": "string? — default skills/shared/orchestration-envelope.schema.json"
+      },
+      "output_schema": {
+        "valid": "boolean",
+        "violations": "array — [{path, message}] empty when valid",
+        "task_id": "string or null — echoed from the envelope",
+        "human_review_required": "boolean — always true"
+      },
+      "tags": ["orchestration", "validation", "drift-guard", "schema"]
+    },
+    {
+      "id": "findings-consolidate",
+      "label": "Findings Consolidate",
+      "version": "1.0",
+      "path": "skills/atoms/findings-consolidate",
+      "script": "skills/multi-agent-orchestrator/scripts/consolidate.py",
+      "input_schema": {
+        "run_id": "string — identifier for this orchestration run",
+        "envelopes": "array — validated envelopes conforming to orchestration-envelope.schema.json",
+        "stop_condition": "string? — the frontier stop condition that ended the run"
+      },
+      "output_schema": {
+        "run_id": "string",
+        "coverage": "object — {state, agents_total, agents_complete, agents_partial, agents_blocked, sources_read, stop_condition}",
+        "findings": "array — [{key, status, value, provenance, confidence}] sorted by key",
+        "residual_frontier": "array — union of open leads at stop time",
+        "minority_report": "object or null — rolled-up conflicts / failed_to_merge / residual_uncertainty",
+        "human_review_required": "boolean — always true"
+      },
+      "tags": ["orchestration", "consolidate", "merge", "deterministic"]
+    },
+    {
+      "id": "frontier-expand",
+      "label": "Frontier Expand",
+      "version": "1.0",
+      "path": "skills/atoms/frontier-expand",
+      "script": "skills/multi-agent-orchestrator/scripts/consolidate.py",
+      "input_schema": {
+        "envelopes": "array — this wave's validated envelopes",
+        "seen": "array — scope signatures already dispatched",
+        "wave": "integer — current wave number",
+        "stop_conditions": "object — {k_dry, depth_cap, size_cap}",
+        "agents_so_far": "integer — total agents dispatched"
+      },
+      "output_schema": {
+        "next_scopes": "array — [{scope, reason, parent_task_id}] deduped leads (empty if none)",
+        "saturated": "boolean — true when no new leads remain",
+        "stop_condition": "string or null — saturated | depth_cap_reached | size_cap_reached",
+        "seen_out": "array — updated scope-signature set",
+        "human_review_required": "boolean — always true"
+      },
+      "tags": ["orchestration", "frontier", "recursion", "fan-out"]
     }
   ]
 }

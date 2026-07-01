@@ -1,0 +1,78 @@
+{
+  "atom": "findings-consolidate",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "Two agents agree on a key — single merged finding, coverage complete",
+      "input": {
+        "run_id": "demo",
+        "envelopes": [
+          {"task_id": "demo.w1.01", "parent_task_id": null, "scope": "PM", "mode": "read-fanout", "status": "complete",
+           "findings": [{"key": "AO", "value": "Authorizing Official", "provenance": "PM.json", "confidence": "high"}],
+           "residual_frontier": [], "provenance": {"sources_read": ["PM.json"], "method": "read"},
+           "confidence": "high", "minority_report": null, "human_review_required": true, "metrics": {"items_found": 1}},
+          {"task_id": "demo.w1.02", "parent_task_id": null, "scope": "CA", "mode": "read-fanout", "status": "complete",
+           "findings": [{"key": "AO", "value": "Authorizing Official", "provenance": "CA.json", "confidence": "medium"}],
+           "residual_frontier": [], "provenance": {"sources_read": ["CA.json"], "method": "read"},
+           "confidence": "high", "minority_report": null, "human_review_required": true, "metrics": {"items_found": 1}}
+        ]
+      },
+      "expected_output": {
+        "findings": [{"key": "AO", "status": "merged", "confidence": "medium"}],
+        "coverage": {"state": "complete"},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "Agreement merges to one finding; confidence floored to medium (lowest of high/medium)"
+    },
+    {
+      "id": "fail-01",
+      "label": "Two agents disagree on a key — conflict recorded, never averaged",
+      "input": {
+        "run_id": "demo",
+        "envelopes": [
+          {"task_id": "demo.w1.01", "parent_task_id": null, "scope": "OLIR", "mode": "read-fanout", "status": "complete",
+           "findings": [{"key": "AC-2/SOC-CC6.1", "value": "Superset", "provenance": "OLIR", "confidence": "high"}],
+           "residual_frontier": [], "provenance": {"sources_read": ["OLIR"], "method": "read"},
+           "confidence": "high", "minority_report": null, "human_review_required": true, "metrics": {"items_found": 1}},
+          {"task_id": "demo.w1.02", "parent_task_id": null, "scope": "ER", "mode": "read-fanout", "status": "complete",
+           "findings": [{"key": "AC-2/SOC-CC6.1", "value": "Equal", "provenance": "ER-crosswalk", "confidence": "high"}],
+           "residual_frontier": [], "provenance": {"sources_read": ["ER"], "method": "read"},
+           "confidence": "high", "minority_report": null, "human_review_required": true, "metrics": {"items_found": 1}}
+        ]
+      },
+      "expected_output": {
+        "findings": [{"key": "AC-2/SOC-CC6.1", "status": "conflict"}],
+        "minority_report": {"conflicts": {"$minItems": 1}},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "Superset vs Equal must be preserved as a conflict, never blended into one value"
+    },
+    {
+      "id": "edge-01",
+      "label": "One blocked agent — coverage partial, gap tied to the blocked scope",
+      "input": {
+        "run_id": "demo",
+        "envelopes": [
+          {"task_id": "demo.w1.01", "parent_task_id": null, "scope": "PM", "mode": "read-fanout", "status": "complete",
+           "findings": [{"key": "AO", "value": "Authorizing Official", "provenance": "PM.json", "confidence": "high"}],
+           "residual_frontier": [], "provenance": {"sources_read": ["PM.json"], "method": "read"},
+           "confidence": "high", "minority_report": null, "human_review_required": true, "metrics": {"items_found": 1}},
+          {"task_id": "demo.w1.02", "parent_task_id": null, "scope": "SR family", "mode": "read-fanout", "status": "blocked",
+           "findings": [], "residual_frontier": [{"scope": "SR family", "reason": "file unreadable"}],
+           "provenance": {"sources_read": [], "method": "attempted read"},
+           "confidence": "uncertain", "minority_report": null, "human_review_required": true, "metrics": {"items_found": 0}}
+        ]
+      },
+      "expected_output": {
+        "coverage": {"state": "partial", "agents_blocked": 1},
+        "residual_frontier": {"$minItems": 1},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "A blocked agent forces coverage.state partial and surfaces the uncovered scope — never reported complete"
+    }
+  ]
+}

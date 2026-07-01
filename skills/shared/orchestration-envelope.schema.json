@@ -1,0 +1,143 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "orchestration-envelope.schema.json",
+  "title": "Orchestration Agent Envelope",
+  "description": "The fixed return shape every sub-agent must produce so the manager can consolidate mechanically without reading raw transcripts. Identical shape across every agent in every wave — that identity is what eliminates drift. See frontier-model.md and consolidation.md for how the fields are used.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "scope",
+    "mode",
+    "status",
+    "findings",
+    "residual_frontier",
+    "provenance",
+    "confidence",
+    "minority_report",
+    "human_review_required",
+    "metrics"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "Stable ID for this agent's unit of work. Convention: '<run_id>.<wave>.<index>' (e.g. 'roles-2026.w1.03'). Must be unique within a run."
+    },
+    "parent_task_id": {
+      "type": ["string", "null"],
+      "description": "task_id of the agent whose residual_frontier spawned this one, or null for a first-wave agent. Lets the manager reconstruct the recursion tree."
+    },
+    "scope": {
+      "type": "string",
+      "description": "One-line statement of exactly what this agent was told to cover (e.g. 'NIST PM family control text — role extraction'). The consolidation dedup key is derived from scope + finding key, so scopes must be specific and non-overlapping within a wave."
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["read-fanout", "mutate", "external"],
+      "description": "Which orchestration mode produced this envelope. Must match the mode the manager assigned. See references/routing.md."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["complete", "partial", "blocked"],
+      "description": "complete = scope fully covered, residual_frontier may still list deeper leads. partial = ran out of budget/time mid-scope. blocked = could not proceed (permission, missing file, tool failure). partial/blocked roll up to <100% coverage honestly — never reported as complete."
+    },
+    "findings": {
+      "type": "array",
+      "description": "The extracted material. Each finding is keyed so consolidation can dedup and detect cross-agent conflicts.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "value", "provenance", "confidence"],
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Canonical dedup key for this finding (e.g. a control ID, a role name, a framework_id). Two findings with the same key across agents are either merged (agree) or recorded as a conflict (disagree) — never averaged."
+          },
+          "value": {
+            "description": "The finding payload. Any JSON type; shape is defined by the specific task, not by this schema."
+          },
+          "provenance": {
+            "type": "string",
+            "description": "Where this specific finding came from — a file path, line reference, or source name. Never blank; if unknown, the finding does not belong in findings[]."
+          },
+          "confidence": {
+            "type": "string",
+            "enum": ["high", "medium", "low", "uncertain"],
+            "description": "Per-finding confidence. 'uncertain' findings must also appear in minority_report.residual_uncertainty."
+          }
+        }
+      }
+    },
+    "residual_frontier": {
+      "type": "array",
+      "description": "The engine of recursion: leads this agent saw but did NOT cover. The manager dedups these against the run's 'seen' set and spawns the next wave against what remains. An empty array across all agents in a wave (K times) means the search is saturated.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["scope", "reason"],
+        "properties": {
+          "scope": {
+            "type": "string",
+            "description": "A specific, spawnable next-wave scope (e.g. 'NIST SA family — developer/integrator roles')."
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why it was left (out of assigned scope, depth cap, budget, discovered late)."
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sources_read", "method"],
+      "properties": {
+        "sources_read": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Every source (file path, URL, table) the agent actually consulted. The consolidated coverage report is built from the union of these."
+        },
+        "method": {
+          "type": "string",
+          "description": "How the agent worked its scope (e.g. 'grep for role terms then read matching control blocks')."
+        }
+      }
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low", "uncertain"],
+      "description": "Agent-level confidence in its overall result, distinct from per-finding confidence."
+    },
+    "minority_report": {
+      "description": "Structured disagreement, or null when there is none. Shape matches skills/shared/minority-report.md. Populated when this agent's findings conflict internally or the agent knows they may conflict with a sibling's scope.",
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["decision_log", "conflicts", "failed_to_merge", "residual_uncertainty"],
+          "properties": {
+            "decision_log": {"type": "object", "description": "chosen_interpretation, why_it_won, winning_source, confidence."},
+            "conflicts": {"type": "array", "description": "source_a, source_b, conflict_summary, materiality, affected_keys."},
+            "failed_to_merge": {"type": "array", "description": "interpretation_a, interpretation_b, why_not_mergeable, affected_keys."},
+            "residual_uncertainty": {"type": "array", "description": "statement, what_would_resolve_it, impact_if_wrong."}
+          }
+        }
+      ]
+    },
+    "human_review_required": {
+      "type": "boolean",
+      "const": true,
+      "description": "Always true. Every envelope carries the same non-negotiable review flag as every other compliance-facing output in dbz."
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["items_found"],
+      "properties": {
+        "items_found": {"type": "integer", "description": "Count of findings, for coverage arithmetic."},
+        "duration_ms": {"type": ["integer", "null"], "description": "Wall-clock for this agent, if the runtime supplies it."}
+      }
+    }
+  }
+}

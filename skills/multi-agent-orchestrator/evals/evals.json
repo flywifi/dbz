@@ -1,0 +1,52 @@
+{
+  "skill": "multi-agent-orchestrator",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "Read-fanout over agreeing envelopes — complete merged result",
+      "input": {
+        "run_id": "eval",
+        "task": "extract roles across NIST PM and CA families",
+        "mode": "read-fanout"
+      },
+      "expected_output": {
+        "coverage": {"state": "complete"},
+        "findings": {"$minItems": 1},
+        "minority_report": null,
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "Two agreeing agents consolidate to a complete result with merged findings"
+    },
+    {
+      "id": "fail-01",
+      "label": "Invalid envelope blocked from consolidation — not merged",
+      "input": {
+        "run_id": "eval",
+        "envelope": {"task_id": "eval.w1.01", "scope": "PM", "mode": "read-fanout", "status": "complete", "findings": [], "provenance": {"sources_read": [], "method": "read"}, "confidence": "high", "minority_report": null, "human_review_required": true, "metrics": {"items_found": 0}}
+      },
+      "expected_output": {
+        "valid": false,
+        "violations": {"$minItems": 1}
+      },
+      "expect_pass": true,
+      "note": "Envelope missing residual_frontier fails validation and is blocked, never consolidated"
+    },
+    {
+      "id": "edge-01",
+      "label": "Mutate-mode plan — depth_cap 1 and worktree isolation",
+      "input": {
+        "run_id": "eval",
+        "task": "add 3 feed_registry entries and re-pin their versions"
+      },
+      "expected_output": {
+        "mode": "mutate",
+        "stop_conditions": {"depth_cap": 1},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "Canonical/seed edits route to mutate mode with no auto-recursion and per-agent worktree isolation"
+    }
+  ]
+}

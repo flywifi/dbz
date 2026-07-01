@@ -1,0 +1,65 @@
+{
+  "skill": "multi-agent-orchestrator",
+  "version": "1.0",
+  "description": "Declarative source-of-truth spec for a recursive fan-out run. Executed directly by the manager via the Workflow tool by default; compiled to a Workflow run only when orchestration_hybrid_mode is effective (see references/routing.md).",
+  "engine": {
+    "default": "workflow_tool_direct",
+    "hybrid": {
+      "compile_to": "workflow_tool",
+      "gated_by_flag": "orchestration_hybrid_mode",
+      "triggers": ["named_or_recurring", "deterministic_replay", "agent_count_over_size_cap"]
+    }
+  },
+  "steps": [
+    {
+      "id": "decompose",
+      "atom": "task-decompose",
+      "input": {"task": "{{input.task}}", "corpus_hint": "{{input.corpus_hint}}", "max_scopes": "{{input.max_scopes}}"},
+      "output_as": "plan",
+      "note": "Picks mode + first-wave scopes + stop_conditions from routing.md / frontier-model.md."
+    },
+    {
+      "id": "wave",
+      "action": "fan_out",
+      "input": {"scopes": "{{plan.scopes}}", "mode": "{{plan.mode}}", "schema": "skills/shared/orchestration-envelope.schema.json"},
+      "output_as": "envelopes",
+      "repeat": "per_scope",
+      "isolation_when": {"mode == mutate": "worktree"},
+      "note": "One agent per scope, each FORCED to return the envelope schema. Read envelopes only, never transcripts."
+    },
+    {
+      "id": "validate",
+      "atom": "envelope-validate",
+      "input": {"envelope": "{{envelopes[*]}}"},
+      "output_as": "validated",
+      "repeat": "per_envelope",
+      "on_invalid": "block_and_rerun_scope",
+      "note": "Anti-drift gate. A malformed envelope never enters consolidation."
+    },
+    {
+      "id": "consolidate",
+      "atom": "findings-consolidate",
+      "input": {"run_id": "{{input.run_id}}", "envelopes": "{{validated}}", "stop_condition": "{{frontier.stop_condition}}"},
+      "output_as": "consolidated",
+      "note": "Deterministic merge; conflicts preserved, coverage honest."
+    },
+    {
+      "id": "expand",
+      "atom": "frontier-expand",
+      "input": {"envelopes": "{{validated}}", "seen": "{{frontier.seen}}", "wave": "{{frontier.wave}}", "stop_conditions": "{{plan.stop_conditions}}", "agents_so_far": "{{frontier.agents_so_far}}"},
+      "output_as": "frontier",
+      "note": "Dedup residual frontier against seen; produce next wave or signal saturation."
+    },
+    {
+      "id": "loop_or_stop",
+      "action": "loop",
+      "condition": "frontier.saturated == false AND frontier.stop_condition == null",
+      "loop_to": "wave",
+      "else": "return consolidated",
+      "note": "Loop-until-dry: repeat waves until saturated or a stop condition fires."
+    }
+  ],
+  "output": "{{consolidated}}",
+  "on_step_failure": "stop_and_return_error",
+  "notes": "Every envelope and the final consolidated object carry human_review_required: true. Recursion is driven by residual_frontier, not a fixed depth. mutate mode uses depth_cap 1 and worktree isolation per frontier-model.md / routing.md."
+}

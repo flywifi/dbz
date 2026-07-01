@@ -91,6 +91,16 @@
       "requires": {"env": ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"], "oauth": false, "setup_url": "https://docs.aws.amazon.com/audit-manager/"},
       "degradation": "Use bundled crosswalk data; no live cloud evidence.",
       "used_by": []
+    },
+
+    "orchestration_hybrid_mode": {
+      "label": "Orchestration hybrid engine (declarative spec compiled to Workflow)",
+      "category": "orchestration",
+      "enabled": false,
+      "description": "Default multi-agent orchestration is driven directly by the manager via the Workflow tool. When this flag is effective AND a trigger condition holds (named/recurring workflow, deterministic replay required, or planned agent count over the size cap), the declarative skills/multi-agent-orchestrator/workflow.json spec is compiled to a Workflow run instead of hand-driven. The flag alone does not force compilation — a trigger must also hold.",
+      "requires": {"env": [], "oauth": false, "setup_url": "skills/multi-agent-orchestrator/references/routing.md"},
+      "degradation": "Manager drives the Workflow tool directly (the default, simpler path).",
+      "used_by": ["skills/multi-agent-orchestrator/workflow.json"]
     }
   },
 
@@ -98,6 +108,7 @@
     "external_api": "Public or keyed HTTP APIs. Most work unauthenticated but a key raises limits or unlocks data.",
     "crawler_enhancement": "Optional upgrades to the framework crawler (e.g. JS rendering).",
     "mcp_server": "Model Context Protocol servers that require interactive OAuth — cannot be enabled headless.",
-    "grc_connector": "Live integrations to commercial GRC platforms; replace bundled sample data with a customer tenant."
+    "grc_connector": "Live integrations to commercial GRC platforms; replace bundled sample data with a customer tenant.",
+    "orchestration": "Behavioral flags for the multi-agent orchestration bucket. No credentials; gate execution strategy, not data access."
   }
 }
