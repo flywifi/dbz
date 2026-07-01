@@ -1,0 +1,323 @@
+{
+  "_source": "NIST SP 800-63B Rev 3 \u2014 Digital Identity Guidelines: Authentication and Lifecycle Management",
+  "_cprt_url": "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/sp_800_63b_3/element/ALL/structure/default",
+  "_fetched_at": "2026-07-01T01:31:15.946011+00:00",
+  "_requirement_count": 26,
+  "_nist_800_53_version": "Rev 5",
+  "requirements": [
+    {
+      "requirement_id": "800-63b-4",
+      "section": "4",
+      "title": "Authenticator Assurance Levels \u2014 Overview",
+      "aal_level": "all",
+      "text": "Authenticator Assurance Levels \u2014 Overview",
+      "nist_800_53_controls": [
+        "IA-2",
+        "IA-5"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-4-1",
+      "section": "4.1",
+      "title": "Authenticator Assurance Level 1",
+      "aal_level": "AAL1",
+      "text": "Authenticator Assurance Level 1",
+      "nist_800_53_controls": [
+        "IA-2",
+        "IA-2(1)",
+        "IA-5"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-4-2",
+      "section": "4.2",
+      "title": "Authenticator Assurance Level 2",
+      "aal_level": "AAL2",
+      "text": "Authenticator Assurance Level 2",
+      "nist_800_53_controls": [
+        "IA-2",
+        "IA-2(1)",
+        "IA-2(2)",
+        "IA-5"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-4-3",
+      "section": "4.3",
+      "title": "Authenticator Assurance Level 3",
+      "aal_level": "AAL3",
+      "text": "Authenticator Assurance Level 3",
+      "nist_800_53_controls": [
+        "IA-2",
+        "IA-2(1)",
+        "IA-2(2)",
+        "IA-5",
+        "SC-8"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-5",
+      "section": "5",
+      "title": "Authenticator Types",
+      "aal_level": "all",
+      "text": "Authenticator Types",
+      "nist_800_53_controls": [
+        "IA-5"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-5-1",
+      "section": "5.1",
+      "title": "Requirements by Authenticator Type",
+      "aal_level": "all",
+      "text": "Requirements by Authenticator Type",
+      "nist_800_53_controls": [
+        "IA-5",
+        "IA-5(1)"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-5-1-1",
+      "section": "5.1.1",
+      "title": "Memorized Secrets",
+      "aal_level": "all",
+      "text": "Memorized Secrets",
+      "nist_800_53_controls": [
+        "IA-5",
+        "IA-5(1)"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-5-1-2",
+      "section": "5.1.2",
+      "title": "Look-Up Secrets",
+      "aal_level": "all",
+      "text": "Look-Up Secrets",
+      "nist_800_53_controls": [
+        "IA-5"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-5-1-3",
+      "section": "5.1.3",
+      "title": "Out-of-Band Devices",
+      "aal_level": "all",
+      "text": "Out-of-Band Devices",
+      "nist_800_53_controls": [
+        "IA-5",
+        "SC-28"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-5-1-4",
+      "section": "5.1.4",
+      "title": "Single-Factor OTP Devices",
+      "aal_level": "all",
+      "text": "Single-Factor OTP Devices",
+      "nist_800_53_controls": [
+        "IA-5",
+        "SC-28"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-5-1-5",
+      "section": "5.1.5",
+      "title": "Multi-Factor OTP Devices",
+      "aal_level": "AAL2",
+      "text": "Multi-Factor OTP Devices",
+      "nist_800_53_controls": [
+        "IA-5",
+        "SC-28"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-5-1-6",
+      "section": "5.1.6",
+      "title": "Single-Factor Cryptographic Software",
+      "aal_level": "all",
+      "text": "Single-Factor Cryptographic Software",
+      "nist_800_53_controls": [
+        "IA-5",
+        "SC-8"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-5-1-7",
+      "section": "5.1.7",
+      "title": "Single-Factor Cryptographic Devices",
+      "aal_level": "all",
+      "text": "Single-Factor Cryptographic Devices",
+      "nist_800_53_controls": [
+        "IA-5",
+        "SC-12",
+        "SC-8"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-5-1-8",
+      "section": "5.1.8",
+      "title": "Multi-Factor Cryptographic Software",
+      "aal_level": "AAL2",
+      "text": "Multi-Factor Cryptographic Software",
+      "nist_800_53_controls": [
+        "IA-5",
+        "SC-12",
+        "SC-8"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-5-1-9",
+      "section": "5.1.9",
+      "title": "Multi-Factor Cryptographic Devices",
+      "aal_level": "AAL2",
+      "text": "Multi-Factor Cryptographic Devices",
+      "nist_800_53_controls": [
+        "IA-5",
+        "SC-12",
+        "SC-8"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-6",
+      "section": "6",
+      "title": "Authenticator Lifecycle Management",
+      "aal_level": "all",
+      "text": "Authenticator Lifecycle Management",
+      "nist_800_53_controls": [
+        "IA-5",
+        "IA-11"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-6-1",
+      "section": "6.1",
+      "title": "Authenticator Binding",
+      "aal_level": "all",
+      "text": "Authenticator Binding",
+      "nist_800_53_controls": [
+        "IA-5"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-6-2",
+      "section": "6.2",
+      "title": "Loss, Theft, and Unauthorized Duplication",
+      "aal_level": "all",
+      "text": "Loss, Theft, and Unauthorized Duplication",
+      "nist_800_53_controls": [
+        "IA-5",
+        "SC-28"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-6-3",
+      "section": "6.3",
+      "title": "Expiration",
+      "aal_level": "all",
+      "text": "Expiration",
+      "nist_800_53_controls": [
+        "IA-5"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-7",
+      "section": "7",
+      "title": "Session Management",
+      "aal_level": "all",
+      "text": "Session Management",
+      "nist_800_53_controls": [
+        "IA-2",
+        "IA-11"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-7-1",
+      "section": "7.1",
+      "title": "Session Bindings",
+      "aal_level": "all",
+      "text": "Session Bindings",
+      "nist_800_53_controls": [
+        "IA-11"
+      ],
+      "cci_provenance": "Implied-Bridge"
+    },
+    {
+      "requirement_id": "800-63b-8",
+      "section": "8",
+      "title": "Threat Resistance",
+      "aal_level": "all",
+      "text": "Threat Resistance",
+      "nist_800_53_controls": [
+        "SC-8",
+        "SC-13"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-8-2",
+      "section": "8.2",
+      "title": "Verifier-Impersonation Resistance",
+      "aal_level": "all",
+      "text": "Verifier-Impersonation Resistance",
+      "nist_800_53_controls": [
+        "SC-8"
+      ],
+      "cci_provenance": "Implied-Bridge"
+    },
+    {
+      "requirement_id": "800-63b-8-3",
+      "section": "8.3",
+      "title": "Verifier-Compromise Resistance",
+      "aal_level": "all",
+      "text": "Verifier-Compromise Resistance",
+      "nist_800_53_controls": [
+        "SC-13"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    },
+    {
+      "requirement_id": "800-63b-9",
+      "section": "9",
+      "title": "Privacy Requirements",
+      "aal_level": "all",
+      "text": "Privacy Requirements",
+      "nist_800_53_controls": [
+        "SC-8",
+        "SC-28"
+      ],
+      "cci_provenance": "Implied-Bridge"
+    },
+    {
+      "requirement_id": "800-63b-10",
+      "section": "10",
+      "title": "Usability Considerations",
+      "aal_level": "all",
+      "text": "Usability Considerations",
+      "nist_800_53_controls": [
+        "IA-5",
+        "SC-28"
+      ],
+      "cci_provenance": "Confirmed-Subject"
+    }
+  ]
+}

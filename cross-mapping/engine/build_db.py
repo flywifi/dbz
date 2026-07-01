@@ -15,6 +15,8 @@ Sources consumed:
   - canonical-sources/cfr/*.json                           (optional; ecfr_loader.py)
   - canonical-sources/mitre-attack-techniques.json         (optional; attack_stix_loader.py)
   - canonical-sources/edgar-8k-cyber.json                 (optional; edgar_loader.py)
+  - canonical-sources/nist-800-63b-requirements.json      (optional; generate_controls_800_63b.py)
+  - canonical-sources/fips-cmvp-validations.json          (optional; fips_cmvp_loader.py)
 
 Output:
   - cross-mapping/output/grc.db        (SQLite; gitignored)
@@ -59,10 +61,12 @@ CFR_DIR = REPO_ROOT / "canonical-sources" / "cfr"
 NVD_DIR = REPO_ROOT / "canonical-sources"       # nvd-cve-{date}.json files land here
 CCI_PATH = REPO_ROOT / "canonical-sources" / "disa-cci-trackr.json"
 EURLEX_DIR = REPO_ROOT / "canonical-sources" / "eurlex"
+NIST_800_63B_PATH = REPO_ROOT / "canonical-sources" / "nist-800-63b-requirements.json"
+FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
-ENGINE_VERSION = "1.1.0"
-SCHEMA_VERSION = "3.0"   # matches enhanced_framework_schema.json
+ENGINE_VERSION = "1.2.0"
+SCHEMA_VERSION = "3.1"   # v3.1: adds nist_800_63b_requirements + fips_140_validations tables
 
 CHUNK = 500  # executemany batch size
 
@@ -301,6 +305,33 @@ CREATE TABLE IF NOT EXISTS eurlex_articles (
     PRIMARY KEY (regulation_id, article_id)
 );
 CREATE INDEX IF NOT EXISTS idx_eurlex_regulation ON eurlex_articles(regulation_id);
+
+CREATE TABLE IF NOT EXISTS nist_800_63b_requirements (
+    requirement_id       TEXT PRIMARY KEY,
+    section              TEXT,
+    title                TEXT,
+    aal_level            TEXT,
+    text                 TEXT,
+    nist_800_53_controls TEXT,  -- JSON array
+    cci_provenance       TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_800_63b_section ON nist_800_63b_requirements(section);
+CREATE INDEX IF NOT EXISTS idx_800_63b_aal     ON nist_800_63b_requirements(aal_level);
+
+CREATE TABLE IF NOT EXISTS fips_140_validations (
+    module_id              TEXT PRIMARY KEY,
+    vendor                 TEXT,
+    module_name            TEXT,
+    validation_date        TEXT,
+    level                  TEXT,
+    status                 TEXT,
+    algorithm_capabilities TEXT,  -- JSON array
+    nist_800_53_controls   TEXT,  -- JSON array
+    cci_provenance         TEXT,  -- JSON object
+    fetched_at             TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_fips_status ON fips_140_validations(status);
+CREATE INDEX IF NOT EXISTS idx_fips_level  ON fips_140_validations(level);
 """
 
 
@@ -661,6 +692,47 @@ def load_cci_data(cci_path: Path) -> list[dict]:
     return rows
 
 
+def load_nist800_63b_data(path: Path) -> list[dict]:
+    """Load NIST SP 800-63B requirements JSON; return rows for nist_800_63b_requirements table."""
+    if not path.exists():
+        return []
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    rows = []
+    for req in doc.get("requirements", []):
+        rows.append({
+            "requirement_id":       req.get("requirement_id", ""),
+            "section":              req.get("section", ""),
+            "title":                req.get("title", ""),
+            "aal_level":            req.get("aal_level", ""),
+            "text":                 req.get("text", ""),
+            "nist_800_53_controls": json.dumps(req.get("nist_800_53_controls", [])),
+            "cci_provenance":       req.get("cci_provenance", ""),
+        })
+    return rows
+
+
+def load_fips_cmvp_data(path: Path) -> list[dict]:
+    """Load FIPS CMVP validated modules JSON; return rows for fips_140_validations table."""
+    if not path.exists():
+        return []
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    rows = []
+    for mod in doc.get("modules", []):
+        rows.append({
+            "module_id":              mod.get("module_id", ""),
+            "vendor":                 mod.get("vendor", ""),
+            "module_name":            mod.get("module_name", ""),
+            "validation_date":        mod.get("validation_date", ""),
+            "level":                  mod.get("level", ""),
+            "status":                 mod.get("status", ""),
+            "algorithm_capabilities": mod.get("algorithm_capabilities", "[]"),
+            "nist_800_53_controls":   mod.get("nist_800_53_controls", "[]"),
+            "cci_provenance":         mod.get("cci_provenance", "{}"),
+            "fetched_at":             mod.get("fetched_at", ""),
+        })
+    return rows
+
+
 def load_eurlex_data(eurlex_dir: Path) -> list[dict]:
     """Load EUR-Lex article JSON files from eurlex_dir."""
     if not eurlex_dir.exists():
@@ -714,6 +786,8 @@ def build_db(
     nvd_dir: Path = NVD_DIR,
     cci_path: Path = CCI_PATH,
     eurlex_dir: Path = EURLEX_DIR,
+    nist_800_63b_path: Path = NIST_800_63B_PATH,
+    fips_cmvp_path: Path = FIPS_CMVP_PATH,
 ) -> dict:
     t0 = time.monotonic()
     out_db.parent.mkdir(parents=True, exist_ok=True)
@@ -749,7 +823,7 @@ def build_db(
     conn.commit()
 
     # 1. Controls + enhancements + parameters + unified_mappings
-    print(f"\n[1/13] Loading catalog: {catalog_path.name}")
+    print(f"\n[1/15] Loading catalog: {catalog_path.name}")
     ctrl_rows, enh_rows, param_rows, mapping_rows = load_catalog(catalog_path)
 
     _executemany_chunked(conn, """
@@ -789,7 +863,7 @@ def build_db(
     conn.commit()
 
     # 2. ER crosswalk data
-    print(f"\n[2/13] Loading ER crosswalk CSVs from {er_dir.name}/")
+    print(f"\n[2/15] Loading ER crosswalk CSVs from {er_dir.name}/")
     er_ctrl_rows, er_mapping_rows = load_er_data(er_dir)
 
     _executemany_chunked(conn, """
@@ -805,7 +879,7 @@ def build_db(
     conn.commit()
 
     # 3. Framework registry
-    print(f"\n[3/13] Loading feed registry: {feed_registry_path.name}")
+    print(f"\n[3/15] Loading feed registry: {feed_registry_path.name}")
     reg_rows = load_framework_registry(feed_registry_path)
     _executemany_chunked(conn, """
         INSERT OR REPLACE INTO framework_registry
@@ -818,7 +892,7 @@ def build_db(
     conn.commit()
 
     # 4. Changelog
-    print(f"\n[4/13] Loading changelog: {changelog_path.name}")
+    print(f"\n[4/15] Loading changelog: {changelog_path.name}")
     cl_rows = load_changelog(changelog_path)
     if cl_rows:
         _executemany_chunked(conn, """
@@ -836,7 +910,7 @@ def build_db(
     conn.commit()
 
     # 5. Announcements
-    print(f"\n[5/13] Loading announcements: {announcements_path.name}")
+    print(f"\n[5/15] Loading announcements: {announcements_path.name}")
     ann_rows = load_announcements(announcements_path)
     if ann_rows:
         _executemany_chunked(conn, """
@@ -850,7 +924,7 @@ def build_db(
     conn.commit()
 
     # 6. CISA KEV catalog
-    print(f"\n[6/13] Loading CISA KEV: {kev_path.name}")
+    print(f"\n[6/15] Loading CISA KEV: {kev_path.name}")
     kev_rows = load_kev_data(kev_path)
     if kev_rows:
         _executemany_chunked(conn, """
@@ -866,7 +940,7 @@ def build_db(
     conn.commit()
 
     # 7. CFR requirements
-    print(f"\n[7/13] Loading CFR requirements from {cfr_dir.name}/")
+    print(f"\n[7/15] Loading CFR requirements from {cfr_dir.name}/")
     cfr_rows = load_cfr_data(cfr_dir)
     if cfr_rows:
         _executemany_chunked(conn, """
@@ -880,7 +954,7 @@ def build_db(
     conn.commit()
 
     # 8. MITRE ATT&CK techniques
-    print(f"\n[8/13] Loading ATT&CK techniques: {attack_path.name}")
+    print(f"\n[8/15] Loading ATT&CK techniques: {attack_path.name}")
     atk_rows = load_attack_data(attack_path)
     if atk_rows:
         _executemany_chunked(conn, """
@@ -894,7 +968,7 @@ def build_db(
     conn.commit()
 
     # 9. SEC EDGAR cyber incident disclosures
-    print(f"\n[9/13] Loading EDGAR disclosures: {edgar_path.name}")
+    print(f"\n[9/15] Loading EDGAR disclosures: {edgar_path.name}")
     edgar_rows = load_edgar_data(edgar_path)
     if edgar_rows:
         _executemany_chunked(conn, """
@@ -910,12 +984,12 @@ def build_db(
     conn.commit()
 
     # 10. FTS5 population
-    print(f"\n[10/13] Building FTS5 index …")
+    print(f"\n[10/15] Building FTS5 index …")
     conn.execute("INSERT INTO controls_fts(controls_fts) VALUES('rebuild')")
     conn.commit()
 
     # 11. NVD CVE data
-    print(f"\n[11/13] Loading NVD CVE data from {nvd_dir.name}/")
+    print(f"\n[11/15] Loading NVD CVE data from {nvd_dir.name}/")
     nvd_rows = load_nvd_data(nvd_dir)
     if nvd_rows:
         _executemany_chunked(conn, """
@@ -931,7 +1005,7 @@ def build_db(
     conn.commit()
 
     # 12. DISA CCI data
-    print(f"\n[12/13] Loading DISA CCI data: {cci_path.name}")
+    print(f"\n[12/15] Loading DISA CCI data: {cci_path.name}")
     cci_rows = load_cci_data(cci_path)
     if cci_rows:
         _executemany_chunked(conn, """
@@ -945,7 +1019,7 @@ def build_db(
     conn.commit()
 
     # 13. EUR-Lex articles
-    print(f"\n[13/13] Loading EUR-Lex articles from {eurlex_dir.name}/")
+    print(f"\n[13/15] Loading EUR-Lex articles from {eurlex_dir.name}/")
     eurlex_rows = load_eurlex_data(eurlex_dir)
     if eurlex_rows:
         _executemany_chunked(conn, """
@@ -958,6 +1032,38 @@ def build_db(
         """, eurlex_rows, "eurlex_articles")
     else:
         print(f"  eurlex_articles: 0 rows (run eurlex_loader.py to populate)")
+    conn.commit()
+
+    # 14. NIST SP 800-63B digital identity requirements
+    print(f"\n[14/15] Loading NIST SP 800-63B requirements: {nist_800_63b_path.name}")
+    b63b_rows = load_nist800_63b_data(nist_800_63b_path)
+    if b63b_rows:
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO nist_800_63b_requirements
+                (requirement_id, section, title, aal_level, text,
+                 nist_800_53_controls, cci_provenance)
+            VALUES
+                (:requirement_id, :section, :title, :aal_level, :text,
+                 :nist_800_53_controls, :cci_provenance)
+        """, b63b_rows, "nist_800_63b_requirements")
+    else:
+        print(f"  nist_800_63b_requirements: 0 rows (run generate_controls_800_63b.py to populate)")
+    conn.commit()
+
+    # 15. FIPS 140-3/140-2 CMVP validated modules
+    print(f"\n[15/15] Loading FIPS CMVP validations: {fips_cmvp_path.name}")
+    fips_rows = load_fips_cmvp_data(fips_cmvp_path)
+    if fips_rows:
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO fips_140_validations
+                (module_id, vendor, module_name, validation_date, level, status,
+                 algorithm_capabilities, nist_800_53_controls, cci_provenance, fetched_at)
+            VALUES
+                (:module_id, :vendor, :module_name, :validation_date, :level, :status,
+                 :algorithm_capabilities, :nist_800_53_controls, :cci_provenance, :fetched_at)
+        """, fips_rows, "fips_140_validations")
+    else:
+        print(f"  fips_140_validations: 0 rows (run fips_cmvp_loader.py to populate)")
     conn.commit()
 
     # ANALYZE + optional VACUUM
@@ -974,7 +1080,8 @@ def build_db(
     for tbl in ("controls", "enhancements", "parameters", "unified_mappings",
                 "er_controls", "er_mappings", "framework_registry", "changelog", "announcements",
                 "cisa_kev", "cfr_requirements", "attack_techniques", "edgar_cyber_incidents",
-                "nvd_cves", "disa_ccis", "eurlex_articles"):
+                "nvd_cves", "disa_ccis", "eurlex_articles",
+                "nist_800_63b_requirements", "fips_140_validations"):
         row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
         counts[tbl] = row[0]
 

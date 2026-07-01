@@ -23,6 +23,8 @@ Usage:
     python3 dbz_query.py attack --tactic initial-access --control AC-2
     python3 dbz_query.py edgar --incident-type ransomware
     python3 dbz_query.py edgar --company "Acme" --days 180
+    python3 dbz_query.py 800-63b --aal AAL2 [--section 4.2] [--control IA-2]
+    python3 dbz_query.py fips --level 3 [--vendor "Microsoft"] [--status active]
 
 DB discovery: walks up from CWD looking for cross-mapping/output/grc.db; or --db PATH.
 """
@@ -599,6 +601,7 @@ def cmd_manifest(args, conn: sqlite3.Connection) -> int:
         "er_controls", "er_mappings", "framework_registry", "changelog", "announcements",
         "cisa_kev", "cfr_requirements", "attack_techniques", "edgar_cyber_incidents",
         "nvd_cves", "disa_ccis", "eurlex_articles",
+        "nist_800_63b_requirements", "fips_140_validations",
     )
     for tbl in all_tables:
         try:
@@ -681,6 +684,70 @@ def cmd_cci(args, conn: sqlite3.Connection) -> int:
     sql = f"SELECT cci_id, status, type, definition, nist_rev5_refs FROM disa_ccis {where} ORDER BY cci_id LIMIT 100"
     results = conn.execute(sql, params).fetchall()
     cols = ["cci_id", "status", "type", "definition", "nist_rev5_refs"]
+    _output(results, args.format, cols)
+    return 0
+
+
+def cmd_800_63b(args, conn: sqlite3.Connection) -> int:
+    """Query NIST SP 800-63B digital identity requirements by section, AAL level, or control."""
+    conditions = []
+    params: list = []
+
+    if getattr(args, "section", None):
+        conditions.append("section LIKE ?")
+        params.append(f"{args.section}%")
+    if getattr(args, "aal", None):
+        conditions.append("aal_level = ?")
+        params.append(args.aal.upper())
+    if getattr(args, "control", None):
+        conditions.append("nist_800_53_controls LIKE ?")
+        params.append(f'%"{args.control.upper()}%')
+    if getattr(args, "keyword", None):
+        conditions.append("(title LIKE ? OR text LIKE ?)")
+        params.extend([f"%{args.keyword}%", f"%{args.keyword}%"])
+
+    where = ("WHERE " + " AND ".join(conditions)) if conditions else ""
+    sql = f"""
+        SELECT requirement_id, section, aal_level, title, nist_800_53_controls, cci_provenance
+        FROM nist_800_63b_requirements {where}
+        ORDER BY section, requirement_id
+        LIMIT 100
+    """
+    rows = conn.execute(sql, params).fetchall()
+    results = [dict(r) for r in rows]
+    cols = ["requirement_id", "section", "aal_level", "title", "nist_800_53_controls", "cci_provenance"]
+    _output(results, args.format, cols)
+    return 0
+
+
+def cmd_fips(args, conn: sqlite3.Connection) -> int:
+    """Query FIPS 140-3/140-2 CMVP validated cryptographic modules."""
+    conditions = []
+    params: list = []
+
+    if getattr(args, "vendor", None):
+        conditions.append("vendor LIKE ?")
+        params.append(f"%{args.vendor}%")
+    if getattr(args, "level", None):
+        conditions.append("level = ?")
+        params.append(str(args.level))
+    if getattr(args, "status", None):
+        conditions.append("status = ?")
+        params.append(args.status.lower())
+    if getattr(args, "keyword", None):
+        conditions.append("(vendor LIKE ? OR module_name LIKE ?)")
+        params.extend([f"%{args.keyword}%", f"%{args.keyword}%"])
+
+    where = ("WHERE " + " AND ".join(conditions)) if conditions else ""
+    sql = f"""
+        SELECT module_id, vendor, module_name, validation_date, level, status
+        FROM fips_140_validations {where}
+        ORDER BY validation_date DESC, module_id
+        LIMIT 100
+    """
+    rows = conn.execute(sql, params).fetchall()
+    results = [dict(r) for r in rows]
+    cols = ["module_id", "vendor", "module_name", "validation_date", "level", "status"]
     _output(results, args.format, cols)
     return 0
 
@@ -848,6 +915,22 @@ def build_parser() -> argparse.ArgumentParser:
     cci_p.add_argument("--status", metavar="STATUS", help="CCI status (e.g. active)")
     _add_format(cci_p); _add_db(cci_p)
 
+    # 800-63b
+    b63 = subs.add_parser("800-63b", help="Query NIST SP 800-63B digital identity requirements")
+    b63.add_argument("--section", metavar="SEC", help="Section number (e.g. 4.2, 5.1.1)")
+    b63.add_argument("--aal", metavar="LEVEL", help="Authenticator assurance level: AAL1 | AAL2 | AAL3")
+    b63.add_argument("--control", metavar="CTRL", help="NIST 800-53 control ID (e.g. IA-2, IA-5)")
+    b63.add_argument("--keyword", metavar="KW", help="Keyword search in title or text")
+    _add_format(b63); _add_db(b63)
+
+    # fips
+    fips_p = subs.add_parser("fips", help="Query FIPS 140-3/140-2 CMVP validated modules")
+    fips_p.add_argument("--vendor", metavar="VENDOR", help="Vendor name substring")
+    fips_p.add_argument("--level", metavar="LEVEL", help="Security level (1, 2, 3, or 4)")
+    fips_p.add_argument("--status", metavar="STATUS", help="Validation status: active | historical | revoked")
+    fips_p.add_argument("--keyword", metavar="KW", help="Keyword in vendor or module name")
+    _add_format(fips_p); _add_db(fips_p)
+
     # eurlex
     eur = subs.add_parser("eurlex", help="Query EUR-Lex regulatory articles (GDPR, NIS2, DORA, EU AI Act)")
     eur.add_argument("--regulation", metavar="REG",
@@ -890,6 +973,8 @@ def main(argv=None) -> int:
         "nvd": cmd_nvd,
         "cci": cmd_cci,
         "eurlex": cmd_eurlex,
+        "800-63b": cmd_800_63b,
+        "fips": cmd_fips,
     }
 
     fn = cmd_map.get(args.command)
