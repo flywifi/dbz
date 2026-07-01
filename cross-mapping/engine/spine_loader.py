@@ -398,6 +398,11 @@ def derive_iso_relationships(edges: List[dict]) -> None:
 # the pivot key.  Everything else becomes a framework whose native ids co-occur with
 # the row's NIST r5 sub-parts (hub co-membership, confidence 0.65, hop 2).
 _HUB_FRAMEWORKS = {
+    # "SOC 2" is the report label; the native ids are the AICPA Trust Services
+    # Criteria (2017) themselves — the specific testable criteria a SOC 2 audit
+    # evaluates against (CC/A/C/PI/P series), e.g. "AICPA 2017 CC6.1". The label is
+    # kept as "SOC 2" so it joins with the ER-crosswalk naming; TSC-criterion
+    # provenance stays on every edge's native_id.
     "tsc_id": "SOC 2",
     "iso_27001_2022_id": "ISO 27001/2 (2022)",
     "hipaa_security_id": "HIPAA Security",
@@ -509,3 +514,126 @@ def _read_sheet_name(src: str) -> str:
         return sheet_name(src)
     except Exception:
         return ""
+
+
+# ── odp_values: concrete ODP values pinned in DAAPM prose (Phase 4) ─────────────
+
+_WORD_NUM = {
+    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7,
+    "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "fifteen": 15,
+    "twenty": 20, "thirty": 30, "sixty": 60, "ninety": 90,
+}
+_UNIT_SINGULAR = {
+    "minutes": "minute", "hours": "hour", "days": "day", "weeks": "week",
+    "months": "month", "years": "year", "attempts": "attempt", "characters": "character",
+}
+# numeric value + unit ("72 hours", "90 days", "3 consecutive"/"3 attempts")
+_RE_NUM_UNIT = re.compile(
+    r"\b(\d+)\s+(minutes?|hours?|days?|weeks?|months?|years?|attempts?|characters?)\b", re.I)
+# parenthetical numeral ("(15) minute")
+_RE_PAREN = re.compile(r"\((\d+)\)\s*(minutes?|hours?|days?|weeks?|months?|years?)\b", re.I)
+# word-number + unit/consecutive ("three consecutive", "one year")
+_RE_WORD = re.compile(
+    r"\b(" + "|".join(_WORD_NUM) + r")\s+(consecutive|minutes?|hours?|days?|weeks?|months?|years?|attempts?|characters?)\b",
+    re.I)
+# frequency adverbs
+_RE_FREQ = re.compile(
+    r"\b(annually|quarterly|monthly|weekly|daily|semi-?annually|biannually|continuously)\b", re.I)
+
+
+def _norm_value(num: int, unit: str) -> str:
+    unit = unit.lower()
+    unit = _UNIT_SINGULAR.get(unit, unit)
+    if unit == "consecutive":
+        unit = "attempt"
+    return f"{num} {unit}"
+
+
+def load_odp_values(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
+    """
+    Extract concrete ODP values from the DAAPM (DoD) baseline prose.  Values are
+    linked at the control level (odp_id=NULL) because the prose does not carry ODP
+    ids; every row is flagged needs_confirmation.  Best-effort regex extraction.
+    """
+    src = "federal-baseline-daapm"
+    fname = source_path(src).name
+    df = _read_source_df(src)
+    cols = list(df.columns)
+    num_c = _find_col(cols, col(src, "nist_id"))
+    txt_c = _find_col(cols, col(src, "control_text"))
+    if num_c is None or txt_c is None:
+        return [], {"rows": 0, "note": "DAAPM control_text column not found"}
+
+    rows: List[dict] = []
+    seen: Set[Tuple[str, str]] = set()
+    for i, rec in enumerate(df.itertuples(index=False), start=0):
+        rowd = dict(zip(df.columns, rec))
+        cid = normalize_control_id(str(rowd.get(num_c, "")).strip())
+        if not cid or cid not in catalog_ids:
+            continue
+        text = str(rowd.get(txt_c, "") or "")
+        if not text or text.lower() == "nan":
+            continue
+
+        matches: List[Tuple[str, str, str, float]] = []  # (raw, norm, kind, conf)
+        for m in _RE_NUM_UNIT.finditer(text):
+            matches.append((m.group(0), _norm_value(int(m.group(1)), m.group(2)),
+                            "count" if "attempt" in m.group(2).lower() else "duration", 0.7))
+        for m in _RE_PAREN.finditer(text):
+            matches.append((m.group(0), _norm_value(int(m.group(1)), m.group(2)), "duration", 0.7))
+        for m in _RE_WORD.finditer(text):
+            matches.append((m.group(0), _norm_value(_WORD_NUM[m.group(1).lower()], m.group(2)),
+                            "count" if "consecutive" in m.group(2).lower() or "attempt" in m.group(2).lower() else "duration", 0.55))
+        for m in _RE_FREQ.finditer(text):
+            matches.append((m.group(0), m.group(1).lower().replace("semi annually", "semi-annually"),
+                            "frequency", 0.55))
+
+        for raw, norm, kind, conf in matches:
+            key = (cid, norm)
+            if key in seen:
+                continue
+            seen.add(key)
+            rows.append({
+                "control_id": cid, "odp_id": None, "baseline": "DAAPM (DoD)",
+                "value_raw": raw.strip(), "value_norm": norm, "value_kind": kind,
+                "extraction_confidence": conf, "needs_confirmation": 1,
+                "source_file": fname, "source_row": i,
+            })
+
+    rows.sort(key=lambda r: (r["control_id"], r["value_norm"]))
+    stats = {
+        "rows": len(rows),
+        "controls_with_values": len({r["control_id"] for r in rows}),
+        "kinds": sorted({r["value_kind"] for r in rows}),
+    }
+    return rows, stats
+
+
+def detect_odp_clashes(odp_rows: List[dict]) -> List[dict]:
+    """
+    Given odp_values rows from one or more baselines, find controls/ODPs where two
+    baselines pin *different* values (an odp_value_divergence clash).  Pure function
+    (unit-testable).  When only one baseline has values, nothing clashes — the ODP is
+    'undetermined' for the other side, which the overlap engine surfaces as partial.
+    """
+    groups: Dict[Tuple[str, Optional[str]], Dict[str, Set[str]]] = {}
+    for r in odp_rows:
+        key = (r["control_id"], r.get("odp_id"))
+        groups.setdefault(key, {}).setdefault(r["baseline"], set()).add(r["value_norm"])
+
+    clashes: List[dict] = []
+    for (control_id, odp_id), by_base in sorted(groups.items(), key=lambda kv: (kv[0][0], kv[0][1] or "")):
+        if len(by_base) < 2:
+            continue
+        value_sets = list(by_base.values())
+        if all(v == value_sets[0] for v in value_sets):
+            continue  # all baselines agree
+        clashes.append({
+            "control_id": control_id,
+            "odp_id": odp_id,
+            "kind": "odp_value_divergence",
+            "positions": [
+                {"baseline": b, "values": sorted(v)} for b, v in sorted(by_base.items())
+            ],
+        })
+    return clashes

@@ -407,6 +407,23 @@ CREATE TABLE IF NOT EXISTS hitrust_hub (
 );
 CREATE INDEX IF NOT EXISTS idx_hub_fw      ON hitrust_hub(framework, target_id);
 CREATE INDEX IF NOT EXISTS idx_hub_hitrust ON hitrust_hub(hitrust_id);
+
+-- ── ODP assigned values (Phase 4): concrete parameter values a baseline pins ────
+CREATE TABLE IF NOT EXISTS odp_values (
+    rowid                 INTEGER PRIMARY KEY AUTOINCREMENT,
+    control_id            TEXT NOT NULL,     -- "AC-2(2)"
+    odp_id                TEXT,              -- canonical ODP id if linkable, else NULL
+    baseline              TEXT NOT NULL,     -- "DAAPM (DoD)"
+    value_raw             TEXT NOT NULL,     -- "not more than 72 hours"
+    value_norm            TEXT NOT NULL,     -- "72 hour"
+    value_kind            TEXT,              -- duration|count|frequency
+    extraction_confidence REAL NOT NULL,
+    needs_confirmation    INTEGER NOT NULL DEFAULT 1,
+    source_file           TEXT,
+    source_row            INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_odpval_ctrl ON odp_values(control_id);
+CREATE INDEX IF NOT EXISTS idx_odpval_base ON odp_values(baseline);
 """
 
 
@@ -1004,6 +1021,20 @@ def build_db(
              :hop_count, :needs_confirmation, :source_file, :source_sheet, :source_row)
     """, hub_edges, "framework_projection")
 
+    # Phase 4: concrete ODP values pinned in DAAPM (DoD) prose.
+    odpval_rows, odpval_stats = spine_loader.load_odp_values(catalog_ids)
+    print(f"  odp_values: rows={odpval_stats.get('rows')} controls={odpval_stats.get('controls_with_values')}")
+    print("  odp_values data_gap: FedRAMP baselines not loaded — FedRAMP ODP values unavailable; "
+          "SOC 2 / ISO / HIPAA do not pin NIST ODPs (parameter comparison is undetermined there)")
+    _executemany_chunked(conn, """
+        INSERT INTO odp_values
+            (control_id, odp_id, baseline, value_raw, value_norm, value_kind,
+             extraction_confidence, needs_confirmation, source_file, source_row)
+        VALUES
+            (:control_id, :odp_id, :baseline, :value_raw, :value_norm, :value_kind,
+             :extraction_confidence, :needs_confirmation, :source_file, :source_row)
+    """, odpval_rows, "odp_values")
+
     conn.commit()
 
     # 2. ER crosswalk data
@@ -1227,7 +1258,7 @@ def build_db(
                 "nvd_cves", "disa_ccis", "eurlex_articles",
                 "nist_800_63b_requirements", "fips_140_validations",
                 "nist_subparts", "cci_bridge", "control_odps", "framework_projection",
-                "hitrust_hub"):
+                "hitrust_hub", "odp_values"):
         row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
         counts[tbl] = row[0]
 

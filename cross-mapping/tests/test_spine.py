@@ -107,6 +107,26 @@ check(all(e["confidence"] == 0.65 for e in hub_edges), "hub edges confidence 0.6
 check(any(e["framework"] == "SOC 2" and e["r5_control"] == "AC-2" and e["r5_subpart"] for e in hub_edges),
       "SOC 2 projects to an AC-2 sub-part via the hub")
 
+# ── 5. ODP values + clash detection (Phase 4) ──────────────────────────────────
+odpv_rows, odpv_stats = SL.load_odp_values(catalog_ids)
+_by_ctrl = {}
+for r in odpv_rows:
+    _by_ctrl.setdefault(r["control_id"], set()).add(r["value_norm"])
+check("72 hour" in _by_ctrl.get("AC-2(2)", set()), "DAAPM AC-2(2) -> 72 hour")
+check("90 day" in _by_ctrl.get("AC-2(3)", set()), "DAAPM AC-2(3) -> 90 day")
+check("1 year" in _by_ctrl.get("AU-11", set()), "DAAPM AU-11 -> 1 year")
+check(all(r["needs_confirmation"] == 1 for r in odpv_rows), "odp_values flagged needs_confirmation")
+# clash detector: divergent pair fires, agreeing pair does not, single-baseline is 0
+_syn = [
+    {"control_id": "AC-2(3)", "odp_id": None, "baseline": "DAAPM (DoD)", "value_norm": "90 day"},
+    {"control_id": "AC-2(3)", "odp_id": None, "baseline": "FedRAMP", "value_norm": "35 day"},
+    {"control_id": "AU-11", "odp_id": None, "baseline": "DAAPM (DoD)", "value_norm": "1 year"},
+    {"control_id": "AU-11", "odp_id": None, "baseline": "FedRAMP", "value_norm": "1 year"},
+]
+_clashes = SL.detect_odp_clashes(_syn)
+check(len(_clashes) == 1 and _clashes[0]["control_id"] == "AC-2(3)", "clash fires on divergent AC-2(3)")
+check(SL.detect_odp_clashes(odpv_rows) == [], "single-baseline (DAAPM only) yields no clashes")
+
 # ── report ─────────────────────────────────────────────────────────────────────
 if FAILS:
     print("SPINE SELF-TEST: FAIL")

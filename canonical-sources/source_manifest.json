@@ -434,7 +434,7 @@
       "file": "canonical-sources/source_data/FEDERAL BASELINE AND OVERLAY MAPPING  DAAPM Appendix A Security Controls Version 2_2.xlsx",
       "format": "xlsx",
       "role": "federal_overlay_daapm",
-      "notes": "DCSA classified-system baselines. MLL=Moderate-Low-Low, HLL=High-Low-Low. Header at row index 2 (rows 0-1 are blank/title). Col A is empty padding; data starts col B.",
+      "notes": "DAAPM (DoD) baseline pins concrete ODP values inside Control Text prose (e.g. AC-2(2) 72 hours). Values are regex-extracted and flagged needs_confirmation.",
       "sheet": "SecurityControls_MLL",
       "header_row": 2,
       "version": "DAAPM Appendix A v2.2 (DoD DCSA)",
@@ -444,7 +444,8 @@
         "Family": "family",
         "Control Class": "control_class",
         "Control Title": "title",
-        "DCSA Supplemental Guidance": "dcsa_guidance"
+        "DCSA Supplemental Guidance": "dcsa_guidance",
+        "Control Text": "control_text"
       },
       "sheets": [
         "SecurityControls_MLL",
