@@ -70,7 +70,7 @@
     },
     "residual_frontier": {
       "type": "array",
-      "description": "The engine of recursion: leads this agent saw but did NOT cover. The manager dedups these against the run's 'seen' set and spawns the next wave against what remains. An empty array across all agents in a wave (K times) means the search is saturated.",
+      "description": "Leads this agent saw but did NOT cover — a SUGGESTION to the manager, never an authorization to spawn. Agents cannot create or dispatch other agents; recursion happens only when the manager proposes the next wave and a human expressly approves it (see frontier-model.md 'Spawn gate'). The manager dedups these against the run's 'seen' set; an empty array across all agents in a wave (K times) means the search is saturated.",
       "items": {
         "type": "object",
         "additionalProperties": false,

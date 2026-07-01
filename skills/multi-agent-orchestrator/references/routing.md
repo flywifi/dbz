@@ -72,6 +72,10 @@ norm.
 
 ## Non-negotiables
 
+- **Agents never spawn agents.** A sub-agent cannot create or dispatch other agents. Every
+  recursive wave requires the manager's recommendation AND express human approval; without
+  it the run halts `awaiting_human_approval` and spawns nothing. Wave 1 is the human-
+  initiated task; every wave beyond it needs fresh approval.
 - **Read-only by default.** `mutate`/`write_access: true` is granted only on an explicit
   edit request; ambiguous read-vs-write → pick `read-fanout` and emit a `minority-report`
   note.

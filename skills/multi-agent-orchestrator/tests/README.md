@@ -22,6 +22,9 @@ python3 skills/multi-agent-orchestrator/tests/run_scenario.py --emit # print act
 - **B — blocked / partial**: a blocked agent forces `partial` coverage; the frontier dries
   with the judge unsatisfied, so the run stops `frontier_exhausted` and records the unmet
   quality bar in `residual_uncertainty` (the loop never invents leads).
+- **C — spawn gate**: identical to A through wave 1, but wave 2 is not human-approved. Agents
+  cannot self-spawn, so the run halts `awaiting_human_approval`, surfaces the manager's
+  recommendation (proposed scopes), and never dispatches wave 2 — no wave-2 finding appears.
 
 ## How to validate the test independent of the answer
 

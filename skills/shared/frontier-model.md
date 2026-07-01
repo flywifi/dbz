@@ -92,6 +92,25 @@ cap when latency matters; split very wide waves into two.
 - A lead already in `seen` is dropped silently; it was (or is being) covered.
 - If two agents surface the same new lead in one wave, it enters the next wave once.
 
+## Spawn gate — agents never spawn agents (human approval required)
+
+`residual_frontier` is a **suggestion to the manager, not an authorization**. A sub-agent
+cannot create or dispatch other agents — the envelope schema has no spawn field, so an agent
+literally cannot express "I launched more agents" (and `additionalProperties: false` rejects
+any attempt). Recursion happens only when the **manager** proposes the next wave and a
+**human expressly approves** it:
+
+```
+agent reports residual_frontier  ─▶  manager forms a recommendation (proposed scopes, why,
+                                     cost)  ─▶  HUMAN approves  ─▶  manager spawns the wave
+```
+
+Wave 1 is the human-initiated task itself. Every recursive wave beyond it needs a fresh,
+explicit approval. Without approval the loop **halts** with `stop_reason:
+awaiting_human_approval`, surfaces the recommendation, and dispatches nothing — the proposed
+scopes stay in `residual_frontier` as uncovered. (Exercised by scenario C in
+`tests/run_scenario.py`: wave 2 is withheld, so no wave-2 finding ever appears.)
+
 ## Mode interaction
 
 - **read-fanout**: full recursion as above (this is where the frontier earns its keep).

@@ -72,7 +72,16 @@
       "atom": "frontier-expand",
       "input": {"envelopes": "{{validated}}", "seen": "{{frontier.seen}}", "wave": "{{frontier.wave}}", "stop_conditions": "{{plan.stop_conditions}}", "agents_so_far": "{{frontier.agents_so_far}}"},
       "output_as": "frontier",
-      "note": "Dedup residual frontier against seen; produce next wave or signal saturation."
+      "note": "Dedup residual frontier against seen; propose the next wave or signal saturation."
+    },
+    {
+      "id": "spawn_gate",
+      "action": "human_approval",
+      "condition": "frontier.next_scopes is non-empty",
+      "requires": "express human approval of the manager's recommendation (proposed scopes + why + cost)",
+      "on_approve": "loop_to wave",
+      "on_deny_or_absent": "return consolidated with stop_reason awaiting_human_approval + the recommendation",
+      "note": "Agents never spawn agents. A recursive wave is only dispatched after a human approves the manager's recommendation. Wave 1 is the human-initiated task; every wave beyond it needs fresh approval."
     },
     {
       "id": "loop_or_stop",

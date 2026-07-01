@@ -55,17 +55,28 @@ def run(scenario: dict) -> dict:
     judge_scores = scenario.get("judge_scores", {})
     skeptic_votes = scenario.get("skeptic_votes", {})
 
+    wave_approvals = scenario.get("wave_approvals", {})
     scopes = list(scenario["initial_scopes"])
     seen: list[str] = []
     accumulated: list[dict] = []
     rejected: list[dict] = []
     wave = 0
+    dispatched = 0
     dry_streak = 0
     stop_reason = None
     unsatisfied = False
+    proposed_scopes: list[str] = []
 
     while True:
         wave += 1
+        # SPAWN GATE: agents never spawn agents. Wave 1 is the human-initiated task; every
+        # recursive wave beyond it needs express human approval of the manager's proposal.
+        # Without approval the loop halts and surfaces the recommendation — it never spawns.
+        if wave > 1 and not bool(wave_approvals.get(str(wave), False)):
+            stop_reason = "awaiting_human_approval"
+            proposed_scopes = list(scopes)
+            break
+        dispatched += 1
         # 1. Fan-out (handoff DOWN): dispatch each scope to its simulated agent.
         envs = [agents[s] for s in scopes if s in agents]
         # 2. Validate (handoff UP through the anti-drift gate).
@@ -118,11 +129,29 @@ def run(scenario: dict) -> dict:
         }]
         final["minority_report"] = mr
 
+    # 8b. Spawn gate reached: surface the manager's recommendation; nothing was spawned.
+    recommendation = None
+    if stop_reason == "awaiting_human_approval":
+        recommendation = {
+            "recommend": "spawn the next wave over the proposed scopes",
+            "proposed_scopes": proposed_scopes,
+            "why": "residual leads remain; agents cannot self-spawn — human approval required",
+        }
+        mr = final.get("minority_report") or {"decision_log": {}, "conflicts": [],
+                                              "failed_to_merge": [], "residual_uncertainty": []}
+        mr["residual_uncertainty"] = mr.get("residual_uncertainty", []) + [{
+            "statement": "awaiting human approval to spawn next wave over: " + ", ".join(proposed_scopes),
+            "what_would_resolve_it": "human approves the manager's recommendation",
+            "impact_if_wrong": "proposed scopes remain uncovered",
+        }]
+        final["minority_report"] = mr
+
     valid_keys = sorted({f["key"] for e in accumulated for f in e.get("findings", [])})
     meta = {
-        "waves": wave,
+        "waves": dispatched,
         "stop_reason": stop_reason,
         "rejected": rejected,
+        "recommendation": recommendation,
         "pre_verify_pending": pre["pending_verification"],
         "pre_verify_conflict_keys": pre_conflict_keys,
         "valid_finding_keys": valid_keys,
@@ -177,6 +206,15 @@ def _check_properties(name: str, final: dict, meta: dict, scenario: dict) -> lis
     for f in final["findings"]:
         if f["key"] == "FAKE":
             fails.append(f"[{name}] P8 rejected envelope's finding survived: FAKE")
+
+    # P9: no agent self-spawned — when the run halts awaiting approval, the proposed scopes
+    # were NOT dispatched, so no finding originates from them (P7 already ties every finding
+    # to a dispatched agent; here we assert the halt truly withheld the spawn).
+    if meta["stop_reason"] == "awaiting_human_approval":
+        if not final["residual_frontier"]:
+            fails.append(f"[{name}] P9 awaiting approval but no residual leads surfaced")
+        if not (meta.get("recommendation") or {}).get("proposed_scopes"):
+            fails.append(f"[{name}] P9 awaiting approval but no recommendation surfaced")
     return fails
 
 
@@ -218,12 +256,16 @@ def _check_oracle(name: str, final: dict, meta: dict, oc: dict) -> list[str]:
         ao = next((f for f in final["findings"] if f["key"] == "AO"), None)
         if not ao or ao["confidence"] != oc["ao_confidence"]:
             fails.append(f"[{name}] oracle.ao_confidence: got {ao and ao['confidence']} want {oc['ao_confidence']}")
+    if "proposed_scopes" in oc:
+        got = sorted((meta.get("recommendation") or {}).get("proposed_scopes", []))
+        if got != sorted(oc["proposed_scopes"]):
+            fails.append(f"[{name}] oracle.proposed_scopes: got {got} want {sorted(oc['proposed_scopes'])}")
     return fails
 
 
 def main(argv=None) -> int:
     argv = argv if argv is not None else sys.argv[1:]
-    scenarios = {"A": "scenario_a.json", "B": "scenario_b.json"}
+    scenarios = {"A": "scenario_a.json", "B": "scenario_b.json", "C": "scenario_c.json"}
     emit = "--emit" in argv
 
     if emit:

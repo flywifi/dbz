@@ -9,7 +9,8 @@
     "P5: the final object carries human_review_required: true",
     "P6: the run is deterministic — two runs produce byte-identical output",
     "P7: no fabrication — every surviving finding key came from a validated agent envelope",
-    "P8: the uncitable/malformed envelope is rejected and its finding never survives"
+    "P8: the uncitable/malformed envelope is rejected and its finding never survives",
+    "P9: agents cannot self-spawn — a recursive wave without human approval halts the run and surfaces a recommendation instead of spawning (P7 ties every finding to a dispatched, approved agent)"
   ],
 
   "A": {
@@ -35,5 +36,19 @@
     "stop_reason": "frontier_exhausted",
     "waves": 1,
     "final_sha256": "f7906d07a9d6c4ae2b9d97f8f25e1bda1f6b97211a158295ef962948ed93609b"
+  },
+
+  "C": {
+    "_reasoning": "Identical to A through wave 1, but wave 2 (the residual 'IA family' lead) is NOT human-approved. Agents cannot self-spawn, so the loop halts 'awaiting_human_approval' and surfaces the manager's recommendation (proposed_scopes ['IA family']) rather than dispatching it. Only wave 1 runs, so wave-2 findings (ISSO) never appear. AO is PM(high)+CA(medium) -> medium; REL still refuted; the un-dispatched 'IA family' lead stays in residual_frontier, so coverage is 'partial'.",
+    "coverage": {"state": "partial", "agents_total": 3, "agents_blocked": 0},
+    "finding_keys": ["AO", "DEV", "SCA"],
+    "ao_confidence": "medium",
+    "refuted_keys": ["REL"],
+    "pending_after_verify": [],
+    "rejected_count": 1,
+    "stop_reason": "awaiting_human_approval",
+    "proposed_scopes": ["IA family"],
+    "waves": 1,
+    "final_sha256": "ad327e262ffeb8ec0b7e05cb56417bdd1e41b224816866465fb7716328825cdc"
   }
 }

@@ -3,6 +3,7 @@
   "_what_it_exercises": "fan-out handoff, drift rejection (uncitable envelope), merge + confidence floor, conflict preservation, adversarial verify (one refuted, one confirmed), recursion into a residual lead, saturation stop, judge-satisfied stop, cumulative-coverage reconciliation.",
   "run_id": "a",
   "initial_scopes": ["family-PM", "family-CA", "family-SA", "family-BAD"],
+  "wave_approvals": {"2": true},
   "stop_defaults": {"k_dry": 1, "depth_cap": 4, "size_cap": 24},
   "judge_scores": {
     "1": {"coverage": 0.7, "consistency": 0.6, "provenance": 0.9, "saturation": 0.4},

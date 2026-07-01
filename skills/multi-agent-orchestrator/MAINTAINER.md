@@ -14,9 +14,14 @@
   `pending_verification` key goes through `finding-verify` (skeptics prompted to refute);
   refuted findings leave the trusted set. Never promote a conflict/low-confidence finding on
   a single pass.
-- **Stopping needs both signals.** The recursion ends only when the frontier is dry AND
-  `wave-judge` recommends stop (or a hard depth/size/budget cap fires). A high judge score
-  never overrides a non-empty frontier.
+- **Agents never spawn agents.** A sub-agent cannot create/dispatch other agents (the
+  envelope schema has no spawn field; `additionalProperties: false` blocks it). Every
+  recursive wave requires the manager's recommendation AND express human approval; an
+  unapproved wave halts the run `awaiting_human_approval` and spawns nothing.
+- **Stopping.** Hard caps stop always; while new leads remain the run continues (the judge
+  never cuts a non-empty frontier short); a dry frontier always stops with `wave-judge`
+  labeling it `saturated` (satisfied) or `frontier_exhausted` (unmet). The loop never
+  invents leads.
 - **Mode follows task class** (`references/routing.md`); never escalate to `mutate`/`external`.
 - **`mutate` mode uses one git worktree per agent and `depth_cap 1`** — no auto-recursion
   into new edits.

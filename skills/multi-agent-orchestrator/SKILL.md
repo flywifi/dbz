@@ -23,6 +23,12 @@ raw data and suggestions into **recommendations backed by specific, citable sour
 finding carries a citable `provenance`; a finding whose source cannot be cited fails
 validation and never reaches a recommendation. Nothing is ever fabricated to fill a gap.
 
+**Agents never spawn agents.** A sub-agent cannot create or dispatch another agent — it only
+reports leads up. Recursion happens solely when the manager forms a recommendation (proposed
+scopes, why, cost) and a **human expressly approves** it. Wave 1 is the human-initiated task;
+every recursive wave beyond it requires fresh approval. Without approval the run halts
+(`awaiting_human_approval`), surfaces the recommendation, and spawns nothing.
+
 ## Scope
 
 Use when a task is bigger than one agent should hold: reading across many files/sources,
@@ -58,8 +64,10 @@ envelope; the discipline (schema-forced return, human_review_required) still app
    stay flagged. High-stakes findings are never promoted on a single pass.
 6. **Judge** — `wave-judge` scores the wave (coverage/consistency/provenance/saturation) and
    recommends stop or continue: a quality stop signal that complements frontier saturation.
-7. **Recurse** — `frontier-expand` dedups each envelope's `residual_frontier` against the
-   run's `seen` set and returns the next wave — or signals saturation.
+7. **Recurse (gated)** — `frontier-expand` dedups each envelope's `residual_frontier`
+   against the run's `seen` set to propose the next wave. The manager presents it as a
+   recommendation and **waits for express human approval** before spawning — agents never
+   self-spawn. No approval → halt `awaiting_human_approval`, surface the recommendation.
 8. **Stop** — when the frontier is dry (K dry waves) **and** the judge says quality is
    sufficient, or when depth/size capped or budget exhausted. Record whatever was left in
    the consolidated residual section — never keep spawning "to be safe."
