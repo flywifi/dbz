@@ -1,0 +1,835 @@
+{
+  "_source": "Comprehensive GRC Role/Title/Acronym Taxonomy — extracted from all dbz canonical sources",
+  "_version": "1.0.0",
+  "_generated_at": "2026-07-01",
+  "_methodology": "Four-agent parallel extraction across NIST 800-53 control text (20 families), 9 ER crosswalk CSVs, 6 overlap datasets, 111 feed_registry entries, 16 ingestion loaders, 28 skills, and all engine/docs files",
+  "_note": "Roles exist as embedded prose in NIST control text and implicit references in ER evidence requests. The dbz engine is currently role-agnostic — no schema field for control ownership. This taxonomy provides the seed vocabulary for role-aware queries.",
+
+  "nist_800_53": {
+    "_description": "Roles defined or referenced in NIST SP 800-53 Rev 5 control text, organized by mandate level",
+
+    "mandated_senior_leadership": [
+      {
+        "role": "Authorizing Official",
+        "acronym": "AO",
+        "mandate": "NIST RMF / FISMA",
+        "families": ["CA", "PM", "PL", "AT", "AC", "CM", "RA", "SA", "IR"],
+        "key_controls": ["CA-6", "CA-7", "PM-10", "PM-9"],
+        "description": "Senior official with authority to formally assume responsibility for operating a system at an acceptable level of risk. Issues the Authorization to Operate (ATO).",
+        "hierarchy": "Reports to Head of Agency; oversees ISSO, System Owner",
+        "industry_equivalent": ["CISO", "VP of Security"],
+        "soc2_equivalent": "Management / Board",
+        "iso27001_equivalent": "Top Management (Clause 5)",
+        "occurrences_across_families": 42
+      },
+      {
+        "role": "Chief Information Officer",
+        "acronym": "CIO",
+        "mandate": "FISMA / Clinger-Cohen Act",
+        "families": ["PM", "PL", "CA", "AT", "CM", "SA"],
+        "key_controls": ["PM-1", "PM-2", "PM-23", "PM-29"],
+        "description": "Designated agency official responsible for IT capital planning, information security program oversight, and ensuring FISMA compliance.",
+        "hierarchy": "Reports to Head of Agency; oversees CISO and SAOP",
+        "industry_equivalent": ["CIO", "CTO"],
+        "soc2_equivalent": "Executive Management",
+        "iso27001_equivalent": "Top Management",
+        "occurrences_across_families": 6
+      },
+      {
+        "role": "Senior Agency Information Security Officer",
+        "acronym": "SAISO",
+        "alternate_titles": ["Chief Information Security Officer", "CISO", "Senior Information Security Officer"],
+        "mandate": "FISMA (44 U.S.C. 3554)",
+        "families": ["PM", "AT", "CA", "PL", "RA"],
+        "key_controls": ["PM-2", "PM-23", "PM-28"],
+        "description": "Official responsible for carrying out CIO information security responsibilities, including developing and maintaining the org-wide information security program.",
+        "hierarchy": "Reports to CIO; oversees ISSMs and ISSOs",
+        "industry_equivalent": ["CISO", "Director of Information Security"],
+        "soc2_equivalent": "Information Security Manager",
+        "iso27001_equivalent": "ISMS Manager (A.5)",
+        "occurrences_across_families": 91
+      },
+      {
+        "role": "Senior Agency Official for Privacy",
+        "acronym": "SAOP",
+        "alternate_titles": ["Chief Privacy Officer", "CPO"],
+        "mandate": "OMB Circular A-130",
+        "families": ["PM", "PL", "PT", "AT", "CA", "SI", "SA", "RA", "IR", "PE", "IA", "CP", "CM", "AC"],
+        "key_controls": ["PM-18", "PM-19", "PM-20", "PT-1"],
+        "description": "Senior official responsible for privacy policy, privacy impact assessments, and ensuring compliance with privacy requirements. Most-referenced role in PM family (13 of 32 controls).",
+        "hierarchy": "Reports to CIO or General Counsel; oversees privacy officers",
+        "industry_equivalent": ["Chief Privacy Officer", "Data Protection Officer"],
+        "soc2_equivalent": "Privacy Officer",
+        "iso27001_equivalent": "DPO (if GDPR applies)",
+        "gdpr_equivalent": "Data Protection Officer (DPO)",
+        "occurrences_across_families": 69
+      },
+      {
+        "role": "Risk Executive (Function)",
+        "acronym": null,
+        "mandate": "NIST SP 800-39",
+        "families": ["PM", "CA", "RA", "PL", "IR", "SR"],
+        "key_controls": ["PM-9", "PM-28", "PM-29", "PM-30"],
+        "description": "Individual or group responsible for ensuring risk-related considerations are addressed organization-wide. Led by the Senior Accountable Official for Risk Management.",
+        "hierarchy": "Advises AO and CIO; enterprise-level function",
+        "industry_equivalent": ["Chief Risk Officer", "Enterprise Risk Management function"],
+        "occurrences_across_families": 10
+      },
+      {
+        "role": "Senior Accountable Official for Risk Management",
+        "acronym": "SAORM",
+        "mandate": "NIST SP 800-53 Rev 5",
+        "families": ["PM"],
+        "key_controls": ["PM-9", "PM-28", "PM-29"],
+        "description": "Leads the risk executive function in organization-wide risk management activities. Aligns information security and privacy management processes with strategic, operational, and budgetary planning.",
+        "hierarchy": "Agency head or designated official"
+      },
+      {
+        "role": "Head of Agency",
+        "acronym": null,
+        "mandate": "FISMA",
+        "families": ["PM"],
+        "key_controls": ["PM-1", "PM-9"],
+        "description": "Highest authority in the agency; ultimately accountable for information security and privacy programs.",
+        "industry_equivalent": ["CEO", "President", "Agency Director"],
+        "occurrences_across_families": 2
+      },
+      {
+        "role": "Inspector General",
+        "acronym": "IG",
+        "mandate": "IG Act",
+        "families": ["PM", "CA", "AU"],
+        "key_controls": ["PM-24", "PM-14", "CA-2", "CA-7"],
+        "description": "Independent oversight official who audits and investigates agency programs; conducts FISMA evaluations. Mandatory member of the Data Integrity Board.",
+        "industry_equivalent": ["Internal Audit", "Compliance Officer"],
+        "occurrences_across_families": 4
+      }
+    ],
+
+    "mandated_operational": [
+      {
+        "role": "System Owner",
+        "acronym": "SO",
+        "alternate_titles": ["Information System Owner"],
+        "mandate": "NIST RMF",
+        "families": ["CA", "PL", "PM", "AT", "PS", "CM", "SA", "AC", "SI", "IR", "SC", "RA", "PT"],
+        "key_controls": ["PL-2", "CA-6", "PM-10"],
+        "description": "Official responsible for procurement, development, integration, modification, operation, maintenance, and disposal of a system.",
+        "industry_equivalent": ["System/Application Owner", "Product Owner", "IT Service Owner"],
+        "soc2_equivalent": "System Owner",
+        "iso27001_equivalent": "Asset Owner (A.8.1.2)",
+        "occurrences_across_families": 34
+      },
+      {
+        "role": "Information Owner / Information Steward",
+        "acronym": null,
+        "mandate": "NIST RMF",
+        "families": ["PM", "PL", "AC", "MP", "CA", "AT", "RA", "SI"],
+        "key_controls": ["PM-5", "PL-2", "AC-1"],
+        "description": "Official with statutory, management, or operational authority for specified information. NIST uses 'information owner' — never 'data owner'.",
+        "industry_equivalent": ["Data Owner", "Data Steward", "Business Owner"],
+        "occurrences_across_families": 11
+      },
+      {
+        "role": "Information System Security Officer",
+        "acronym": "ISSO",
+        "mandate": "NIST RMF",
+        "families": ["CA", "PM", "PL", "AT", "CM", "SI", "AU", "AC"],
+        "key_controls": ["CA-2", "CA-5", "CA-7", "PL-2"],
+        "description": "Individual responsible for ensuring the operational security posture of a system. Note: The acronym 'ISSO' never appears in NIST catalog text — only the full title is used.",
+        "industry_equivalent": ["Security Analyst", "Security Engineer"],
+        "occurrences_across_families": 13
+      },
+      {
+        "role": "Information System Security Manager",
+        "acronym": "ISSM",
+        "mandate": "CNSSI 4009 / DoD",
+        "families": ["PM", "CA", "PL", "AT"],
+        "key_controls": ["PM-2", "CA-2", "CA-7"],
+        "description": "Individual responsible for managing the security program for a system or organization; supervises ISSOs. Note: The acronym 'ISSM' never appears in NIST catalog text.",
+        "hierarchy": "Reports to CISO/SAISO; supervises ISSOs",
+        "industry_equivalent": ["Security Manager", "Information Security Manager"]
+      },
+      {
+        "role": "Common Control Provider",
+        "acronym": "CCP",
+        "mandate": "NIST RMF",
+        "families": ["CA", "PM", "PL", "AT"],
+        "key_controls": ["CA-2", "CA-6", "PM-10", "PL-2"],
+        "description": "Individual, group, or organization responsible for the development, implementation, assessment, and monitoring of common (inherited) controls.",
+        "industry_equivalent": ["Shared Services Security Team", "Platform Security Team"],
+        "occurrences_across_families": 4
+      }
+    ],
+
+    "assessment_and_audit": [
+      {
+        "role": "Security Control Assessor",
+        "acronym": "SCA",
+        "alternate_titles": ["Control Assessor", "Assessor"],
+        "mandate": "NIST RMF (SP 800-53A)",
+        "families": ["CA", "PM", "AT"],
+        "key_controls": ["CA-2", "CA-2(1)", "CA-2(2)"],
+        "description": "Individual, group, or organization responsible for conducting comprehensive assessments of security and privacy controls. Note: Exact phrase 'security control assessor' does not appear in catalog — uses 'control assessor' or 'assessor'.",
+        "industry_equivalent": ["IT Auditor", "Security Assessor", "3PAO (FedRAMP)"],
+        "occurrences_across_families": 60
+      },
+      {
+        "role": "Independent Assessor",
+        "acronym": null,
+        "alternate_titles": ["Independent Agent"],
+        "mandate": "Required for certain baselines",
+        "families": ["CA"],
+        "key_controls": ["CA-2(1)"],
+        "description": "Assessor independent of the system owner and common control provider. Mandatory for FedRAMP High and DoD systems.",
+        "industry_equivalent": ["3PAO", "External Auditor"],
+        "occurrences_across_families": 8
+      },
+      {
+        "role": "Independent Penetration Testing Agent or Team",
+        "acronym": null,
+        "mandate": "NIST 800-53",
+        "families": ["CA"],
+        "key_controls": ["CA-8(1)", "CA-8(2)"],
+        "description": "Individuals or groups who conduct impartial penetration testing of systems."
+      },
+      {
+        "role": "Red Team",
+        "acronym": null,
+        "mandate": "NIST 800-53",
+        "families": ["CA"],
+        "key_controls": ["CA-8(2)"],
+        "description": "Extends penetration testing objectives to simulate attempts by adversaries to compromise organizational systems.",
+        "industry_equivalent": ["Red Team", "Adversary Emulation Team"]
+      }
+    ],
+
+    "organization_defined": [
+      {
+        "role": "System Administrator",
+        "acronym": null,
+        "families": ["AC", "AU", "CM", "IA", "MA", "SI", "SC", "CP", "IR", "SA"],
+        "key_controls": ["AC-2", "AC-6", "AU-9", "CM-5", "IA-2"],
+        "description": "Individual responsible for managing and maintaining system hardware, software, and infrastructure. Most frequently referenced operational role (91 occurrences).",
+        "industry_equivalent": ["SysAdmin", "DevOps Engineer", "Platform Engineer"],
+        "occurrences_across_families": 91
+      },
+      {
+        "role": "Network Administrator",
+        "acronym": null,
+        "families": ["SC", "AC", "CM", "AU"],
+        "key_controls": ["SC-7", "AC-4"],
+        "description": "Individual responsible for managing network infrastructure.",
+        "industry_equivalent": ["Network Engineer"]
+      },
+      {
+        "role": "Security Administrator",
+        "acronym": null,
+        "families": ["AC", "AU", "CM", "IA"],
+        "key_controls": ["AC-2", "AC-6", "AU-2", "CM-3"],
+        "description": "Individual with elevated privileges specifically for security tool management and configuration.",
+        "industry_equivalent": ["Security Engineer", "Security Operations Engineer"]
+      },
+      {
+        "role": "Maintenance Personnel",
+        "acronym": null,
+        "families": ["MA", "PE", "PS"],
+        "key_controls": ["MA-5", "MA-5(1)"],
+        "description": "Individuals performing hardware/software maintenance. Non-cleared personnel must be escorted.",
+        "industry_equivalent": ["Field Service Engineer", "Maintenance Technician"]
+      },
+      {
+        "role": "Incident Response Team",
+        "acronym": "IRT",
+        "alternate_titles": ["CIRT", "CSIRT"],
+        "families": ["IR", "SI", "AU", "AT", "PM"],
+        "key_controls": ["IR-1", "IR-4", "PM-14"],
+        "description": "Team responsible for detecting, analyzing, containing, eradicating, and recovering from security incidents.",
+        "industry_equivalent": ["SOC", "CSIRT"]
+      },
+      {
+        "role": "Developer / System Developer",
+        "acronym": null,
+        "families": ["SA", "CM", "SI", "SR", "SC"],
+        "key_controls": ["SA-3", "SA-8", "SA-10", "SA-11", "SA-15", "SA-17"],
+        "description": "Individual or organization responsible for designing, developing, implementing, or modifying a system. Heavy concentration in SA family (33 controls).",
+        "industry_equivalent": ["Software Developer", "Software Engineer", "DevSecOps Engineer"],
+        "occurrences_across_families": 33
+      },
+      {
+        "role": "External System Service Provider",
+        "acronym": null,
+        "families": ["SA", "CA", "PM", "SR"],
+        "key_controls": ["SA-9", "CA-3", "PM-15"],
+        "description": "Provider of external IT services including cloud services, managed security, telecommunications.",
+        "industry_equivalent": ["Cloud Service Provider", "MSP", "MSSP", "SaaS Vendor"]
+      },
+      {
+        "role": "Human Resources Official",
+        "acronym": "HR",
+        "families": ["PS", "AT", "PM", "IR"],
+        "key_controls": ["PS-1", "PS-2", "PS-3", "PS-4", "PS-5"],
+        "description": "Individual responsible for personnel actions including hiring, screening, termination as they relate to security.",
+        "industry_equivalent": ["HR Manager", "People Operations"],
+        "occurrences_across_families": 6
+      },
+      {
+        "role": "Registration Authority",
+        "acronym": "RA",
+        "families": ["IA"],
+        "key_controls": ["IA-4", "IA-5", "IA-12"],
+        "description": "Individual or entity authorized to verify identity claims and register users for system credentials.",
+        "industry_equivalent": ["Identity Management Team", "IAM Administrator"],
+        "occurrences_across_families": 6
+      }
+    ],
+
+    "user_categories": [
+      {
+        "category": "Organizational Users",
+        "description": "Employees, contractors, guest researchers, and equivalent-status individuals",
+        "key_controls": ["IA-2", "PL-4", "AT-2"]
+      },
+      {
+        "category": "Non-organizational Users",
+        "description": "System users other than organizational users",
+        "key_controls": ["IA-8", "PL-4"]
+      },
+      {
+        "category": "Privileged Users",
+        "description": "Any user with elevated system privileges beyond normal",
+        "key_controls": ["AC-6", "AC-6(5)", "AT-2(2)", "IA-2(1)"]
+      },
+      {
+        "category": "Non-privileged Users",
+        "description": "Standard users without elevated system privileges",
+        "key_controls": ["AC-6", "IA-2", "IA-5"]
+      }
+    ],
+
+    "governance_bodies": [
+      {
+        "body": "Data Governance Body",
+        "mandate": "EVIDACT / OMB M-19-23",
+        "key_controls": ["PM-23"],
+        "mandated_members": ["CIO", "SAISO", "SAOP"],
+        "description": "Establishes policies, procedures, and standards that facilitate data governance."
+      },
+      {
+        "body": "Data Integrity Board",
+        "mandate": "Privacy Act (PRIVACT)",
+        "key_controls": ["PM-24"],
+        "mandated_members": ["Inspector General", "SAOP"],
+        "description": "Board of senior officials that reviews proposals to conduct or participate in a matching program."
+      },
+      {
+        "body": "Investment Review Board",
+        "mandate": "Organization-defined (optional)",
+        "key_controls": ["PM-3"],
+        "description": "Manages and provides oversight for information security and privacy aspects of capital planning."
+      },
+      {
+        "body": "Insider Threat Incident Handling Team",
+        "mandate": "EO 13587 (for classified)",
+        "key_controls": ["PM-12"],
+        "description": "Cross-discipline team for insider threat detection and response."
+      }
+    ],
+
+    "hierarchy": {
+      "description": "NIST 800-53 organizational role hierarchy",
+      "tree": [
+        "Head of Agency",
+        "  ├── Chief Information Officer (CIO)",
+        "  │   ├── Senior Agency Information Security Officer (SAISO/CISO)",
+        "  │   │   ├── Information System Security Manager (ISSM)",
+        "  │   │   │   └── Information System Security Officer (ISSO)",
+        "  │   │   ├── Security Control Assessor (SCA) [independent chain]",
+        "  │   │   └── Incident Response Team",
+        "  │   └── Senior Agency Official for Privacy (SAOP)",
+        "  │       └── Privacy Officer(s)",
+        "  ├── Risk Executive (Function) [advisory, cross-cutting]",
+        "  ├── Inspector General [independent oversight]",
+        "  └── Authorizing Official (AO)",
+        "      ├── Designated Representative",
+        "      ├── System Owner (SO)",
+        "      │   ├── ISSO (operational security)",
+        "      │   ├── System Administrator(s)",
+        "      │   └── Security Administrator(s)",
+        "      ├── Information Owner / Steward",
+        "      └── Common Control Provider (CCP)"
+      ]
+    }
+  },
+
+  "digital_identity_800_63b": {
+    "_description": "Roles from NIST SP 800-63B Rev 3 Digital Identity Guidelines",
+    "roles": [
+      {
+        "role": "Credential Service Provider",
+        "acronym": "CSP",
+        "framework": "SP 800-63B",
+        "controls_mapped": ["IA-2", "IA-5", "IA-8(5)"],
+        "description": "Entity that issues or registers subscriber authenticators and electronic credentials."
+      },
+      {
+        "role": "Verifier",
+        "acronym": null,
+        "framework": "SP 800-63B",
+        "controls_mapped": ["IA-2", "IA-5"],
+        "description": "Entity that verifies the claimant's identity by verifying the claimant's possession of authenticators."
+      },
+      {
+        "role": "Claimant",
+        "acronym": null,
+        "framework": "SP 800-63B",
+        "description": "Subject whose identity is being verified during authentication."
+      },
+      {
+        "role": "Subscriber",
+        "acronym": null,
+        "framework": "SP 800-63B",
+        "controls_mapped": ["IA-4(7)"],
+        "description": "Individual who has been issued a credential or authenticator by a CSP."
+      },
+      {
+        "role": "Relying Party",
+        "acronym": "RP",
+        "framework": "SP 800-63B",
+        "controls_mapped": ["IA-8(1)", "IA-8(4)", "IA-8(5)"],
+        "description": "Entity that relies on the subscriber's authenticated identity."
+      },
+      {
+        "role": "Identity Provider",
+        "acronym": "IdP",
+        "framework": "SP 800-63B / NIST 800-53",
+        "controls_mapped": ["IA-4(7)", "IA-8(4)", "IA-13"],
+        "description": "Generates and manages subscriber identifiers. May issue pairwise pseudonymous identifiers."
+      },
+      {
+        "role": "Authorization Server",
+        "acronym": null,
+        "framework": "NIST 800-53 (IA-13)",
+        "controls_mapped": ["IA-13"],
+        "description": "Creates and issues access tokens to identified and authenticated users and devices."
+      }
+    ],
+    "assurance_levels": [
+      {"level": "AAL1", "name": "Authenticator Assurance Level 1", "requirement": "Single-factor authentication"},
+      {"level": "AAL2", "name": "Authenticator Assurance Level 2", "requirement": "Multi-factor authentication required"},
+      {"level": "AAL3", "name": "Authenticator Assurance Level 3", "requirement": "Hardware authenticator required"}
+    ]
+  },
+
+  "cmvp_fips": {
+    "_description": "Roles from NIST FIPS 140-3 Cryptographic Module Validation Program",
+    "roles": [
+      {"role": "Vendor", "description": "Organization submitting a cryptographic module for validation"},
+      {"role": "Testing Lab (NVLAP-accredited)", "description": "Laboratory accredited to perform FIPS 140 testing"},
+      {"role": "Validation Authority (CMVP)", "description": "NIST/CCCS joint program that validates testing results"},
+      {"role": "Cryptographic Module User", "description": "Operator of a validated cryptographic module"},
+      {"role": "Cryptographic Module Officer", "description": "Administrator of a validated cryptographic module"}
+    ],
+    "controls_requiring_fips": ["SC-13", "IA-7", "SC-8(1)", "SC-28(1)", "SC-12"]
+  },
+
+  "commercial_audit": {
+    "_description": "Roles from SOC 1/2 (AICPA), ISO 27001/2, HIPAA, HITRUST frameworks. Note: dbz engine is currently role-agnostic — these roles exist only implicitly in ER evidence request names and citation text.",
+
+    "aicpa_soc": {
+      "engagement_roles": [
+        {"role": "Service Organization", "description": "Entity whose controls are being examined"},
+        {"role": "User Entity", "description": "Entity that uses the services of the service organization"},
+        {"role": "Service Auditor", "description": "CPA who examines and reports on the service organization's controls"},
+        {"role": "Subservice Organization", "description": "Entity to which the service organization has outsourced functions"},
+        {"role": "Complementary User Entity Controls", "acronym": "CUEC", "description": "Controls assumed to be implemented by user entities"}
+      ],
+      "er_implicit_roles": [
+        {"role": "Employee", "er_count": 11, "er_examples": ["Employee Handbook", "Employee Termination Ticket", "Security Awareness Training"]},
+        {"role": "New Hire", "er_count": 5, "er_examples": ["New Hire Background Check Reports", "New Hire Access Request Form"]},
+        {"role": "Contractor", "er_examples": ["All Current Contractors with Job Title", "All Terminated Contractors"]},
+        {"role": "Privileged User", "er_count": 8, "er_examples": ["All Privileged Users to VPN", "Privileged Access to Cloud Console"]},
+        {"role": "Vendor / Critical Vendor", "er_count": 5, "er_examples": ["Critical Vendor Assessments", "Critical Vendor Agreements"]},
+        {"role": "Customer", "er_count": 2, "er_examples": ["Customer Contract Including Security Commitments"]},
+        {"role": "Risk Committee / Board", "er_count": 2, "er_examples": ["Risk Committee Charter", "Risk Committee Meeting Minutes"]},
+        {"role": "Data Controller", "er_context": "SOC 2 Privacy tier only"},
+        {"role": "Data Processor", "er_context": "SOC 2 Privacy tier only"},
+        {"role": "Data Subject", "er_context": "SOC 2 Population ERs"}
+      ],
+      "absent_from_data": ["Practitioner", "User Auditor", "CPA", "Engagement Partner", "Management Assertion"]
+    },
+
+    "iso_27001": {
+      "isms_roles": [
+        {"role": "Top Management", "clause": "5.1-5.2", "description": "Leadership with ultimate accountability for the ISMS", "nist_equivalent": "AO / CIO"},
+        {"role": "Risk Owner", "clause": "6.1.2", "description": "Person or entity with accountability to manage a risk", "nist_equivalent": "System Owner"},
+        {"role": "Process Owner", "description": "Person responsible for a specific business process within the ISMS"},
+        {"role": "Information Security Manager", "description": "Person responsible for day-to-day ISMS operations", "nist_equivalent": "SAISO / CISO"},
+        {"role": "Internal Auditor", "clause": "9.2", "description": "Person conducting internal ISMS audits", "nist_equivalent": "SCA (internal)"},
+        {"role": "Certification Body", "acronym": "CB", "description": "Accredited organization that conducts ISO 27001 certification audits"},
+        {"role": "Accreditation Body", "acronym": "AB", "description": "National body that accredits certification bodies"},
+        {"role": "Competent Person", "clause": "7.2", "description": "Person with demonstrated competence for assigned security role"}
+      ],
+      "er_implicit_roles": [
+        {"role": "Employee", "er_examples": ["ER-159", "ER-160", "ER-226", "ER-227"]},
+        {"role": "Vendor", "er_examples": ["ER-177", "ER-228", "ER-231", "ER-235"]},
+        {"role": "Privileged User", "er_examples": ["ER-183", "ER-184", "ER-186", "ER-187"]},
+        {"role": "Management Review", "er_examples": ["ER-125"]}
+      ],
+      "absent_from_data": ["Asset Owner", "Interested Parties"]
+    },
+
+    "hipaa": {
+      "regulatory_roles": [
+        {"role": "Covered Entity", "acronym": "CE", "citation": "45 CFR 160.103", "description": "Health plan, healthcare clearinghouse, or healthcare provider that transmits health info electronically. Note: Implied but never explicitly named in ER crosswalk data."},
+        {"role": "Business Associate", "acronym": "BA", "citation": "45 CFR 160.103", "description": "Entity performing functions involving PHI on behalf of covered entity", "er_reference": "ER-270"},
+        {"role": "Group Health Plan", "citation": "45 CFR 164", "er_reference": "ER-269"},
+        {"role": "Workforce Member", "citation": "45 CFR 164.308(a)(3)", "description": "Employees, volunteers, trainees — broader than 'employee'"},
+        {"role": "Security Officer", "description": "Implied by HIPAA Security Rule but not explicitly named in ER data"},
+        {"role": "Privacy Officer", "description": "Implied by HIPAA Privacy Rule but not explicitly named in ER data"},
+        {"role": "HHS Office for Civil Rights", "acronym": "OCR", "description": "HIPAA enforcement body. URLs to hhs.gov appear but not as role references."}
+      ],
+      "safeguard_families": [
+        {"family": "Administrative Safeguards", "citation": "45 CFR 164.308", "citation_count": 14},
+        {"family": "Physical Safeguards", "citation": "45 CFR 164.310", "citation_count": 3},
+        {"family": "Technical Safeguards", "citation": "45 CFR 164.312", "citation_count": 5},
+        {"family": "Policies/Documentation", "citation": "45 CFR 164.316", "citation_count": 3}
+      ],
+      "absent_from_data": ["Covered Entity (explicit)", "Privacy Officer (explicit)", "Security Officer (explicit)", "Compliance Officer"]
+    },
+
+    "hitrust": {
+      "assessment_roles": [
+        {"role": "HITRUST Alliance", "description": "Framework publisher and quality assurance body"},
+        {"role": "External Assessor", "description": "Assessor conducting validated assessment. Absent from crosswalk data — assessment methodology term."},
+        {"role": "Assessed Entity", "description": "Organization being assessed against HITRUST CSF"},
+        {"role": "HITRUST QA Analyst", "description": "HITRUST staff who performs quality assurance review. Not in crosswalk data."},
+        {"role": "CSF Practitioner", "description": "Individual certified in HITRUST CSF methodology. Not in crosswalk data."}
+      ],
+      "csf_control_roles": [
+        {"role": "Management", "controls": ["00.a", "02.d", "03.a", "05.a", "09.b", "09.h", "10.g"]},
+        {"role": "Administrator", "controls": ["09.ad"]},
+        {"role": "Operator", "controls": ["09.ad"]},
+        {"role": "User", "controls": ["01.b", "01.d", "01.e", "01.g", "01.j", "01.q"]},
+        {"role": "Third Party", "controls": ["05.k", "09.f", "09.g"]}
+      ]
+    }
+  },
+
+  "regulatory_bodies": {
+    "_description": "Regulatory bodies, enforcement agencies, and standards organizations tracked in feed_registry.json",
+
+    "us_federal": [
+      {"body": "National Institute of Standards and Technology", "acronym": "NIST", "role": "Framework publisher (800-53, CSF, RMF, 800-63B, CMVP)"},
+      {"body": "Cybersecurity and Infrastructure Security Agency", "acronym": "CISA", "role": "KEV catalog publisher, BOD issuer, AI security guidance (joint with NSA/FBI)"},
+      {"body": "Defense Information Systems Agency", "acronym": "DISA", "role": "CCI publisher, STIG publisher, SCAP content"},
+      {"body": "Federal Risk and Authorization Management Program", "acronym": "FedRAMP", "role": "Cloud security baseline publisher (GSA-administered)"},
+      {"body": "Office of Management and Budget", "acronym": "OMB", "role": "Circular A-130 (privacy policy), FISMA reporting oversight"},
+      {"body": "Defense Counterintelligence and Security Agency", "acronym": "DCSA", "role": "DAAPM baselines for classified systems"},
+      {"body": "National Archives and Records Administration", "acronym": "NARA", "role": "CUI program definition and oversight"}
+    ],
+
+    "us_sector": [
+      {"body": "Securities and Exchange Commission", "acronym": "SEC", "role": "Cybersecurity disclosure rules (Rule 33-11216, 8-K Item 1.05)"},
+      {"body": "Federal Financial Institutions Examination Council", "acronym": "FFIEC", "role": "Bank examination procedures for IT"},
+      {"body": "Office of the Comptroller of the Currency", "acronym": "OCC", "role": "National bank cybersecurity examination"},
+      {"body": "Federal Deposit Insurance Corporation", "acronym": "FDIC", "role": "FDIC-insured bank regulation"},
+      {"body": "Federal Reserve Board", "acronym": "FRB", "role": "Banking system regulation"},
+      {"body": "Financial Crimes Enforcement Network", "acronym": "FinCEN", "role": "AML/BSA enforcement"},
+      {"body": "Financial Industry Regulatory Authority", "acronym": "FINRA", "role": "Broker-dealer cybersecurity regulation"},
+      {"body": "New York Department of Financial Services", "acronym": "NY DFS", "role": "23 NYCRR 500 cybersecurity regulation"},
+      {"body": "Department of Health and Human Services", "acronym": "HHS", "role": "HIPAA enforcement via OCR"},
+      {"body": "Food and Drug Administration", "acronym": "FDA", "role": "Medical device/pharma regulations (21 CFR 11, 21 CFR 820)"},
+      {"body": "Federal Trade Commission", "acronym": "FTC", "role": "Consumer protection, Safeguards Rule (16 CFR 314)"},
+      {"body": "North American Electric Reliability Corporation", "acronym": "NERC", "role": "CIP standards for electric grid"},
+      {"body": "Nuclear Regulatory Commission", "acronym": "NRC", "role": "Nuclear facility cyber protection (10 CFR 73)"},
+      {"body": "Federal Communications Commission", "acronym": "FCC", "role": "Telecom privacy (47 CFR 64)"},
+      {"body": "California Privacy Protection Agency", "acronym": "CPPA", "role": "CCPA/CPRA enforcement"},
+      {"body": "Public Company Accounting Oversight Board", "acronym": "PCAOB", "role": "Public company auditing oversight"}
+    ],
+
+    "eu": [
+      {"body": "European Commission", "acronym": "EC", "role": "GDPR, NIS2, DORA, AI Act legislative body"},
+      {"body": "European Data Protection Board", "acronym": "EDPB", "role": "GDPR enforcement coordination"},
+      {"body": "European Union Agency for Cybersecurity", "acronym": "ENISA", "role": "NIS2 implementation, cybersecurity certification"},
+      {"body": "European Banking Authority", "acronym": "EBA", "role": "DORA implementation for banking"},
+      {"body": "European Insurance and Occupational Pensions Authority", "acronym": "EIOPA", "role": "DORA for insurance sector"},
+      {"body": "EU AI Office", "acronym": null, "role": "EU AI Act enforcement"}
+    ],
+
+    "uk": [
+      {"body": "Information Commissioner's Office", "acronym": "ICO", "role": "UK GDPR / DPA 2018 enforcement"},
+      {"body": "National Cyber Security Centre", "acronym": "NCSC", "role": "Cyber Assessment Framework (CAF), guidance publisher"},
+      {"body": "UK AI Safety Institute", "acronym": "AISI", "role": "AI model evaluation, safety research"}
+    ],
+
+    "apac": [
+      {"body": "Monetary Authority of Singapore", "acronym": "MAS", "role": "Technology Risk Management (TRM) guidelines"},
+      {"body": "Australian Prudential Regulation Authority", "acronym": "APRA", "role": "CPS 234 information security standard"},
+      {"body": "Australian Signals Directorate", "acronym": "ASD", "role": "Essential Eight, ISM"},
+      {"body": "Office of the Privacy Commissioner of Canada", "acronym": "OPC", "role": "PIPEDA enforcement"},
+      {"body": "Personal Data Protection Commission", "acronym": "PDPC", "role": "Singapore PDPA enforcement"}
+    ],
+
+    "dod_ic": [
+      {"body": "DoD CIO", "acronym": null, "role": "DoD cybersecurity policy"},
+      {"body": "Under Secretary of Defense for Acquisition and Sustainment", "acronym": "OUSD(A&S)", "role": "CMMC program oversight"},
+      {"body": "Cyber Accreditation Body", "acronym": "Cyber AB", "role": "CMMC C3PAO accreditation"},
+      {"body": "Director of National Intelligence", "acronym": "DNI", "role": "IC cybersecurity policy"},
+      {"body": "IC Chief Information Officer", "acronym": "IC CIO", "role": "IC information security oversight"}
+    ],
+
+    "standards_bodies": [
+      {"body": "AICPA", "role": "SOC 1/2 Trust Services Criteria publisher"},
+      {"body": "ISO/IEC JTC 1/SC 27", "role": "ISO 27001/27002 standards publisher"},
+      {"body": "ISO/IEC JTC 1/SC 42", "role": "ISO 42001 (AI management system) publisher"},
+      {"body": "HITRUST Alliance", "role": "HITRUST CSF publisher and assessment program"},
+      {"body": "Cloud Security Alliance", "acronym": "CSA", "role": "CCM v4.1 publisher"},
+      {"body": "PCI Security Standards Council", "acronym": "PCI SSC", "role": "PCI DSS v4.0.1 publisher"},
+      {"body": "OWASP Foundation", "role": "OWASP ASVS, Top 10, LLM Top 10 publisher"},
+      {"body": "Center for Internet Security", "acronym": "CIS", "role": "CIS Controls v8.1 publisher"},
+      {"body": "MITRE Corporation", "role": "ATT&CK, CWE, CVE programs"},
+      {"body": "IEEE Standards Association", "role": "P7000 series AI ethics standards"}
+    ]
+  },
+
+  "gdpr_nis2_dora_ai_act": {
+    "_description": "EU regulation-defined roles tracked in eurlex_loader.py and feed_registry.json",
+
+    "gdpr": [
+      {"role": "Data Controller", "article": "Art. 4(7)", "nist_family_mapping": "SA"},
+      {"role": "Data Processor", "article": "Art. 4(8)", "nist_family_mapping": "SA"},
+      {"role": "Subprocessor", "article": "Art. 28", "nist_family_mapping": "SA"},
+      {"role": "Data Protection Officer", "acronym": "DPO", "article": "Art. 37-39", "nist_equivalent": "SAOP"},
+      {"role": "Supervisory Authority", "article": "Art. 51", "description": "National DPA — one per Member State"},
+      {"role": "Lead Supervisory Authority", "article": "Art. 56"},
+      {"role": "Data Subject", "article": "Art. 4(1)"}
+    ],
+
+    "nis2": [
+      {"role": "Essential Entity", "article": "2022/2555", "description": "Critical sector organizations with higher obligations"},
+      {"role": "Important Entity", "article": "2022/2555", "description": "Other in-scope organizations with standard obligations"},
+      {"role": "Competent Authority", "article": "Art. 8", "description": "National authority overseeing NIS2 compliance"},
+      {"role": "CSIRT", "article": "Art. 10", "description": "Computer Security Incident Response Team per Member State"},
+      {"role": "Single Point of Contact", "acronym": "SPOC", "article": "Art. 8"}
+    ],
+
+    "dora": [
+      {"role": "Financial Entity", "article": "2022/2554"},
+      {"role": "ICT Third-Party Service Provider", "article": "2022/2554"},
+      {"role": "Critical ICT Third-Party Service Provider", "acronym": "CTPP", "article": "Art. 31"},
+      {"role": "Lead Overseer", "article": "Art. 31", "description": "Appointed from ESAs to oversee CTPPs"}
+    ],
+
+    "eu_ai_act": [
+      {"role": "Provider (of AI system)", "article": "Art. 3(3)", "description": "Develops or has AI system developed and places it on the market"},
+      {"role": "Deployer (of AI system)", "article": "Art. 3(4)", "description": "Uses an AI system under its authority"},
+      {"role": "Importer", "article": "Art. 3(6)"},
+      {"role": "Distributor", "article": "Art. 3(7)"},
+      {"role": "Notified Body", "article": "Art. 28", "description": "Performs conformity assessments for high-risk AI"},
+      {"role": "Market Surveillance Authority", "article": "Art. 63", "description": "National authority monitoring compliance"},
+      {"role": "Conformity Assessment Body", "description": "Performs third-party conformity assessments"}
+    ]
+  },
+
+  "cmmc": {
+    "_description": "CMMC 2.0 roles from 32 CFR 170 and feed_registry.json",
+    "roles": [
+      {"role": "Organization Seeking Assessment", "acronym": "OSA", "description": "Defense contractor seeking CMMC certification"},
+      {"role": "CMMC Third Party Assessment Organization", "acronym": "C3PAO", "description": "Accredited organization performing CMMC assessments"},
+      {"role": "CMMC Assessor", "description": "Individual conducting CMMC assessment (CCA or CCP)"},
+      {"role": "Certified CMMC Assessor", "acronym": "CCA", "description": "Lead assessor qualified for Level 2+"},
+      {"role": "Certified CMMC Professional", "acronym": "CCP", "description": "Supporting assessor role"},
+      {"role": "Cyber Accreditation Body", "acronym": "Cyber AB", "description": "Accredits C3PAOs for CMMC assessments"},
+      {"role": "Defense Industrial Base Cybersecurity Assessment Center", "acronym": "DIBCAC", "description": "DoD body for higher-level CMMC assessments"}
+    ]
+  },
+
+  "fedramp": {
+    "_description": "FedRAMP-specific roles",
+    "roles": [
+      {"role": "Cloud Service Provider", "acronym": "CSP", "description": "Entity offering cloud services seeking FedRAMP authorization"},
+      {"role": "Third Party Assessment Organization", "acronym": "3PAO", "description": "A2LA-accredited organization performing FedRAMP assessments"},
+      {"role": "Joint Authorization Board", "acronym": "JAB", "description": "Formerly issued P-ATOs; governance role transitioning under FedRAMP Modernization"},
+      {"role": "FedRAMP Program Management Office", "acronym": "PMO", "description": "GSA office administering the FedRAMP program"},
+      {"role": "Agency Customer", "description": "Federal agency consuming a FedRAMP-authorized cloud service"},
+      {"role": "Authorizing Official (FedRAMP)", "description": "AO who grants an ATO/P-ATO for a cloud system"}
+    ]
+  },
+
+  "operational_workflow": {
+    "_description": "Operational roles in the dbz GRC engine workflow, extracted from skills, engine scripts, and architecture docs",
+
+    "roles": [
+      {
+        "role": "GRC Analyst",
+        "tools": ["dbz_query.py (forward, reverse, scope, overlap, search)", "compliance-crosswalk atom", "overlap-query atom", "control-search atom"],
+        "outputs_produced": ["Cross-framework mapping tables", "Overlap percentages for sales", "Gap reports", "Keyword search results"],
+        "outputs_consumed": ["grc.db (SQLite)", "unified_mappings", "er_overlap_pairs view"],
+        "decisions": ["Framework pairs to compare", "Interpretation of overlap percentages", "Whether results need specialist review"]
+      },
+      {
+        "role": "Compliance Engineer / Catalog Maintainer",
+        "tools": ["build_db.py", "generate_controls.py loaders", "validate_catalog.py", "source_manifest.json", "feature_flags.py", "sync_check.py"],
+        "outputs_produced": ["grc.db", "grc_manifest.json", "NIST catalog JSON", "reverse_index.json"],
+        "outputs_consumed": ["source_manifest.json", "framework_updates_feed.json", "announcements_feed.json", "canonical-sources spreadsheets"],
+        "decisions": ["When to re-pin source versions", "Feature flag enablement", "ENGINE_VERSION/SCHEMA_VERSION bumps"]
+      },
+      {
+        "role": "Auditor / Compliance Report Consumer",
+        "tools": ["compliance-report-analyzer skill", "audit-artifact-normalizer skill", "compliance-crosswalk atom"],
+        "outputs_produced": ["Control Review spreadsheets", "Exception Focus sheets", "Summary with framework counts"],
+        "outputs_consumed": ["Raw audit reports (PDFs, spreadsheets)", "Bundled mapping CSVs"],
+        "decisions": ["Extraction vs inference mode", "Control classification (inherited, complementary, carved-out)", "human_review_required output review"]
+      },
+      {
+        "role": "Security Assessor / Gap Analyst",
+        "tools": ["gap-analysis atom", "compliance-crosswalk atom", "control-scope atom", "dbz_query.py scope/forward"],
+        "outputs_produced": ["Gap reports with coverage_summary", "Prioritized gap lists", "Control scope reports"],
+        "decisions": ["Which relationship types count as covered", "Whether transitive bridged mappings are acceptable", "Gap disposition"]
+      },
+      {
+        "role": "Framework Monitor Operator",
+        "tools": ["framework_monitor.py", "announcement_monitor.py", "framework_crawler.py", "oscal_diff.py", "framework-update-check atom", "feed-poller atom", "ecfr-monitor atom"],
+        "outputs_produced": ["framework_updates_feed.json", "announcements_feed.json", "framework_changelog.json"],
+        "decisions": ["Triage changed signals vs noise", "Whether to trigger re-build", "Setting human_reviewed on entries"]
+      },
+      {
+        "role": "Approval Authority / Compliance Specialist",
+        "tools": ["claim-and-output-validator skill", "permission-aware-connector-template skill"],
+        "outputs_consumed": ["All outputs with human_review_required: true", "minority_report blocks"],
+        "decisions": ["Approve/reject compliance-facing deliverables", "Resolve minority report conflicts", "Validation verdicts (safe/narrow_before_use/blocked)"]
+      },
+      {
+        "role": "Red Team / Threat Intelligence Analyst",
+        "tools": ["attack_stix_loader.py", "attack-mapper atom", "kev-lookup atom", "edgar-breach-search atom", "dbz_query.py attack/kev/edgar/nvd"],
+        "outputs_produced": ["mitre-attack-techniques.json", "Technique-to-control mappings", "KEV vulnerability records", "EDGAR breach disclosures"],
+        "decisions": ["Keyword heuristic fallback acceptability", "Incident type classification", "Breach-to-control family mapping"]
+      },
+      {
+        "role": "Evidence Collector",
+        "tools": ["public-web-evidence-crawler skill", "bulk-evidence-partitioner skill", "audit-artifact-normalizer skill"],
+        "outputs_produced": ["Crawl packs", "Partition output (elements.jsonl, chunk-index.json)", "Normalized bundles"],
+        "decisions": ["Access mode selection", "Source classification", "Crawl plan vs full crawl"]
+      },
+      {
+        "role": "Regulatory Intelligence Monitor",
+        "tools": ["ecfr-monitor atom", "cfr-lookup atom", "dbz_query.py cfr/eurlex", "ecfr_loader.py", "eurlex_loader.py", "fr_watcher.py"],
+        "outputs_produced": ["CFR change detection signals", "EUR-Lex article records", "Federal Register entries"],
+        "decisions": ["Material regulatory change assessment", "Legal interpretation explicitly out of scope"]
+      },
+      {
+        "role": "Platform / Integration Administrator",
+        "tools": ["feature_flags.py", "feature_flags.json", "permission-aware-connector-template skill"],
+        "feature_flags_controlled": ["github_authenticated", "cloud_render", "nist_cprt_api", "mcp_elicit", "mcp_google_drive", "connector_thoropass", "connector_vanta", "connector_drata", "connector_aws_audit_manager"],
+        "decisions": ["Integration enablement", "Credential provisioning verification", "Trust decisions for OAuth-gated MCP servers"]
+      },
+      {
+        "role": "Atom Developer / Skill Maintainer",
+        "tools": ["sync_check.py", "new_atom.py", "atoms.json", "workflow.json files", "evals.json"],
+        "decisions": ["Atom boundary design", "human_review_required emission policy", "Minority report policy compliance"]
+      }
+    ]
+  },
+
+  "cross_framework_equivalencies": {
+    "_description": "Cross-framework role equivalency mappings — same function, different title across frameworks",
+
+    "governance_oversight": [
+      {
+        "function": "Ultimate accountability for security program",
+        "nist": "Authorizing Official (AO)",
+        "soc2": "Management / Board",
+        "iso27001": "Top Management (Clause 5)",
+        "hipaa": "Covered Entity leadership",
+        "hitrust": "Management (00.a)",
+        "fedramp": "AO",
+        "cmmc": "Senior official"
+      },
+      {
+        "function": "Security program leadership",
+        "nist": "SAISO / CISO",
+        "soc2": "Information Security Manager",
+        "iso27001": "ISMS Manager (A.5)",
+        "hipaa": "Security Officer (implied)",
+        "hitrust": "Information Security Management (00.a)",
+        "fedramp": "CISO",
+        "cmmc": "CISO"
+      },
+      {
+        "function": "Privacy program leadership",
+        "nist": "SAOP / Chief Privacy Officer",
+        "soc2": "Privacy Oversight Responsibility",
+        "iso27001": "DPO (if GDPR applies)",
+        "hipaa": "Privacy Officer",
+        "gdpr": "Data Protection Officer (DPO)",
+        "hitrust": "Privacy Management"
+      },
+      {
+        "function": "Risk management function",
+        "nist": "Risk Executive (Function)",
+        "soc2": "Risk Committee",
+        "iso27001": "Risk Owner (Clause 6.1.2)",
+        "hipaa": "Risk Management (164.308(a)(1)(ii)(B))",
+        "hitrust": "Risk Management Program (03.a)"
+      }
+    ],
+
+    "operational": [
+      {
+        "function": "System/asset ownership",
+        "nist": "System Owner",
+        "soc2": "System Owner",
+        "iso27001": "Asset Owner (A.8.1.2)",
+        "hitrust": "Control Owner (implied)"
+      },
+      {
+        "function": "Data stewardship",
+        "nist": "Information Owner / Steward",
+        "soc2": "Data Owner (implied)",
+        "iso27001": "Information Owner (A.8)",
+        "gdpr": "Data Controller",
+        "hipaa": "Covered Entity (for PHI)"
+      },
+      {
+        "function": "Third-party/vendor management",
+        "nist": "External System Service Provider",
+        "soc2": "Subservice Organization / Vendor",
+        "iso27001": "Supplier (A.15)",
+        "hipaa": "Business Associate",
+        "hitrust": "Third Party (05.k)",
+        "gdpr": "Data Processor / Subprocessor",
+        "dora": "ICT Third-Party Service Provider"
+      }
+    ],
+
+    "assessment": [
+      {
+        "function": "Independent security assessment",
+        "nist": "Security Control Assessor (SCA) / Independent Assessor",
+        "soc2": "Service Auditor",
+        "iso27001": "Certification Body (CB) / Internal Auditor",
+        "hipaa": "Evaluation (164.308(a)(8))",
+        "hitrust": "External Assessor",
+        "fedramp": "Third Party Assessment Organization (3PAO)",
+        "cmmc": "C3PAO / CCA"
+      }
+    ]
+  },
+
+  "terminology_notes": {
+    "_description": "Important terminology differences and gotchas",
+    "notes": [
+      "NIST uses 'information owner' — never 'data owner'. The ER crosswalks and ISO use 'data owner' informally.",
+      "The acronyms ISSO and ISSM never appear in NIST 800-53 catalog text — only the full titles 'information system security officer' and 'information system security manager' are used.",
+      "The exact phrase 'security control assessor' does not appear in the catalog — NIST uses 'control assessor' or simply 'assessor'.",
+      "HIPAA uses 'workforce member' which is broader than 'employee' — includes volunteers and trainees.",
+      "SOC 2 'service organization' vs ISO 27001 'organization' vs HIPAA 'covered entity' — all refer to the entity being assessed/regulated but with different legal definitions.",
+      "'Covered entity' is fundamental to HIPAA but never explicitly named in the ER crosswalk data — it's treated as implicit context.",
+      "GDPR 'controller' and SOC 2 Privacy 'data controller' are the same concept but arise from different legal frameworks.",
+      "FedRAMP 'CSP' (Cloud Service Provider) is distinct from NIST 800-63B 'CSP' (Credential Service Provider) — same acronym, different meaning.",
+      "HITRUST 'inheritance' in SRM refers to control inheritance (shared responsibility), not organizational hierarchy.",
+      "The dbz source_manifest.json 'role' field is a source-file-type classifier (e.g., 'nist_catalog', 'overlap_oracle'), NOT an organizational role."
+    ]
+  }
+}
