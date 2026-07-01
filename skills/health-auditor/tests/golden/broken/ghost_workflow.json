@@ -1,0 +1,7 @@
+{
+  "skill": "golden-ghost-workflow",
+  "steps": [
+    {"id": "s1", "atom": "nonexistent-atom"},
+    {"id": "s1", "atom": "task-decompose"}
+  ]
+}

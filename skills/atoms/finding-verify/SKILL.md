@@ -9,7 +9,7 @@ deterministically. A finding survives only with a strict majority of confirming 
 For each key in the consolidated `pending_verification` list (conflicts, or findings
 merged at low/uncertain confidence), the manager runs N independent skeptic agents — each
 told to try to refute the finding and to default to "refuted" when uncertain. Their
-judgments are tallied by `scripts/verify.py` (arithmetic only — the agents judge, the
+judgments are tallied by `skills/multi-agent-orchestrator/scripts/verify.py` (arithmetic only — the agents judge, the
 script computes), and `apply_verdicts` folds the outcome back: confirmed findings stay,
 unverified findings stay but are flagged, refuted findings leave `findings[]` and are
 recorded in `minority_report.failed_to_merge`. Never silently dropped, never fabricated

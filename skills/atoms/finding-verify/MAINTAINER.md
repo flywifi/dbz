@@ -4,7 +4,7 @@
 
 - Skeptics are **independent** and prompted to **refute** — not to confirm. A confirmation-
   biased prompt defeats the purpose.
-- The tally is deterministic (`scripts/verify.py`): same votes → same verdict.
+- The tally is deterministic (`skills/multi-agent-orchestrator/scripts/verify.py`): same votes → same verdict.
 - **Ties go to refuted** (burden of proof on the finding); **majority-unable → unverified**
   (unverifiable is not refutation).
 - A **refuted** finding leaves `findings[]` and is recorded in

@@ -2,7 +2,7 @@
 
 ## Non-Negotiables
 
-- The composite is deterministic (`scripts/judge.py`): same dimension scores → same
+- The composite is deterministic (`skills/multi-agent-orchestrator/scripts/judge.py`): same dimension scores → same
   recommendation. Weights (`coverage .35, consistency .25, provenance .20, saturation .20`)
   and thresholds (`stop ≥ 0.80`, `coverage floor 0.70`) are fixed in the script, not
   re-decided per call.

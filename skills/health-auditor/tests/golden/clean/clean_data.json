@@ -1,0 +1,6 @@
+{
+  "mappings": [
+    {"framework": "NIST 800-53", "relationship_type": "Equal", "cci": "CCI-000123"},
+    {"framework": "ISO/IEC 27001:2022", "relationship_type": "Subset"}
+  ]
+}

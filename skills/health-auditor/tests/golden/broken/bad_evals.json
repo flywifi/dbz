@@ -1,0 +1,7 @@
+{
+  "atom": "golden-bad-evals",
+  "cases": [
+    {"id": "only-one", "input": {"x": 1}},
+    {"id": "no-expected", "input": {"x": 2}}
+  ]
+}

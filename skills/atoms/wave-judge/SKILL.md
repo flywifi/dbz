@@ -2,7 +2,7 @@
 
 Score a completed wave on a 0.0–1.0 rubric and recommend **stop** or **continue** — a
 quality-based stop signal that complements frontier saturation. The agent supplies a score
-per dimension with evidence; `scripts/judge.py` computes the weighted composite and the
+per dimension with evidence; `skills/multi-agent-orchestrator/scripts/judge.py` computes the weighted composite and the
 recommendation (the judgment is the LLM's, the arithmetic is the script's).
 
 ## Scope

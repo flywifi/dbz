@@ -1,0 +1,6 @@
+{
+  "mappings": [
+    {"framework": "ISO 27001", "relationship_type": "BOGUS"},
+    {"framework": "NIST 800-53", "cci": "CCI-12"}
+  ]
+}

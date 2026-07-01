@@ -5,7 +5,7 @@ dedup findings by key, preserve conflicts as a minority report, roll up coverage
 
 ## Scope
 
-Runs `scripts/consolidate.py` (in the orchestrator skill) over a list of envelopes that
+Runs `skills/multi-agent-orchestrator/scripts/consolidate.py` over a list of envelopes that
 have **already** passed `envelope-validate`. Implements the rules in
 `skills/shared/consolidation.md`: agree → merge (confidence floored), disagree → record
 both in `minority_report.conflicts` (never averaged), partial/blocked → coverage < 100%.

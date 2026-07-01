@@ -6,7 +6,7 @@ malformed envelope is a hard stop, not a silent merge.
 
 ## Scope
 
-Runs `scripts/validate_envelope.py` (in the orchestrator skill) over one envelope object
+Runs `skills/multi-agent-orchestrator/scripts/validate_envelope.py` over one envelope object
 and reports pass/fail with the specific schema violations. The manager calls this on
 every envelope from every wave; any failure blocks that envelope from consolidation and
 is surfaced for a re-run, never merged in a partial state.

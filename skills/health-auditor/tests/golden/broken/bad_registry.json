@@ -1,0 +1,5 @@
+{
+  "atoms": [
+    {"id": "golden-ghost", "script": "cross-mapping/engine/DOES_NOT_EXIST.py"}
+  ]
+}

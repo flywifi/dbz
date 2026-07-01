@@ -1,0 +1,51 @@
+{
+  "_purpose": "Controlled vocabularies the health auditor validates against, so a typo or a fabricated identifier is caught before it corrupts a query. Deterministic allow-lists only — never fabricate an entry to make a check pass; add the real canonical name.",
+  "_version": "1.0.0",
+  "_generated": "2026-07-01",
+
+  "framework_names": {
+    "_note": "Canonical framework names as they must appear in crosswalk/catalog data. A name not on this list (e.g. 'ISO 27001' missing the '/IEC') is flagged so overlap queries don't silently miss it.",
+    "allowed": [
+      "NIST 800-53",
+      "NIST 800-53 Rev 5",
+      "NIST 800-171",
+      "NIST 800-172",
+      "NIST CSF 2.0",
+      "NIST AI RMF 1.0",
+      "ISO/IEC 27001:2022",
+      "ISO/IEC 27002:2022",
+      "ISO/IEC 42001:2023",
+      "SOC 1",
+      "SOC 2",
+      "AICPA TSC 2017",
+      "HIPAA Security Rule",
+      "HIPAA Privacy Rule",
+      "HITRUST CSF",
+      "GDPR",
+      "FedRAMP",
+      "CMMC 2.0",
+      "PCI DSS v4.0",
+      "CSA CCM v4",
+      "CIS Controls v8",
+      "OWASP ASVS",
+      "SOX",
+      "NIS2",
+      "DORA",
+      "EU AI Act"
+    ]
+  },
+
+  "relationship_types": {
+    "_note": "Mirrors VALID_RELATIONSHIP_TYPES in cross-mapping/nist-catalog/ingestion/validate_catalog.py — kept in sync so the auditor and the catalog validator agree.",
+    "allowed": ["Subset", "Superset", "Equal", "Intersecting", "mapped_to", "transitive_via_hitrust", ""]
+  },
+
+  "cci_pattern": "^CCI-\\d{6}$",
+
+  "orchestration_enums": {
+    "mode": ["read-fanout", "mutate", "external"],
+    "status": ["complete", "partial", "blocked"],
+    "confidence": ["high", "medium", "low", "uncertain"],
+    "cci_provenance_tier": ["Confirmed-Direct", "Confirmed-Subject", "Implied-Bridge", "Implied-Heuristic", "Not-Applicable"]
+  }
+}
