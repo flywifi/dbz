@@ -82,11 +82,18 @@ def apply_verdicts(consolidated: Dict[str, Any],
         verdict = v.get("verdict", "unverified")
         f["verdict"] = verdict
         if verdict == "refuted":
+            import hashlib
+            _uid = hashlib.sha256(
+                json.dumps({"kind": "refuted_finding", "key": f["key"]},
+                           sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+            ).hexdigest()[:16]
             refuted_notes.append({
+                "uncertainty_id": _uid,
                 "interpretation_a": f"finding '{f['key']}' as reported",
                 "interpretation_b": "adversarial skeptics refuted it",
                 "why_not_mergeable": "removed from findings by adversarial verification",
                 "affected_keys": [f["key"]],
+                "status": "refuted",
             })
         else:
             kept.append(f)

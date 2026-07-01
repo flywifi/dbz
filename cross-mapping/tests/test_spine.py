@@ -154,6 +154,33 @@ if _DB.exists():
 else:
     print("  (skipped Phase 5 overlap checks — grc.db not built)")
 
+# ── 7. Uncertainty ids + confirmation cascade (Phase 6) ────────────────────────
+import uncertainty as UNC  # type: ignore
+check(UNC.uncertainty_id("k", a=1, b=2) == UNC.uncertainty_id("k", b=2, a=1),
+      "uncertainty_id is order-independent / deterministic")
+_edge = {"framework": "SOC 2", "native_id": "AICPA 2017 CC6.1", "r5_subpart": "AC-2 a",
+         "provenance": "hitrust_hub", "needs_confirmation": 1, "confidence": 0.65}
+_uid = UNC.edge_uncertainty_id(_edge)
+check(len(_uid) == 16, "edge_uncertainty_id is 16 hex")
+# confirmed cascade
+_edges = [dict(_edge)]
+UNC.apply_confirmations_to_edges(_edges, {_uid: {"uncertainty_id": _uid, "decision": "confirmed"}})
+check(_edges[0]["needs_confirmation"] == 0 and _edges[0]["confidence"] >= 0.9 and _edges[0]["status"] == "confirmed",
+      "confirmed uncertainty flips needs_confirmation + lifts confidence + status=confirmed")
+# refuted cascade
+_edges2 = [dict(_edge)]
+UNC.apply_confirmations_to_edges(_edges2, {_uid: {"uncertainty_id": _uid, "decision": "refuted"}})
+check(_edges2[0]["status"] == "refuted" and _edges2[0]["confidence"] <= 0.3, "refuted uncertainty -> status refuted, conf<=0.3")
+# no confirmation -> open, id stamped
+_edges3 = [dict(_edge)]
+UNC.apply_confirmations_to_edges(_edges3, {})
+check(_edges3[0]["status"] == "open" and _edges3[0]["uncertainty_id"] == _uid, "unconfirmed edge -> status open, id stamped")
+if _DB.exists():
+    _c2 = sqlite3.connect(str(_DB))
+    n_uid = _c2.execute("SELECT COUNT(*) FROM framework_projection WHERE uncertainty_id IS NOT NULL").fetchone()[0]
+    check(n_uid > 0, "framework_projection rows carry uncertainty_id after build")
+    _c2.close()
+
 # ── report ─────────────────────────────────────────────────────────────────────
 if FAILS:
     print("SPINE SELF-TEST: FAIL")

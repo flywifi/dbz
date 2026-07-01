@@ -386,10 +386,13 @@ CREATE TABLE IF NOT EXISTS framework_projection (
     confidence         REAL NOT NULL,
     hop_count          INTEGER NOT NULL DEFAULT 1,
     needs_confirmation INTEGER NOT NULL DEFAULT 0,
+    uncertainty_id     TEXT,               -- stable id for the confirmation ledger
+    status             TEXT NOT NULL DEFAULT 'open',  -- open | confirmed | refuted
     source_file        TEXT,
     source_sheet       TEXT,
     source_row         INTEGER
 );
+CREATE INDEX IF NOT EXISTS idx_fp_uid ON framework_projection(uncertainty_id);
 CREATE INDEX IF NOT EXISTS idx_fp_fw_native ON framework_projection(framework, native_id);
 CREATE INDEX IF NOT EXISTS idx_fp_subpart   ON framework_projection(r5_subpart);
 CREATE INDEX IF NOT EXISTS idx_fp_control   ON framework_projection(r5_control);
@@ -989,6 +992,8 @@ def build_db(
     # 1b. Overlap spine — sub-part inventory + CCI bridge + rekeyed ODPs
     print("\n[1b] Loading overlap spine (nist_subparts, cci_bridge, control_odps)")
     catalog_ids = {r["nist_id"] for r in ctrl_rows} | {r["id"] for r in enh_rows}
+    import uncertainty as _unc  # type: ignore
+    confirmations = _unc.load_confirmations(REPO_ROOT / "canonical-sources" / "confirmations.jsonl")
     cci_bridge_rows, spine_disa_rows, cci_stats = spine_loader.load_cci_bridge(catalog_ids)
     subpart_rows = spine_loader.load_nist_subparts(catalog_ids, cci_bridge_rows)
     odp_rows, odp_stats = spine_loader.load_control_odps(param_rows)
@@ -1022,22 +1027,25 @@ def build_db(
 
     # Framework projection edges — Phase 2: NIST 800-53 <-> ISO 27001 via the OLIR.
     olir_edges, olir_stats = spine_loader.load_olir_projection(catalog_ids)
+    _unc.apply_confirmations_to_edges(olir_edges, confirmations)
     print(f"  olir projection: edges={olir_stats['edges']} unresolved_focal={olir_stats['unresolved_focal']}")
     _executemany_chunked(conn, """
         INSERT INTO framework_projection
             (framework, native_id, r5_control, r5_subpart, cci_id, odp_id,
              relationship, relationship_basis, granularity, provenance, confidence,
-             hop_count, needs_confirmation, source_file, source_sheet, source_row)
+             hop_count, needs_confirmation, uncertainty_id, status, source_file, source_sheet, source_row)
         VALUES
             (:framework, :native_id, :r5_control, :r5_subpart, :cci_id, :odp_id,
              :relationship, :relationship_basis, :granularity, :provenance, :confidence,
-             :hop_count, :needs_confirmation, :source_file, :source_sheet, :source_row)
+             :hop_count, :needs_confirmation, :uncertainty_id, :status, :source_file, :source_sheet, :source_row)
     """, olir_edges, "framework_projection")
 
     # Phase 3: HITRUST hub — SOC 2 / ISO / HIPAA / GDPR / CMMC / FedRAMP / CIS / 800-171.
     hub_rows, hub_edges, hub_stats = spine_loader.load_hitrust_hub(catalog_ids)
+    cascade = _unc.apply_confirmations_to_edges(hub_edges, confirmations)
     print(f"  hitrust hub: frameworks={len(hub_stats['frameworks'])} edges={hub_stats['edges']} "
           f"nist_parse_incomplete={hub_stats['nist_parse_incomplete']}")
+    print(f"  confirmation cascade: {cascade}")
     _executemany_chunked(conn, """
         INSERT INTO hitrust_hub (hitrust_id, framework, target_id, source_row)
         VALUES (:hitrust_id, :framework, :target_id, :source_row)
@@ -1046,11 +1054,11 @@ def build_db(
         INSERT INTO framework_projection
             (framework, native_id, r5_control, r5_subpart, cci_id, odp_id,
              relationship, relationship_basis, granularity, provenance, confidence,
-             hop_count, needs_confirmation, source_file, source_sheet, source_row)
+             hop_count, needs_confirmation, uncertainty_id, status, source_file, source_sheet, source_row)
         VALUES
             (:framework, :native_id, :r5_control, :r5_subpart, :cci_id, :odp_id,
              :relationship, :relationship_basis, :granularity, :provenance, :confidence,
-             :hop_count, :needs_confirmation, :source_file, :source_sheet, :source_row)
+             :hop_count, :needs_confirmation, :uncertainty_id, :status, :source_file, :source_sheet, :source_row)
     """, hub_edges, "framework_projection")
 
     # Phase 4: concrete ODP values pinned in DAAPM (DoD) prose.

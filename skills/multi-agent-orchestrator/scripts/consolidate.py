@@ -40,6 +40,15 @@ def _canon(value: Any) -> str:
     return json.dumps(value, sort_keys=True, ensure_ascii=False)
 
 
+def _uncertainty_id(kind: str, **fields: Any) -> str:
+    """Deterministic 16-hex id for a minority-report entry, keyed to the confirmation
+    ledger (matches cross-mapping/engine/uncertainty.py)."""
+    import hashlib
+    payload = json.dumps({"kind": kind, **fields}, sort_keys=True,
+                         ensure_ascii=False, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
+
+
 def _floor_conf(confs: List[str]) -> str:
     if not confs:
         return "uncertain"
@@ -130,9 +139,16 @@ def consolidate(run_id: str, envelopes: List[Dict[str, Any]],
                 "provenance": provs, "confidence": _floor_conf(confs),
             })
             cross_conflicts.append({
+                "uncertainty_id": _uncertainty_id("cross_conflict", key=key, sources=sorted(provs)),
+                "why_conflict": "provenance_tier",
                 "affected_keys": [key],
                 "conflict_summary": f"{len(variants)} sources disagree on '{key}' — preserved, not merged",
-                "sources": provs, "materiality": "high",
+                "positions": [
+                    {"claim_value": v["value"], "citation": {"locator": ", ".join(v["provenance"])},
+                     "provenance_tier": "unspecified"}
+                    for v in variant_list
+                ],
+                "sources": provs, "materiality": "high", "status": "open",
             })
 
     # Residual = open leads whose scope was NOT later covered (reconciled against covered).

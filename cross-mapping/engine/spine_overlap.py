@@ -63,9 +63,13 @@ def resolve_framework(conn, name: str) -> Optional[str]:
 
 # ── spine footprints ────────────────────────────────────────────────────────────
 
+# edges that a human confirmation has refuted are excluded from overlap footprints
+_NOT_REFUTED = "status <> 'refuted'"
+
+
 def footprint_controls(conn, fw: str) -> Set[str]:
     return {r[0] for r in conn.execute(
-        "SELECT DISTINCT r5_control FROM framework_projection WHERE framework=?", (fw,))}
+        f"SELECT DISTINCT r5_control FROM framework_projection WHERE framework=? AND {_NOT_REFUTED}", (fw,))}
 
 
 def footprint_subparts(conn, fw: str) -> Set[str]:
@@ -74,11 +78,11 @@ def footprint_subparts(conn, fw: str) -> Set[str]:
     token."""
     out: Set[str] = set()
     for (sp,) in conn.execute(
-            "SELECT DISTINCT r5_subpart FROM framework_projection WHERE framework=? AND r5_subpart IS NOT NULL", (fw,)):
+            f"SELECT DISTINCT r5_subpart FROM framework_projection WHERE framework=? AND r5_subpart IS NOT NULL AND {_NOT_REFUTED}", (fw,)):
         out.add(sp)
     # control-level edges -> expand to enumerated sub-parts + the control token
     ctrl_level = [r[0] for r in conn.execute(
-        "SELECT DISTINCT r5_control FROM framework_projection WHERE framework=? AND r5_subpart IS NULL", (fw,))]
+        f"SELECT DISTINCT r5_control FROM framework_projection WHERE framework=? AND r5_subpart IS NULL AND {_NOT_REFUTED}", (fw,))]
     for c in ctrl_level:
         out.add(c)
         for (sp,) in conn.execute(
@@ -89,15 +93,15 @@ def footprint_subparts(conn, fw: str) -> Set[str]:
 
 def footprint_ccis(conn, fw: str) -> Set[str]:
     out: Set[str] = set()
-    for (cci,) in conn.execute("""
+    for (cci,) in conn.execute(f"""
             SELECT DISTINCT cb.cci_id FROM framework_projection fp
             JOIN cci_bridge cb ON cb.r5_subpart = fp.r5_subpart
-            WHERE fp.framework=? AND fp.r5_subpart IS NOT NULL""", (fw,)):
+            WHERE fp.framework=? AND fp.r5_subpart IS NOT NULL AND fp.{_NOT_REFUTED}""", (fw,)):
         out.add(cci)
-    for (cci,) in conn.execute("""
+    for (cci,) in conn.execute(f"""
             SELECT DISTINCT cb.cci_id FROM framework_projection fp
             JOIN cci_bridge cb ON cb.r5_control = fp.r5_control
-            WHERE fp.framework=? AND fp.r5_subpart IS NULL""", (fw,)):
+            WHERE fp.framework=? AND fp.r5_subpart IS NULL AND fp.{_NOT_REFUTED}""", (fw,)):
         out.add(cci)
     return out
 
