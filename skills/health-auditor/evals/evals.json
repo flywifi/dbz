@@ -1,0 +1,30 @@
+{
+  "skill": "health-auditor",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "Clean repo scans strong with exit 0",
+      "input": {"command": "python3 tools/health_audit.py --scan"},
+      "expected_output": {"readiness_band": "strong", "blocking": 0},
+      "expect_pass": true,
+      "note": "A clean tree must reach the strong band with no blocking findings and exit 0"
+    },
+    {
+      "id": "fail-01",
+      "label": "Planted defect (missing atoms.json script) goes blocking, exit 1",
+      "input": {"defect": "atoms.json script points to a nonexistent file"},
+      "expected_output": {"blocking": {"$min": 1}, "release_gate_recommendation": "block_until_resolved"},
+      "expect_pass": true,
+      "note": "A dangling script pointer must be caught as blocking so the gate blocks the push"
+    },
+    {
+      "id": "edge-01",
+      "label": "Golden self-test catches every planted defect, clean on control",
+      "input": {"command": "python3 skills/health-auditor/tests/run_golden.py"},
+      "expected_output": {"result": "PASS", "human_review_required": true},
+      "expect_pass": true,
+      "note": "The auditor is itself verified: every planted defect caught, zero false positives, negative control silent, pinned hash matches"
+    }
+  ]
+}

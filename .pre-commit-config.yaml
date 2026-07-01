@@ -1,0 +1,33 @@
+# Local pre-commit gate — blocks a commit when the health suite finds a blocking issue.
+# Install once:  pip install pre-commit && pre-commit install
+# All hooks are stdlib-only Python (no external deps) and run offline.
+repos:
+  - repo: local
+    hooks:
+      - id: sync-check
+        name: sync_check drift guard
+        entry: python3 tools/sync_check.py
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: health-audit-scan
+        name: health audit (reference integrity + layout + eval shape)
+        entry: python3 tools/health_audit.py --scan
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: health-auditor-self-test
+        name: health auditor self-test (golden set)
+        entry: python3 skills/health-auditor/tests/run_golden.py
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: orchestration-scenario
+        name: orchestration end-to-end scenario
+        entry: python3 skills/multi-agent-orchestrator/tests/run_scenario.py
+        language: system
+        pass_filenames: false
+        always_run: true

@@ -386,6 +386,26 @@
         "human_review_required": "boolean — always true"
       },
       "tags": ["orchestration", "judge", "rubric", "stop-signal"]
+    },
+    {
+      "id": "instruction-audit",
+      "label": "Instruction Audit (contradiction/drift)",
+      "version": "1.0",
+      "path": "skills/atoms/instruction-audit",
+      "script": "skills/health-auditor/scripts/instruction_blocks.py",
+      "input_schema": {
+        "skill_dir": "string — path to the skill/atom directory to audit",
+        "num_skeptics": "integer? — independent verifiers per flagged contradiction (default 3)"
+      },
+      "output_schema": {
+        "skill_dir": "string",
+        "contradictions": "array — [{rule, severity, a_section, b_section, summary, provenance}] confirmed only",
+        "block_histogram": "object — class -> count",
+        "pairs_checked": "integer",
+        "minority_report": "object or null",
+        "human_review_required": "boolean — always true"
+      },
+      "tags": ["health", "instruction", "contradiction", "adversarial", "arbiter"]
     }
   ]
 }

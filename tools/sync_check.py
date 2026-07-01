@@ -20,6 +20,12 @@ drift the same way atoms do, so it gets the same structural guard):
   9. references/routing.md names only valid modes (read-fanout, mutate, external) and
      the orchestration_hybrid_mode flag is registered in feature_flags.json.
 
+Plus 1 health-auditor invariant:
+ 10. The health-auditor package is intact: tools/health_audit.py + tools/health_repair.py,
+     canonical-sources/framework_vocab.json, and skills/health-auditor/ with SKILL.md,
+     MAINTAINER.md, workflow.json, evals/evals.json (>=3 cases), scripts/instruction_blocks.py,
+     tests/run_golden.py, and tests/golden/oracle.json.
+
 Run:   python3 tools/sync_check.py
 Exit:  0 if every invariant holds, 1 (with a report) otherwise.
 """
@@ -38,6 +44,10 @@ SHARED_DIR = ROOT / "skills" / "shared"
 ORCH_DIR = ROOT / "skills" / "multi-agent-orchestrator"
 FLAGS_PATH = ROOT / "canonical-sources" / "feature_flags.json"
 VALID_MODES = {"read-fanout", "mutate", "external"}
+
+HEALTH_DIR = ROOT / "skills" / "health-auditor"
+HEALTH_TOOLS = [ROOT / "tools" / "health_audit.py", ROOT / "tools" / "health_repair.py"]
+VOCAB_PATH = ROOT / "canonical-sources" / "framework_vocab.json"
 
 
 def main() -> int:
@@ -154,14 +164,38 @@ def main() -> int:
     else:
         failures.append("  ✗ Invariant 9 — feature_flags.json not found")
 
-    print(f"GRC drift check — {len(atom_dirs)} atom(s) + orchestration bucket\n")
+    # Invariant 10: health-auditor package intact
+    for t in HEALTH_TOOLS:
+        if not t.exists():
+            failures.append(f"  ✗ Invariant 10 — missing {t.relative_to(ROOT)}")
+    if not VOCAB_PATH.exists():
+        failures.append("  ✗ Invariant 10 — missing canonical-sources/framework_vocab.json")
+    if HEALTH_DIR.exists():
+        for rel in ("SKILL.md", "MAINTAINER.md", "workflow.json", "evals/evals.json",
+                    "scripts/instruction_blocks.py", "tests/run_golden.py",
+                    "tests/golden/oracle.json"):
+            if not (HEALTH_DIR / rel).exists():
+                failures.append(f"  ✗ Invariant 10 — missing skills/health-auditor/{rel}")
+        he = HEALTH_DIR / "evals" / "evals.json"
+        if he.exists():
+            try:
+                cases = json.loads(he.read_text(encoding="utf-8")).get("cases", [])
+                if len(cases) < 3:
+                    failures.append(f"  ✗ Invariant 10 — health-auditor evals need >=3 cases, has {len(cases)}")
+            except json.JSONDecodeError as e:
+                failures.append(f"  ✗ Invariant 10 — health-auditor evals invalid JSON ({e})")
+    else:
+        failures.append("  ✗ Invariant 10 — skills/health-auditor/ not found")
+
+    print(f"GRC drift check — {len(atom_dirs)} atom(s) + orchestration bucket + health auditor\n")
     if failures:
         print("DRIFT DETECTED:\n")
         print("\n".join(failures))
         print(f"\n{len(failures)} invariant(s) failed.")
         return 1
 
-    print(f"OK — all 9 invariants pass across {len(atom_dirs)} atom(s) + the orchestration bucket.")
+    print(f"OK — all 10 invariants pass across {len(atom_dirs)} atom(s) + the orchestration "
+          f"bucket + the health auditor.")
     return 0
 
 

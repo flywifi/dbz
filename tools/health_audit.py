@@ -40,7 +40,10 @@ SKIP_ATOM_DIRS = {"atom-template"}
 CODE_EXTS = (".py", ".md", ".json", ".yaml", ".yml", ".txt", ".csv")
 PATH_ANCHORS = ("skills/", "tools/", "cross-mapping/", "canonical-sources/",
                 "overlap-data/", "docs/", "references/", "scripts/", "evals/", "tests/")
-FORBIDDEN_TOKENS = ("TODO", "FIXME", "PLACEHOLDER", "<<<<<<<", ">>>>>>>", "=======")
+# Placeholder markers are flagged only as whole words (so prose like "human TODOs" is fine);
+# git conflict markers are matched as literal directional runs.
+_MARKER_RE = re.compile(r"\b(TODO|FIXME|PLACEHOLDER)\b")
+_CONFLICT_MARKERS = ("<<<<<<<", ">>>>>>>")
 # Bare filenames that live in known homes — resolved leniently to avoid false positives.
 COMMON_DIRS = [ROOT, ROOT / "canonical-sources", ROOT / "skills" / "shared",
                ROOT / "cross-mapping" / "engine", ROOT / "docs"]
@@ -144,11 +147,16 @@ def check_backtick_refs(md: Path, skill_dir: Path) -> List[Dict[str, Any]]:
 def check_forbidden_tokens(md: Path) -> List[Dict[str, Any]]:
     findings = []
     for i, line in enumerate(md.read_text(encoding="utf-8").splitlines(), 1):
-        for tok in FORBIDDEN_TOKENS:
+        for tok in set(_MARKER_RE.findall(line)):
+            findings.append(_f("blocking", "hygiene",
+                               f"forbidden token '{tok}' present",
+                               "remove the placeholder / resolve the merge marker",
+                               False, f"{md.relative_to(ROOT)}:{i}"))
+        for tok in _CONFLICT_MARKERS:
             if tok in line:
                 findings.append(_f("blocking", "hygiene",
                                    f"forbidden token '{tok}' present",
-                                   "remove the placeholder / resolve the merge marker",
+                                   "resolve the merge conflict marker",
                                    False, f"{md.relative_to(ROOT)}:{i}"))
     return findings
 

@@ -354,3 +354,26 @@ harness that drives the real scripts through the whole loop over two scripted sc
 (happy recursion; blocked→partial) and validates the result three independent ways — a
 hand-authored oracle, property invariants (P1–P8), and a pinned sha256 — so correctness is
 checkable without trusting the run.
+
+## Health auditor (`tools/health_audit.py` + `skills/health-auditor/`)
+
+Catches mistakes before they are pushed or used, across four layers:
+
+1. **Deterministic scan** (`tools/health_audit.py --scan`, stdlib-only, gate-ready): backtick
+   paths resolve; `atoms.json` `script` fields resolve; `workflow.json` atom refs are
+   registered atoms or installed skills; eval cases well-shaped; no placeholder/merge tokens.
+2. **Controlled vocabulary / schema** (`--full` / `--data-target`): framework names, CCI ids,
+   relationship types checked against `canonical-sources/framework_vocab.json`; catalog
+   conformance via `validate_catalog.py`.
+3. **Instruction-level contradiction/drift** (`instruction-audit` atom + `instruction_blocks.py`):
+   decompose a skill's `SKILL.md`/`MAINTAINER.md` into classified blocks and check high-risk
+   pairs with an adversarial-consensus LLM pass; only convergent contradictions are reported;
+   human-invoked, read-only.
+4. **Repair** (`tools/health_repair.py`): dry-run by default; `--apply` performs only
+   mechanical fixes; contradictions and vocab/schema violations are surfaced as human TODOs.
+
+The auditor is itself verified by `skills/health-auditor/tests/run_golden.py` — a golden set
+of intentionally-broken fixtures + a clean control + a hand-authored oracle + a pinned hash,
+so it must catch every planted defect and stay silent on clean input. Gating lives in
+`.pre-commit-config.yaml` (local) and `.github/workflows/health.yml` (CI); `sync_check.py`
+invariant 10 keeps the package intact.

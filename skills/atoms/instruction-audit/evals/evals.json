@@ -1,0 +1,40 @@
+{
+  "atom": "instruction-audit",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "Scope contradicts Do-NOT-use — one confirmed contradiction",
+      "input": {"skill_dir": "fixtures/contradictory-skill", "num_skeptics": 3},
+      "expected_output": {
+        "contradictions": {"$minItems": 1},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "A skill whose Scope affirms an action its 'Do NOT use for' forbids must surface a confirmed direct_contradiction after adversarial verification"
+    },
+    {
+      "id": "fail-01",
+      "label": "Consistent skill — zero contradictions (no false positive)",
+      "input": {"skill_dir": "skills/atoms/feed-poller", "num_skeptics": 3},
+      "expected_output": {
+        "contradictions": {"$maxItems": 0},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "A well-formed skill must not be flagged; the adversarial pass filters stylistic tension so false positives stay near zero"
+    },
+    {
+      "id": "edge-01",
+      "label": "Decomposition is deterministic — expected block classes present",
+      "input": {"skill_dir": "skills/atoms/finding-verify", "num_skeptics": 1},
+      "expected_output": {
+        "block_histogram": {"$exists": true},
+        "pairs_checked": {"$exists": true},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "instruction_blocks.py must decompose a real skill into scope/constraint/do_not_use/io_contract classes deterministically before any judgment"
+    }
+  ]
+}

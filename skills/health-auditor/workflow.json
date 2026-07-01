@@ -1,0 +1,48 @@
+{
+  "skill": "health-auditor",
+  "version": "1.0",
+  "description": "Four-layer health audit that gates commits and pushes. Deterministic layers run in pre-commit and CI; the instruction-level layer is a human-invoked pre-merge gate.",
+  "steps": [
+    {
+      "id": "scan",
+      "action": "run",
+      "command": "python3 tools/health_audit.py --scan --json",
+      "output_as": "scan_report",
+      "on_blocking": "fail (exit 1) — block the commit/push",
+      "note": "Reference integrity + layout + eval shape. Fast, deterministic, stdlib-only."
+    },
+    {
+      "id": "data",
+      "action": "run",
+      "command": "python3 tools/health_audit.py --full --json",
+      "output_as": "data_report",
+      "note": "Controlled-vocabulary + catalog conformance checks."
+    },
+    {
+      "id": "self_test",
+      "action": "run",
+      "command": "python3 skills/health-auditor/tests/run_golden.py",
+      "output_as": "golden",
+      "on_blocking": "fail — the auditor itself is broken; do not trust its findings",
+      "note": "Who audits the auditor: golden set + independent oracle + pinned hash."
+    },
+    {
+      "id": "instructions",
+      "atom": "instruction-audit",
+      "input": {"skill_dir": "{{input.skill_dir}}", "num_skeptics": 3},
+      "output_as": "contradictions",
+      "gate": "human_invoked",
+      "note": "Adversarial-consensus contradiction/drift check. Needs model access; not run headless in CI. Read-only."
+    },
+    {
+      "id": "repair",
+      "action": "run",
+      "command": "python3 tools/health_repair.py",
+      "output_as": "repair_plan",
+      "note": "Dry-run by default; mechanical-only with --apply; judgment items are human TODOs."
+    }
+  ],
+  "output": "{{scan_report}} + {{data_report}} + {{contradictions}}",
+  "on_step_failure": "stop_and_return_error",
+  "notes": "Blocking findings in scan/data/self_test return exit 1 so the pre-commit hook and CI gate block the change. The instruction layer and repair never auto-edit semantic content — human-gated."
+}
