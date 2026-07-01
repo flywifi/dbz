@@ -13,7 +13,8 @@ drift the same way atoms do, so it gets the same structural guard):
   6. The shared orchestration contracts exist: orchestration-envelope.schema.json
      (valid JSON), frontier-model.md, consolidation.md under skills/shared/.
   7. The multi-agent-orchestrator skill has SKILL.md, MAINTAINER.md, workflow.json,
-     references/routing.md, and evals/evals.json (>=3 cases).
+     references/routing.md, evals/evals.json (>=3 cases), and the end-to-end harness
+     tests/run_scenario.py + tests/fixtures/oracle.json.
   8. Its deterministic backers exist: scripts/validate_envelope.py, scripts/consolidate.py,
      scripts/verify.py, scripts/judge.py, and scripts/frontier.py.
   9. references/routing.md names only valid modes (read-fanout, mutate, external) and
@@ -112,7 +113,8 @@ def main() -> int:
     # Invariant 7: orchestrator skill has its required files (+ >=3 eval cases)
     if ORCH_DIR.exists():
         for rel in ("SKILL.md", "MAINTAINER.md", "workflow.json",
-                    "references/routing.md", "evals/evals.json"):
+                    "references/routing.md", "evals/evals.json",
+                    "tests/run_scenario.py", "tests/fixtures/oracle.json"):
             if not (ORCH_DIR / rel).exists():
                 failures.append(f"  ✗ Invariant 7 — missing multi-agent-orchestrator/{rel}")
         evals_path = ORCH_DIR / "evals" / "evals.json"

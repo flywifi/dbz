@@ -77,10 +77,10 @@
     {
       "id": "loop_or_stop",
       "action": "loop",
-      "condition": "NOT (frontier.saturated AND verdict.recommendation == 'stop') AND frontier.stop_condition == null",
+      "condition": "frontier.stop_condition NOT in (size_cap_reached, depth_cap_reached) AND frontier.next_scopes is non-empty",
       "loop_to": "wave",
       "else": "return consolidated",
-      "note": "Stop when the frontier is dry AND the judge says quality is sufficient; or when a hard stop condition (depth/size/budget) fires."
+      "note": "Hard caps stop always. Otherwise leads win: while the frontier has new scopes the run continues (the judge never cuts a non-empty frontier short). A dry frontier always stops — the judge only labels it: 'saturated' if it recommends stop, else 'frontier_exhausted' with the shortfall in residual_uncertainty. The loop never invents leads. Exercised by tests/run_scenario.py."
     }
   ],
   "output": "{{consolidated}}",

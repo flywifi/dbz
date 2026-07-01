@@ -1,0 +1,62 @@
+{
+  "_scenario": "A — happy recursion",
+  "_what_it_exercises": "fan-out handoff, drift rejection (uncitable envelope), merge + confidence floor, conflict preservation, adversarial verify (one refuted, one confirmed), recursion into a residual lead, saturation stop, judge-satisfied stop, cumulative-coverage reconciliation.",
+  "run_id": "a",
+  "initial_scopes": ["family-PM", "family-CA", "family-SA", "family-BAD"],
+  "stop_defaults": {"k_dry": 1, "depth_cap": 4, "size_cap": 24},
+  "judge_scores": {
+    "1": {"coverage": 0.7, "consistency": 0.6, "provenance": 0.9, "saturation": 0.4},
+    "2": {"coverage": 0.95, "consistency": 0.9, "provenance": 0.95, "saturation": 0.9}
+  },
+  "skeptic_votes": {
+    "REL": {"refuting": 3, "confirming": 1, "unable": 0},
+    "DEV": {"refuting": 1, "confirming": 3, "unable": 0}
+  },
+  "agents": {
+    "family-PM": {
+      "task_id": "a.w1.pm", "parent_task_id": null, "scope": "family-PM", "mode": "read-fanout", "status": "complete",
+      "findings": [{"key": "AO", "value": "Authorizing Official", "provenance": "PM.json:PM-10", "confidence": "high"}],
+      "residual_frontier": [{"scope": "IA family", "reason": "PM cites IA authenticators"}],
+      "provenance": {"sources_read": ["PM.json"], "method": "read"},
+      "confidence": "high", "minority_report": null, "human_review_required": true, "metrics": {"items_found": 1}
+    },
+    "family-CA": {
+      "task_id": "a.w1.ca", "parent_task_id": null, "scope": "family-CA", "mode": "read-fanout", "status": "complete",
+      "findings": [
+        {"key": "AO", "value": "Authorizing Official", "provenance": "CA.json:CA-6", "confidence": "medium"},
+        {"key": "SCA", "value": "Security Control Assessor", "provenance": "CA.json:CA-2", "confidence": "high"},
+        {"key": "REL", "value": "Superset", "provenance": "OLIR:AC-2", "confidence": "high"}
+      ],
+      "residual_frontier": [],
+      "provenance": {"sources_read": ["CA.json", "OLIR"], "method": "read"},
+      "confidence": "high", "minority_report": null, "human_review_required": true, "metrics": {"items_found": 3}
+    },
+    "family-SA": {
+      "task_id": "a.w1.sa", "parent_task_id": null, "scope": "family-SA", "mode": "read-fanout", "status": "complete",
+      "findings": [
+        {"key": "DEV", "value": "Developer", "provenance": "SA.json:SA-3", "confidence": "low"},
+        {"key": "REL", "value": "Equal", "provenance": "ER:AC-2", "confidence": "high"}
+      ],
+      "residual_frontier": [],
+      "provenance": {"sources_read": ["SA.json", "ER"], "method": "read"},
+      "confidence": "high", "minority_report": null, "human_review_required": true, "metrics": {"items_found": 2}
+    },
+    "family-BAD": {
+      "task_id": "a.w1.bad", "parent_task_id": null, "scope": "family-BAD", "mode": "read-fanout", "status": "complete",
+      "findings": [{"key": "FAKE", "value": "fabricated", "provenance": "internal", "confidence": "high"}],
+      "residual_frontier": [],
+      "provenance": {"sources_read": ["?"], "method": "guess"},
+      "confidence": "high", "minority_report": null, "human_review_required": true, "metrics": {"items_found": 1}
+    },
+    "IA family": {
+      "task_id": "a.w2.ia", "parent_task_id": "a.w1.pm", "scope": "IA family", "mode": "read-fanout", "status": "complete",
+      "findings": [
+        {"key": "AO", "value": "Authorizing Official", "provenance": "IA.json:IA-12", "confidence": "high"},
+        {"key": "ISSO", "value": "Information System Security Officer", "provenance": "IA.json:IA-5", "confidence": "high"}
+      ],
+      "residual_frontier": [],
+      "provenance": {"sources_read": ["IA.json"], "method": "read"},
+      "confidence": "high", "minority_report": null, "human_review_required": true, "metrics": {"items_found": 2}
+    }
+  }
+}

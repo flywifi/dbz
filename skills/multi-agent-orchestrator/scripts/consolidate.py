@@ -57,7 +57,12 @@ def _run_of(task_id: Any) -> Optional[str]:
 
 
 def consolidate(run_id: str, envelopes: List[Dict[str, Any]],
-                stop_condition: Optional[str] = None) -> Dict[str, Any]:
+                stop_condition: Optional[str] = None,
+                covered_scopes: Optional[List[str]] = None) -> Dict[str, Any]:
+    # covered_scopes: scope signatures already dispatched across all waves. A residual lead
+    # whose scope was later covered is no longer "residual" — reconciling against this keeps
+    # cumulative coverage honest (a wave-1 lead answered in wave 2 stops showing as open).
+    covered = {_sig(s) for s in (covered_scopes or [])}
     # Guard: all envelopes must belong to one run (derived from task_id prefix).
     runs = {_run_of(e.get("task_id")) for e in envelopes if isinstance(e, dict)}
     runs.discard(None)
@@ -130,7 +135,8 @@ def consolidate(run_id: str, envelopes: List[Dict[str, Any]],
                 "sources": provs, "materiality": "high",
             })
 
-    residual = [frontier[s] for s in sorted(frontier)]
+    # Residual = open leads whose scope was NOT later covered (reconciled against covered).
+    residual = [frontier[s] for s in sorted(frontier) if s not in covered]
     # 'complete' requires at least one agent AND no partial/blocked AND an empty frontier.
     # An empty run is never 'complete' — nothing was covered (see findings-consolidate MAINTAINER).
     state = "complete" if (agents_total > 0
@@ -197,6 +203,7 @@ def main(argv=None) -> int:
         payload.get("run_id", "unnamed-run"),
         payload.get("envelopes", []),
         payload.get("stop_condition"),
+        payload.get("covered_scopes"),
     )
     # Deterministic serialization: sort_keys so repeated runs are byte-identical.
     print(json.dumps(result, indent=2, sort_keys=True, ensure_ascii=False))

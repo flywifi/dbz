@@ -349,4 +349,8 @@ run only when the `orchestration_hybrid_mode` flag is effective and a trigger ho
 (named/recurring workflow, deterministic replay, or agent count over the size cap).
 
 `tools/sync_check.py` guards the bucket with 4 invariants (6–9) alongside the 5 atom
-invariants.
+invariants. `skills/multi-agent-orchestrator/tests/run_scenario.py` is an end-to-end
+harness that drives the real scripts through the whole loop over two scripted scenarios
+(happy recursion; blocked→partial) and validates the result three independent ways — a
+hand-authored oracle, property invariants (P1–P8), and a pinned sha256 — so correctness is
+checkable without trusting the run.

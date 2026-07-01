@@ -59,18 +59,22 @@ while frontier and wave < DEPTH_CAP and total_agents < SIZE_CAP:
 Prefer **loop-until-dry** over a fixed depth: a fixed `DEPTH_CAP` is a backstop, not the
 primary signal. K consecutive empty waves is the real "we got everything" test.
 
-## Two stop signals, AND-ed together
+## How the two signals combine (leads win; a dry frontier always stops)
 
-Stopping the recursion needs **both** the frontier to be dry **and** `wave-judge` to
-recommend stop. They are deliberately redundant:
+- **Hard caps** (depth/size/budget) end the run regardless of everything else.
+- **Leads win.** While the frontier still has new, unseen leads, the run continues — a high
+  `wave-judge` score never cuts a non-empty frontier short.
+- **A dry frontier always stops.** The loop never invents leads. When there is nothing new
+  to expand, the run ends; `wave-judge` only *labels* that stop:
+  - judge recommends **stop** → `saturated` (dry and quality sufficient).
+  - judge recommends **continue** → `frontier_exhausted` (dry but the quality bar wasn't
+    met) — the shortfall is recorded in `residual_uncertainty` for a human or a re-scoped
+    run. The loop does not fabricate new leads to keep going.
 
-- **Frontier saturation** answers "is there anywhere left to look?" (structural).
-- **`wave-judge`** answers "is what we have good enough?" (quality rubric — coverage,
-  consistency, provenance, saturation-confidence; deterministic composite in `judge.py`).
-
-A high judge score never overrides a non-empty frontier (unfinished leads win), and a dry
-frontier with a weak judge score (e.g. thin coverage) keeps the run going one more angle.
-The depth/size/budget caps are hard backstops that end the run regardless.
+So `wave-judge` answers "is what we have good enough?" and grades the stop; frontier
+saturation answers "is there anywhere left to look?" and drives whether to continue. This
+is exactly what the end-to-end test in `tests/run_scenario.py` exercises (scenario A stops
+`saturated`; scenario B stops `frontier_exhausted`).
 
 ## Concurrency
 
