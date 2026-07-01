@@ -29,12 +29,8 @@ jobs:
       - name: Instruction block decomposition self-test
         run: python3 skills/health-auditor/scripts/instruction_blocks.py --self-test
 
-      - name: Instruction audit — structure (always) + semantic (when ANTHROPIC_API_KEY is set)
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          if [ -n "$ANTHROPIC_API_KEY" ]; then pip install --quiet anthropic; fi
-          python3 skills/health-auditor/scripts/instruction_audit_run.py
+      - name: Instruction audit — structure gate (deterministic; semantic is on-demand)
+        run: python3 skills/health-auditor/scripts/instruction_blocks.py --audit-all
 
       - name: Orchestration end-to-end scenario
         run: python3 skills/multi-agent-orchestrator/tests/run_scenario.py

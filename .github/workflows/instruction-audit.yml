@@ -1,0 +1,31 @@
+name: instruction-audit (on-demand semantic)
+
+# Runs the semantic, adversarial-consensus contradiction pass ON DEMAND only — not on every
+# push. Trigger it from the Actions tab ("Run workflow"). The deterministic structure gate
+# still runs automatically in the health workflow on every push/PR.
+#
+# The semantic pass needs a model: set an ANTHROPIC_API_KEY repository secret to enable it.
+# Without the secret the runner does the structure gate and prints "semantic skipped" (exit 0),
+# so triggering it is always safe.
+on:
+  workflow_dispatch:
+
+jobs:
+  semantic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install model SDK (only used when a key is configured)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "$ANTHROPIC_API_KEY" ]; then pip install --quiet anthropic; fi
+
+      - name: Instruction audit — semantic (adversarial-consensus over all skills)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python3 skills/health-auditor/scripts/instruction_audit_run.py

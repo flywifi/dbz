@@ -21,10 +21,11 @@ Runs four layers, deterministic-first so the fast layers can gate every commit a
    an **adversarial-consensus** LLM pass (only convergent contradictions are reported).
    Read-only, never edits instructions. In CI this runs in two parts:
    `instruction_blocks.py --audit-all` is a deterministic, headless **structure gate** (every
-   atom must keep a scope + a "Do NOT use for" block) that always runs; the **semantic**
-   contradiction pass (`instruction_audit_run.py`) runs headlessly when `ANTHROPIC_API_KEY`
-   is configured and skips cleanly otherwise, so CI never produces a false gate. Locally the
-   semantic pass is the human-invoked deep check.
+   atom must keep a scope + a "Do NOT use for" block) that always runs on push/PR; the
+   **semantic** contradiction pass (`instruction_audit_run.py`) is **on-demand** — triggered
+   manually via the `instruction-audit` GitHub Actions workflow, or run locally. It performs
+   the full adversarial-consensus judgment when `ANTHROPIC_API_KEY` is set and skips cleanly
+   otherwise, so triggering it is always safe.
 4. **Repair** — `tools/health_repair.py`: dry-run by default; `--apply` performs only
    mechanical fixes; contradictions and schema/vocab violations are surfaced as human TODOs.
 
