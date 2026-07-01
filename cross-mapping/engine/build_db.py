@@ -396,6 +396,17 @@ CREATE INDEX IF NOT EXISTS idx_fp_control   ON framework_projection(r5_control);
 CREATE INDEX IF NOT EXISTS idx_fp_cci       ON framework_projection(cci_id);
 CREATE INDEX IF NOT EXISTS idx_fp_fw        ON framework_projection(framework);
 CREATE INDEX IF NOT EXISTS idx_fp_prov      ON framework_projection(provenance);
+
+-- ── HITRUST hub raw audit trail (Phase 3): one row per hitrust_id × framework × id ─
+CREATE TABLE IF NOT EXISTS hitrust_hub (
+    rowid       INTEGER PRIMARY KEY AUTOINCREMENT,
+    hitrust_id  TEXT NOT NULL,        -- "01.b User Registration"
+    framework   TEXT NOT NULL,        -- canonical framework label
+    target_id   TEXT NOT NULL,        -- one parsed id from the cell
+    source_row  INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_hub_fw      ON hitrust_hub(framework, target_id);
+CREATE INDEX IF NOT EXISTS idx_hub_hitrust ON hitrust_hub(hitrust_id);
 """
 
 
@@ -974,6 +985,25 @@ def build_db(
              :hop_count, :needs_confirmation, :source_file, :source_sheet, :source_row)
     """, olir_edges, "framework_projection")
 
+    # Phase 3: HITRUST hub — SOC 2 / ISO / HIPAA / GDPR / CMMC / FedRAMP / CIS / 800-171.
+    hub_rows, hub_edges, hub_stats = spine_loader.load_hitrust_hub(catalog_ids)
+    print(f"  hitrust hub: frameworks={len(hub_stats['frameworks'])} edges={hub_stats['edges']} "
+          f"nist_parse_incomplete={hub_stats['nist_parse_incomplete']}")
+    _executemany_chunked(conn, """
+        INSERT INTO hitrust_hub (hitrust_id, framework, target_id, source_row)
+        VALUES (:hitrust_id, :framework, :target_id, :source_row)
+    """, hub_rows, "hitrust_hub")
+    _executemany_chunked(conn, """
+        INSERT INTO framework_projection
+            (framework, native_id, r5_control, r5_subpart, cci_id, odp_id,
+             relationship, relationship_basis, granularity, provenance, confidence,
+             hop_count, needs_confirmation, source_file, source_sheet, source_row)
+        VALUES
+            (:framework, :native_id, :r5_control, :r5_subpart, :cci_id, :odp_id,
+             :relationship, :relationship_basis, :granularity, :provenance, :confidence,
+             :hop_count, :needs_confirmation, :source_file, :source_sheet, :source_row)
+    """, hub_edges, "framework_projection")
+
     conn.commit()
 
     # 2. ER crosswalk data
@@ -1196,7 +1226,8 @@ def build_db(
                 "cisa_kev", "cfr_requirements", "attack_techniques", "edgar_cyber_incidents",
                 "nvd_cves", "disa_ccis", "eurlex_articles",
                 "nist_800_63b_requirements", "fips_140_validations",
-                "nist_subparts", "cci_bridge", "control_odps", "framework_projection"):
+                "nist_subparts", "cci_bridge", "control_odps", "framework_projection",
+                "hitrust_hub"):
         row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
         counts[tbl] = row[0]
 

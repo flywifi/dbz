@@ -99,6 +99,39 @@ def parse_cci_index(raw: str) -> List[Tuple[str, Optional[str]]]:
     return [(cid, None)]
 
 
+_HITRUST_SUFFIX_TOK = re.compile(r"[a-z]|\d+")
+
+
+def parse_hitrust_ref(raw: str) -> List[Tuple[str, Optional[str]]]:
+    """
+    Parse a HITRUST cross-reference NIST cell token (compressed sub-part form) into
+    [(control_id, subpart_path_or_None)].
+
+    'AC-17a'   -> [('AC-17', 'a')]
+    'CA-1a1b'  -> [('CA-1', 'a.1.b')]
+    'CA-1a2'   -> [('CA-1', 'a.2')]
+    'AC-2(3)a' -> [('AC-2(3)', 'a')]
+    'AC-2c'    -> [('AC-2', 'c')]
+    'AC-2(1)'  -> [('AC-2(1)', None)]        whole enhancement
+    Unparseable / unexpected suffix -> control-level, never fabricated.
+    """
+    if not isinstance(raw, str):
+        return []
+    s = raw.strip()
+    cid = normalize_control_id(s)
+    if not cid:
+        return []
+    m = _CTRL_RE.match(s.upper())
+    remainder = s[m.end():].strip()
+    if not remainder:
+        return [(cid, None)]
+    if not re.fullmatch(r"[A-Za-z0-9]+", remainder):
+        return [(cid, None)]  # unexpected shape -> control-level
+    toks = _HITRUST_SUFFIX_TOK.findall(remainder.lower())
+    path = ".".join(toks) if toks else None
+    return [(cid, path)]
+
+
 def parse_cui_sort_id(raw: str) -> Optional[Tuple[str, int]]:
     """
     Parse a CUI-overlay sort id 'FAMILY-CTRL-ENH-PART' into (control_id, part_ordinal).

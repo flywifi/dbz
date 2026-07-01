@@ -260,17 +260,17 @@
       "role": "hitrust_to_all_frameworks",
       "column_roles": {
         "HITRUST CSF v11.4.0": "hitrust_id",
+        "NIST SP 800-53 r5": "nist_53r5_id",
         "AICPA Trust Services Criteria": "tsc_id",
-        "CIS CSC v8.0": "cis_v8_id",
-        "NIST SP 800-53 R5": "nist_53r5_id",
         "ISO/IEC 27001:2022": "iso_27001_2022_id",
-        "HIPAA/HITECH": "hipaa_id",
-        "FedRAMP Moderate": "fedramp_moderate_id",
-        "NIST SP 800-171 r2": "nist_171r2_id",
-        "CMMC v2.0": "cmmc_v2_id",
-        "SOC 2": "soc2_id"
+        "HIPAA Security Rule": "hipaa_security_id",
+        "EU GDPR v2023": "gdpr_id",
+        "Cybersecurity Maturity Model Certification (CMMC) 2.0": "cmmc_v2_id",
+        "FedRAMP r5": "fedramp_r5_id",
+        "CIS CSC v8.0": "cis_v8_id",
+        "NIST SP 800-171 r2": "nist_171r2_id"
       },
-      "notes": "64-column wide matrix. Col 0 = HITRUST CSF v11.4.0 (hitrust_id). All remaining columns are framework names — read dynamically rather than hardcoding. Use March 2025 file (not the 'copy -' variant which may be older). Some cells contain multiple IDs separated by newlines or semicolons.",
+      "notes": "Actual sheet headers (corrected from earlier approximations). Hub is control-level co-membership; NIST r5 cell holds compressed sub-part refs (AC-2d1).",
       "total_columns": 64
     },
     {

@@ -96,6 +96,17 @@ check(all(e["relationship_basis"] == "derived_cardinality" for e in olir_edges),
 check(any(e["r5_control"] == "AC-2" and e["framework"] == SL.ISO_FRAMEWORK for e in olir_edges),
       "OLIR projects at least one ISO clause onto AC-2")
 
+# ── 4. HITRUST hub (Phase 3) ───────────────────────────────────────────────────
+hub_rows, hub_edges, hub_stats = SL.load_hitrust_hub(catalog_ids)
+check(len(hub_stats["frameworks"]) >= 7, f"hub projects >=7 frameworks (got {hub_stats['frameworks']})")
+check("SOC 2" in hub_stats["frameworks"], "hub projects SOC 2 (AICPA TSC)")
+check(hub_stats["nist_parse_incomplete"] == 0, f"hub NIST refs all parse ({hub_stats['nist_parse_incomplete']} incomplete)")
+check(all(e["provenance"] == "hitrust_hub" for e in hub_edges), "hub edges all provenance=hitrust_hub")
+check(all(e["needs_confirmation"] == 1 for e in hub_edges), "hub edges flagged needs_confirmation")
+check(all(e["confidence"] == 0.65 for e in hub_edges), "hub edges confidence 0.65")
+check(any(e["framework"] == "SOC 2" and e["r5_control"] == "AC-2" and e["r5_subpart"] for e in hub_edges),
+      "SOC 2 projects to an AC-2 sub-part via the hub")
+
 # ── report ─────────────────────────────────────────────────────────────────────
 if FAILS:
     print("SPINE SELF-TEST: FAIL")

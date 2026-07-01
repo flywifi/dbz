@@ -32,6 +32,7 @@ from config import source_path, sheet_name, header_row, col  # type: ignore
 from spine_normalize import (  # type: ignore
     normalize_control_id,
     parse_cci_index,
+    parse_hitrust_ref,
     canon_subpart,
 )
 
@@ -388,3 +389,123 @@ def derive_iso_relationships(edges: List[dict]) -> None:
             rel = "intersect"
         e["relationship"] = rel
         e["relationship_basis"] = "derived_cardinality"
+
+
+# ── framework_projection: HITRUST hub for commercial frameworks (Phase 3) ───────
+
+# role in the manifest -> canonical framework label projected into the spine.
+# 'nist_53r5_id' is the spine anchor (not a projected framework); 'hitrust_id' is
+# the pivot key.  Everything else becomes a framework whose native ids co-occur with
+# the row's NIST r5 sub-parts (hub co-membership, confidence 0.65, hop 2).
+_HUB_FRAMEWORKS = {
+    "tsc_id": "SOC 2",
+    "iso_27001_2022_id": "ISO 27001/2 (2022)",
+    "hipaa_security_id": "HIPAA Security",
+    "gdpr_id": "GDPR",
+    "cmmc_v2_id": "CMMC 2.0",
+    "fedramp_r5_id": "FedRAMP r5",
+    "cis_v8_id": "CIS CSC v8.0",
+    "nist_171r2_id": "NIST SP 800-171 r2",
+}
+
+_SPLIT_RE = re.compile(r"[\n;]+")
+
+
+def _split_cell(cell) -> List[str]:
+    if cell is None:
+        return []
+    s = str(cell).strip()
+    if not s or s.lower() == "nan":
+        return []
+    return [tok.strip() for tok in _SPLIT_RE.split(s) if tok.strip()]
+
+
+def load_hitrust_hub(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], dict]:
+    """
+    Load the HITRUST cross-reference into (hub_rows, projection_edges, stats).
+
+    For each HITRUST control row we parse the NIST r5 cell into r5 sub-parts, then
+    connect every other framework's native ids in the same row to those sub-parts
+    (co-membership).  Edges are provenance='hitrust_hub', confidence 0.65, hop 2,
+    needs_confirmation=1.  Every hub target id is also written to hitrust_hub for the
+    audit trail.
+    """
+    src = "hitrust-csf-cross-reference"
+    fname = source_path(src).name
+    df = _read_source_df(src)
+    cols = list(df.columns)
+
+    hit_c = _find_col(cols, col(src, "hitrust_id"))
+    nist_c = _find_col(cols, col(src, "nist_53r5_id"))
+    fw_cols = {}
+    for role, label in _HUB_FRAMEWORKS.items():
+        try:
+            actual = _find_col(cols, col(src, role))
+        except Exception:
+            actual = None
+        if actual:
+            fw_cols[actual] = label
+
+    hub_rows: List[dict] = []
+    edges: List[dict] = []
+    seen_edge: Set[Tuple[str, str, str]] = set()
+    nist_parse_incomplete = 0
+    nist_tokens = 0
+
+    for i, rec in enumerate(df.itertuples(index=False), start=0):
+        rowd = dict(zip(df.columns, rec))
+        hitrust_id = str(rowd.get(hit_c, "")).strip()
+        if not hitrust_id or hitrust_id.lower() == "nan":
+            continue
+
+        # r5 sub-parts for this HITRUST control
+        subparts: List[Tuple[str, Optional[str]]] = []  # (r5_control, r5_subpart)
+        for tok in _split_cell(rowd.get(nist_c)):
+            nist_tokens += 1
+            parsed = parse_hitrust_ref(tok)
+            if not parsed:
+                nist_parse_incomplete += 1
+                continue
+            for ctrl, subpath in parsed:
+                if ctrl not in catalog_ids:
+                    continue
+                subparts.append((ctrl, canon_subpart(ctrl, subpath)))
+
+        for actual_col, label in fw_cols.items():
+            for target_id in _split_cell(rowd.get(actual_col)):
+                hub_rows.append({
+                    "hitrust_id": hitrust_id, "framework": label,
+                    "target_id": target_id, "source_row": i,
+                })
+                for r5_control, r5_subpart in subparts:
+                    key = (label, target_id, r5_subpart or r5_control)
+                    if key in seen_edge:
+                        continue
+                    seen_edge.add(key)
+                    edges.append(_projection_row(
+                        framework=label, native_id=target_id, r5_control=r5_control,
+                        r5_subpart=r5_subpart,
+                        relationship="intersect", relationship_basis="co_membership",
+                        granularity="subpart" if r5_subpart else "control",
+                        provenance="hitrust_hub", confidence=0.65, hop_count=2,
+                        needs_confirmation=1,
+                        source_file=fname, source_sheet=_read_sheet_name(src), source_row=i,
+                    ))
+
+    hub_rows.sort(key=lambda r: (r["framework"], r["target_id"], r["hitrust_id"]))
+    edges.sort(key=lambda r: (r["framework"], r["native_id"], r["r5_control"], r["r5_subpart"] or ""))
+    stats = {
+        "hub_rows": len(hub_rows),
+        "edges": len(edges),
+        "frameworks": sorted({e["framework"] for e in edges}),
+        "nist_tokens": nist_tokens,
+        "nist_parse_incomplete": nist_parse_incomplete,
+    }
+    return hub_rows, edges, stats
+
+
+def _read_sheet_name(src: str) -> str:
+    try:
+        return sheet_name(src)
+    except Exception:
+        return ""
