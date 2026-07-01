@@ -45,3 +45,11 @@ emit `minority_report.conflicts` with both sources before returning. See canonic
 - [ ] Verify `mapping_source` values match strings used in `build_db.py:load_crosswalks()`.
 - [ ] Test against AC-2 fixture: `cross-mapping/tests/fixtures/` — confirm ISO/CMMC/HITRUST mappings unchanged.
 - [ ] Confirm `human_review_required: true` still present in all output paths.
+## Confirmation-sync & durable logging
+Uncertainties this skill emits (conflicts, partials, inferred edges, ODP clashes, agent
+dissent) carry a deterministic `uncertainty_id`, log the competing citations plus
+`why_conflict` / `winning_citation` / `why_it_won`, and are recorded in
+`canonical-sources/uncertainty_ledger.jsonl`. Human confirmations live in
+`canonical-sources/confirmations.jsonl`; on confirm, `status`, `needs_confirmation`,
+`confidence`, and any partial->full reclassification re-derive at build. Never resolve an
+uncertainty in place — only via the confirmations ledger. See `skills/shared/minority-report.md`.

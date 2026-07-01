@@ -25,3 +25,11 @@ See `evals/evals.json`:
 - pass-01: a well-formed envelope validates with empty violations
 - fail-01: an envelope missing `residual_frontier` fails with a pointed violation
 - edge-01: an envelope with `human_review_required: false` fails (const true enforced)
+## Confirmation-sync & durable logging
+Uncertainties this skill emits (conflicts, partials, inferred edges, ODP clashes, agent
+dissent) carry a deterministic `uncertainty_id`, log the competing citations plus
+`why_conflict` / `winning_citation` / `why_it_won`, and are recorded in
+`canonical-sources/uncertainty_ledger.jsonl`. Human confirmations live in
+`canonical-sources/confirmations.jsonl`; on confirm, `status`, `needs_confirmation`,
+`confidence`, and any partial->full reclassification re-derive at build. Never resolve an
+uncertainty in place — only via the confirmations ledger. See `skills/shared/minority-report.md`.

@@ -48,3 +48,11 @@ See canonical policy: `skills/shared/minority-report.md`.
 - [ ] Confirm supported framework list in SKILL.md matches the source precedence rules.
 - [ ] Confirm `human_review_required: true` still present in all output paths.
 - [ ] Check that no fabricated IDs appear in smoke-test output.
+## Confirmation-sync & durable logging
+Uncertainties this skill emits (conflicts, partials, inferred edges, ODP clashes, agent
+dissent) carry a deterministic `uncertainty_id`, log the competing citations plus
+`why_conflict` / `winning_citation` / `why_it_won`, and are recorded in
+`canonical-sources/uncertainty_ledger.jsonl`. Human confirmations live in
+`canonical-sources/confirmations.jsonl`; on confirm, `status`, `needs_confirmation`,
+`confidence`, and any partial->full reclassification re-derive at build. Never resolve an
+uncertainty in place — only via the confirmations ledger. See `skills/shared/minority-report.md`.

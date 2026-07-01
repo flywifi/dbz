@@ -194,6 +194,11 @@ def main() -> int:
     ha_src = ROOT / "tools" / "health_audit.py"
     if ha_src.exists() and "def check_uncertainty_ledger" not in ha_src.read_text(encoding="utf-8"):
         failures.append("  ✗ Invariant 11 — health_audit.py missing check_uncertainty_ledger detector")
+    # Every MAINTAINER.md declares the confirmation-sync / durable-logging contract.
+    for m in sorted((ROOT / "skills").rglob("MAINTAINER.md")):
+        if "confirmations.jsonl" not in m.read_text(encoding="utf-8"):
+            failures.append(f"  ✗ Invariant 11 — MAINTAINER missing confirmation-sync stanza: "
+                            f"{m.relative_to(ROOT)}")
 
     print(f"GRC drift check — {len(atom_dirs)} atom(s) + orchestration bucket + health auditor\n")
     if failures:

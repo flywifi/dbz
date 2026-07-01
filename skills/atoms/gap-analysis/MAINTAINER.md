@@ -46,3 +46,11 @@ See canonical policy: `skills/shared/minority-report.md`.
 - [ ] Re-run smoke test: `python3 skills/atoms/gap-analysis/scripts/gap_analysis.py "CMMC 2.0 / NIST 800-171" --fedramp moderate --family AC IA SC --format summary`
 - [ ] Confirm `human_review_required: true` still present in all output paths.
 - [ ] Check that `fully_covered` count does not include `mapped_to` or `transitive_via_hitrust` rows.
+## Confirmation-sync & durable logging
+Uncertainties this skill emits (conflicts, partials, inferred edges, ODP clashes, agent
+dissent) carry a deterministic `uncertainty_id`, log the competing citations plus
+`why_conflict` / `winning_citation` / `why_it_won`, and are recorded in
+`canonical-sources/uncertainty_ledger.jsonl`. Human confirmations live in
+`canonical-sources/confirmations.jsonl`; on confirm, `status`, `needs_confirmation`,
+`confidence`, and any partial->full reclassification re-derive at build. Never resolve an
+uncertainty in place — only via the confirmations ledger. See `skills/shared/minority-report.md`.

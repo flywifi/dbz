@@ -45,3 +45,11 @@ announcement says "final rule published." See canonical policy: `skills/shared/m
 - [ ] Smoke test: `python3 skills/atoms/framework-update-check/scripts/update_check.py --dry-run --format json`
 - [ ] Confirm `human_review_required: true` and `announcement_feed_age_days` in all output paths.
 - [ ] Check that log file is written to `logs/announcement_monitor_YYYY-MM-DD.log` on live run.
+## Confirmation-sync & durable logging
+Uncertainties this skill emits (conflicts, partials, inferred edges, ODP clashes, agent
+dissent) carry a deterministic `uncertainty_id`, log the competing citations plus
+`why_conflict` / `winning_citation` / `why_it_won`, and are recorded in
+`canonical-sources/uncertainty_ledger.jsonl`. Human confirmations live in
+`canonical-sources/confirmations.jsonl`; on confirm, `status`, `needs_confirmation`,
+`confidence`, and any partial->full reclassification re-derive at build. Never resolve an
+uncertainty in place — only via the confirmations ledger. See `skills/shared/minority-report.md`.

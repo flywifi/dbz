@@ -36,3 +36,11 @@ See `evals/evals.json`:
 - fail-01: an underspecified task returns an error, not fabricated scopes
 - edge-01: a canonical-update task yields `mode: mutate` with `depth_cap: 1`
 - solo-01: a small single-source lookup yields `fan_out: false`, `agent_count: 1`, one scope
+## Confirmation-sync & durable logging
+Uncertainties this skill emits (conflicts, partials, inferred edges, ODP clashes, agent
+dissent) carry a deterministic `uncertainty_id`, log the competing citations plus
+`why_conflict` / `winning_citation` / `why_it_won`, and are recorded in
+`canonical-sources/uncertainty_ledger.jsonl`. Human confirmations live in
+`canonical-sources/confirmations.jsonl`; on confirm, `status`, `needs_confirmation`,
+`confidence`, and any partial->full reclassification re-derive at build. Never resolve an
+uncertainty in place — only via the confirmations ledger. See `skills/shared/minority-report.md`.
