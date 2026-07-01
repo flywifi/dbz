@@ -131,7 +131,11 @@ def consolidate(run_id: str, envelopes: List[Dict[str, Any]],
             })
 
     residual = [frontier[s] for s in sorted(frontier)]
-    state = "complete" if (counts.get("partial", 0) == 0 and counts.get("blocked", 0) == 0
+    # 'complete' requires at least one agent AND no partial/blocked AND an empty frontier.
+    # An empty run is never 'complete' — nothing was covered (see findings-consolidate MAINTAINER).
+    state = "complete" if (agents_total > 0
+                           and counts.get("partial", 0) == 0
+                           and counts.get("blocked", 0) == 0
                            and not residual) else "partial"
 
     # High-materiality findings that should be adversarially verified before they are

@@ -104,5 +104,6 @@ envelope; the discipline (schema-forced return, human_review_required) still app
 - `skills/shared/minority-report.md` — disagreement preservation (non-negotiable)
 - `references/routing.md` — task class → mode + hybrid trigger conditions
 - `scripts/validate_envelope.py`, `scripts/consolidate.py`, `scripts/verify.py`,
-  `scripts/judge.py` — the deterministic backers (agents judge, scripts compute)
+  `scripts/judge.py`, `scripts/frontier.py` — the deterministic backers (agents judge,
+  scripts compute)
 - `workflow.json` — declarative spec (hybrid source of truth)

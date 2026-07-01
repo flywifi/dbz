@@ -269,7 +269,7 @@
       "label": "Task Decompose",
       "version": "1.0",
       "path": "skills/atoms/task-decompose",
-      "script": "skills/multi-agent-orchestrator/scripts/consolidate.py",
+      "script": "skills/multi-agent-orchestrator/scripts/frontier.py",
       "input_schema": {
         "task": "string — the work to decompose",
         "corpus_hint": "string? — optional description of the material to size the partition",
@@ -328,7 +328,7 @@
       "label": "Frontier Expand",
       "version": "1.0",
       "path": "skills/atoms/frontier-expand",
-      "script": "skills/multi-agent-orchestrator/scripts/consolidate.py",
+      "script": "skills/multi-agent-orchestrator/scripts/frontier.py",
       "input_schema": {
         "envelopes": "array — this wave's validated envelopes",
         "seen": "array — scope signatures already dispatched",

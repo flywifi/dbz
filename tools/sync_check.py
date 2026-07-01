@@ -15,7 +15,7 @@ drift the same way atoms do, so it gets the same structural guard):
   7. The multi-agent-orchestrator skill has SKILL.md, MAINTAINER.md, workflow.json,
      references/routing.md, and evals/evals.json (>=3 cases).
   8. Its deterministic backers exist: scripts/validate_envelope.py, scripts/consolidate.py,
-     scripts/verify.py, and scripts/judge.py.
+     scripts/verify.py, scripts/judge.py, and scripts/frontier.py.
   9. references/routing.md names only valid modes (read-fanout, mutate, external) and
      the orchestration_hybrid_mode flag is registered in feature_flags.json.
 

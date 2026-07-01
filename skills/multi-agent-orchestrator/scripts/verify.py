@@ -110,6 +110,12 @@ def apply_verdicts(consolidated: Dict[str, Any],
         mr["residual_uncertainty"] = mr.get("residual_uncertainty", []) + uncertainty_notes
         result["minority_report"] = mr
 
+    # Keys that were verified are no longer pending — prune them so the field stays honest.
+    if isinstance(result.get("pending_verification"), list):
+        result["pending_verification"] = sorted(
+            k for k in result["pending_verification"] if k not in verdicts
+        )
+
     result["verification_applied"] = True
     return result
 
