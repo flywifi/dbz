@@ -181,6 +181,29 @@ if _DB.exists():
     check(n_uid > 0, "framework_projection rows carry uncertainty_id after build")
     _c2.close()
 
+# ── 8. Durable ledger + health-audit detector (Phase 7) ────────────────────────
+_TOOLS = ROOT / "tools"
+sys.path.insert(0, str(_TOOLS))
+import health_audit as HA  # type: ignore
+_gold = ROOT / "skills" / "health-auditor" / "tests" / "golden"
+_clean_ledger = _gold / "clean" / "ledger_clean.jsonl"
+_bad_ledger = _gold / "broken" / "ledger_bad_citation.jsonl"
+_orphan_conf = _gold / "broken" / "confirmation_orphan.jsonl"
+_empty_conf = ROOT / "canonical-sources" / "confirmations.jsonl"  # only the schema line
+
+_clean_findings = HA.check_uncertainty_ledger(_clean_ledger, _empty_conf)
+check(not any(f["severity"] == "blocking" for f in _clean_findings), "clean ledger has no blocking findings")
+_bad_findings = HA.check_uncertainty_ledger(_bad_ledger, _empty_conf)
+check(any(f["severity"] == "blocking" and "citation does not resolve" in f["issue"] for f in _bad_findings),
+      "unresolvable citation is blocking")
+_orphan_findings = HA.check_uncertainty_ledger(_clean_ledger, _orphan_conf)
+check(any(f["severity"] == "blocking" and "unknown uncertainty_id" in f["issue"] for f in _orphan_findings),
+      "confirmation with no matching ledger entry is blocking")
+# the real committed ledger must be clean if present
+if (ROOT / "canonical-sources" / "uncertainty_ledger.jsonl").exists():
+    real = HA.check_uncertainty_ledger()
+    check(not any(f["severity"] == "blocking" for f in real), "committed uncertainty_ledger.jsonl is clean")
+
 # ── report ─────────────────────────────────────────────────────────────────────
 if FAILS:
     print("SPINE SELF-TEST: FAIL")

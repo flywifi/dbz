@@ -13,3 +13,8 @@ cross-mapping/output/*.json
 cross-mapping/output/grc.db
 cross-mapping/output/grc_manifest.json
 cross-mapping/nist-catalog/output/*.json
+
+# runtime uncertainty/run logs (timestamped) — the committed deterministic ledger
+# lives at canonical-sources/uncertainty_ledger.jsonl instead
+logs/*.jsonl
+logs/*.log

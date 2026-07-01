@@ -187,6 +187,14 @@ def main() -> int:
     else:
         failures.append("  ✗ Invariant 10 — skills/health-auditor/ not found")
 
+    # Invariant 11: uncertainty ledger + confirmations contract intact
+    confirmations = ROOT / "canonical-sources" / "confirmations.jsonl"
+    if not confirmations.exists():
+        failures.append("  ✗ Invariant 11 — missing canonical-sources/confirmations.jsonl")
+    ha_src = ROOT / "tools" / "health_audit.py"
+    if ha_src.exists() and "def check_uncertainty_ledger" not in ha_src.read_text(encoding="utf-8"):
+        failures.append("  ✗ Invariant 11 — health_audit.py missing check_uncertainty_ledger detector")
+
     print(f"GRC drift check — {len(atom_dirs)} atom(s) + orchestration bucket + health auditor\n")
     if failures:
         print("DRIFT DETECTED:\n")
@@ -194,7 +202,7 @@ def main() -> int:
         print(f"\n{len(failures)} invariant(s) failed.")
         return 1
 
-    print(f"OK — all 10 invariants pass across {len(atom_dirs)} atom(s) + the orchestration "
+    print(f"OK — all 11 invariants pass across {len(atom_dirs)} atom(s) + the orchestration "
           f"bucket + the health auditor.")
     return 0
 

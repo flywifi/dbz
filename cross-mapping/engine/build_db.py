@@ -1313,6 +1313,11 @@ def build_db(
     conn.commit()
     print(f"  overlap_matrix: {len(om_rows)} pairs")
 
+    # Durable, committed uncertainty ledger (what the health tools scan).
+    ledger_path = REPO_ROOT / "canonical-sources" / "uncertainty_ledger.jsonl"
+    n_ledger = _unc.write_ledger(conn, ledger_path, confirmations)
+    print(f"  uncertainty_ledger.jsonl: {n_ledger} entries -> {ledger_path.name}")
+
     # ANALYZE + optional VACUUM
     print("\nRunning ANALYZE …")
     conn.execute("ANALYZE")

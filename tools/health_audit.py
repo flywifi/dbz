@@ -35,6 +35,8 @@ ATOMS_DIR = ROOT / "skills" / "atoms"
 SKILLS_DIR = ROOT / "skills"
 REGISTRY = ATOMS_DIR / "atoms.json"
 VOCAB_PATH = ROOT / "canonical-sources" / "framework_vocab.json"
+LEDGER_PATH = ROOT / "canonical-sources" / "uncertainty_ledger.jsonl"
+CONFIRMATIONS_PATH = ROOT / "canonical-sources" / "confirmations.jsonl"
 SKIP_ATOM_DIRS = {"atom-template"}
 
 CODE_EXTS = (".py", ".md", ".json", ".yaml", ".yml", ".txt", ".csv")
@@ -341,6 +343,75 @@ def check_vocab_file(target: Path) -> List[Dict[str, Any]]:
 _PENALTY = {"blocking": 10, "warning": 4, "info": 1}
 
 
+def check_uncertainty_ledger(ledger_path: Path | None = None,
+                             confirmations_path: Path | None = None) -> List[Dict[str, Any]]:
+    """
+    Audit the durable uncertainty ledger + confirmations so the record the engine
+    relies on cannot silently rot: referential integrity, citation resolvability,
+    schema completeness, and staleness.  The ledger is a build artifact — its absence
+    is not a defect (only present after build_db runs).
+    """
+    ledger_path = ledger_path or LEDGER_PATH
+    confirmations_path = confirmations_path or CONFIRMATIONS_PATH
+    findings: List[Dict[str, Any]] = []
+    if not ledger_path.exists():
+        return findings
+    ledger_ids: set = set()
+    for i, line in enumerate(ledger_path.read_text(encoding="utf-8").splitlines(), 1):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            e = json.loads(line)
+        except json.JSONDecodeError:
+            findings.append(_f("blocking", "ledger", f"uncertainty_ledger line {i} is not valid JSON",
+                               "fix the malformed line", False, f"uncertainty_ledger.jsonl:{i}"))
+            continue
+        uid = e.get("uncertainty_id")
+        if not uid:
+            findings.append(_f("warning", "ledger", f"ledger line {i} has no uncertainty_id",
+                               "every entry needs a stable uncertainty_id", False, f"uncertainty_ledger.jsonl:{i}"))
+        else:
+            ledger_ids.add(uid)
+        # citation resolvability — no fabricated sources/figures survive
+        cit = (e.get("citation") or {}).get("file", "")
+        if not cit:
+            findings.append(_f("warning", "ledger", f"ledger entry {uid or i} has no citation",
+                               "add a resolvable source citation", False, f"uncertainty_ledger.jsonl:{i}"))
+        elif not (ROOT / cit).exists():
+            findings.append(_f("blocking", "ledger", f"ledger citation does not resolve: {cit}",
+                               "point the citation at a real committed source (no fabricated sources)",
+                               False, f"uncertainty_ledger.jsonl:{i}"))
+        # schema completeness — a resolved conflict must name its winner + why
+        if e.get("status") == "confirmed" and e.get("kind") in ("conflict", "overlap_pair"):
+            if not e.get("winning_citation") or not e.get("why_it_won"):
+                findings.append(_f("warning", "ledger", f"confirmed {uid} missing winning_citation/why_it_won",
+                                   "record which source won and why on confirmation", False,
+                                   f"uncertainty_ledger.jsonl:{i}"))
+        # staleness — surface open high-materiality items for review
+        if e.get("status") == "open" and e.get("materiality") == "high":
+            findings.append(_f("info", "ledger", f"open high-materiality uncertainty {uid}",
+                               "review and confirm/refute via confirmations.jsonl", False,
+                               f"uncertainty_ledger.jsonl:{i}"))
+    # referential integrity — every confirmation points to a real ledger entry
+    if confirmations_path.exists():
+        for i, line in enumerate(confirmations_path.read_text(encoding="utf-8").splitlines(), 1):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                c = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            cuid = c.get("uncertainty_id")
+            if cuid and cuid not in ledger_ids:
+                findings.append(_f("blocking", "ledger",
+                                   f"confirmation references unknown uncertainty_id {cuid}",
+                                   "confirmations must point to a real ledger entry", False,
+                                   f"confirmations.jsonl:{i}"))
+    return findings
+
+
 def score(findings: List[Dict[str, Any]]) -> Dict[str, Any]:
     val = 100 - sum(_PENALTY.get(f["severity"], 0) for f in findings)
     val = max(0, val)
@@ -362,6 +433,7 @@ def run_audit(full: bool = False, data_target: Path | None = None) -> Dict[str, 
     findings += check_atoms(reg_ids)
     findings += check_atoms_json_scripts()
     findings += check_workflows(reg_ids)
+    findings += check_uncertainty_ledger()
     if data_target is not None:
         findings += check_vocab_file(data_target)
     elif full:

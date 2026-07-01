@@ -102,3 +102,110 @@ def apply_confirmations_to_edges(edges: List[dict], confirmations: Dict[str, dic
             e["status"] = "open"
     return {"edges": len(edges), "confirmed": confirmed, "refuted": refuted,
             "ledger_entries": len(confirmations)}
+
+
+# ── durable uncertainty ledger (committed, deterministic) ───────────────────────
+
+def _source_citation(filename: str) -> dict:
+    """Map a bare source filename to a repo-relative, resolvable citation path."""
+    if not filename:
+        return {"file": "", "locator": ""}
+    return {"file": f"canonical-sources/source_data/{filename}", "locator": filename}
+
+
+def _stamp_status(row: dict, confirmations: Dict[str, dict]) -> dict:
+    rec = confirmations.get(row["uncertainty_id"])
+    if not rec:
+        row["status"] = "open"
+        return row
+    decision = rec.get("decision")
+    if decision == "confirmed":
+        row["status"] = "confirmed"
+        row["needs_confirmation"] = 0
+        if "winning_citation" in rec:
+            row["winning_citation"] = rec["winning_citation"]
+        if "resolution_note" in rec:
+            row["why_it_won"] = rec["resolution_note"]
+    elif decision == "refuted":
+        row["status"] = "refuted"
+    else:
+        row["status"] = "open"
+    return row
+
+
+def build_ledger_rows(conn, confirmations: Optional[Dict[str, dict]] = None) -> List[dict]:
+    """
+    Build the durable uncertainty ledger from the built db: one entry per overlap
+    pair (review-worthy at the pair level, not per hub edge) and one per pinned ODP
+    value.  Deterministic, sorted by uncertainty_id, no timestamps.  Every entry
+    carries a resolvable citation so the health auditor can verify it.  Confirmations
+    (keyed by these ledger uncertainty_ids) stamp each entry's status.
+    """
+    confirmations = confirmations or {}
+    rows: List[dict] = []
+
+    # a representative committed source file per framework (for the pair citation)
+    fw_src: Dict[str, str] = {}
+    for framework, sfile in conn.execute(
+            "SELECT framework, MIN(source_file) FROM framework_projection GROUP BY framework"):
+        fw_src[framework] = sfile or ""
+
+    for r in conn.execute("""
+            SELECT framework_a, framework_b, basis, jaccard_pct, confidence,
+                   needs_confirmation FROM overlap_matrix"""):
+        fa, fb, basis, pct, conf, needs = r
+        uid = uncertainty_id("overlap_pair", a=fa, b=fb, basis=basis)
+        rows.append({
+            "uncertainty_id": uid,
+            "kind": "overlap_pair",
+            "framework_a": fa, "framework_b": fb, "basis": basis,
+            "overlap_pct": pct, "confidence": conf,
+            "needs_confirmation": int(needs),
+            "citation": _source_citation(fw_src.get(fa) or fw_src.get(fb, "")),
+            "status": "open",
+        })
+
+    for r in conn.execute("""
+            SELECT control_id, baseline, value_norm, value_raw, source_file, source_row,
+                   extraction_confidence FROM odp_values ORDER BY control_id, value_norm"""):
+        cid, baseline, vnorm, vraw, sfile, srow, econf = r
+        uid = uncertainty_id("odp_value", control_id=cid, baseline=baseline, value=vnorm)
+        cit = _source_citation(sfile)
+        cit["locator"] = f"{sfile}:{srow}"
+        rows.append({
+            "uncertainty_id": uid,
+            "kind": "odp_value",
+            "control_id": cid, "baseline": baseline, "value": vnorm, "value_raw": vraw,
+            "extraction_confidence": econf,
+            "needs_confirmation": 1,
+            "citation": cit,
+            "status": "open",
+            "note": "single baseline pins this value; cross-framework alignment undetermined",
+        })
+
+    for r in rows:
+        _stamp_status(r, confirmations)
+    rows.sort(key=lambda x: x["uncertainty_id"])
+    return rows
+
+
+def write_ledger(conn, path: Path, confirmations: Optional[Dict[str, dict]] = None) -> int:
+    rows = build_ledger_rows(conn, confirmations)
+    lines = [_canon(r) for r in rows]
+    path.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
+    return len(rows)
+
+
+def load_ledger(path: Path) -> List[dict]:
+    out: List[dict] = []
+    if not path.exists():
+        return out
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            out.append(json.loads(line))
+        except json.JSONDecodeError:
+            continue
+    return out
