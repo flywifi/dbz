@@ -251,3 +251,140 @@ def load_control_odps(param_rows: List[dict]) -> Tuple[List[dict], dict]:
         "positional_fallback": fallback,
     }
     return rows, stats
+
+
+# ── framework_projection: NIST 800-53 <-> ISO 27001 (OLIR, Phase 2) ─────────────
+
+ISO_FRAMEWORK = "ISO 27001/2 (2022)"
+
+
+def _norm_header(s: str) -> str:
+    return re.sub(r"\s+", " ", str(s)).strip().lower()
+
+
+def _find_col(columns: List[str], canonical: str) -> Optional[str]:
+    """Match a manifest-declared column name to a real df column, tolerating
+    internal newlines / whitespace variance."""
+    target = _norm_header(canonical)
+    for c in columns:
+        if _norm_header(c) == target:
+            return c
+    for c in columns:  # prefix fallback
+        if _norm_header(c).startswith(target[:20]):
+            return c
+    return None
+
+
+def _projection_row(**kw) -> dict:
+    """A framework_projection row with defaults filled in."""
+    row = {
+        "framework": kw["framework"],
+        "native_id": kw["native_id"],
+        "r5_control": kw["r5_control"],
+        "r5_subpart": kw.get("r5_subpart"),
+        "cci_id": kw.get("cci_id"),
+        "odp_id": kw.get("odp_id"),
+        "relationship": kw.get("relationship", "unspecified"),
+        "relationship_basis": kw.get("relationship_basis", "derived_cardinality"),
+        "granularity": kw["granularity"],
+        "provenance": kw["provenance"],
+        "confidence": kw["confidence"],
+        "hop_count": kw.get("hop_count", 1),
+        "needs_confirmation": int(kw.get("needs_confirmation", 0)),
+        "source_file": kw.get("source_file", ""),
+        "source_sheet": kw.get("source_sheet", ""),
+        "source_row": kw.get("source_row", -1),
+    }
+    return row
+
+
+def load_olir_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
+    """
+    Project ISO 27001:2022 clauses onto r5 controls using the official NIST OLIR
+    crosswalk.  The OLIR `Relationship` column is empty in this source, so edges are
+    emitted as control-level with relationship='unspecified' (derive_iso_relationships
+    fills it structurally).  provenance='direct_olir', confidence 0.85.
+    """
+    src = "nist-800-53r5-to-iso-27001-olir"
+    path = source_path(src)
+    fname = path.name
+    nid_role = col(src, "nist_id")
+    iso_role = col(src, "iso_id")
+
+    xl = pd.ExcelFile(path)
+    sheets = [s for s in xl.sheet_names if s.strip().lower() != "definitions"]
+
+    edges: List[dict] = []
+    seen: Set[Tuple[str, str]] = set()
+    unresolved: Set[str] = set()
+    rows_read = 0
+    for sh in sheets:
+        df = pd.read_excel(path, sheet_name=sh)
+        cols = list(df.columns)
+        nid_c = _find_col(cols, nid_role)
+        iso_c = _find_col(cols, iso_role)
+        if nid_c is None or iso_c is None:
+            continue
+        for i, rec in enumerate(df.itertuples(index=False), start=0):
+            rowd = dict(zip(df.columns, rec))
+            rows_read += 1
+            focal_raw = str(rowd.get(nid_c, "")).strip()
+            iso_id = str(rowd.get(iso_c, "")).strip()
+            if not focal_raw or focal_raw.lower() == "nan" or not iso_id or iso_id.lower() == "nan":
+                continue
+            focal = normalize_control_id(focal_raw)
+            if not focal:
+                continue
+            if focal not in catalog_ids:
+                unresolved.add(focal_raw)
+                continue
+            key = (iso_id, focal)
+            if key in seen:
+                continue
+            seen.add(key)
+            edges.append(_projection_row(
+                framework=ISO_FRAMEWORK, native_id=iso_id, r5_control=focal,
+                relationship="unspecified", relationship_basis="derived_cardinality",
+                granularity="control", provenance="direct_olir", confidence=0.85,
+                source_file=fname, source_sheet=sh, source_row=i,
+            ))
+
+    derive_iso_relationships(edges)
+    edges.sort(key=lambda r: (r["native_id"], r["r5_control"]))
+    stats = {
+        "rows_read": rows_read,
+        "edges": len(edges),
+        "unresolved_focal": len(unresolved),
+        "unresolved_sample": sorted(unresolved)[:10],
+    }
+    return edges, stats
+
+
+def derive_iso_relationships(edges: List[dict]) -> None:
+    """
+    Fill `relationship` on each ISO<->NIST edge from fan-out cardinality (the OLIR
+    source states none).  From the ISO clause's perspective:
+      1:1                       -> equal
+      clause -> 1 control that maps to many clauses  -> subset  (clause ⊆ control)
+      clause -> many controls                        -> superset (clause spans controls)
+      many:many                                      -> intersect
+    Always stamped relationship_basis='derived_cardinality'.
+    """
+    iso_to_ctrls: Dict[str, Set[str]] = {}
+    ctrl_to_isos: Dict[str, Set[str]] = {}
+    for e in edges:
+        iso_to_ctrls.setdefault(e["native_id"], set()).add(e["r5_control"])
+        ctrl_to_isos.setdefault(e["r5_control"], set()).add(e["native_id"])
+    for e in edges:
+        n_ctrls = len(iso_to_ctrls[e["native_id"]])
+        n_isos = len(ctrl_to_isos[e["r5_control"]])
+        if n_ctrls == 1 and n_isos == 1:
+            rel = "equal"
+        elif n_ctrls == 1 and n_isos > 1:
+            rel = "subset"
+        elif n_ctrls > 1 and n_isos == 1:
+            rel = "superset"
+        else:
+            rel = "intersect"
+        e["relationship"] = rel
+        e["relationship_basis"] = "derived_cardinality"

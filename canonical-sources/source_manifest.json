@@ -247,7 +247,7 @@
         "Fulfilled By (Y/N)": "fulfilled_by",
         "Strength of Relationship (optional)": "strength"
       },
-      "notes": "STRM (Set Theory Relationship Mapping) format per NIST IR 8477. Each NIST family has its own sheet (Relationships-AC, AT, etc.). Iterate over all Relationships-* sheets to build complete mapping. 'relationship_type' values: subset, superset, equal, intersect, disjoint. 'strength' is optional (1-10 or descriptive)."
+      "notes": "Relationship/Fulfilled By/Strength columns are empty in this OLIR release; NIST<->ISO relationship type is derived structurally from fan-out cardinality (relationship_basis=derived_cardinality), not read from the source."
     },
     {
       "id": "hitrust-csf-cross-reference",

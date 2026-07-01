@@ -84,6 +84,18 @@ for v in oscal.values():
 unresolved = [o["odp_id"] for o in odps if o["rekey_basis"] == "oscal_positional_zip" and o["odp_id"] not in oscal_ids]
 check(not unresolved, f"all oscal-rekeyed ODP ids resolve in OSCAL ({len(unresolved)} unresolved)")
 
+# ── 3. OLIR projection (Phase 2) ───────────────────────────────────────────────
+olir_edges, olir_stats = SL.load_olir_projection(catalog_ids)
+check(olir_stats["unresolved_focal"] == 0, f"OLIR: 0 unresolved focal ids (got {olir_stats['unresolved_focal']})")
+check(olir_stats["edges"] > 500, f"OLIR: >500 edges (got {olir_stats['edges']})")
+check(all(e["provenance"] == "direct_olir" for e in olir_edges), "OLIR edges all provenance=direct_olir")
+check(all(e["relationship"] in {"equal", "subset", "superset", "intersect"} for e in olir_edges),
+      "OLIR relationships derived to a valid STRM value")
+check(all(e["relationship_basis"] == "derived_cardinality" for e in olir_edges),
+      "OLIR relationship_basis is derived_cardinality (source states none)")
+check(any(e["r5_control"] == "AC-2" and e["framework"] == SL.ISO_FRAMEWORK for e in olir_edges),
+      "OLIR projects at least one ISO clause onto AC-2")
+
 # ── report ─────────────────────────────────────────────────────────────────────
 if FAILS:
     print("SPINE SELF-TEST: FAIL")

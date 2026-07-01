@@ -369,6 +369,33 @@ CREATE TABLE IF NOT EXISTS control_odps (
     PRIMARY KEY (odp_id, control_id)
 );
 CREATE INDEX IF NOT EXISTS idx_odps_ctrl ON control_odps(control_id);
+
+-- ── Universal projection: any framework native control -> spine coordinate ─────
+CREATE TABLE IF NOT EXISTS framework_projection (
+    rowid              INTEGER PRIMARY KEY AUTOINCREMENT,
+    framework          TEXT NOT NULL,      -- "ISO 27001/2 (2022)"
+    native_id          TEXT NOT NULL,      -- "A.5.15"
+    r5_control         TEXT NOT NULL,      -- "AC-2"
+    r5_subpart         TEXT,               -- "AC-2 d.1" or NULL (control-level)
+    cci_id             TEXT,
+    odp_id             TEXT,
+    relationship       TEXT NOT NULL DEFAULT 'unspecified',      -- equal|subset|superset|intersect|disjoint|unspecified
+    relationship_basis TEXT NOT NULL DEFAULT 'derived_cardinality', -- source_stated|derived_cardinality|co_membership
+    granularity        TEXT NOT NULL,      -- cci|subpart|control|er|citation
+    provenance         TEXT NOT NULL,      -- direct_olir|hitrust_hub|cci_list|cmmc171|cui_overlay|inferred_er_cooccurrence|soc2_tsp_hub|transitive
+    confidence         REAL NOT NULL,
+    hop_count          INTEGER NOT NULL DEFAULT 1,
+    needs_confirmation INTEGER NOT NULL DEFAULT 0,
+    source_file        TEXT,
+    source_sheet       TEXT,
+    source_row         INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_fp_fw_native ON framework_projection(framework, native_id);
+CREATE INDEX IF NOT EXISTS idx_fp_subpart   ON framework_projection(r5_subpart);
+CREATE INDEX IF NOT EXISTS idx_fp_control   ON framework_projection(r5_control);
+CREATE INDEX IF NOT EXISTS idx_fp_cci       ON framework_projection(cci_id);
+CREATE INDEX IF NOT EXISTS idx_fp_fw        ON framework_projection(framework);
+CREATE INDEX IF NOT EXISTS idx_fp_prov      ON framework_projection(provenance);
 """
 
 
@@ -933,6 +960,20 @@ def build_db(
         VALUES (:cci_id, :definition, :type, :status, :nist_rev4_refs, :nist_rev5_refs, :fetched_at)
     """, spine_disa_rows, "disa_ccis")
 
+    # Framework projection edges — Phase 2: NIST 800-53 <-> ISO 27001 via the OLIR.
+    olir_edges, olir_stats = spine_loader.load_olir_projection(catalog_ids)
+    print(f"  olir projection: edges={olir_stats['edges']} unresolved_focal={olir_stats['unresolved_focal']}")
+    _executemany_chunked(conn, """
+        INSERT INTO framework_projection
+            (framework, native_id, r5_control, r5_subpart, cci_id, odp_id,
+             relationship, relationship_basis, granularity, provenance, confidence,
+             hop_count, needs_confirmation, source_file, source_sheet, source_row)
+        VALUES
+            (:framework, :native_id, :r5_control, :r5_subpart, :cci_id, :odp_id,
+             :relationship, :relationship_basis, :granularity, :provenance, :confidence,
+             :hop_count, :needs_confirmation, :source_file, :source_sheet, :source_row)
+    """, olir_edges, "framework_projection")
+
     conn.commit()
 
     # 2. ER crosswalk data
@@ -1155,7 +1196,7 @@ def build_db(
                 "cisa_kev", "cfr_requirements", "attack_techniques", "edgar_cyber_incidents",
                 "nvd_cves", "disa_ccis", "eurlex_articles",
                 "nist_800_63b_requirements", "fips_140_validations",
-                "nist_subparts", "cci_bridge", "control_odps"):
+                "nist_subparts", "cci_bridge", "control_odps", "framework_projection"):
         row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
         counts[tbl] = row[0]
 
