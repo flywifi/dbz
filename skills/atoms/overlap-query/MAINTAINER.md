@@ -13,7 +13,7 @@
 - Never merges two frameworks into one ER namespace; always keeps source CSV provenance.
 
 ## Known failure modes
-- **Cross-file ER comparison**: ER-101 from `SOC 2.csv` is not the same as ER-101 from `ISO 27001.csv` — IDs only have meaning within their source file. Return an error, never a number.
+- **Cross-file ER comparison**: ER-101 from `SOC 2 T1.csv` is not the same as ER-101 from `ISO 27001.csv` — IDs only have meaning within their source file. Return an error, never a number.
 - **Scope creep**: being asked to list specific gap controls (use `gap-analysis`) or map individual controls (use `compliance-crosswalk`).
 - **Fabricating an overlap number** when frameworks are both in `grc.db` but the `er_overlap_pairs` view returns zero — the zero is correct. Never override with a heuristic estimate.
 - **Stale oracle discrepancy**: if `shared_er_count` diverges by >2 from the oracle CSV row count, surface as a regression alert in `minority_report`.

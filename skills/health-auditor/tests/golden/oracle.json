@@ -35,6 +35,14 @@
         {"severity": "blocking", "contains": "unknown atom/skill 'nonexistent-atom'"},
         {"severity": "blocking", "contains": "duplicate workflow step id 's1'"}
       ]
+    },
+    "dangling_dir.md": {
+      "detector": "backtick_refs",
+      "expect": [{"severity": "warning", "contains": "canonical-sources/does-not-exist/"}]
+    },
+    "space_filename.md": {
+      "detector": "backtick_refs",
+      "expect": [{"severity": "warning", "contains": "Nonexistent File.csv"}]
     }
   },
 
@@ -50,5 +58,5 @@
     "with": "skills/atoms/feed-poller/SKILL.md"
   },
 
-  "final_sha256": "0a37e737cfc210a85075e51593e695e812a1925ee305263eed50cb658b701ad4"
+  "final_sha256": "0e6db2fa9b09e28f1c835486713c499c39a78446e2ddb1385239e77ba011025e"
 }

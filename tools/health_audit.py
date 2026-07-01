@@ -100,8 +100,15 @@ _BACKTICK = re.compile(r"`([^`\n]+)`")
 
 def _looks_like_path(tok: str) -> bool:
     tok = tok.strip()
-    if " " in tok or tok.startswith("{{") or tok.startswith("--"):
+    if tok.startswith("{{") or tok.startswith("--"):
         return False
+    if " " in tok:
+        if not tok.endswith(CODE_EXTS):
+            return False
+        first = tok.split(" ", 1)[0]
+        if first in ("python3", "python", "bash", "sh", "cd", "cat", "schema:"):
+            return False
+        return True
     if any(tok.startswith(a) for a in PATH_ANCHORS):
         return True
     return tok.endswith(CODE_EXTS)
@@ -130,12 +137,7 @@ def check_backtick_refs(md: Path, skill_dir: Path) -> List[Dict[str, Any]]:
             t = tok.strip()
             if not _looks_like_path(t) or _resolve(t, skill_dir, md.parent):
                 continue
-            # A missing *directory* (trailing '/') is usually a runtime/output dir → info,
-            # not a broken link. A missing file path is a real dangling reference.
-            if t.rstrip("`").endswith("/"):
-                sev = "info"
-            else:
-                sev = "blocking" if "/" in t else "warning"
+            sev = "blocking" if "/" in t and not t.rstrip("`").endswith("/") else "warning"
             findings.append(_f(
                 sev, f"ref:{skill_dir.name}",
                 f"backtick path does not resolve: `{t}`",
