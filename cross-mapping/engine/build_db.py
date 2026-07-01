@@ -42,6 +42,7 @@ from typing import Iterator
 _HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(_HERE))
 from er_overlap import ERCrosswalk, CSV_FILES  # type: ignore
+import spine_loader  # type: ignore  # overlap spine tables (nist_subparts, cci_bridge, control_odps, …)
 
 REPO_ROOT = _HERE.parent.parent
 
@@ -66,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.1"   # v3.1: adds nist_800_63b_requirements + fips_140_validations tables
+SCHEMA_VERSION = "3.2"   # v3.2: adds overlap spine (nist_subparts, cci_bridge, control_odps)
 
 CHUNK = 500  # executemany batch size
 
@@ -332,6 +333,42 @@ CREATE TABLE IF NOT EXISTS fips_140_validations (
 );
 CREATE INDEX IF NOT EXISTS idx_fips_status ON fips_140_validations(status);
 CREATE INDEX IF NOT EXISTS idx_fips_level  ON fips_140_validations(level);
+
+-- ── Overlap spine (Phase 1): sub-part inventory + CCI bridge + rekeyed ODPs ────
+CREATE TABLE IF NOT EXISTS nist_subparts (
+    subpart_id    TEXT PRIMARY KEY,   -- canonical "AC-2 d.1" (or the control id for whole-control)
+    r5_control    TEXT NOT NULL,      -- "AC-2"
+    path          TEXT,               -- "d.1"  ('' for whole-control)
+    ordinal       INTEGER,
+    source_file   TEXT,
+    source_sheet  TEXT,
+    source_row    INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_subparts_ctrl ON nist_subparts(r5_control);
+
+CREATE TABLE IF NOT EXISTS cci_bridge (
+    cci_id        TEXT NOT NULL,      -- "CCI-000015"
+    r5_control    TEXT NOT NULL,      -- "AC-2"
+    r5_subpart    TEXT,               -- "AC-2 a" (NULL if only control-level resolvable)
+    r4_ref_raw    TEXT,               -- original "AC-2 a" from the index column (provenance)
+    source_file   TEXT,
+    source_row    INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_ccibridge_ctrl    ON cci_bridge(r5_control);
+CREATE INDEX IF NOT EXISTS idx_ccibridge_subpart ON cci_bridge(r5_subpart);
+CREATE INDEX IF NOT EXISTS idx_ccibridge_cci     ON cci_bridge(cci_id);
+
+CREATE TABLE IF NOT EXISTS control_odps (
+    odp_id        TEXT NOT NULL,      -- canonical OSCAL id "ac-02_odp.01" (or "<ctrl>_param.NN" fallback)
+    control_id    TEXT NOT NULL,      -- "AC-2"
+    r5_subpart    TEXT,               -- sub-part it parameterizes (NULL = control-level for now)
+    type          TEXT,               -- assignment | selection
+    label         TEXT,
+    ordinal       INTEGER,
+    rekey_basis   TEXT,               -- oscal_positional_zip | positional_fallback
+    PRIMARY KEY (odp_id, control_id)
+);
+CREATE INDEX IF NOT EXISTS idx_odps_ctrl ON control_odps(control_id);
 """
 
 
@@ -862,6 +899,42 @@ def build_db(
 
     conn.commit()
 
+    # 1b. Overlap spine — sub-part inventory + CCI bridge + rekeyed ODPs
+    print("\n[1b] Loading overlap spine (nist_subparts, cci_bridge, control_odps)")
+    catalog_ids = {r["nist_id"] for r in ctrl_rows} | {r["id"] for r in enh_rows}
+    cci_bridge_rows, spine_disa_rows, cci_stats = spine_loader.load_cci_bridge(catalog_ids)
+    subpart_rows = spine_loader.load_nist_subparts(catalog_ids, cci_bridge_rows)
+    odp_rows, odp_stats = spine_loader.load_control_odps(param_rows)
+    print(f"  cci_bridge: {cci_stats}")
+    print(f"  control_odps: {odp_stats}")
+
+    _executemany_chunked(conn, """
+        INSERT OR IGNORE INTO nist_subparts
+            (subpart_id, r5_control, path, ordinal, source_file, source_sheet, source_row)
+        VALUES (:subpart_id, :r5_control, :path, :ordinal, :source_file, :source_sheet, :source_row)
+    """, subpart_rows, "nist_subparts")
+
+    _executemany_chunked(conn, """
+        INSERT INTO cci_bridge (cci_id, r5_control, r5_subpart, r4_ref_raw, source_file, source_row)
+        VALUES (:cci_id, :r5_control, :r5_subpart, :r4_ref_raw, :source_file, :source_row)
+    """, cci_bridge_rows, "cci_bridge")
+
+    _executemany_chunked(conn, """
+        INSERT OR IGNORE INTO control_odps
+            (odp_id, control_id, r5_subpart, type, label, ordinal, rekey_basis)
+        VALUES (:odp_id, :control_id, :r5_subpart, :type, :label, :ordinal, :rekey_basis)
+    """, odp_rows, "control_odps")
+
+    # Populate disa_ccis from the CCI xlsx (real data; the Trackr JSON step below
+    # will REPLACE/augment these if that source is present).
+    _executemany_chunked(conn, """
+        INSERT OR REPLACE INTO disa_ccis
+            (cci_id, definition, type, status, nist_rev4_refs, nist_rev5_refs, fetched_at)
+        VALUES (:cci_id, :definition, :type, :status, :nist_rev4_refs, :nist_rev5_refs, :fetched_at)
+    """, spine_disa_rows, "disa_ccis")
+
+    conn.commit()
+
     # 2. ER crosswalk data
     print(f"\n[2/15] Loading ER crosswalk CSVs from {er_dir.name}/")
     er_ctrl_rows, er_mapping_rows = load_er_data(er_dir)
@@ -1081,7 +1154,8 @@ def build_db(
                 "er_controls", "er_mappings", "framework_registry", "changelog", "announcements",
                 "cisa_kev", "cfr_requirements", "attack_techniques", "edgar_cyber_incidents",
                 "nvd_cves", "disa_ccis", "eurlex_articles",
-                "nist_800_63b_requirements", "fips_140_validations"):
+                "nist_800_63b_requirements", "fips_140_validations",
+                "nist_subparts", "cci_bridge", "control_odps"):
         row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
         counts[tbl] = row[0]
 

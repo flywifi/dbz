@@ -119,6 +119,9 @@ def _resolve_fw(alias: str, conn: sqlite3.Connection) -> list[str]:
 # ── Output formatters ──────────────────────────────────────────────────────────
 
 def _output(rows: list[dict], fmt: str, columns: list[str]) -> None:
+    # Normalize sqlite3.Row (and any mapping-like) to plain dicts so json/csv/table
+    # all work regardless of what the caller passed.
+    rows = [r if isinstance(r, dict) else dict(r) for r in rows]
     if not rows:
         if fmt == "json":
             print("[]")
