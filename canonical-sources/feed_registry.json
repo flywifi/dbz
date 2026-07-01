@@ -1,5 +1,5 @@
 {
-  "_schema_version": "1.2.0",
+  "_schema_version": "1.3.0",
   "_purpose": "Authoritative sources to monitor for GRC framework updates. Used by framework_monitor.py and announcement_monitor.py to detect version changes, draft releases, and public-comment periods.",
   "_generated": "2026-06-30",
   "feeds": {
@@ -4003,6 +4003,702 @@
       "version_signal": "NIAP approved Protection Profiles list latest entry date",
       "cci_coverage_notes": "Implied-Heuristic: SA-17 (CCI-002218–002224), SA-11 (CCI-001732–001735), SA-3 (CCI-000889–000892) via 'developer security architecture' → 'formal evaluation' heuristic chain. ISO 15408, Common Criteria, and EAL levels not named in any DISA CCI text.",
       "notes": "Common Criteria evaluation; cited in SA-17 for DoD/NIAP procurement. NIAP product list: https://www.niap-ccevs.org/Product/"
+    },
+    "mcp-spec": {
+      "label": "Model Context Protocol (MCP) Specification",
+      "authority": "Anthropic (spec steward); open standard via modelcontextprotocol.io",
+      "framework_id": "mcp-spec",
+      "current_version": "2025-03-26 (schema version date; published Nov 2024)",
+      "next_expected_version": "Incremental revisions tracked by schema date",
+      "check_strategy": "github_release",
+      "github_repo": "modelcontextprotocol/modelcontextprotocol",
+      "crawl_seeds": [
+        "https://spec.modelcontextprotocol.io/",
+        "https://modelcontextprotocol.io/introduction"
+      ],
+      "doc_patterns": [
+        "specification",
+        "schema",
+        "mcp",
+        "model context protocol"
+      ],
+      "announcement_feeds": [
+        {
+          "url": "https://github.com/modelcontextprotocol/modelcontextprotocol/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "release",
+            "specification",
+            "schema",
+            "mcp"
+          ],
+          "notes": "GitHub Releases atom feed for the MCP specification repository"
+        }
+      ],
+      "urls": {
+        "landing": "https://modelcontextprotocol.io/introduction",
+        "spec": "https://spec.modelcontextprotocol.io/",
+        "github": "https://github.com/modelcontextprotocol/modelcontextprotocol",
+        "sdk_python": "https://github.com/modelcontextprotocol/python-sdk",
+        "sdk_typescript": "https://github.com/modelcontextprotocol/typescript-sdk",
+        "registry": "https://github.com/modelcontextprotocol/servers"
+      },
+      "draft_status": "none",
+      "last_changed": "2025-03-26",
+      "last_checked": null,
+      "public_comment_deadline": null,
+      "version_signal": "github_release_tag",
+      "source_manifest_keys": [],
+      "cci_coverage_notes": "Not-Applicable: MCP is a protocol specification for AI tool integration. No DISA CCI definitions reference MCP. Compliance relevance: SC-8 (transmission integrity), SC-28 (data at rest), IA-3 (device authentication) via Implied-Heuristic for MCP transport security requirements.",
+      "notes": "Open standard for connecting AI models to tools, databases, and external services via a standardized protocol. Used in Claude, Cursor, VS Code, Zed, and other AI-enabled tools. Components: Hosts (LLM apps), Clients (protocol connectors), Servers (resource/tool providers). Uses JSON-RPC 2.0 over stdio or HTTP+SSE transport. Security relevance: authentication (OAuth 2.1), authorization scopes, prompt injection via malicious MCP servers."
+    },
+    "openapi-spec": {
+      "label": "OpenAPI Specification (OAS) — REST API Governance Standard",
+      "authority": "OpenAPI Initiative (Linux Foundation)",
+      "framework_id": "openapi-spec",
+      "current_version": "3.1.1 (Sep 2024); 4.0 (Moonwalk, in development)",
+      "next_expected_version": "OAS 4.0 (Moonwalk) — target 2026",
+      "check_strategy": "github_release",
+      "github_repo": "OAI/OpenAPI-Specification",
+      "crawl_seeds": [
+        "https://spec.openapis.org/oas/latest.html",
+        "https://www.openapis.org/"
+      ],
+      "doc_patterns": [
+        "openapi",
+        "oas",
+        "swagger",
+        "rest api",
+        "api specification"
+      ],
+      "announcement_feeds": [
+        {
+          "url": "https://github.com/OAI/OpenAPI-Specification/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "release",
+            "oas",
+            "openapi"
+          ],
+          "notes": "GitHub Releases for OAI/OpenAPI-Specification"
+        },
+        {
+          "url": "https://www.openapis.org/feed",
+          "type": "rss",
+          "filter_keywords": [
+            "release",
+            "specification",
+            "moonwalk"
+          ],
+          "notes": "OpenAPI Initiative blog/news feed"
+        }
+      ],
+      "urls": {
+        "landing": "https://spec.openapis.org/oas/latest.html",
+        "github": "https://github.com/OAI/OpenAPI-Specification",
+        "registry": "https://www.openapis.org/"
+      },
+      "draft_status": "none",
+      "last_changed": "2024-09-01",
+      "last_checked": null,
+      "public_comment_deadline": null,
+      "version_signal": "github_release_tag",
+      "source_manifest_keys": [],
+      "cci_coverage_notes": "Implied-Heuristic: SC-8 (transmission protection), SC-28 (data protection), CA-3 (system interconnections) via API governance heuristic. OpenAPI is a description format standard, not a security framework; CCI connections are entirely heuristic.",
+      "notes": "Industry-standard API description format used to document, govern, and validate REST APIs. Compliance relevance: API inventory/governance (CA-3), access control documentation (AC-3), data classification in API schemas (SC-28). OAS 4.0 (Moonwalk) will introduce webhooks, async patterns, and improved security scheme modeling."
+    },
+    "ietf-oauth": {
+      "label": "IETF OAuth 2.x / API Authorization Standards",
+      "authority": "IETF OAuth Working Group",
+      "framework_id": "ietf-oauth",
+      "current_version": "OAuth 2.1 (RFC 9700, Dec 2024); RFC 8707, RFC 9396, RFC 9449",
+      "next_expected_version": "OAuth 2.1 finalization complete; subsequent profile RFCs TBD",
+      "check_strategy": "rss_feed",
+      "crawl_seeds": [
+        "https://datatracker.ietf.org/wg/oauth/documents/",
+        "https://oauth.net/2.1/",
+        "https://www.rfc-editor.org/search/rfc_search_detail.php?title=OAuth&pubstatus%5B%5D=Any&pub_date_type=any"
+      ],
+      "doc_patterns": [
+        "oauth",
+        "rfc 6749",
+        "rfc 9700",
+        "pkce",
+        "bearer token",
+        "authorization code"
+      ],
+      "announcement_feeds": [
+        {
+          "url": "https://datatracker.ietf.org/group/oauth/email/",
+          "type": "poll_landing",
+          "filter_keywords": [
+            "oauth",
+            "rfc",
+            "draft",
+            "published"
+          ],
+          "notes": "IETF OAuth WG mailing list archive; check for new RFC publications"
+        },
+        {
+          "url": "https://www.rfc-editor.org/rss/rfc.rss",
+          "type": "rss",
+          "filter_keywords": [
+            "oauth",
+            "authorization",
+            "bearer"
+          ],
+          "notes": "IETF RFC Editor publication feed"
+        }
+      ],
+      "urls": {
+        "landing": "https://oauth.net/2.1/",
+        "wg_charter": "https://datatracker.ietf.org/wg/oauth/about/",
+        "rfc_9700": "https://www.rfc-editor.org/rfc/rfc9700",
+        "rfc_6749": "https://www.rfc-editor.org/rfc/rfc6749"
+      },
+      "draft_status": "none",
+      "last_changed": "2024-12-01",
+      "last_checked": null,
+      "public_comment_deadline": null,
+      "version_signal": "latest_item_guid",
+      "source_manifest_keys": [],
+      "cci_coverage_notes": "Confirmed-Subject: IA-2 (CCI-000765–000768, MFA requirement) via OAuth PKCE flow. IA-5 (CCI-000185–000216, credential management) via OAuth token lifecycle. SC-8(1) (CCI-002469, FIPS-validated crypto) via TLS requirement in OAuth 2.1. All connections Confirmed-Subject where OAuth addresses authentication/authorization subject matter explicitly.",
+      "notes": "Core API authorization standard. OAuth 2.1 (RFC 9700, Dec 2024) consolidates best practices: mandatory PKCE, removes implicit flow, removes resource owner password credentials. Compliance relevance: IA-2 (MFA), IA-3 (device auth via client credentials), SC-8 (TLS), SC-28 (token storage). Also track: RFC 9396 (Rich Authorization Requests), RFC 9449 (DPoP — Demonstration of Proof of Possession), RFC 8707 (Resource Indicators)."
+    },
+    "anthropic-api": {
+      "label": "Anthropic Claude API — Model Cards, Changelog, Usage Policies",
+      "authority": "Anthropic PBC",
+      "framework_id": "anthropic-api",
+      "current_version": "Claude claude-opus-4 / claude-sonnet-5 (claude-haiku-4-5 series, 2025)",
+      "next_expected_version": "Continuous model releases; track docs.anthropic.com/changelog",
+      "check_strategy": "poll_landing",
+      "crawl_seeds": [
+        "https://docs.anthropic.com/en/api/changelog",
+        "https://www.anthropic.com/model",
+        "https://www.anthropic.com/usage-policy"
+      ],
+      "doc_patterns": [
+        "claude",
+        "model card",
+        "api version",
+        "changelog",
+        "usage policy",
+        "constitutional ai"
+      ],
+      "announcement_feeds": [
+        {
+          "url": "https://www.anthropic.com/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "model",
+            "api",
+            "release",
+            "safety",
+            "policy"
+          ],
+          "notes": "Anthropic company news and research announcements"
+        }
+      ],
+      "urls": {
+        "api_docs": "https://docs.anthropic.com/en/api",
+        "changelog": "https://docs.anthropic.com/en/api/changelog",
+        "model_cards": "https://www.anthropic.com/model",
+        "usage_policy": "https://www.anthropic.com/usage-policy",
+        "responsible_scaling": "https://www.anthropic.com/responsible-scaling-policy"
+      },
+      "draft_status": "none",
+      "last_changed": "2025-07-01",
+      "last_checked": null,
+      "public_comment_deadline": null,
+      "version_signal": "page_heading_date",
+      "source_manifest_keys": [],
+      "cci_coverage_notes": "Not-Applicable: Anthropic API is a commercial AI service API, not a compliance framework. Compliance relevance: track model deprecations for system change management (CM-3), usage policy changes for acceptable use (PL-4), safety policy for AI risk management (PM-28 / NIST AI RMF cross-reference).",
+      "notes": "Track for: (1) API version deprecation notices — relevant for CM-3 (configuration change control) and SA-22 (unsupported system components); (2) Model card updates — safety evaluations, capability limits; (3) Responsible Scaling Policy (RSP) updates — ASL-2/ASL-3 thresholds; (4) Usage policy changes affecting acceptable-use clauses in contracts. Also monitor: Constitutional AI, system prompt confidentiality policies."
+    },
+    "openai-api": {
+      "label": "OpenAI API — Platform Changelog, Model Cards, API Specification",
+      "authority": "OpenAI",
+      "framework_id": "openai-api",
+      "current_version": "GPT-4o, o3 series (2025); API v1",
+      "next_expected_version": "Continuous model and API updates; track platform.openai.com/docs/changelog",
+      "check_strategy": "github_release",
+      "github_repo": "openai/openai-openapi",
+      "crawl_seeds": [
+        "https://platform.openai.com/docs/changelog",
+        "https://openai.com/policies",
+        "https://platform.openai.com/docs/models"
+      ],
+      "doc_patterns": [
+        "gpt",
+        "openai",
+        "model",
+        "api version",
+        "changelog",
+        "usage policy"
+      ],
+      "announcement_feeds": [
+        {
+          "url": "https://github.com/openai/openai-openapi/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "release",
+            "openapi",
+            "api spec"
+          ],
+          "notes": "GitHub Releases for OpenAI's official OpenAPI specification (openai-openapi repo)"
+        },
+        {
+          "url": "https://openai.com/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "model",
+            "api",
+            "release",
+            "policy",
+            "safety"
+          ],
+          "notes": "OpenAI news and research blog RSS feed"
+        }
+      ],
+      "urls": {
+        "api_docs": "https://platform.openai.com/docs",
+        "changelog": "https://platform.openai.com/docs/changelog",
+        "openapi_spec": "https://github.com/openai/openai-openapi",
+        "usage_policies": "https://openai.com/policies/usage-policies",
+        "model_cards": "https://platform.openai.com/docs/models",
+        "safety_evals": "https://openai.com/index/building-an-early-warning-system-for-llm-aided-biological-threat-creation"
+      },
+      "draft_status": "none",
+      "last_changed": "2025-07-01",
+      "last_checked": null,
+      "public_comment_deadline": null,
+      "version_signal": "github_release_tag",
+      "source_manifest_keys": [],
+      "cci_coverage_notes": "Not-Applicable: OpenAI API is a commercial AI service. Compliance relevance: API deprecation notices → CM-3/SA-22; usage policy changes → PL-4; safety evaluations → PM-28 / NIST AI RMF. System cards for GPT-4/o3 series contain capability evaluations relevant to AI risk assessments.",
+      "notes": "Track openai/openai-openapi GitHub for machine-readable API spec changes. Monitor platform.openai.com/docs/changelog for deprecation notices. Key compliance items: (1) model deprecation schedules (SA-22, system lifecycle); (2) rate limit and data retention policy changes (SC-28, AU-11); (3) GDPR/CCPA data processing policy updates; (4) Function calling and tool use specification changes (for MCP-like integrations). Preferred check: GitHub release tag on openai-openapi spec."
+    },
+    "google-gemini-api": {
+      "label": "Google Gemini API — Developer Platform, Model Cards, Release Notes",
+      "authority": "Google LLC",
+      "framework_id": "google-gemini-api",
+      "current_version": "Gemini 2.0 Flash / 2.5 Pro series (2025)",
+      "next_expected_version": "Continuous model and API updates; track ai.google.dev/gemini-api/docs/release-notes",
+      "check_strategy": "poll_landing",
+      "crawl_seeds": [
+        "https://ai.google.dev/gemini-api/docs/release-notes",
+        "https://ai.google.dev/gemini-api/docs",
+        "https://deepmind.google/technologies/gemini/"
+      ],
+      "doc_patterns": [
+        "gemini",
+        "google ai",
+        "model card",
+        "release notes",
+        "api version"
+      ],
+      "announcement_feeds": [
+        {
+          "url": "https://developers.googleblog.com/feeds/posts/default",
+          "type": "atom",
+          "filter_keywords": [
+            "gemini",
+            "api",
+            "model",
+            "release"
+          ],
+          "notes": "Google Developers Blog Atom feed — filter for Gemini/AI API announcements"
+        },
+        {
+          "url": "https://blog.google/technology/ai/rss/",
+          "type": "rss",
+          "filter_keywords": [
+            "gemini",
+            "model",
+            "api",
+            "safety"
+          ],
+          "notes": "Google AI Blog RSS feed"
+        }
+      ],
+      "urls": {
+        "api_docs": "https://ai.google.dev/gemini-api/docs",
+        "release_notes": "https://ai.google.dev/gemini-api/docs/release-notes",
+        "model_cards": "https://deepmind.google/technologies/gemini/",
+        "safety_reports": "https://deepmind.google/discover/blog/",
+        "terms": "https://ai.google.dev/gemini-api/terms"
+      },
+      "draft_status": "none",
+      "last_changed": "2025-07-01",
+      "last_checked": null,
+      "public_comment_deadline": null,
+      "version_signal": "page_heading_date",
+      "source_manifest_keys": [],
+      "cci_coverage_notes": "Not-Applicable: Gemini API is a commercial AI service. Same compliance relevance as other commercial AI APIs: CM-3 (deprecation), SA-22 (unsupported components), PL-4 (acceptable use), PM-28 (AI risk management).",
+      "notes": "Track ai.google.dev/gemini-api/docs/release-notes for model/API changes. Google publishes technical safety reports for Gemini (benchmark evaluations, dangerous capability assessments). Also monitor Google's Responsible AI Practices and AI Principles updates. Key for: organizations using Gemini APIs under Workspace or Cloud agreements — track data processing addendum updates."
+    },
+    "owasp-llm-top10": {
+      "label": "OWASP Top 10 for LLM Applications",
+      "authority": "OWASP Foundation",
+      "framework_id": "owasp-llm-top10",
+      "current_version": "v2.0 (2025)",
+      "next_expected_version": "v2.1 or annual cadence update (2026 anticipated)",
+      "check_strategy": "github_release",
+      "github_repo": "OWASP/www-project-top-10-for-large-language-model-applications",
+      "crawl_seeds": [
+        "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+        "https://llmtop10.com/"
+      ],
+      "doc_patterns": [
+        "llm",
+        "large language model",
+        "prompt injection",
+        "owasp llm",
+        "ai top 10"
+      ],
+      "announcement_feeds": [
+        {
+          "url": "https://github.com/OWASP/www-project-top-10-for-large-language-model-applications/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "release",
+            "v2",
+            "top 10",
+            "llm"
+          ],
+          "notes": "GitHub Releases for OWASP LLM Top 10 project"
+        }
+      ],
+      "urls": {
+        "landing": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+        "github": "https://github.com/OWASP/www-project-top-10-for-large-language-model-applications",
+        "llmtop10": "https://llmtop10.com/",
+        "pdf_v1": "https://owasp.org/www-project-top-10-for-large-language-model-applications/assets/PDF/OWASP-Top-10-for-LLMs-2023-v1_1.pdf"
+      },
+      "draft_status": "none",
+      "last_changed": "2025-01-01",
+      "last_checked": null,
+      "public_comment_deadline": null,
+      "version_signal": "github_release_tag",
+      "source_manifest_keys": [],
+      "cci_coverage_notes": "Confirmed-Subject: LLM01 (Prompt Injection) → SI-10 (CCI-002620, input validation), SI-3 (CCI-001170, malicious code protection). LLM02 (Insecure Output Handling) → SI-10, SA-11. LLM05 (Supply Chain) → SA-12 (CCI-002937, supply chain risk). LLM06 (Sensitive Info Disclosure) → SC-28 (CCI-001199), AC-3. All connections Confirmed-Subject via shared security control subject matter.",
+      "notes": "Risk categories: LLM01 Prompt Injection, LLM02 Insecure Output Handling, LLM03 Training Data Poisoning, LLM04 Model DoS, LLM05 Supply Chain Vulnerabilities, LLM06 Sensitive Information Disclosure, LLM07 Insecure Plugin Design, LLM08 Excessive Agency, LLM09 Overreliance, LLM10 Model Theft. Companion project: OWASP AI Security and Privacy Guide. Crosswalks with NIST AI RMF and MITRE ATLAS in development."
+    },
+    "mitre-atlas": {
+      "label": "MITRE ATLAS — Adversarial Threat Landscape for AI Systems",
+      "authority": "MITRE Corporation",
+      "framework_id": "mitre-atlas",
+      "current_version": "v4.8.0 (2025)",
+      "next_expected_version": "Quarterly cadence (v5.0 anticipated)",
+      "check_strategy": "github_release",
+      "github_repo": "mitre-atlas/atlas-data",
+      "crawl_seeds": [
+        "https://atlas.mitre.org/",
+        "https://atlas.mitre.org/matrices/ATLAS"
+      ],
+      "doc_patterns": [
+        "atlas",
+        "adversarial ml",
+        "machine learning",
+        "ai attack",
+        "ai threat"
+      ],
+      "announcement_feeds": [
+        {
+          "url": "https://github.com/mitre-atlas/atlas-data/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "release",
+            "atlas",
+            "update",
+            "technique"
+          ],
+          "notes": "GitHub Releases for MITRE ATLAS data repository"
+        }
+      ],
+      "urls": {
+        "landing": "https://atlas.mitre.org/",
+        "matrix": "https://atlas.mitre.org/matrices/ATLAS",
+        "github_data": "https://github.com/mitre-atlas/atlas-data",
+        "navigator": "https://mitre-atlas.github.io/atlas-navigator/",
+        "stix": "https://github.com/mitre-atlas/atlas-data/tree/main/dist"
+      },
+      "draft_status": "none",
+      "last_changed": "2025-01-01",
+      "last_checked": null,
+      "public_comment_deadline": null,
+      "version_signal": "github_release_tag",
+      "source_manifest_keys": [],
+      "cci_coverage_notes": "Implied-Bridge: MITRE ATLAS tactics map to ML-specific attack patterns not covered in ATT&CK. ATLAS technique AML.T0043 (Craft Adversarial Data) → SI-10 (CCI-002620). AML.T0019 (Publish Poisoned Datasets) → SA-12 (CCI-002937). AML.T0040 (ML Model Inference API Access) → SC-8 (CCI-002469), AC-3 (CCI-000015). All Implied-Bridge via AI-specific attack surface extending existing NIST 800-53 controls.",
+      "notes": "Structured knowledge base of adversarial ML threats targeting AI/ML systems. Sister framework to MITRE ATT&CK focused on ML attack surface: reconnaissance of ML APIs, model evasion, model poisoning, model extraction, and system prompt injection. STIX 2.1 format available in atlas-data repo. Crosswalk to MITRE ATT&CK: some ATLAS techniques are extensions of ATT&CK techniques. Critical for AI red-teaming and threat modeling assessments."
+    },
+    "uk-aisi": {
+      "label": "UK AI Safety Institute (AISI) / DSIT AI Safety Publications",
+      "authority": "UK Department for Science, Innovation and Technology (DSIT); AISI",
+      "framework_id": "uk-aisi",
+      "current_version": "AISI Evaluation Framework v1.0 (2024); International Scientific Report on Advanced AI Safety (2024)",
+      "next_expected_version": "Annual reports and evaluation framework updates",
+      "check_strategy": "poll_landing",
+      "crawl_seeds": [
+        "https://www.gov.uk/government/organisations/ai-safety-institute",
+        "https://www.aisi.gov.uk/",
+        "https://www.gov.uk/government/publications?organisations%5B%5D=ai-safety-institute"
+      ],
+      "doc_patterns": [
+        "ai safety",
+        "evaluation",
+        "frontier ai",
+        "aisi",
+        "advanced ai"
+      ],
+      "announcement_feeds": [
+        {
+          "url": "https://www.gov.uk/government/organisations/ai-safety-institute.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "evaluation",
+            "safety",
+            "frontier",
+            "report",
+            "framework"
+          ],
+          "notes": "GOV.UK Atom feed for UK AI Safety Institute publications"
+        },
+        {
+          "url": "https://www.gov.uk/search/news-and-communications.atom?organisations%5B%5D=ai-safety-institute",
+          "type": "atom",
+          "filter_keywords": [
+            "ai safety",
+            "evaluation",
+            "frontier"
+          ],
+          "notes": "GOV.UK news and communications feed filtered to AISI"
+        }
+      ],
+      "urls": {
+        "landing": "https://www.gov.uk/government/organisations/ai-safety-institute",
+        "aisi_site": "https://www.aisi.gov.uk/",
+        "publications": "https://www.gov.uk/government/publications?organisations%5B%5D=ai-safety-institute",
+        "international_report": "https://www.gov.uk/government/publications/international-scientific-report-on-the-safety-of-advanced-ai"
+      },
+      "draft_status": "none",
+      "last_changed": "2024-12-01",
+      "last_checked": null,
+      "public_comment_deadline": null,
+      "version_signal": "latest_item_guid",
+      "source_manifest_keys": [],
+      "cci_coverage_notes": "Implied-Heuristic: AISI evaluations cover dangerous capabilities (CBRN, cyberoffense, persuasion). Maps to PM-28 (AI risk management), RA-3 (risk assessment), SI-3 (malicious code) via AI capability evaluation heuristic. No DISA CCI definitions reference AISI or frontier AI evaluation.",
+      "notes": "UK government body responsible for evaluating and testing frontier AI models. Publishes: (1) AI model evaluation reports (dangerous capabilities, uplift assessments); (2) AI safety research; (3) International AI safety coordination (Seoul Declaration, Bletchley Process). Published inaugural report on risks of frontier AI models (Nov 2023). Key for: organizations assessing AI governance compliance with emerging UK AI regulation (AI Safety Bill anticipated) and international AI safety commitments."
+    },
+    "cisa-ai-security": {
+      "label": "CISA AI Security Guidance — Joint Advisories and Secure AI Deployment",
+      "authority": "CISA (primary); joint with NSA, FBI, NCSC, ACSC, CCCS",
+      "framework_id": "cisa-ai-security",
+      "current_version": "Deploying AI Systems Securely (Apr 2024); Guidelines for Secure AI System Development (Nov 2023)",
+      "next_expected_version": "Ongoing joint advisories; track cisa.gov/ai",
+      "check_strategy": "poll_landing",
+      "crawl_seeds": [
+        "https://www.cisa.gov/ai",
+        "https://www.cisa.gov/resources-tools/resources/artificial-intelligence"
+      ],
+      "doc_patterns": [
+        "ai security",
+        "artificial intelligence",
+        "secure ai",
+        "llm",
+        "joint advisory"
+      ],
+      "announcement_feeds": [
+        {
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=cybersecurity-and-infrastructure-security-agency&term=artificial+intelligence",
+          "type": "rss",
+          "filter_keywords": [
+            "artificial intelligence",
+            "ai security",
+            "llm",
+            "machine learning"
+          ],
+          "notes": "Federal Register RSS for CISA AI-related guidance"
+        }
+      ],
+      "urls": {
+        "landing": "https://www.cisa.gov/ai",
+        "secure_ai_deployment": "https://www.cisa.gov/sites/default/files/2024-04/deploying-ai-systems-securely.pdf",
+        "guidelines_dev": "https://www.cisa.gov/sites/default/files/2023-11/guidelines-for-secure-ai-system-development_508c.pdf",
+        "ai_roadmap": "https://www.cisa.gov/sites/default/files/2023-11/2023-2024_CISA-AI-Roadmap.pdf"
+      },
+      "draft_status": "none",
+      "last_changed": "2024-04-15",
+      "last_checked": null,
+      "public_comment_deadline": null,
+      "version_signal": "page_heading_date",
+      "source_manifest_keys": [],
+      "cci_coverage_notes": "Confirmed-Subject: CISA guidance maps explicitly to NIST 800-53 controls. Deploying AI Systems Securely cites CM-7 (CCI-000381, least functionality), AC-3 (CCI-000015, access enforcement), SI-7 (CCI-002696, software integrity). All Confirmed-Subject via explicit 800-53 control citations in CISA guidance documents.",
+      "notes": "CISA's primary AI security guidance portal. Key publications: (1) 'Deploying AI Systems Securely' (Apr 2024) — joint with NSA, 15 recommendations for secure AI deployment; (2) 'Guidelines for Secure AI System Development' (Nov 2023) — joint with UK NCSC + 17 other agencies; (3) CISA AI Roadmap 2023-2024. Guidance directly maps to NIST 800-53 Rev 5 controls. Also monitor: CISA AI Tabletop Exercise resources, CISA AI risk frameworks for critical infrastructure."
+    },
+    "ieee-ai-standards": {
+      "label": "IEEE AI Standards — P7000 Ethics Series, P2840, P3119, P2841",
+      "authority": "IEEE Standards Association",
+      "framework_id": "ieee-ai-standards",
+      "current_version": "IEEE P7001 (Transparency, 2021); P7009 (Fail-Safe, 2021); P7010 (Wellbeing, 2023); P2840 (draft); P3119 (draft)",
+      "next_expected_version": "P3119 (Procurement of AI, anticipated 2026); P2840 (Responsible AI, anticipated 2026)",
+      "check_strategy": "poll_landing",
+      "crawl_seeds": [
+        "https://standards.ieee.org/industry-connections/autonomous-systems/",
+        "https://ieeexplore.ieee.org/browse/standards/subject-area-collections/AI-standards",
+        "https://standards.ieee.org/search/?q=artificial+intelligence"
+      ],
+      "doc_patterns": [
+        "ieee p7",
+        "p2840",
+        "p3119",
+        "p2841",
+        "ieee ai",
+        "autonomous systems",
+        "ethically aligned"
+      ],
+      "announcement_feeds": [
+        {
+          "url": "https://standards.ieee.org/rss/news/",
+          "type": "rss",
+          "filter_keywords": [
+            "artificial intelligence",
+            "autonomous",
+            "p7",
+            "p2840",
+            "p3119",
+            "ethically aligned"
+          ],
+          "notes": "IEEE Standards news RSS — filter for AI-related standard updates"
+        }
+      ],
+      "urls": {
+        "landing": "https://standards.ieee.org/industry-connections/autonomous-systems/",
+        "ieeexplore_ai": "https://ieeexplore.ieee.org/browse/standards/subject-area-collections/AI-standards",
+        "ethically_aligned": "https://standards.ieee.org/industry-connections/ec/autonomous-systems/",
+        "p7001_transparency": "https://standards.ieee.org/ieee/IEEE-P7001/7424/",
+        "p3119_procurement": "https://standards.ieee.org/ieee/IEEE-P3119/10154/"
+      },
+      "draft_status": "none",
+      "last_changed": "2023-01-01",
+      "last_checked": null,
+      "public_comment_deadline": null,
+      "version_signal": "page_heading_date",
+      "source_manifest_keys": [],
+      "cci_coverage_notes": "Implied-Heuristic: IEEE P7001 (Transparency) → PL-8 (CCI-001771), PM-7. IEEE P7009 (Fail-Safe) → SI-13 (CCI-002404), CP-2. P3119 (AI Procurement) → SA-4 (CCI-001436, acquisition requirements), SA-9 (CCI-001513). All Implied-Heuristic via AI governance subject matter; no DISA CCI definitions reference IEEE AI standards.",
+      "notes": "Key IEEE AI standards for GRC: P7000 series (ethics/safety/transparency for autonomous systems); P2840 (Recommended Practice for Responsible AI); P3119 (Standard for the Procurement of Artificial Intelligence and Automated Decision Systems — acquisition requirements applicable to SA-4). P2841 (Framework for AI/ML Bias in Autonomous Systems). Organizations acquiring AI systems should track P3119 for procurement language. Paywalled final standards; track via standards.ieee.org for availability."
+    },
+    "iso-jtc1-sc42": {
+      "label": "ISO/IEC JTC1 SC42 — Artificial Intelligence Standards Committee",
+      "authority": "ISO/IEC Joint Technical Committee 1, Subcommittee 42",
+      "framework_id": "iso-jtc1-sc42",
+      "current_version": "ISO/IEC 42001:2023 (AI Management Systems); ISO/IEC 23894:2023 (AI Risk); ISO/IEC 24028:2020 (AI Trustworthiness); ISO/IEC 42006:2024 (AI Audit requirements)",
+      "next_expected_version": "ISO/IEC 42005 (AI impact assessment, anticipated 2025); ISO/IEC 42006 extensions; ISO/IEC 42002 (AI system engineering)",
+      "check_strategy": "poll_landing",
+      "crawl_seeds": [
+        "https://www.iso.org/committee/6794475.html",
+        "https://www.iso.org/committee/6794475/x/catalogue/"
+      ],
+      "doc_patterns": [
+        "iso 42001",
+        "iso 23894",
+        "iso 24028",
+        "iso 42006",
+        "iso/iec jtc1",
+        "sc42",
+        "ai management"
+      ],
+      "announcement_feeds": [
+        {
+          "url": "https://www.iso.org/rss/cat_6794475.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "42001",
+            "23894",
+            "42006",
+            "artificial intelligence",
+            "ai management"
+          ],
+          "notes": "ISO SC42 committee catalogue RSS feed — new/updated standards"
+        }
+      ],
+      "urls": {
+        "landing": "https://www.iso.org/committee/6794475.html",
+        "catalogue": "https://www.iso.org/committee/6794475/x/catalogue/",
+        "iso_42001": "https://www.iso.org/standard/81230.html",
+        "iso_23894": "https://www.iso.org/standard/77304.html",
+        "iso_42006": "https://www.iso.org/standard/84558.html"
+      },
+      "draft_status": "none",
+      "last_changed": "2024-01-01",
+      "last_checked": null,
+      "public_comment_deadline": null,
+      "version_signal": "page_heading_date",
+      "source_manifest_keys": [],
+      "cci_coverage_notes": "Implied-Bridge: ISO 42001 (AI Management System) → PM-7 (CCI — PM family low coverage), PM-28 (AI risk), RA-3 (CCI-001431, risk assessment), SA-15 (CCI-002152, dev process security) via AI management chain. ISO 23894 (AI risk management) → RA-3 family via Implied-Bridge. Standards are paywalled; bridge via ISO 42001 HITRUST hub mapping (ISO 23894 is a HITRUST CSF v11.5.0 column).",
+      "notes": "SC42 is the primary ISO committee for AI standards, producing: ISO/IEC 42001 (AI Management Systems — auditable AI governance framework); ISO/IEC 23894 (Guidance on AI Risk Management); ISO/IEC 24028 (Overview of trustworthiness in AI); ISO/IEC 42006 (Requirements for AI auditing body accreditation — certifiers). ISO 42001 is the AI equivalent of ISO 27001 — organizations will seek third-party certification. Track ISO 42005 (AI impact assessment, CDP-equivalent for AI) which will create compliance obligations for high-risk AI systems under EU AI Act implementation."
+    },
+    "huggingface-hub": {
+      "label": "Hugging Face Hub — Model Cards, Dataset Cards, Safety Specs",
+      "authority": "Hugging Face (hub steward); model cards community standard",
+      "framework_id": "huggingface-hub",
+      "current_version": "Model Card spec v0.5 (2024); Hub API v2",
+      "next_expected_version": "Continuous; track huggingface/hub-docs GitHub",
+      "check_strategy": "github_release",
+      "github_repo": "huggingface/hub-docs",
+      "crawl_seeds": [
+        "https://huggingface.co/docs/hub/model-cards",
+        "https://huggingface.co/docs/hub/datasets-cards",
+        "https://huggingface.co/docs/hub/security"
+      ],
+      "doc_patterns": [
+        "model card",
+        "dataset card",
+        "safety",
+        "evaluation",
+        "bias",
+        "model spec"
+      ],
+      "announcement_feeds": [
+        {
+          "url": "https://github.com/huggingface/hub-docs/releases.atom",
+          "type": "atom",
+          "filter_keywords": [
+            "model card",
+            "safety",
+            "security",
+            "spec"
+          ],
+          "notes": "GitHub Releases for Hugging Face Hub documentation"
+        },
+        {
+          "url": "https://huggingface.co/blog/feed.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "safety",
+            "model card",
+            "policy",
+            "security",
+            "governance"
+          ],
+          "notes": "Hugging Face blog RSS feed — filter for safety/governance content"
+        }
+      ],
+      "urls": {
+        "model_cards": "https://huggingface.co/docs/hub/model-cards",
+        "dataset_cards": "https://huggingface.co/docs/hub/datasets-cards",
+        "security_docs": "https://huggingface.co/docs/hub/security",
+        "hub_api": "https://huggingface.co/docs/hub/api",
+        "github": "https://github.com/huggingface/hub-docs",
+        "content_policy": "https://huggingface.co/content-policy"
+      },
+      "draft_status": "none",
+      "last_changed": "2024-01-01",
+      "last_checked": null,
+      "public_comment_deadline": null,
+      "version_signal": "github_release_tag",
+      "source_manifest_keys": [],
+      "cci_coverage_notes": "Implied-Heuristic: Model Cards → SA-4 (CCI-001436, acquisition documentation), SA-10 (developer config management). Content policy → PL-4 (acceptable use), AC-17 (remote access restrictions). No DISA CCI definitions reference Hugging Face or model cards specifically.",
+      "notes": "Hugging Face Hub is the primary public repository for open-source AI models (500k+ models). Model Cards provide provenance, intended use, bias evaluations, and limitations — directly relevant to SA-4 (acquisition requirements) when procuring open-source AI models. Security relevance: (1) supply chain risk from malicious models (SA-12); (2) malicious pickle/safetensor files (SI-3, malicious code); (3) model card spec defines minimum disclosure requirements being referenced by EU AI Act technical documentation requirements. Track huggingface/hub-docs for model card spec evolution."
     }
   },
   "check_schedule": {
@@ -4015,7 +4711,11 @@
       "eu-ai-act-impl",
       "nis2",
       "eu-dora",
-      "oscal-format"
+      "oscal-format",
+      "mcp-spec",
+      "owasp-llm-top10",
+      "mitre-atlas",
+      "cisa-ai-security"
     ],
     "medium_priority": [
       "nist-800-171",
@@ -4028,7 +4728,13 @@
       "nist-ai-rmf",
       "ccpa-cppa",
       "hipaa",
-      "cis-controls"
+      "cis-controls",
+      "anthropic-api",
+      "openai-api",
+      "google-gemini-api",
+      "uk-aisi",
+      "openapi-spec",
+      "ietf-oauth"
     ],
     "low_priority": [
       "nist-800-172",
@@ -4040,7 +4746,10 @@
       "owasp-top10",
       "owasp-asvs",
       "enisa-pub",
-      "ncsc-guidance"
+      "ncsc-guidance",
+      "ieee-ai-standards",
+      "iso-jtc1-sc42",
+      "huggingface-hub"
     ],
     "recommended_interval_days": {
       "high_priority": 14,
@@ -4099,6 +4808,6 @@
       "HIPAA Privacy Rule"
     ]
   },
-  "_last_patched": "2026-06-30",
-  "_patch_notes": "v1.2.0 (2026-06-30): FRA-1 (5 github_repo), FRA-2 (nist-csf), FRA-3 (nsm-8 retired + nspm-12), FRA-4 (version_signal all entries), FRA-5 (next_expected_version 10 entries), FRA-6 (csa-star-ccm5 v4.1), CCI coverage notes (all entries per plan §7.10)."
+  "_last_patched": "2026-07-01",
+  "_patch_notes": "v1.2.0 (2026-06-30): FRA-1 (5 github_repo), FRA-2 (nist-csf), FRA-3 (nsm-8 retired + nspm-12), FRA-4 (version_signal all entries), FRA-5 (next_expected_version 10 entries), FRA-6 (csa-star-ccm5 v4.1), CCI coverage notes (all entries per plan §7.10). v1.3.0 (2026-07-01): Add 13 AI technical bulletin feeds: mcp-spec, openapi-spec, ietf-oauth, anthropic-api, openai-api, google-gemini-api, owasp-llm-top10, mitre-atlas, uk-aisi, cisa-ai-security, ieee-ai-standards, iso-jtc1-sc42, huggingface-hub."
 }
