@@ -2,6 +2,10 @@
 
 ## Non-Negotiables
 
+- **Read-only is the default.** `write_access` is `false` and mode is `read-fanout`/
+  `external` unless the task **explicitly asks to edit files**. Only then does mode become
+  `mutate` with `write_access: true` (worktree-isolated, human-reviewed). Never emit
+  `mutate`/`write_access: true` to "make a task easier"; an ambiguous task is read-only.
 - **Solo is the default.** `fan_out` is `false` unless a concrete escalation trigger holds
   (many independent sources, ≥2 independent sub-areas, cross-checking needed, context
   overflow, or unknown breadth-first frontier). "Might be faster" is not a trigger — the

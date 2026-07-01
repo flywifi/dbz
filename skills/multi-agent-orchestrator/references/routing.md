@@ -4,6 +4,17 @@
 never widened to grant write or network access for convenience. When a task could be read
 or write, choose the narrower (read) mode and record the ambiguity in a minority report.
 
+## Zeroth: read-only by default
+
+**Agents do not edit anything by default.** The baseline posture for every run is
+read-only: agents scrape, crawl, read, and pass raw data + suggestions up the chain; the
+manager synthesizes recommendations from that. `read-fanout` and `external` are read-only
+modes. A plan becomes `mutate` (write access) **only** when the task explicitly asks to
+change files — and even then each agent edits inside an isolated git worktree whose changes
+are surfaced for human review before merge. When it is unclear whether a task edits, treat
+it as read-only and note the ambiguity in a minority report. Write access is the narrow,
+explicit exception; it is never granted to "make a task easier."
+
 ## First: solo or fan-out? (default solo)
 
 Before choosing a mode, decide whether to fan out at all. **The default is one agent.**
@@ -61,7 +72,12 @@ norm.
 
 ## Non-negotiables
 
+- **Read-only by default.** `mutate`/`write_access: true` is granted only on an explicit
+  edit request; ambiguous read-vs-write → pick `read-fanout` and emit a `minority-report`
+  note.
 - Mode is chosen from this table by class — never escalated to `mutate`/`external` to make
   a task easier.
-- Ambiguous read-vs-write → pick `read-fanout` and emit a `minority-report` note.
+- Every finding an agent passes up carries a **specific citable source** in `provenance`
+  (file path + locator, URL, or section id) — a vague placeholder fails validation and never
+  reaches consolidation, so recommendations are always source-backed.
 - Stop defaults come from here + `frontier-model.md`; they are not invented per run.

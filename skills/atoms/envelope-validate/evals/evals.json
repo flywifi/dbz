@@ -70,6 +70,31 @@
       "expected_output": {"valid": false, "violations": {"$minItems": 1}},
       "expect_pass": true,
       "note": "human_review_required is pinned to const true; false is drift and must fail"
+    },
+    {
+      "id": "edge-02",
+      "label": "Vague finding provenance — fails citable-source enforcement",
+      "input": {
+        "envelope": {
+          "task_id": "demo.w1.04",
+          "parent_task_id": null,
+          "scope": "NIST SC family",
+          "mode": "read-fanout",
+          "status": "complete",
+          "findings": [
+            {"key": "SC-13", "value": "FIPS-validated crypto", "provenance": "internal", "confidence": "high"}
+          ],
+          "residual_frontier": [],
+          "provenance": {"sources_read": ["NIST_800_53_SC.json"], "method": "read"},
+          "confidence": "high",
+          "minority_report": null,
+          "human_review_required": true,
+          "metrics": {"items_found": 1}
+        }
+      },
+      "expected_output": {"valid": false, "violations": {"$minItems": 1}},
+      "expect_pass": true,
+      "note": "A finding whose provenance is a vague placeholder ('internal') cannot be cited — it fails validation and never reaches a recommendation"
     }
   ]
 }

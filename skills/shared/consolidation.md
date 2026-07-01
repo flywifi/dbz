@@ -57,10 +57,21 @@ Only high-materiality keys are verified — not every finding — because multi-
 verification is itself expensive (~15× token reality). `apply_verdicts()` folds the results
 back deterministically.
 
+## Recommendations are citation-backed
+
+Every finding that survives into the consolidated result carries a **specific citable
+source** in `provenance` — this is enforced upstream by `envelope-validate`, which rejects
+any finding whose provenance is blank or a vague placeholder ('internal', 'various',
+'unknown'). So by the time the manager turns raw findings into recommendations, each one is
+already traceable to a file+locator, URL, or section id. A recommendation the manager cannot
+cite does not get made; the underlying uncertainty goes into `residual_uncertainty` instead.
+
 ## Hard rules (inherited from minority-report.md)
 
 - **Never fabricate.** A key that no agent found is absent, or listed as a gap tied to a
   real `blocked`/`residual_frontier` entry — never invented to look complete.
+- **Never make an uncitable recommendation.** If a finding's source cannot be cited it never
+  reached consolidation (validation blocked it); recommendations are always source-backed.
 - **Never average conflicting values.** Record both; escalate via minority_report.
 - **Never round confidence up.** Merged confidence is the floor of its inputs.
 - **Never report `coverage_state: complete` when any agent was partial/blocked** or the

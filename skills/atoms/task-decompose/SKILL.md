@@ -17,6 +17,17 @@ concrete escalation trigger holds. Only escalate to fan-out when at least one is
 
 If none holds, stay solo. "It might be faster" is not a trigger.
 
+## Default: read-only
+
+**Agents do not edit anything by default.** They scrape, crawl, read, and pass raw data +
+suggestions *up* the chain of command; the manager turns that into recommendations. Every
+plan is read-only (`write_access: false`, mode `read-fanout` or `external`) unless the task
+**explicitly asks to change files** — then and only then does mode become `mutate` with
+`write_access: true`, and even then each agent edits inside an isolated worktree whose
+changes are surfaced for human review before merge. Mutation is the narrow exception, never
+the default; if a task is ambiguous about whether it edits, choose read-only and say so in a
+minority report.
+
 ## Scope
 
 Given a task and the material it ranges over, first apply the solo-vs-fan-out gate above.
@@ -41,7 +52,8 @@ conditions from `frontier-model.md`. This atom plans a wave; it does not run age
   "fan_out": "boolean — false (solo, the default) unless an escalation trigger holds",
   "agent_count": "integer — 1 when solo; N when fanning out",
   "escalation_trigger": "string | null — which trigger justified fan-out (null when solo)",
-  "mode": "string — read-fanout | mutate | external (from routing table)",
+  "write_access": "boolean — false by default; true ONLY for an explicit, authorized file-editing task",
+  "mode": "string — read-fanout | external (read-only) | mutate (only when write_access is true)",
   "scopes": "array — [{scope, rationale}]; exactly one entry (the whole task) when solo",
   "stop_conditions": "object — {k_dry, depth_cap, size_cap} resolved for this mode",
   "minority_report": "object | null — populated if the mode or solo/fan-out choice is genuinely ambiguous",

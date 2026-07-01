@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "orchestration-envelope.schema.json",
   "title": "Orchestration Agent Envelope",
-  "description": "The fixed return shape every sub-agent must produce so the manager can consolidate mechanically without reading raw transcripts. Identical shape across every agent in every wave — that identity is what eliminates drift. See frontier-model.md and consolidation.md for how the fields are used.",
+  "description": "The fixed return shape every sub-agent must produce so the manager can consolidate mechanically without reading raw transcripts. Identical shape across every agent in every wave — that identity is what eliminates drift. Agents are READ-ONLY by default: read-fanout and external agents scrape/crawl/read and pass raw data + suggestions up the chain; only mutate-mode agents edit files, in an isolated worktree, surfaced for review. Every finding's provenance must be a specific citable source. See frontier-model.md and consolidation.md for how the fields are used.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -58,7 +58,7 @@
           },
           "provenance": {
             "type": "string",
-            "description": "Where this specific finding came from — a file path, line reference, or source name. Never blank; if unknown, the finding does not belong in findings[]."
+            "description": "The SPECIFIC CITABLE source this finding came from — a file path with locator (e.g. 'NIST_800_53_PM.json:CA-6'), a URL, or a section/document id. Never blank and never a vague placeholder ('internal', 'various', 'unknown'); if it cannot be cited, the finding does not belong in findings[]. Every recommendation the manager makes is traced back to these strings, so they must stand on their own as a citation."
           },
           "confidence": {
             "type": "string",

@@ -11,13 +11,14 @@
       },
       "expected_output": {
         "fan_out": true,
+        "write_access": false,
         "mode": "read-fanout",
         "scopes": {"$minItems": 2},
         "stop_conditions": {"$exists": true},
         "human_review_required": true
       },
       "expect_pass": true,
-      "note": "Many independent files (a valid escalation trigger) justifies fan-out into non-overlapping scopes"
+      "note": "Many independent files (a valid escalation trigger) justifies fan-out; a read task stays read-only (write_access false)"
     },
     {
       "id": "fail-01",
@@ -39,12 +40,13 @@
       },
       "expected_output": {
         "fan_out": true,
+        "write_access": true,
         "mode": "mutate",
         "stop_conditions": {"depth_cap": 1},
         "human_review_required": true
       },
       "expect_pass": true,
-      "note": "Editing canonical/seed data across multiple entries routes to mutate with no auto-recursion (depth_cap 1)"
+      "note": "An EXPLICIT edit task is the only path to write_access:true + mutate (worktree-isolated, human-reviewed, depth_cap 1)"
     },
     {
       "id": "solo-01",
@@ -57,11 +59,12 @@
         "fan_out": false,
         "agent_count": 1,
         "escalation_trigger": null,
+        "write_access": false,
         "scopes": {"$maxItems": 1},
         "human_review_required": true
       },
       "expect_pass": true,
-      "note": "A task one agent can finish stays solo — no escalation trigger holds, so fan_out is false"
+      "note": "A task one agent can finish stays solo AND read-only — no escalation trigger, no edit request"
     }
   ]
 }

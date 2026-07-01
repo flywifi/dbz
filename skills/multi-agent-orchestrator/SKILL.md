@@ -12,6 +12,17 @@ identically-shaped envelope (`skills/shared/orchestration-envelope.schema.json`)
 the shape is fixed and schema-forced, consolidation is mechanical and the manager's
 context never fills with raw agent output.
 
+## Chain of command
+
+Agents are **read-only by default**: they scrape, crawl, and read, then pass raw data and
+suggestions *up* to the manager. They do not edit anything unless the task explicitly asks
+for edits (mode `mutate`, worktree-isolated, human-reviewed). The manager's job is to keep
+each agent **strictly on its assigned scope** — out-of-scope discoveries go into
+`residual_frontier` for a future wave, never acted on mid-task — and to turn the agents'
+raw data and suggestions into **recommendations backed by specific, citable sources**. Every
+finding carries a citable `provenance`; a finding whose source cannot be cited fails
+validation and never reaches a recommendation. Nothing is ever fabricated to fill a gap.
+
 ## Scope
 
 Use when a task is bigger than one agent should hold: reading across many files/sources,

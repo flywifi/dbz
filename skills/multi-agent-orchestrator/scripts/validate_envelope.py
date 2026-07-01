@@ -30,6 +30,15 @@ from typing import Any, Dict, List
 CONF_ENUM = {"high", "medium", "low", "uncertain"}
 STATUS_ENUM = {"complete", "partial", "blocked"}
 MODE_ENUM = {"read-fanout", "mutate", "external"}
+READ_ONLY_MODES = {"read-fanout", "external"}
+
+# Provenance must be a SPECIFIC, CITABLE source — not a vague placeholder. Every
+# recommendation the manager makes is traced back through these strings, so a bare
+# "internal" or "various" is not acceptable: it cannot be cited.
+_VAGUE_PROVENANCE = {
+    "", "source", "sources", "internal", "unknown", "n/a", "na", "none",
+    "-", "tbd", "misc", "various", "general", "assorted",
+}
 
 TOP_REQUIRED = [
     "task_id", "scope", "mode", "status", "findings", "residual_frontier",
@@ -92,8 +101,15 @@ def validate_envelope(env: Any) -> Dict[str, Any]:
                 for k in ("key", "value", "provenance", "confidence"):
                     if k not in f:
                         violations.append(_v(f"{base}.{k}", "required field missing"))
-                if "provenance" in f and (not isinstance(f["provenance"], str) or not f["provenance"].strip()):
-                    violations.append(_v(f"{base}.provenance", "must be a non-empty string"))
+                if "provenance" in f:
+                    if not isinstance(f["provenance"], str) or not f["provenance"].strip():
+                        violations.append(_v(f"{base}.provenance", "must be a non-empty string"))
+                    elif f["provenance"].strip().lower() in _VAGUE_PROVENANCE:
+                        violations.append(_v(
+                            f"{base}.provenance",
+                            "must be a specific citable source (file path, URL, section id), "
+                            "not a vague placeholder",
+                        ))
                 if "confidence" in f and f["confidence"] not in CONF_ENUM:
                     violations.append(_v(f"{base}.confidence", f"must be one of {sorted(CONF_ENUM)}"))
 
