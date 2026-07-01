@@ -2,12 +2,21 @@
 
 ## Non-Negotiable Invariants
 
+- **Solo is the default.** `task-decompose` keeps a task on one agent unless an escalation
+  trigger holds. Fan-out must be justified (the ~15× token reality), never reflexive.
 - **Manager reads envelopes, never raw sub-agent transcripts.** This is the load-bearing
   rule; breaking it reintroduces context overflow and drift.
 - **Every sub-agent is forced to return `orchestration-envelope.schema.json`.** Schema-
   forced returns are the primary drift lever — never accept free-text agent output into
   consolidation.
 - **Every envelope passes `envelope-validate` before consolidation.** No half-formed merges.
+- **High-materiality findings are adversarially verified before they are trusted.** Every
+  `pending_verification` key goes through `finding-verify` (skeptics prompted to refute);
+  refuted findings leave the trusted set. Never promote a conflict/low-confidence finding on
+  a single pass.
+- **Stopping needs both signals.** The recursion ends only when the frontier is dry AND
+  `wave-judge` recommends stop (or a hard depth/size/budget cap fires). A high judge score
+  never overrides a non-empty frontier.
 - **Mode follows task class** (`references/routing.md`); never escalate to `mutate`/`external`.
 - **`mutate` mode uses one git worktree per agent and `depth_cap 1`** — no auto-recursion
   into new edits.

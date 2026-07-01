@@ -4,6 +4,22 @@
 never widened to grant write or network access for convenience. When a task could be read
 or write, choose the narrower (read) mode and record the ambiguity in a minority report.
 
+## First: solo or fan-out? (default solo)
+
+Before choosing a mode, decide whether to fan out at all. **The default is one agent.**
+Escalate to multi-agent fan-out only when a concrete trigger holds:
+
+| Escalation trigger | Example |
+|---|---|
+| Many independent sources/files exceed one context | "read all 20 NIST family JSONs" |
+| ≥2 independent sub-areas workable without shared state | "audit auth AND crypto AND logging" |
+| Answer needs cross-checking from independent angles | "verify this mapping three ways" |
+| Single-agent context would overflow | a 500-file migration |
+| Unknown, breadth-first frontier (recursive discovery) | "find every place X could break" |
+
+If none holds, run solo (`fan_out: false`, `agent_count: 1`, one scope). "It might be
+faster" is not a trigger — multi-agent runs cost ~15× the tokens of a single pass.
+
 ## Table
 
 | Task class | Example | Mode | Isolation | Engine | Stop defaults |

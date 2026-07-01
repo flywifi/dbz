@@ -4,19 +4,20 @@
   "cases": [
     {
       "id": "pass-01",
-      "label": "Read-only extraction task — yields read-fanout with multiple scopes",
+      "label": "Broad multi-source extraction — fan_out true with multiple scopes",
       "input": {
         "task": "Extract every role/title/acronym across all NIST 800-53 families",
         "corpus_hint": "20 per-family JSON files under cross-mapping/nist-catalog/output/"
       },
       "expected_output": {
+        "fan_out": true,
         "mode": "read-fanout",
         "scopes": {"$minItems": 2},
         "stop_conditions": {"$exists": true},
         "human_review_required": true
       },
       "expect_pass": true,
-      "note": "A read task must route to read-fanout and partition into non-overlapping scopes"
+      "note": "Many independent files (a valid escalation trigger) justifies fan-out into non-overlapping scopes"
     },
     {
       "id": "fail-01",
@@ -31,18 +32,36 @@
     },
     {
       "id": "edge-01",
-      "label": "Canonical-update task — yields mutate mode with depth_cap 1",
+      "label": "Canonical-update task — mutate mode with depth_cap 1",
       "input": {
         "task": "Add 5 new AI feed_registry entries and re-pin their source versions",
         "corpus_hint": "canonical-sources/feed_registry.json"
       },
       "expected_output": {
+        "fan_out": true,
         "mode": "mutate",
         "stop_conditions": {"depth_cap": 1},
         "human_review_required": true
       },
       "expect_pass": true,
-      "note": "Editing canonical/seed data routes to mutate with no auto-recursion (depth_cap 1)"
+      "note": "Editing canonical/seed data across multiple entries routes to mutate with no auto-recursion (depth_cap 1)"
+    },
+    {
+      "id": "solo-01",
+      "label": "Small single-source lookup — solo default, one agent",
+      "input": {
+        "task": "What roles does the NIST CA-6 control reference?",
+        "corpus_hint": "one control in NIST_800_53_CA.json"
+      },
+      "expected_output": {
+        "fan_out": false,
+        "agent_count": 1,
+        "escalation_trigger": null,
+        "scopes": {"$maxItems": 1},
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "A task one agent can finish stays solo — no escalation trigger holds, so fan_out is false"
     }
   ]
 }

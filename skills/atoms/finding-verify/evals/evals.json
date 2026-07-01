@@ -1,0 +1,42 @@
+{
+  "atom": "finding-verify",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "Confirming majority — verdict confirmed",
+      "input": {
+        "finding": {"key": "AO", "value": "Authorizing Official", "provenance": "PM.json", "confidence": "low"},
+        "why_material": "merged at low confidence",
+        "skeptic_votes": {"refuting": 1, "confirming": 3, "unable": 0}
+      },
+      "expected_output": {"key": "AO", "verdict": "confirmed", "human_review_required": true},
+      "expect_pass": true,
+      "note": "A strict confirming majority survives verification"
+    },
+    {
+      "id": "fail-01",
+      "label": "Refuting majority — verdict refuted",
+      "input": {
+        "finding": {"key": "AC-2/CC6.1", "value": "Equal", "provenance": "ER", "confidence": "low"},
+        "why_material": "conflict between OLIR (Superset) and ER (Equal)",
+        "skeptic_votes": {"refuting": 3, "confirming": 1, "unable": 0}
+      },
+      "expected_output": {"key": "AC-2/CC6.1", "verdict": "refuted", "human_review_required": true},
+      "expect_pass": true,
+      "note": "A refuting majority drops the finding from the trusted set; it is recorded in failed_to_merge"
+    },
+    {
+      "id": "edge-01",
+      "label": "Majority unable — verdict unverified (not refuted)",
+      "input": {
+        "finding": {"key": "HITRUST-bridge/X", "value": "mapped_to", "provenance": "bridge", "confidence": "uncertain"},
+        "why_material": "implied-bridge provenance",
+        "skeptic_votes": {"refuting": 1, "confirming": 0, "unable": 2}
+      },
+      "expected_output": {"key": "HITRUST-bridge/X", "verdict": "unverified", "human_review_required": true},
+      "expect_pass": true,
+      "note": "When skeptics cannot check (unreachable source), the verdict is unverified — never treated as refuted"
+    }
+  ]
+}

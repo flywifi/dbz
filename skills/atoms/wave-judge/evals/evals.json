@@ -1,0 +1,30 @@
+{
+  "atom": "wave-judge",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "Strong wave — all dimensions high → stop",
+      "input": {"coverage": 0.95, "consistency": 0.9, "provenance": 0.9, "saturation": 0.85},
+      "expected_output": {"recommendation": "stop", "human_review_required": true},
+      "expect_pass": true,
+      "note": "Composite >= 0.80 and coverage >= 0.70 → stop"
+    },
+    {
+      "id": "fail-01",
+      "label": "Thin coverage — high others but coverage 0.5 → continue",
+      "input": {"coverage": 0.5, "consistency": 0.95, "provenance": 0.95, "saturation": 0.95},
+      "expected_output": {"recommendation": "continue", "weakest_dimension": "coverage", "human_review_required": true},
+      "expect_pass": true,
+      "note": "Coverage floor (0.70) gates stop — a strong composite cannot override thin coverage"
+    },
+    {
+      "id": "edge-01",
+      "label": "Missing dimensions — score 0.0 → continue",
+      "input": {"coverage": 0.9, "consistency": 0.9},
+      "expected_output": {"recommendation": "continue", "human_review_required": true},
+      "expect_pass": true,
+      "note": "Missing provenance/saturation score 0.0 and push toward continue; never fabricate a pass"
+    }
+  ]
+}

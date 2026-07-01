@@ -297,22 +297,35 @@ transcripts. Every sub-agent is forced to return the same shape
 (`skills/shared/orchestration-envelope.schema.json`), so consolidation is mechanical and
 the manager's context never fills with raw output.
 
+**Default to one agent.** `task-decompose` keeps a task solo unless a concrete escalation
+trigger holds (many independent sources, ≥2 independent sub-areas, cross-checking needed,
+context overflow, unknown breadth-first frontier). Multi-agent runs cost ~15× the tokens of
+a single pass, so fan-out has to earn itself.
+
 ```
-task ──▶ task-decompose ──▶ [ wave: fan-out, one agent per scope,        ]
-                            [ each FORCED to return the envelope schema  ]
-                                     │
-                                     ▼
-                         envelope-validate  (anti-drift gate — malformed = hard stop)
-                                     │
-                                     ▼
-                         findings-consolidate  (deterministic merge: dedup by key,
-                                     │           conflicts preserved, confidence floored,
-                                     │           coverage honest)
-                                     ▼
-                         frontier-expand  (dedup residual_frontier vs seen → next wave,
-                                     │      or signal saturation)
-                                     ▼
-                         loop-until-dry ──▶ consolidated result (human_review_required: true)
+task ──▶ task-decompose ──▶ solo? ──yes──▶ one agent ──┐
+              │ (fan-out only on a trigger)             │
+              ▼                                          │
+        [ wave: fan-out, one agent per scope,   ]        │
+        [ each FORCED to return the envelope    ]        │
+                     │                                   │
+                     ▼                                   │
+         envelope-validate  (anti-drift gate — malformed = hard stop)
+                     │                                   │
+                     ▼                                   ▼
+         findings-consolidate ◀───────────────────────── (deterministic merge: dedup by key,
+                     │            conflicts preserved, confidence floored, coverage honest;
+                     │            emits pending_verification = high-materiality keys)
+                     ▼
+         finding-verify  (adversarial: independent skeptics prompted to REFUTE each
+                     │     pending key; refuted findings leave the trusted set)
+                     ▼
+         wave-judge  (0.0–1.0 rubric → stop | continue; complements frontier saturation)
+                     ▼
+         frontier-expand  (dedup residual_frontier vs seen → next wave, or saturation)
+                     ▼
+         stop when frontier dry AND judge-satisfied ──▶ consolidated result
+                                                        (human_review_required: true)
 ```
 
 | Contract (canonical, drift-guarded) | Purpose |

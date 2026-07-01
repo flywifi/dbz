@@ -9,6 +9,15 @@ The `residual_frontier[]` field on every envelope (see
 leads it saw but did not cover; the manager collects those, removes anything already
 covered, and spawns the next wave against what remains.
 
+## Zeroth question: do we fan out at all?
+
+Before any of this runs, `task-decompose` decides **solo vs fan-out**, and **solo is the
+default**. A task runs as one agent (one scope = the whole task) unless a concrete
+escalation trigger holds: many independent sources, ≥2 independent sub-areas, cross-checking
+needed, context overflow, or an unknown breadth-first frontier. Multi-agent runs cost ~15×
+the tokens of a single pass, so the frontier machinery below only engages once fan-out is
+justified. A solo run still returns an envelope and still carries `human_review_required`.
+
 ## The loop
 
 ```
@@ -41,7 +50,7 @@ while frontier and wave < DEPTH_CAP and total_agents < SIZE_CAP:
 
 | Condition | Meaning | Default |
 |---|---|---|
-| **saturated** (loop-until-dry) | `K_DRY` consecutive waves produced no new frontier | `K_DRY = 1` for quick lookups, `2` for deep/technical |
+| **saturated + judge-satisfied** (loop-until-dry) | `K_DRY` consecutive waves produced no new frontier **and** `wave-judge` recommends stop | `K_DRY = 1` for quick lookups, `2` for deep/technical |
 | **depth_cap_reached** | recursion reached `DEPTH_CAP` waves | `2` quick, `4` deep, `1` mutate |
 | **size_cap_reached** | total agents hit `SIZE_CAP` | `24` (well under the Workflow 1000-agent lifetime cap) |
 | **budget_exhausted** | `budget.remaining()` below a floor (only if a token target was set) | floor `50_000` |
@@ -49,6 +58,19 @@ while frontier and wave < DEPTH_CAP and total_agents < SIZE_CAP:
 
 Prefer **loop-until-dry** over a fixed depth: a fixed `DEPTH_CAP` is a backstop, not the
 primary signal. K consecutive empty waves is the real "we got everything" test.
+
+## Two stop signals, AND-ed together
+
+Stopping the recursion needs **both** the frontier to be dry **and** `wave-judge` to
+recommend stop. They are deliberately redundant:
+
+- **Frontier saturation** answers "is there anywhere left to look?" (structural).
+- **`wave-judge`** answers "is what we have good enough?" (quality rubric — coverage,
+  consistency, provenance, saturation-confidence; deterministic composite in `judge.py`).
+
+A high judge score never overrides a non-empty frontier (unfinished leads win), and a dry
+frontier with a weak judge score (e.g. thin coverage) keeps the run going one more angle.
+The depth/size/budget caps are hard backstops that end the run regardless.
 
 ## Concurrency
 

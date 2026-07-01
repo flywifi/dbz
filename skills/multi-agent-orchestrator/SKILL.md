@@ -20,21 +20,38 @@ targets. Picks an orchestration **mode** by task class (see `references/routing.
 sets stop conditions (`skills/shared/frontier-model.md`), and consolidates deterministically
 (`skills/shared/consolidation.md`).
 
+## Default to one agent
+
+**Fan-out is off by default.** `task-decompose` keeps a task solo (one agent, one scope)
+unless a concrete escalation trigger holds — many independent sources, ≥2 independent
+sub-areas, cross-checking needed, context overflow, or an unknown breadth-first frontier.
+Multi-agent runs cost ~15× the tokens of a single pass, so the fan-out has to earn itself.
+When a task stays solo, the machinery below collapses to a single agent returning one
+envelope; the discipline (schema-forced return, human_review_required) still applies.
+
 ## The loop (what the manager does each run)
 
-1. **Decompose** — `task-decompose` atom → mode + N non-overlapping first-wave scopes +
-   stop conditions.
+1. **Decompose + gate** — `task-decompose` first decides solo vs fan-out. If solo, run one
+   agent and skip to step 4. If fan-out: mode + N non-overlapping scopes + stop conditions.
 2. **Fan out a wave** — spawn one agent per scope, each **forced to return the envelope
    schema**. Default engine: the Claude Code Workflow tool (`pipeline()` for per-item
    recursion, `parallel()` only when a barrier is genuinely needed).
 3. **Validate** — run `envelope-validate` on every return. A malformed envelope is a hard
    stop for that scope (re-run it); it never enters consolidation half-formed.
 4. **Consolidate** — `findings-consolidate` merges the wave (dedup by key, conflicts
-   preserved, confidence floored, coverage honest).
-5. **Recurse** — `frontier-expand` dedups each envelope's `residual_frontier` against the
+   preserved, confidence floored, coverage honest). It emits `pending_verification` — the
+   high-materiality keys (conflicts, low/uncertain confidence) that must be skeptic-checked.
+5. **Adversarially verify** — for each `pending_verification` key, run `finding-verify`:
+   independent skeptics prompted to *refute*, tallied deterministically. Refuted findings
+   leave the trusted set and land in `minority_report.failed_to_merge`; unverifiable ones
+   stay flagged. High-stakes findings are never promoted on a single pass.
+6. **Judge** — `wave-judge` scores the wave (coverage/consistency/provenance/saturation) and
+   recommends stop or continue: a quality stop signal that complements frontier saturation.
+7. **Recurse** — `frontier-expand` dedups each envelope's `residual_frontier` against the
    run's `seen` set and returns the next wave — or signals saturation.
-6. **Stop** — when saturated (K dry waves), depth/size capped, or budget exhausted. Record
-   whatever was left in the consolidated residual section — never keep spawning "to be safe."
+8. **Stop** — when the frontier is dry (K dry waves) **and** the judge says quality is
+   sufficient, or when depth/size capped or budget exhausted. Record whatever was left in
+   the consolidated residual section — never keep spawning "to be safe."
 
 ## Engine selection
 
@@ -62,12 +79,19 @@ sets stop conditions (`skills/shared/frontier-model.md`), and consolidates deter
 - Reading sub-agent transcripts to check them — read the envelope; that is the contract.
 - Resolving conflicts automatically — consolidation *preserves* them for human review.
 
+## Atoms this skill orchestrates
+
+`task-decompose` (solo/fan-out gate) · `envelope-validate` (anti-drift gate) ·
+`findings-consolidate` (deterministic merge) · `finding-verify` (adversarial skeptics) ·
+`wave-judge` (rubric stop signal) · `frontier-expand` (recursion).
+
 ## References
 
 - `skills/shared/orchestration-envelope.schema.json` — the fixed agent return
-- `skills/shared/frontier-model.md` — recursion + stop conditions
-- `skills/shared/consolidation.md` — deterministic merge rules
+- `skills/shared/frontier-model.md` — solo default, recursion + the two AND-ed stop signals
+- `skills/shared/consolidation.md` — deterministic merge + adversarial-verify stage
 - `skills/shared/minority-report.md` — disagreement preservation (non-negotiable)
 - `references/routing.md` — task class → mode + hybrid trigger conditions
-- `scripts/validate_envelope.py`, `scripts/consolidate.py` — the deterministic backers
+- `scripts/validate_envelope.py`, `scripts/consolidate.py`, `scripts/verify.py`,
+  `scripts/judge.py` — the deterministic backers (agents judge, scripts compute)
 - `workflow.json` — declarative spec (hybrid source of truth)

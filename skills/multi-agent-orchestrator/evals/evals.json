@@ -47,6 +47,51 @@
       },
       "expect_pass": true,
       "note": "Canonical/seed edits route to mutate mode with no auto-recursion and per-agent worktree isolation"
+    },
+    {
+      "id": "solo-01",
+      "label": "Small lookup — solo default, no fan-out",
+      "input": {
+        "run_id": "eval",
+        "task": "which roles does NIST CA-6 reference?"
+      },
+      "expected_output": {
+        "fan_out": false,
+        "agent_count": 1,
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "A one-agent task must not fan out — the default is solo unless a trigger holds"
+    },
+    {
+      "id": "edge-02",
+      "label": "High-materiality finding — adversarially verified before trust",
+      "input": {
+        "run_id": "eval",
+        "pending_verification": ["AC-2/CC6.1"],
+        "skeptic_votes": {"refuting": 3, "confirming": 1, "unable": 0}
+      },
+      "expected_output": {
+        "verdict": "refuted",
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "A conflict flagged in pending_verification is skeptic-checked; a refuting majority drops it from the trusted set"
+    },
+    {
+      "id": "edge-03",
+      "label": "Stop needs both signals — dry frontier but thin coverage continues",
+      "input": {
+        "run_id": "eval",
+        "frontier_saturated": true,
+        "judge": {"coverage": 0.5, "consistency": 0.95, "provenance": 0.95, "saturation": 0.95}
+      },
+      "expected_output": {
+        "recommendation": "continue",
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "note": "Even with a dry frontier, wave-judge continues on thin coverage — stop requires both signals"
     }
   ]
 }

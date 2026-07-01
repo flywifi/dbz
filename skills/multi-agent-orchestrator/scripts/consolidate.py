@@ -134,6 +134,14 @@ def consolidate(run_id: str, envelopes: List[Dict[str, Any]],
     state = "complete" if (counts.get("partial", 0) == 0 and counts.get("blocked", 0) == 0
                            and not residual) else "partial"
 
+    # High-materiality findings that should be adversarially verified before they are
+    # trusted: any conflict, or any finding merged at low/uncertain confidence. The manager
+    # routes these keys to the finding-verify atom (skeptics); nothing here is auto-trusted.
+    pending_verification = sorted({
+        f["key"] for f in findings
+        if f["status"] == "conflict" or f["confidence"] in ("low", "uncertain")
+    })
+
     all_conflicts = carried_conflicts + cross_conflicts
     if agents_total == 0:
         carried_uncertainty.append({
@@ -168,6 +176,7 @@ def consolidate(run_id: str, envelopes: List[Dict[str, Any]],
         },
         "findings": findings,
         "residual_frontier": residual,
+        "pending_verification": pending_verification,
         "minority_report": minority_report,
         "human_review_required": True,
     }

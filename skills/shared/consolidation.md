@@ -33,7 +33,29 @@ hard stop, never silently merged.
    (`conflicts`, `failed_to_merge`, `residual_uncertainty`) plus the cross-agent
    conflicts found in step 2. `decision_log` records why the run stopped and which stop
    condition fired.
-5. **Emit** one consolidated object with `human_review_required: true`.
+5. **Flag high-materiality findings for verification**: emit `pending_verification` — the
+   sorted set of keys that are either a `conflict` or merged at `low`/`uncertain`
+   confidence. These are NOT auto-trusted; the manager routes them to adversarial
+   verification (below) before they count.
+6. **Emit** one consolidated object with `pending_verification` and
+   `human_review_required: true`.
+
+## Adversarial verification (after consolidation, before trust)
+
+Consolidation decides *what merged*; it does not decide *what is true*. Every key in
+`pending_verification` is checked by the `finding-verify` atom: N independent skeptic agents
+prompted to **refute** it, tallied deterministically in `scripts/verify.py`.
+
+- **confirmed** (strict confirming majority) → finding kept, annotated.
+- **refuted** (refuting majority, or a tie — burden of proof is on the finding) → finding
+  **leaves `findings[]`** and is recorded in `minority_report.failed_to_merge`. Never
+  silently dropped, never fabricated back in without new skeptic evidence.
+- **unverified** (skeptics could not check — unreachable source, rate limit) → finding kept
+  but flagged in `residual_uncertainty`. Unverifiable is never treated as refuted.
+
+Only high-materiality keys are verified — not every finding — because multi-agent
+verification is itself expensive (~15× token reality). `apply_verdicts()` folds the results
+back deterministically.
 
 ## Hard rules (inherited from minority-report.md)
 
@@ -59,6 +81,7 @@ hard stop, never silently merged.
   },
   "findings": [ { "key": "...", "status": "merged | conflict", "value": ..., "provenance": [...], "confidence": "..." } ],
   "residual_frontier": [ { "scope": "...", "reason": "..." } ],
+  "pending_verification": [ "key1", "key2" ],
   "minority_report": { "decision_log": {...}, "conflicts": [...], "failed_to_merge": [...], "residual_uncertainty": [...] } | null,
   "human_review_required": true
 }

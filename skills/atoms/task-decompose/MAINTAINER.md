@@ -2,6 +2,11 @@
 
 ## Non-Negotiables
 
+- **Solo is the default.** `fan_out` is `false` unless a concrete escalation trigger holds
+  (many independent sources, ≥2 independent sub-areas, cross-checking needed, context
+  overflow, or unknown breadth-first frontier). "Might be faster" is not a trigger — the
+  ~15× token cost of multi-agent runs must be justified.
+- When solo, `agent_count` is 1 and `scopes` has exactly one entry (the whole task).
 - Mode is chosen from the routing table by task class — never widened to `mutate` or
   `external` to "make things easier". A read task gets `read-fanout`.
 - Scopes in one wave must be non-overlapping; overlapping scopes corrupt the
@@ -23,6 +28,7 @@
 ## Regression Cases
 
 See `evals/evals.json`:
-- pass-01: a read-only extraction task yields `mode: read-fanout` with ≥2 scopes
+- pass-01: a broad multi-source extraction yields `fan_out: true` with ≥2 scopes
 - fail-01: an underspecified task returns an error, not fabricated scopes
 - edge-01: a canonical-update task yields `mode: mutate` with `depth_cap: 1`
+- solo-01: a small single-source lookup yields `fan_out: false`, `agent_count: 1`, one scope

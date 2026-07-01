@@ -14,7 +14,8 @@ drift the same way atoms do, so it gets the same structural guard):
      (valid JSON), frontier-model.md, consolidation.md under skills/shared/.
   7. The multi-agent-orchestrator skill has SKILL.md, MAINTAINER.md, workflow.json,
      references/routing.md, and evals/evals.json (>=3 cases).
-  8. Its deterministic backers exist: scripts/validate_envelope.py and scripts/consolidate.py.
+  8. Its deterministic backers exist: scripts/validate_envelope.py, scripts/consolidate.py,
+     scripts/verify.py, and scripts/judge.py.
   9. references/routing.md names only valid modes (read-fanout, mutate, external) and
      the orchestration_hybrid_mode flag is registered in feature_flags.json.
 
@@ -129,7 +130,8 @@ def main() -> int:
         failures.append("  ✗ Invariant 7 — skills/multi-agent-orchestrator/ not found")
 
     # Invariant 8: deterministic backer scripts present
-    for rel in ("scripts/validate_envelope.py", "scripts/consolidate.py"):
+    for rel in ("scripts/validate_envelope.py", "scripts/consolidate.py",
+                "scripts/verify.py", "scripts/judge.py"):
         if not (ORCH_DIR / rel).exists():
             failures.append(f"  ✗ Invariant 8 — missing multi-agent-orchestrator/{rel}")
 

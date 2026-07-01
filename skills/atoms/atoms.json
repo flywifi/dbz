@@ -344,6 +344,48 @@
         "human_review_required": "boolean — always true"
       },
       "tags": ["orchestration", "frontier", "recursion", "fan-out"]
+    },
+    {
+      "id": "finding-verify",
+      "label": "Finding Verify (adversarial)",
+      "version": "1.0",
+      "path": "skills/atoms/finding-verify",
+      "script": "skills/multi-agent-orchestrator/scripts/verify.py",
+      "input_schema": {
+        "finding": "object — {key, value, provenance, confidence} under scrutiny",
+        "why_material": "string — why this finding warrants verification",
+        "skeptic_votes": "object — {refuting, confirming, unable} from independent skeptic agents"
+      },
+      "output_schema": {
+        "key": "string",
+        "verdict": "string — confirmed | refuted | unverified",
+        "refuting_votes": "integer",
+        "confirming_votes": "integer",
+        "unable_votes": "integer",
+        "human_review_required": "boolean — always true"
+      },
+      "tags": ["orchestration", "verify", "adversarial", "skeptic"]
+    },
+    {
+      "id": "wave-judge",
+      "label": "Wave Judge (rubric stop signal)",
+      "version": "1.0",
+      "path": "skills/atoms/wave-judge",
+      "script": "skills/multi-agent-orchestrator/scripts/judge.py",
+      "input_schema": {
+        "coverage": "number 0.0-1.0 — how much of the intended scope the wave reached",
+        "consistency": "number 0.0-1.0 — freedom from unresolved conflicts",
+        "provenance": "number 0.0-1.0 — how well findings are sourced",
+        "saturation": "number 0.0-1.0 — confidence the frontier is exhausted"
+      },
+      "output_schema": {
+        "composite": "number 0.0-1.0 — weighted rubric score",
+        "recommendation": "string — stop | continue",
+        "weakest_dimension": "string",
+        "dimension_scores": "object",
+        "human_review_required": "boolean — always true"
+      },
+      "tags": ["orchestration", "judge", "rubric", "stop-signal"]
     }
   ]
 }

@@ -16,7 +16,15 @@
       "atom": "task-decompose",
       "input": {"task": "{{input.task}}", "corpus_hint": "{{input.corpus_hint}}", "max_scopes": "{{input.max_scopes}}"},
       "output_as": "plan",
-      "note": "Picks mode + first-wave scopes + stop_conditions from routing.md / frontier-model.md."
+      "note": "First gates solo vs fan-out (default solo). If fan-out: mode + scopes + stop_conditions from routing.md / frontier-model.md."
+    },
+    {
+      "id": "solo_gate",
+      "action": "branch",
+      "condition": "plan.fan_out == false",
+      "then": "run one agent on plan.scopes[0], skip to consolidate",
+      "else": "continue to wave",
+      "note": "Default is one agent. Multi-agent fan-out only runs when task-decompose set fan_out true on a trigger."
     },
     {
       "id": "wave",
@@ -41,7 +49,23 @@
       "atom": "findings-consolidate",
       "input": {"run_id": "{{input.run_id}}", "envelopes": "{{validated}}", "stop_condition": "{{frontier.stop_condition}}"},
       "output_as": "consolidated",
-      "note": "Deterministic merge; conflicts preserved, coverage honest."
+      "note": "Deterministic merge; conflicts preserved, coverage honest. Emits pending_verification (high-materiality keys)."
+    },
+    {
+      "id": "verify",
+      "atom": "finding-verify",
+      "input": {"finding": "{{consolidated.findings[key in pending_verification]}}", "skeptic_votes": "{{skeptics.votes}}"},
+      "output_as": "verified",
+      "repeat": "per_pending_verification",
+      "then": "apply_verdicts(consolidated, verified)",
+      "note": "Adversarial: independent skeptics prompted to refute each high-materiality finding. Refuted findings leave the trusted set."
+    },
+    {
+      "id": "judge",
+      "atom": "wave-judge",
+      "input": {"coverage": "{{scores.coverage}}", "consistency": "{{scores.consistency}}", "provenance": "{{scores.provenance}}", "saturation": "{{scores.saturation}}"},
+      "output_as": "verdict",
+      "note": "Rubric stop signal. Complements frontier saturation — does not override a non-empty frontier."
     },
     {
       "id": "expand",
@@ -53,13 +77,13 @@
     {
       "id": "loop_or_stop",
       "action": "loop",
-      "condition": "frontier.saturated == false AND frontier.stop_condition == null",
+      "condition": "NOT (frontier.saturated AND verdict.recommendation == 'stop') AND frontier.stop_condition == null",
       "loop_to": "wave",
       "else": "return consolidated",
-      "note": "Loop-until-dry: repeat waves until saturated or a stop condition fires."
+      "note": "Stop when the frontier is dry AND the judge says quality is sufficient; or when a hard stop condition (depth/size/budget) fires."
     }
   ],
   "output": "{{consolidated}}",
   "on_step_failure": "stop_and_return_error",
-  "notes": "Every envelope and the final consolidated object carry human_review_required: true. Recursion is driven by residual_frontier, not a fixed depth. mutate mode uses depth_cap 1 and worktree isolation per frontier-model.md / routing.md."
+  "notes": "Default is one agent (solo_gate); fan-out only on a task-decompose trigger. Every envelope and the final consolidated object carry human_review_required: true. High-materiality findings are adversarially verified before they are trusted. Stop = frontier dry AND judge-satisfied. mutate mode uses depth_cap 1 and worktree isolation per frontier-model.md / routing.md."
 }
