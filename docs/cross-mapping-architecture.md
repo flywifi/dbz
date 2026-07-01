@@ -377,3 +377,12 @@ of intentionally-broken fixtures + a clean control + a hand-authored oracle + a 
 so it must catch every planted defect and stay silent on clean input. Gating lives in
 `.pre-commit-config.yaml` (local) and `.github/workflows/health.yml` (CI); `sync_check.py`
 invariant 10 keeps the package intact.
+
+The instruction audit runs in CI in two parts, so it never produces a false gate:
+`instruction_blocks.py --audit-all` is a deterministic, headless **structure gate** (every
+atom keeps a scope + a "Do NOT use for" block) that always runs; `instruction_audit_run.py`
+adds the **semantic** adversarial-consensus contradiction pass, which executes headlessly
+when `ANTHROPIC_API_KEY` is configured (the run over all skills found zero confirmed
+contradictions) and skips cleanly when it is not. A purely lexical contradiction detector is
+deliberately avoided as a gate — it would false-positive on skills that legitimately discuss
+"edit"/"mutate" as concepts.

@@ -31,3 +31,10 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+
+      - id: instruction-audit-structure
+        name: instruction audit (structure — every atom has scope + Do-NOT-use)
+        entry: python3 skills/health-auditor/scripts/instruction_blocks.py --audit-all
+        language: system
+        pass_filenames: false
+        always_run: true

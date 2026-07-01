@@ -19,7 +19,12 @@ Runs four layers, deterministic-first so the fast layers can gate every commit a
 3. **Instruction-level contradiction/drift** — the `instruction-audit` atom: decompose each
    skill's `SKILL.md` + `MAINTAINER.md` into classified blocks and check high-risk pairs with
    an **adversarial-consensus** LLM pass (only convergent contradictions are reported).
-   Human-invoked (needs model access); read-only, never edits instructions.
+   Read-only, never edits instructions. In CI this runs in two parts:
+   `instruction_blocks.py --audit-all` is a deterministic, headless **structure gate** (every
+   atom must keep a scope + a "Do NOT use for" block) that always runs; the **semantic**
+   contradiction pass (`instruction_audit_run.py`) runs headlessly when `ANTHROPIC_API_KEY`
+   is configured and skips cleanly otherwise, so CI never produces a false gate. Locally the
+   semantic pass is the human-invoked deep check.
 4. **Repair** — `tools/health_repair.py`: dry-run by default; `--apply` performs only
    mechanical fixes; contradictions and schema/vocab violations are surfaced as human TODOs.
 
@@ -46,7 +51,8 @@ answer" discipline used by the orchestration harness.
 
 - `tools/health_audit.py` — deterministic scan / vocab / scoring
 - `tools/health_repair.py` — mechanical-only, human-gated repair
-- `skills/health-auditor/scripts/instruction_blocks.py` — deterministic block decomposition
+- `skills/health-auditor/scripts/instruction_blocks.py` — deterministic block decomposition + `--audit-all` structure gate
+- `skills/health-auditor/scripts/instruction_audit_run.py` — CI runner: structure always, semantic when credentialed
 - `skills/atoms/instruction-audit/SKILL.md` — the adversarial-consensus instruction checker
 - `skills/health-auditor/tests/run_golden.py` — the auditor's self-test
 - `canonical-sources/framework_vocab.json` — controlled vocabularies

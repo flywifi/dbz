@@ -172,8 +172,8 @@ def main() -> int:
         failures.append("  ✗ Invariant 10 — missing canonical-sources/framework_vocab.json")
     if HEALTH_DIR.exists():
         for rel in ("SKILL.md", "MAINTAINER.md", "workflow.json", "evals/evals.json",
-                    "scripts/instruction_blocks.py", "tests/run_golden.py",
-                    "tests/golden/oracle.json"):
+                    "scripts/instruction_blocks.py", "scripts/instruction_audit_run.py",
+                    "tests/run_golden.py", "tests/golden/oracle.json"):
             if not (HEALTH_DIR / rel).exists():
                 failures.append(f"  ✗ Invariant 10 — missing skills/health-auditor/{rel}")
         he = HEALTH_DIR / "evals" / "evals.json"

@@ -27,12 +27,20 @@
       "note": "Who audits the auditor: golden set + independent oracle + pinned hash."
     },
     {
-      "id": "instructions",
-      "atom": "instruction-audit",
-      "input": {"skill_dir": "{{input.skill_dir}}", "num_skeptics": 3},
+      "id": "instructions_structure",
+      "action": "run",
+      "command": "python3 skills/health-auditor/scripts/instruction_blocks.py --audit-all",
+      "output_as": "instr_structure",
+      "on_blocking": "fail (exit 1) — an atom lost its scope or Do-NOT-use block",
+      "note": "Deterministic instruction-audit structure gate. Runs in pre-commit and CI (headless, FP-free)."
+    },
+    {
+      "id": "instructions_semantic",
+      "action": "run",
+      "command": "python3 skills/health-auditor/scripts/instruction_audit_run.py",
       "output_as": "contradictions",
-      "gate": "human_invoked",
-      "note": "Adversarial-consensus contradiction/drift check. Needs model access; not run headless in CI. Read-only."
+      "gate": "runs_when_ANTHROPIC_API_KEY_present",
+      "note": "Adversarial-consensus contradiction/drift check via instruction-audit. In CI it runs the semantic pass only when ANTHROPIC_API_KEY is set (else structure-only, clean skip); locally it is the human-invoked deep check. Read-only, never auto-edits."
     },
     {
       "id": "repair",

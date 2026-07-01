@@ -116,6 +116,63 @@ def enumerate_pairs(files: List[Path]) -> Dict[str, Any]:
             "human_review_required": True}
 
 
+_ROOT = Path(__file__).resolve().parents[3]
+
+
+def _iter_skills(root: Path):
+    """(dir, is_atom) for every real skill — atoms under skills/atoms/, composite skills
+    under skills/ — excluding templates, shared, and golden test fixtures."""
+    out = []
+    adir = root / "skills" / "atoms"
+    if adir.exists():
+        out += [(d, True) for d in sorted(adir.iterdir())
+                if d.is_dir() and d.name != "atom-template" and not d.name.startswith(".")]
+    sdir = root / "skills"
+    if sdir.exists():
+        out += [(d, False) for d in sorted(sdir.iterdir())
+                if d.is_dir() and d.name not in ("atoms", "shared") and not d.name.startswith(".")
+                and (d / "SKILL.md").exists()]
+    return [(d, a) for d, a in out if "golden" not in d.parts]
+
+
+def audit_all_structure(root: Path = _ROOT) -> List[Dict[str, Any]]:
+    """Deterministic structure gate: every skill decomposes; every atom has scope + do_not_use.
+    FP-free and headless — the part of instruction-audit that can gate CI/pre-commit."""
+    findings = []
+    for d, is_atom in _iter_skills(root):
+        files = [d / "SKILL.md"] + ([d / "MAINTAINER.md"] if (d / "MAINTAINER.md").exists() else [])
+        try:
+            cls = set()
+            for f in files:
+                for b in decompose(f.read_text(encoding="utf-8")):
+                    cls.add(b["cls"])
+        except Exception as e:  # noqa: BLE001
+            findings.append({"skill": d.name, "severity": "blocking",
+                             "issue": f"instruction decomposition error: {e}"})
+            continue
+        if "scope" not in cls:
+            findings.append({"skill": d.name, "severity": "blocking",
+                             "issue": "no scope/purpose block found in SKILL.md"})
+        if is_atom and "do_not_use" not in cls:
+            findings.append({"skill": d.name, "severity": "blocking",
+                             "issue": "atom SKILL.md has no 'Do NOT use for' block (dbz convention)"})
+    findings.sort(key=lambda x: (x["severity"], x["skill"], x["issue"]))
+    return findings
+
+
+def _audit_all(root: Path = _ROOT) -> int:
+    findings = audit_all_structure(root)
+    n = len(_iter_skills(root))
+    if findings:
+        print(f"instruction-audit (structure) — {len(findings)} blocking finding(s) across {n} skill(s):")
+        for f in findings:
+            print(f"  ✗ [{f['severity']}] {f['skill']}: {f['issue']}")
+        return 1
+    print(f"instruction-audit (structure): OK — all {n} skills decompose; every atom has "
+          f"scope + a 'Do NOT use for' block.")
+    return 0
+
+
 def _self_test() -> int:
     sample = ("# demo\nUse this to edit files.\n\n## Do NOT use for\n- reading files\n\n"
               "## Non-negotiables\n- never edit files\n\n## Input Schema\n```json\n{}\n```\n")
@@ -141,8 +198,11 @@ def main(argv=None) -> int:
     argv = argv if argv is not None else sys.argv[1:]
     if "--self-test" in argv:
         return _self_test()
+    if "--audit-all" in argv:
+        return _audit_all()
     if not argv:
-        print("usage: instruction_blocks.py <SKILL.md> [MAINTAINER.md ...] | --self-test", file=sys.stderr)
+        print("usage: instruction_blocks.py <SKILL.md> [MAINTAINER.md ...] | --self-test | --audit-all",
+              file=sys.stderr)
         return 2
     out = enumerate_pairs([Path(a) for a in argv])
     print(json.dumps(out, indent=2, sort_keys=True, ensure_ascii=False))
