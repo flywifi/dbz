@@ -68,6 +68,23 @@ def normalize_framework(name: str) -> str:
     return _FRAMEWORK_ALIASES.get(name, name)
 
 
+_ISO_FRAMEWORK_LABEL = "ISO 27001/2 (2022)"
+
+
+def _normalize_native_id(ctrl_id: str, fw: str) -> str:
+    """Canonicalize native control ids where a normalizer exists.  ISO 27001/2
+    citations arrive zero-padded ('A.05.01', '06.01.01') in the production CSVs;
+    normalize_iso_id maps them to the canonical forms the spine loaders emit
+    ('A.5.1', '6.1.1') so ER and projection ids join.  Unrecognized ids pass
+    through unchanged (never guess)."""
+    if fw == _ISO_FRAMEWORK_LABEL:
+        from spine_normalize import normalize_iso_id  # sibling module
+        canon, _space = normalize_iso_id(ctrl_id)
+        if canon:
+            return canon
+    return ctrl_id
+
+
 # ── parser ────────────────────────────────────────────────────────────────────
 
 class ERCrosswalk:
@@ -121,7 +138,7 @@ class ERCrosswalk:
                 for ctrl_id, fw in pairs:
                     ctrl_id = ctrl_id.strip()
                     if ctrl_id and fw:
-                        controls_by_fw[fw].add(ctrl_id)
+                        controls_by_fw[fw].add(_normalize_native_id(ctrl_id, fw))
 
                 self.er_controls[er_id] = {
                     "name": name,

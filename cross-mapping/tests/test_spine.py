@@ -72,6 +72,19 @@ if _OSCAL_CACHE.exists():
     check(_obj.get("ac-2_obj.d.3-1") == "d.3", "objective leaf ac-2_obj.d.3-1 collapses to d.3")
     check(_obj.get("ac-2_obj") == "", "objective root is control-level")
 
+# normalize_iso_id: ISO 27001/2:2022 canonical form across the three source dialects
+check(SN.normalize_iso_id("A.05.01") == ("A.5.1", "annex_a"), "iso ER zero-padded Annex A")
+check(SN.normalize_iso_id("A.5.15") == ("A.5.15", "annex_a"), "iso OLIR Annex A passthrough")
+check(SN.normalize_iso_id("8.17") == ("A.8.17", "annex_a"), "iso bare above ISMS ceiling -> Annex A")
+check(SN.normalize_iso_id("5.1a") == ("5.1 a", "isms_clause"), "iso HITRUST compressed sub-part")
+check(SN.normalize_iso_id("10.2a1") == ("10.2 a.1", "isms_clause"), "iso HITRUST 10.2a1")
+check(SN.normalize_iso_id("6.1.1e2") == ("6.1.1 e.2", "isms_clause"), "iso 3-seg + sub-part")
+check(SN.normalize_iso_id("04.01") == ("4.1", "isms_clause"), "iso ER zero-padded ISMS clause")
+check(SN.normalize_iso_id("06.01.01") == ("6.1.1", "isms_clause"), "iso ER 3-seg zero-padded")
+check(SN.normalize_iso_id("5.1") == ("5.1", "ambiguous"), "iso bare 5.1 stays ambiguous (never guess)")
+check(SN.normalize_iso_id("5.99") == (None, "unknown"), "iso beyond both ranges -> unknown")
+check(SN.normalize_iso_id("garbage") == (None, "unknown"), "iso garbage -> unknown")
+
 # repeated '-N' objective suffixes all strip (synthetic — no such id in current data)
 _synth = {"parts": [{"id": "xx-1_obj", "name": "assessment-objective", "parts": [
     {"id": "xx-1_obj.a-1-2", "name": "assessment-objective", "prose": ""}]}]}
@@ -285,6 +298,22 @@ if _DB.exists():
     # CCI bridge from the current DISA XML: coverage well past the old xlsx ceiling
     n_cci_ctrl = _c2.execute("SELECT COUNT(DISTINCT r5_control) FROM cci_bridge").fetchone()[0]
     check(n_cci_ctrl > 1000, f"cci_bridge: >1000 distinct r5 controls (got {n_cci_ctrl}, was 907)")
+    # ISO canonical ids: no zero-padded ids anywhere; ER and projection sets join
+    _iso = "ISO 27001/2 (2022)"
+    n_pad = _c2.execute(
+        "SELECT COUNT(*) FROM framework_projection WHERE framework=? AND native_id GLOB '*0[0-9].*'",
+        (_iso,)).fetchone()[0]
+    n_pad += _c2.execute(
+        "SELECT COUNT(*) FROM er_mappings WHERE framework=? AND native_id GLOB '*0[0-9].*'",
+        (_iso,)).fetchone()[0]
+    check(n_pad == 0, f"no zero-padded ISO native ids remain (got {n_pad})")
+    _shared = _c2.execute("""
+        SELECT COUNT(*) FROM (
+            SELECT DISTINCT native_id FROM framework_projection WHERE framework=?
+            INTERSECT
+            SELECT DISTINCT native_id FROM er_mappings WHERE framework=?)""",
+        (_iso, _iso)).fetchone()[0]
+    check(_shared > 0, f"ER and projection ISO canonical ids intersect (got {_shared}, was 0)")
     _c2.close()
 
 # ── 8. Durable ledger + health-audit detector (Phase 7) ────────────────────────

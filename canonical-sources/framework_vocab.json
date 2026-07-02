@@ -34,7 +34,10 @@
       "PCI DSS v4.0.1",
       "CSA CCM v4.1",
       "NIST 800-53 Release 5.2.0",
-      "CIS Controls v8.1"
+      "CIS Controls v8.1",
+      "ISO/IEC 27001:2013",
+      "ISO/IEC 27002:2013",
+      "ISO/IEC 27001:2022/Amd 1:2024"
     ]
   },
   "relationship_types": {

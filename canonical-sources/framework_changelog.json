@@ -166,6 +166,50 @@
       "human_confirmed": false,
       "confirmation_source": null,
       "announcement_ref": null
+    },
+    {
+      "entry_id": "chg-iso-27001-2013-to-2022",
+      "framework_id": "iso-27001",
+      "change_type": "major_revision",
+      "old_version": "ISO/IEC 27001:2013",
+      "new_version": "ISO/IEC 27001:2022 (+Amd 1:2024)",
+      "changed_at": "2022-10-25",
+      "source_url": "https://www.iso.org/standard/27001",
+      "summary": "Third edition. Annex A completely restructured to align with ISO/IEC 27002:2022: 114 controls in 14 clauses (A.5-A.18) become 93 controls in 4 themes (5 Organizational, 6 People, 7 Physical, 8 Technological). 11 new controls (5.7 threat intelligence, 5.23 cloud services, 5.30 ICT readiness for business continuity, 7.4 physical security monitoring, 8.9 configuration management, 8.10 information deletion, 8.11 data masking, 8.12 data leakage prevention, 8.16 monitoring activities, 8.23 web filtering, 8.28 secure coding); no 2013 controls dropped outright — the rest merged or renumbered. ISMS management clauses 4-10 structurally unchanged (minor 6.3 addition, 9.2/9.3 subdivided). Amd 1:2024 adds climate-change consideration text (no control changes). Transition period ended 2025-10-31 — 2013 certificates no longer valid.",
+      "controls_added": [
+        "A.5.7",
+        "A.5.23",
+        "A.5.30",
+        "A.7.4",
+        "A.8.9",
+        "A.8.10",
+        "A.8.11",
+        "A.8.12",
+        "A.8.16",
+        "A.8.23",
+        "A.8.28"
+      ],
+      "controls_removed": [],
+      "controls_modified": [],
+      "human_confirmed": false,
+      "confirmation_source": null,
+      "announcement_ref": null
+    },
+    {
+      "entry_id": "chg-iso-27002-2013-to-2022",
+      "framework_id": "iso-27002",
+      "change_type": "major_revision",
+      "old_version": "ISO/IEC 27002:2013",
+      "new_version": "ISO/IEC 27002:2022 (+Amd 1:2024)",
+      "changed_at": "2022-02-15",
+      "source_url": "https://www.iso.org/standard/75652.html",
+      "summary": "Third edition, published before 27001:2022 and defining the restructure 27001 Annex A adopted: 93 controls in 4 themes with attribute tagging (control type, InfoSec properties, cybersecurity concepts, operational capabilities, security domains). Annex B of 27002:2022 carries the official 2013<->2022 correspondence tables — the authoritative source for any future legacy-id bridge (NOT reproduced in this repo; add the artifact before loading legacy 2013-cited report data).",
+      "controls_added": [],
+      "controls_removed": [],
+      "controls_modified": [],
+      "human_confirmed": false,
+      "confirmation_source": null,
+      "announcement_ref": null
     }
   ]
 }

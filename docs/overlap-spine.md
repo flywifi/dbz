@@ -26,7 +26,9 @@ control B", but which specific requirement inside a control is shared.
 ## How each framework reaches the spine
 - **NIST 800-53 ↔ ISO 27001:2022** — the official NIST OLIR crosswalk (`direct_olir`). The
   relationship (equal / subset / superset / intersect) is derived from mapping cardinality,
-  since this OLIR release leaves the relationship column empty.
+  since this OLIR release leaves the relationship column empty. ISO ids are canonicalized by
+  `normalize_iso_id` (Annex A `A.5.1`, ISMS clauses `10.2 a.1`, ambiguous ids kept bare) so
+  OLIR / HITRUST-hub / ER citations of the same 2022 control join across sources.
 - **CMMC 2.0 ↔ NIST SP 800-171 r2 ↔ 800-53 r5** — the CMMC/800-171A/800-53A crosswalk
   (`cmmc171`). Source-stated STRM relationships (Equal / Subset of / Superset of / Intersects
   with) from the "Mapping -171 to -53" column. Sub-part resolution via the 800-53A assessment-

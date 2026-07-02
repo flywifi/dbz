@@ -31,6 +31,7 @@ import pandas as pd  # provided via requirements.txt
 from config import source_path, sheet_name, header_row, col  # type: ignore
 from spine_normalize import (  # type: ignore
     normalize_control_id,
+    normalize_iso_id,
     oscal_control_id,
     parse_cci_index,
     parse_hitrust_ref,
@@ -333,8 +334,8 @@ def load_olir_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
             rowd = dict(zip(df.columns, rec))
             rows_read += 1
             focal_raw = str(rowd.get(nid_c, "")).strip()
-            iso_id = str(rowd.get(iso_c, "")).strip()
-            if not focal_raw or focal_raw.lower() == "nan" or not iso_id or iso_id.lower() == "nan":
+            iso_raw = str(rowd.get(iso_c, "")).strip()
+            if not focal_raw or focal_raw.lower() == "nan" or not iso_raw or iso_raw.lower() == "nan":
                 continue
             focal = normalize_control_id(focal_raw)
             if not focal:
@@ -342,6 +343,10 @@ def load_olir_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
             if focal not in catalog_ids:
                 unresolved.add(focal_raw)
                 continue
+            # Canonicalize the ISO citation (A-prefixed Annex A / bare ISMS clause);
+            # keep the raw id when the normalizer can't classify it (never guess).
+            iso_canon, _iso_space = normalize_iso_id(iso_raw)
+            iso_id = iso_canon if iso_canon else iso_raw
             key = (iso_id, focal)
             if key in seen:
                 continue
@@ -459,6 +464,8 @@ def load_hitrust_hub(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], dic
     seen_edge: Set[Tuple[str, str, str]] = set()
     nist_parse_incomplete = 0
     nist_tokens = 0
+    iso_ambiguous = 0
+    iso_label = _HUB_FRAMEWORKS.get("iso_27001_2022_id")
 
     for i, rec in enumerate(df.itertuples(index=False), start=0):
         rowd = dict(zip(df.columns, rec))
@@ -481,6 +488,13 @@ def load_hitrust_hub(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], dic
 
         for actual_col, label in fw_cols.items():
             for target_id in _split_cell(rowd.get(actual_col)):
+                if label == iso_label:
+                    # Canonicalize ISO citations so hub / OLIR / ER ids join.
+                    _canon, _space = normalize_iso_id(target_id)
+                    if _canon:
+                        target_id = _canon
+                    if _space == "ambiguous":
+                        iso_ambiguous += 1
                 hub_rows.append({
                     "hitrust_id": hitrust_id, "framework": label,
                     "target_id": target_id, "source_row": i,
@@ -508,6 +522,7 @@ def load_hitrust_hub(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], dic
         "frameworks": sorted({e["framework"] for e in edges}),
         "nist_tokens": nist_tokens,
         "nist_parse_incomplete": nist_parse_incomplete,
+        "iso_ambiguous": iso_ambiguous,
     }
     return hub_rows, edges, stats
 

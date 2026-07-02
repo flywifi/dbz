@@ -1116,7 +1116,8 @@ def build_db(
     hub_rows, hub_edges, hub_stats = spine_loader.load_hitrust_hub(catalog_ids)
     cascade = _unc.apply_confirmations_to_edges(hub_edges, confirmations)
     print(f"  hitrust hub: frameworks={len(hub_stats['frameworks'])} edges={hub_stats['edges']} "
-          f"nist_parse_incomplete={hub_stats['nist_parse_incomplete']}")
+          f"nist_parse_incomplete={hub_stats['nist_parse_incomplete']} "
+          f"iso_ambiguous={hub_stats.get('iso_ambiguous', 0)}")
     print(f"  confirmation cascade: {cascade}")
     _executemany_chunked(conn, """
         INSERT INTO hitrust_hub (hitrust_id, framework, target_id, source_row)

@@ -231,6 +231,81 @@ def parse_objective(raw: str) -> List[Tuple[str, Optional[str], Optional[str]]]:
     return [(cid, path, None)]
 
 
+# ── ISO 27001/27002:2022 canonical id normalizer ───────────────────────────────
+
+# ISMS management-clause ceilings in the 2022 edition: a bare 2-segment id whose
+# second segment exceeds the ceiling for its clause can only be Annex A.
+_ISO_ISMS_CEILING = {5: 3, 6: 3, 7: 5, 8: 3}
+_ISO_ISMS_ONLY = {4, 9, 10}      # no Annex A theme uses these clause numbers
+_ISO_ANNEX_MAX = {5: 37, 6: 8, 7: 14, 8: 34}  # Annex A control ranges (2022)
+_ISO_SEG_RE = re.compile(r"^(\d{1,2})((?:\.\d{1,2})*)([a-z](?:[a-z0-9]*))?$")
+
+
+def normalize_iso_id(raw: str) -> Tuple[Optional[str], str]:
+    """
+    Normalize an ISO 27001/27002:2022 citation to canonical form.
+
+    Returns (canonical_id, id_space); id_space one of:
+      'annex_a'      Annex A control — canonical 'A.5.1' (prefix restored, unpadded)
+      'isms_clause'  ISMS management clause — canonical '6.1.1', sub-parts ' a.1'
+      'ambiguous'    bare 2-segment id inside both ranges (e.g. '5.1') — kept bare,
+                     NEVER promoted to Annex A (never guess)
+      'unknown'      unparseable — canonical_id is None, caller keeps the raw id
+
+    Handles the three source dialects: OLIR 'A.5.1' / '7.5.1', HITRUST compressed
+    '5.1a' / '10.2a1' / '6.1.1e2', ER zero-padded 'A.05.01' / '04.01' / '06.01.01'.
+    """
+    if not isinstance(raw, str):
+        return None, "unknown"
+    s = raw.strip()
+    if not s or s.lower() == "nan":
+        return None, "unknown"
+
+    prefixed = False
+    m = re.match(r"^[Aa][\.\s]\s*", s)
+    if m:
+        prefixed = True
+        s = s[m.end():]
+
+    sm = _ISO_SEG_RE.match(s)
+    if not sm:
+        return None, "unknown"
+    first = int(sm.group(1))
+    rest = [int(tok) for tok in sm.group(2).split(".") if tok] if sm.group(2) else []
+    suffix = sm.group(3) or ""
+
+    segs = [first] + rest
+    sub = ""
+    if suffix:
+        toks = _HITRUST_SUFFIX_TOK.findall(suffix.lower())
+        sub = ".".join(str(int(t)) if t.isdigit() else t for t in toks)
+
+    base = ".".join(str(n) for n in segs)
+    canonical_isms = f"{base} {sub}" if sub else base
+
+    if prefixed:
+        # Explicit Annex A citation.  Validate the range where known; out-of-range
+        # explicit citations still honor the source's claim (annex_a, unpadded).
+        return f"A.{base}" + (f" {sub}" if sub else ""), "annex_a"
+
+    if len(segs) >= 3 or first in _ISO_ISMS_ONLY:
+        return canonical_isms, "isms_clause"
+    if len(segs) == 2 and first in _ISO_ISMS_CEILING:
+        if segs[1] > _ISO_ISMS_CEILING[first]:
+            if segs[1] <= _ISO_ANNEX_MAX.get(first, 0):
+                return f"A.{base}", "annex_a"
+            return None, "unknown"  # beyond both ranges — refuse to classify
+        if sub:
+            # lettered sub-parts exist only on ISMS clauses (Annex A has none)
+            return canonical_isms, "isms_clause"
+        return base, "ambiguous"
+    if len(segs) == 1:
+        # bare clause number ('4', '10') — ISMS chapter reference
+        if first in _ISO_ISMS_ONLY or first in _ISO_ISMS_CEILING:
+            return canonical_isms, "isms_clause" if first in _ISO_ISMS_ONLY else "ambiguous"
+    return None, "unknown"
+
+
 # ── OSCAL structured parts (raw catalog: catalog.groups[].controls[]) ──────────
 
 _OSCAL_ID_RE = re.compile(r"^([a-z]{2,3})-(\d{1,3})(?:\.(\d{1,3}))?$")
