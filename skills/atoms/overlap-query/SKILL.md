@@ -30,7 +30,10 @@ frameworks that have no spine path.
 }
 ```
 
-`basis` is one of `auto | cci | subpart | control` (default `auto` = finest available).
+`basis` is one of `auto | cci | subpart | control` (default `auto` = finest available). The `cci`
+basis counts the finest **testable atoms**: DISA CCIs plus 800-53A assessment objectives (disjoint
+id spaces, both anchored at the sub-part level — objectives cover the PT / SR / PM families where
+DISA issued no CCIs).
 
 ## Output
 
@@ -71,7 +74,8 @@ framework **name** returns `overlap_pct: null` with an `error` and `known_framew
 
 ## Pipeline note
 Delegates to `cross-mapping/engine/spine_overlap.py`, reading `framework_projection`, `cci_bridge`,
-`nist_subparts`, `odp_values`, and (for the fallback) `er_mappings` in `grc.db`.
+`assessment_objectives`, `nist_subparts`, `odp_values`, and (for the fallback) `er_mappings` in
+`grc.db`.
 
 Script: `skills/atoms/overlap-query/scripts/overlap_query.py`
 

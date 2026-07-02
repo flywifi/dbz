@@ -31,9 +31,11 @@ import pandas as pd  # provided via requirements.txt
 from config import source_path, sheet_name, header_row, col  # type: ignore
 from spine_normalize import (  # type: ignore
     normalize_control_id,
+    oscal_control_id,
     parse_cci_index,
     parse_hitrust_ref,
     parse_objective,
+    parse_oscal_parts,
     canon_subpart,
 )
 
@@ -824,6 +826,300 @@ def load_cmmc171_projection(
     return edges, fedramp_rows, stats
 
 
+# ── OSCAL structural: ODP -> sub-part links + assessment objectives (Phase 11) ──
+
+OSCAL_CACHE_PATH = REPO_ROOT / "cross-mapping" / "output" / "oscal_v5.2.0_cache.json"
+
+
+def _iter_oscal_controls(doc: dict):
+    """Yield every control dict in the raw OSCAL catalog (incl. nested enhancements)."""
+    catalog = doc.get("catalog", doc)
+    stack = []
+    for grp in catalog.get("groups", []) or []:
+        stack.extend(grp.get("controls", []) or [])
+    while stack:
+        ctrl = stack.pop()
+        yield ctrl
+        stack.extend(ctrl.get("controls", []) or [])
+
+
+def load_oscal_structural(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], dict]:
+    """
+    Walk the raw OSCAL catalog's structured parts trees and derive:
+
+      odp_links       [{odp_id, control_id, r5_subpart, link_basis}] — each ODP linked
+                      to the statement sub-part whose prose references it via
+                      '{{ insert: param, … }}'.  Deepest reference wins; an ODP only
+                      referenced by the root statement gets link_basis='control_scope'
+                      and r5_subpart=None.  Nothing fabricated.
+      objective_rows  [{objective_id, control_id, r5_subpart, label, prose, …}] — one
+                      row per 800-53A assessment-objective part (sub-part anchors that
+                      extend CCI-like coverage into PT/SR/PM).
+    """
+    if not OSCAL_CACHE_PATH.exists():
+        return [], [], {"note": "oscal cache not found", "odp_links": 0, "objectives": 0}
+    doc = json.loads(OSCAL_CACHE_PATH.read_text(encoding="utf-8"))
+    fname = OSCAL_CACHE_PATH.name
+
+    odp_links: List[dict] = []
+    objective_rows: List[dict] = []
+    basis_counts: Dict[str, int] = {}
+    controls_seen = 0
+
+    for ctrl in _iter_oscal_controls(doc):
+        cid = oscal_control_id(str(ctrl.get("id", "")))
+        if not cid or cid not in catalog_ids:
+            continue
+        controls_seen += 1
+        recs = parse_oscal_parts(ctrl)
+
+        # ODP -> deepest statement sub-part that references it
+        best: Dict[str, Tuple[int, str]] = {}  # odp_id -> (depth, subpath)
+        ref_count: Dict[str, int] = {}
+        for rec in recs:
+            if rec["kind"] != "statement":
+                continue
+            depth = rec["subpath"].count(".") + 1 if rec["subpath"] else 0
+            for odp in rec["odp_refs"]:
+                ref_count[odp] = ref_count.get(odp, 0) + 1
+                cur = best.get(odp)
+                if cur is None or depth > cur[0]:
+                    best[odp] = (depth, rec["subpath"])
+        for odp, (depth, subpath) in best.items():
+            if subpath:
+                basis = "oscal_part_insert" if ref_count[odp] == 1 else "deepest_reference"
+                r5_subpart = canon_subpart(cid, subpath)
+            else:
+                basis = "control_scope"
+                r5_subpart = None
+            basis_counts[basis] = basis_counts.get(basis, 0) + 1
+            odp_links.append({
+                "odp_id": odp, "control_id": cid,
+                "r5_subpart": r5_subpart, "link_basis": basis,
+            })
+
+        # Assessment objectives — the label prop carries the 53A objective id
+        # (e.g. 'AC-02d.03[01]'), matching the CMMC crosswalk's objective column.
+        for rec in recs:
+            if rec["kind"] != "objective" or not rec["part_id"]:
+                continue
+            label = ""
+            objective_rows.append({
+                "objective_id": rec["part_id"],
+                "control_id": cid,
+                "r5_subpart": canon_subpart(cid, rec["subpath"]) if rec["subpath"] else None,
+                "label": label,
+                "prose": rec["prose"],
+                "source_file": fname,
+                "source_row": -1,
+            })
+
+    # labels come from the raw part props; re-walk to fill them (cheap second pass)
+    labels: Dict[str, str] = {}
+    for ctrl in _iter_oscal_controls(doc):
+        def collect(part):
+            pid = part.get("id")
+            if pid:
+                for pr in part.get("props", []) or []:
+                    if pr.get("name") == "label":
+                        labels[pid] = pr.get("value", "")
+            for ch in part.get("parts", []) or []:
+                collect(ch)
+        for part in ctrl.get("parts", []) or []:
+            if part.get("name") == "assessment-objective":
+                collect(part)
+    for row in objective_rows:
+        row["label"] = labels.get(row["objective_id"], "")
+
+    odp_links.sort(key=lambda r: (r["control_id"], r["odp_id"]))
+    objective_rows.sort(key=lambda r: (r["control_id"], r["objective_id"]))
+    stats = {
+        "controls_seen": controls_seen,
+        "odp_links": len(odp_links),
+        "objectives": len(objective_rows),
+        "link_basis_counts": dict(sorted(basis_counts.items())),
+    }
+    return odp_links, objective_rows, stats
+
+
+def link_odps_to_subparts_from_oscal(odp_links: List[dict], conn) -> int:
+    """
+    Definitive backfill of control_odps.r5_subpart + link_basis from the OSCAL
+    structured parts walk.  Overwrites NULLs only; never downgrades an existing link.
+    """
+    updated = 0
+    for lnk in odp_links:
+        cur = conn.execute(
+            "UPDATE control_odps SET r5_subpart = ?, link_basis = ? "
+            "WHERE odp_id = ? AND control_id = ? AND r5_subpart IS NULL",
+            (lnk["r5_subpart"], lnk["link_basis"], lnk["odp_id"], lnk["control_id"]),
+        )
+        updated += cur.rowcount
+    return updated
+
+
+# ── CCI bridge from the current DISA CCI XML (native r5 refs, Phase 11) ────────
+
+CCI_XML_PATH = REPO_ROOT / "canonical-sources" / "source_data" / "U_CCI_List.xml"
+
+_APPJ_RE = re.compile(r"\b(AP|AR|DI|DM|IP|SE|TR|UL)-(\d{1,2})\b")
+
+
+def load_appj_absorption_map(catalog_ids: Set[str]) -> Dict[str, List[str]]:
+    """
+    r4 Appendix J privacy control -> r5 controls that absorbed it, extracted from
+    NIST's own change-detail prose in the r4->r5 comparison workbook (e.g. AC-1:
+    'Addresses access processes and procedures elements of withdrawn App J control
+    IP-2').  Only r5 targets present in the catalog are kept.
+    """
+    src = "nist-r4-to-r5-bridge"
+    try:
+        path = source_path(src)
+    except Exception:
+        return {}
+    if not path.exists():
+        return {}
+    df = pd.read_excel(path, sheet_name=sheet_name(src), header=header_row(src))
+    cols = list(df.columns)
+    # The merged first header row hides 'Change Details' behind an unnamed column;
+    # detect it by content: the column whose cells mention 'App J'.
+    detail_col = None
+    for c in cols:
+        s = df[c].astype(str)
+        if s.str.contains("App J", na=False).any():
+            detail_col = c
+            break
+    if detail_col is None:
+        return {}
+    id_col = _find_col(cols, "ID") or cols[0]
+
+    absorb: Dict[str, Set[str]] = {}
+    for _, row in df.iterrows():
+        r5 = normalize_control_id(str(row.get(id_col, "")).strip())
+        if not r5 or r5 not in catalog_ids:
+            continue
+        detail = str(row.get(detail_col) or "")
+        if detail == "nan":
+            continue
+        for m in _APPJ_RE.finditer(detail):
+            r4 = f"{m.group(1)}-{int(m.group(2))}"
+            absorb.setdefault(r4, set()).add(r5)
+    return {k: sorted(v) for k, v in sorted(absorb.items())}
+
+
+def load_cci_bridge_xml(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], dict]:
+    """
+    Parse the current DISA CCI List XML into cci_bridge + disa_ccis rows.
+
+    Precedence per CCI (never fabricated, basis stamped on every row):
+      1. native 800-53 rev 5 references            basis='r5_native'
+      2. rev-4 refs whose id survives into r5       basis='r4_identity'
+      3. rev-4 App J privacy refs -> absorbing r5   basis='appj_absorption'
+         controls from the NIST comparison workbook (control-level only)
+    CCIs resolving to nothing in the r5 catalog are dropped (counted in stats).
+    """
+    import xml.etree.ElementTree as ET
+
+    if not CCI_XML_PATH.exists():
+        return [], [], {"note": "CCI XML not found"}
+    fname = CCI_XML_PATH.name
+    tree = ET.parse(str(CCI_XML_PATH))
+    root = tree.getroot()
+    ns = root.tag.split("}")[0].strip("{") if "}" in root.tag else ""
+
+    def t(tag_name: str) -> str:
+        return f"{{{ns}}}{tag_name}" if ns else tag_name
+
+    appj_map = load_appj_absorption_map(catalog_ids)
+
+    bridge_rows: List[dict] = []
+    disa_rows: List[dict] = []
+    seen_bridge: Set[Tuple[str, str, str]] = set()
+    stats = {
+        "cci_items": 0, "r5_native": 0, "r4_identity": 0, "appj_absorption": 0,
+        "dropped_unresolvable": 0, "subpart_rows": 0,
+    }
+
+    for i, item in enumerate(root.iter(t("cci_item"))):
+        cci = item.get("id", "").strip()
+        if not cci:
+            continue
+        stats["cci_items"] += 1
+        status = item.findtext(t("status"), default="") or ""
+        definition = item.findtext(t("definition"), default="") or ""
+        ctype = item.findtext(t("type"), default="") or ""
+
+        r5_refs: List[str] = []
+        r4_refs: List[str] = []
+        refs_el = item.find(t("references"))
+        if refs_el is not None:
+            for ref in refs_el:
+                title = ref.get("title", "")
+                idx = (ref.get("index") or "").strip()
+                if not idx:
+                    continue
+                if title == "NIST SP 800-53 Revision 5":
+                    r5_refs.append(idx)
+                elif title == "NIST SP 800-53 Revision 4":
+                    r4_refs.append(idx)
+
+        resolved: List[Tuple[str, Optional[str], str, str]] = []  # (ctrl, subpart, basis, raw)
+        for idx in r5_refs:
+            for ctrl, subpath in parse_cci_index(idx):
+                if ctrl in catalog_ids:
+                    resolved.append((ctrl, canon_subpart(ctrl, subpath), "r5_native", idx))
+        if not resolved:
+            for idx in r4_refs:
+                for ctrl, subpath in parse_cci_index(idx):
+                    if ctrl in catalog_ids:
+                        resolved.append((ctrl, canon_subpart(ctrl, subpath), "r4_identity", idx))
+                    else:
+                        for r5c in appj_map.get(ctrl, []):
+                            # control-level only; the absorption statement does not
+                            # identify a sub-part — leave it blank, never guess.
+                            resolved.append((r5c, None, "appj_absorption", idx))
+        if not resolved:
+            stats["dropped_unresolvable"] += 1
+            continue
+
+        r5_controls: Set[str] = set()
+        for ctrl, subpart, basis, raw in resolved:
+            r5_controls.add(ctrl)
+            key = (cci, ctrl, subpart or "")
+            if key in seen_bridge:
+                continue
+            seen_bridge.add(key)
+            stats[basis] += 1
+            if subpart:
+                stats["subpart_rows"] += 1
+            bridge_rows.append({
+                "cci_id": cci,
+                "r5_control": ctrl,
+                "r5_subpart": subpart,
+                "r4_ref_raw": raw,
+                "basis": basis,
+                "source_file": fname,
+                "source_row": i,
+            })
+
+        disa_rows.append({
+            "cci_id": cci,
+            "definition": definition,
+            "type": ctype,
+            "status": status,
+            "nist_rev4_refs": json.dumps(sorted(set(r4_refs))),
+            "nist_rev5_refs": json.dumps(sorted(r5_controls)),
+            "fetched_at": "",
+        })
+
+    bridge_rows.sort(key=lambda r: (r["cci_id"], r["r5_control"], r["r5_subpart"] or ""))
+    disa_rows.sort(key=lambda r: r["cci_id"])
+    stats["bridge_rows"] = len(bridge_rows)
+    stats["distinct_controls"] = len({r["r5_control"] for r in bridge_rows})
+    stats["distinct_cci"] = len({r["cci_id"] for r in bridge_rows})
+    return bridge_rows, disa_rows, stats
+
+
 def link_odps_to_subparts(
     odp_links: List[Tuple[str, str, Optional[str]]], conn
 ) -> int:
@@ -839,7 +1135,7 @@ def link_odps_to_subparts(
         if not r5_subpart:
             continue
         cur = conn.execute(
-            "UPDATE control_odps SET r5_subpart = ? "
+            "UPDATE control_odps SET r5_subpart = ?, link_basis = 'crosswalk_reference' "
             "WHERE odp_id = ? AND control_id = ? AND r5_subpart IS NULL",
             (r5_subpart, odp_id, control_id),
         )

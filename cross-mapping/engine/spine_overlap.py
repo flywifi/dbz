@@ -92,17 +92,27 @@ def footprint_subparts(conn, fw: str) -> Set[str]:
 
 
 def footprint_ccis(conn, fw: str) -> Set[str]:
+    """Finest-granularity testable atoms a framework reaches: DISA CCIs plus 800-53A
+    assessment-objective ids, both anchored at the sub-part (or control) level.  The
+    two id spaces are disjoint (CCI-NNNNNN vs OSCAL part ids like 'pt-1_obj.a'), so
+    the union is a well-defined atom footprint; objectives extend coverage into the
+    families where DISA issued no CCIs (PT, SR, much of PM)."""
     out: Set[str] = set()
-    for (cci,) in conn.execute(f"""
-            SELECT DISTINCT cb.cci_id FROM framework_projection fp
-            JOIN cci_bridge cb ON cb.r5_subpart = fp.r5_subpart
-            WHERE fp.framework=? AND fp.r5_subpart IS NOT NULL AND fp.{_NOT_REFUTED}""", (fw,)):
-        out.add(cci)
-    for (cci,) in conn.execute(f"""
-            SELECT DISTINCT cb.cci_id FROM framework_projection fp
-            JOIN cci_bridge cb ON cb.r5_control = fp.r5_control
-            WHERE fp.framework=? AND fp.r5_subpart IS NULL AND fp.{_NOT_REFUTED}""", (fw,)):
-        out.add(cci)
+    atom_tables = (
+        ("cci_bridge", "cci_id", "r5_control"),
+        ("assessment_objectives", "objective_id", "control_id"),
+    )
+    for table, id_col, ctrl_col in atom_tables:
+        for (atom,) in conn.execute(f"""
+                SELECT DISTINCT t.{id_col} FROM framework_projection fp
+                JOIN {table} t ON t.r5_subpart = fp.r5_subpart
+                WHERE fp.framework=? AND fp.r5_subpart IS NOT NULL AND fp.{_NOT_REFUTED}""", (fw,)):
+            out.add(atom)
+        for (atom,) in conn.execute(f"""
+                SELECT DISTINCT t.{id_col} FROM framework_projection fp
+                JOIN {table} t ON t.{ctrl_col} = fp.r5_control
+                WHERE fp.framework=? AND fp.r5_subpart IS NULL AND fp.{_NOT_REFUTED}""", (fw,)):
+            out.add(atom)
     return out
 
 

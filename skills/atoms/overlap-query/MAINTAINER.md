@@ -6,9 +6,12 @@
 **spine-anchored** overlap (CCI / 800-53 sub-part), not the retired ER-set metric.
 
 ## Non-negotiable invariants
-- The primary metric is spine-based: shared CCIs or shared 800-53 sub-parts between the two
-  frameworks' `framework_projection` footprints. Jaccard + both directional coverages are always
-  reported (`a_covers_b_pct` and `b_covers_a_pct` differ and both matter).
+- The primary metric is spine-based: shared testable atoms or shared 800-53 sub-parts between the
+  two frameworks' `framework_projection` footprints. The finest ("cci") basis is the **union of
+  DISA CCIs and 800-53A assessment objectives** (`cci_bridge` ∪ `assessment_objectives` — disjoint
+  id spaces, same sub-part anchoring); objectives extend the denominator into PT / SR / PM where
+  DISA issued no CCIs. Jaccard + both directional coverages are always reported
+  (`a_covers_b_pct` and `b_covers_a_pct` differ and both matter).
 - **Never error on a cross-framework comparison.** Degrade through the ladder cci → subpart →
   control → inferred_er → `basis:"none"`. Only an unknown framework *name* returns
   `overlap_pct: null` with `known_frameworks`.

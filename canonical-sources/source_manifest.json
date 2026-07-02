@@ -125,6 +125,16 @@
       "notes": "header_row=1 because row 0 contains merged section labels ('NIST SP 800-53 Rev 5 Controls', etc.) — the actual column headers are on row 1. Use this file as the CCI bridge: DISA CCI List maps CCI → r4 control IDs; join via this workbook's r4→r5 mapping to get clean r5 IDs."
     },
     {
+      "id": "disa-cci-list-xml",
+      "file": "canonical-sources/source_data/U_CCI_List.xml",
+      "format": "xml",
+      "version": "DISA CCI List 2025-01-23",
+      "retrieved": "2026-07-02",
+      "source_url": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CCI_List.zip",
+      "role": "cci_to_nist_r5",
+      "notes": "Authoritative DISA CCI List (public direct download, no auth). 5,137 cci_items; 3,836 carry native 800-53 Revision 5 references (same index grammar as the r4 refs), 733 are r4-only (bridged by identity where the id survives into r5, else via the App J absorption map extracted from the r4-to-r5 comparison workbook's change details), 568 reference only older revisions and are dropped. Preferred over disa-cci-list (xlsx derivative, r4-only) when present."
+    },
+    {
       "id": "disa-cci-list",
       "file": "canonical-sources/source_data/stig-mapping-to-nist-800-53.xlsx",
       "format": "xlsx",

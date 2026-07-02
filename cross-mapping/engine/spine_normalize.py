@@ -231,6 +231,74 @@ def parse_objective(raw: str) -> List[Tuple[str, Optional[str], Optional[str]]]:
     return [(cid, path, None)]
 
 
+# ── OSCAL structured parts (raw catalog: catalog.groups[].controls[]) ──────────
+
+_OSCAL_ID_RE = re.compile(r"^([a-z]{2,3})-(\d{1,3})(?:\.(\d{1,3}))?$")
+_OSCAL_INSERT_RE = re.compile(r"insert:\s*param,\s*([a-z0-9_.\-]+)")
+# objective ids append '-N' below the statement-part level: 'ac-2_obj.d.3-1'
+_OBJ_LEAF_SUFFIX = re.compile(r"-\d+$")
+
+
+def oscal_control_id(oscal_id: str) -> Optional[str]:
+    """'ac-2' -> 'AC-2'; 'ac-2.1' -> 'AC-2(1)'.  None if not an OSCAL control id."""
+    if not isinstance(oscal_id, str):
+        return None
+    m = _OSCAL_ID_RE.match(oscal_id.strip().lower())
+    if not m:
+        return None
+    fam, num, enh = m.group(1).upper(), int(m.group(2)), m.group(3)
+    cid = f"{fam}-{num}"
+    if enh is not None:
+        cid += f"({int(enh)})"
+    return cid
+
+
+def parse_oscal_parts(control: dict) -> List[dict]:
+    """
+    Walk a raw OSCAL control's statement and assessment-objective part trees.
+
+    Returns a flat list of dicts:
+      {kind: 'statement'|'objective', part_id, subpath, prose, odp_refs}
+
+    subpath is the dotted lowercase path below the root part ('' for the root):
+      'ac-2_smt.d.3'   -> 'd.3'
+      'ac-2_obj.d.3-1' -> 'd.3'   (objective leaf indices '-N' collapse onto the
+                                   statement sub-part they test; the full part_id
+                                   keeps the finer granularity)
+    odp_refs are the param ids referenced by '{{ insert: param, … }}' in prose.
+    Never fabricates: parts without ids inherit the parent subpath.
+    """
+    out: List[dict] = []
+    if not isinstance(control, dict):
+        return out
+
+    def walk(part: dict, root_id: str, kind: str, parent_subpath: str) -> None:
+        pid = str(part.get("id") or "")
+        if pid.startswith(root_id):
+            sub = pid[len(root_id):].lstrip(".")
+            subpath = _OBJ_LEAF_SUFFIX.sub("", sub) if kind == "objective" else sub
+        else:
+            subpath = parent_subpath
+        prose = part.get("prose") or ""
+        out.append({
+            "kind": kind,
+            "part_id": pid,
+            "subpath": subpath,
+            "prose": prose,
+            "odp_refs": _OSCAL_INSERT_RE.findall(prose),
+        })
+        for child in part.get("parts", []) or []:
+            walk(child, root_id, kind, subpath)
+
+    for part in control.get("parts", []) or []:
+        name = part.get("name")
+        if name == "statement":
+            walk(part, str(part.get("id") or ""), "statement", "")
+        elif name == "assessment-objective":
+            walk(part, str(part.get("id") or ""), "objective", "")
+    return out
+
+
 def parse_cui_sort_id(raw: str) -> Optional[Tuple[str, int]]:
     """
     Parse a CUI-overlay sort id 'FAMILY-CTRL-ENH-PART' into (control_id, part_ordinal).

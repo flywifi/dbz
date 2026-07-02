@@ -55,6 +55,23 @@ check(SN.parse_objective("Withdrawn") == [], "obj Withdrawn -> empty")
 check(SN.parse_objective("AC-03") == [("AC-3", None, None)], "obj bare control")
 check(SN.parse_objective("") == [], "obj empty -> empty")
 
+# oscal_control_id + parse_oscal_parts (raw OSCAL catalog walker, Phase 11)
+check(SN.oscal_control_id("ac-2") == "AC-2", "oscal id ac-2 -> AC-2")
+check(SN.oscal_control_id("ac-2.1") == "AC-2(1)", "oscal id ac-2.1 -> AC-2(1)")
+check(SN.oscal_control_id("garbage") is None, "oscal id garbage -> None")
+_OSCAL_CACHE = ROOT / "cross-mapping" / "output" / "oscal_v5.2.0_cache.json"
+if _OSCAL_CACHE.exists():
+    _doc = json.loads(_OSCAL_CACHE.read_text())
+    _ac2 = _doc["catalog"]["groups"][0]["controls"][1]
+    assert _ac2["id"] == "ac-2"
+    _recs = SN.parse_oscal_parts(_ac2)
+    _smt = {r["subpath"]: r for r in _recs if r["kind"] == "statement"}
+    check("ac-02_odp.01" in _smt.get("c", {}).get("odp_refs", []), "AC-2 c carries ac-02_odp.01")
+    check("ac-02_odp.02" in _smt.get("d.3", {}).get("odp_refs", []), "AC-2 d.3 carries ac-02_odp.02")
+    _obj = {r["part_id"]: r["subpath"] for r in _recs if r["kind"] == "objective"}
+    check(_obj.get("ac-2_obj.d.3-1") == "d.3", "objective leaf ac-2_obj.d.3-1 collapses to d.3")
+    check(_obj.get("ac-2_obj") == "", "objective root is control-level")
+
 # ── 2. Spine loaders against the real catalog + CCI list ───────────────────────
 ctrl_rows, enh_rows, param_rows, _ = B.load_catalog(B.DEFAULT_CATALOG)
 catalog_ids = {r["nist_id"] for r in ctrl_rows} | {r["id"] for r in enh_rows}
@@ -119,6 +136,32 @@ check(all(e["needs_confirmation"] == 1 for e in hub_edges), "hub edges flagged n
 check(all(e["confidence"] == 0.65 for e in hub_edges), "hub edges confidence 0.65")
 check(any(e["framework"] == "SOC 2" and e["r5_control"] == "AC-2" and e["r5_subpart"] for e in hub_edges),
       "SOC 2 projects to an AC-2 sub-part via the hub")
+
+# ── 2b. OSCAL structural + CCI XML loaders (Phase 11) ─────────────────────────
+if _CACHE_OK := (ROOT / "cross-mapping" / "output" / "oscal_v5.2.0_cache.json").exists():
+    oscal_links, objective_rows, oscal_stats = SL.load_oscal_structural(catalog_ids)
+    check(oscal_stats["odp_links"] >= 1000, f"oscal: >=1000 odp links (got {oscal_stats['odp_links']})")
+    check(oscal_stats["objectives"] >= 3000, f"oscal: >=3000 objectives (got {oscal_stats['objectives']})")
+    _l = [x for x in oscal_links if x["odp_id"] == "ac-02_odp.02" and x["control_id"] == "AC-2"]
+    check(_l and _l[0]["r5_subpart"] == "AC-2 d.3", "oscal links ac-02_odp.02 -> AC-2 d.3")
+    check(any(o["control_id"].startswith("PT-") for o in objective_rows), "objectives cover PT family")
+    check(any(o["control_id"].startswith("SR-") for o in objective_rows), "objectives cover SR family")
+    # no fabricated sub-parts: every linked sub-part names its own control
+    check(all((x["r5_subpart"] or "").startswith(x["control_id"]) for x in oscal_links if x["r5_subpart"]),
+          "oscal odp links never cross controls")
+
+if SL.CCI_XML_PATH.exists():
+    xml_bridge, xml_disa, xml_stats = SL.load_cci_bridge_xml(catalog_ids)
+    check(xml_stats["distinct_cci"] > 4000, f"cci xml: >4000 CCIs bridged (got {xml_stats['distinct_cci']})")
+    check(xml_stats["distinct_controls"] > 1000, f"cci xml: >1000 controls (got {xml_stats['distinct_controls']})")
+    check(xml_stats["r5_native"] > 3000, f"cci xml: >3000 native r5 rows (got {xml_stats['r5_native']})")
+    _bases = {b["basis"] for b in xml_bridge}
+    check(_bases == {"r5_native", "r4_identity", "appj_absorption"}, f"cci xml bases (got {_bases})")
+    # App J absorption rows are control-level only (never a guessed sub-part)
+    check(all(b["r5_subpart"] is None for b in xml_bridge if b["basis"] == "appj_absorption"),
+          "appj_absorption rows are control-level only")
+    _pt = {b["r5_control"].split("(")[0] for b in xml_bridge if b["r5_control"].startswith("PT-")}
+    check(len(_pt) >= 8, f"cci xml covers all 8 PT controls (got {sorted(_pt)})")
 
 # ── 4b. CMMC/800-171 crosswalk (Phase 2b) ─────────────────────────────────────
 cmmc_edges, fedramp_odp_rows, cmmc_stats = SL.load_cmmc171_projection(catalog_ids)
@@ -218,10 +261,24 @@ if _DB.exists():
     cmmc_confs = set(r[0] for r in _c2.execute(
         "SELECT DISTINCT confidence FROM framework_projection WHERE framework='CMMC 2.0'").fetchall())
     check(0.95 in cmmc_confs, f"CMMC 2.0 has conf=0.95 edges (confs={cmmc_confs})")
-    # ODP backfill: informational — crosswalk ODP refs don't carry sub-parts,
-    # so 0 backfills is expected until richer OSCAL part data is available
+    # ODP backfill (Phase 11): sub-part-precise links from the OSCAL parts walk,
+    # control_scope stamps where the statement has no lettered parts (honest
+    # granularity for most enhancements), never a fabricated sub-part.
     n_odp_linked = _c2.execute("SELECT COUNT(*) FROM control_odps WHERE r5_subpart IS NOT NULL").fetchone()[0]
-    print(f"  control_odps ODP-to-subpart links: {n_odp_linked} (data gap: OSCAL parts not structured)")
+    check(n_odp_linked >= 500, f"control_odps: >=500 sub-part-precise ODP links (got {n_odp_linked})")
+    n_basis = _c2.execute("SELECT COUNT(*) FROM control_odps WHERE link_basis IS NOT NULL").fetchone()[0]
+    check(n_basis >= 1000, f"control_odps: >=1000 rows carry link provenance (got {n_basis})")
+    _sp = _c2.execute("SELECT r5_subpart FROM control_odps WHERE odp_id='ac-02_odp.02' AND control_id='AC-2'").fetchone()
+    check(_sp is not None and _sp[0] == "AC-2 d.3", f"DB: ac-02_odp.02 -> AC-2 d.3 (got {_sp})")
+    # assessment objectives: sub-part anchors incl. the families DISA never covered
+    n_obj = _c2.execute("SELECT COUNT(*) FROM assessment_objectives").fetchone()[0]
+    check(n_obj >= 3000, f"assessment_objectives: >=3000 rows (got {n_obj})")
+    n_pt = _c2.execute("SELECT COUNT(*) FROM assessment_objectives WHERE control_id LIKE 'PT-%'").fetchone()[0]
+    n_sr = _c2.execute("SELECT COUNT(*) FROM assessment_objectives WHERE control_id LIKE 'SR-%'").fetchone()[0]
+    check(n_pt > 0 and n_sr > 0, f"objectives cover PT ({n_pt}) and SR ({n_sr})")
+    # CCI bridge from the current DISA XML: coverage well past the old xlsx ceiling
+    n_cci_ctrl = _c2.execute("SELECT COUNT(DISTINCT r5_control) FROM cci_bridge").fetchone()[0]
+    check(n_cci_ctrl > 1000, f"cci_bridge: >1000 distinct r5 controls (got {n_cci_ctrl}, was 907)")
     _c2.close()
 
 # ── 8. Durable ledger + health-audit detector (Phase 7) ────────────────────────

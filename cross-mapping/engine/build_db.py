@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.3"   # v3.3: adds CMMC/171A crosswalk (source_stated edges, ODP backfill)
+SCHEMA_VERSION = "3.4"   # v3.4: OSCAL structural ODP links, assessment_objectives, CCI XML bridge
 
 CHUNK = 500  # executemany batch size
 
@@ -350,7 +350,8 @@ CREATE TABLE IF NOT EXISTS cci_bridge (
     cci_id        TEXT NOT NULL,      -- "CCI-000015"
     r5_control    TEXT NOT NULL,      -- "AC-2"
     r5_subpart    TEXT,               -- "AC-2 a" (NULL if only control-level resolvable)
-    r4_ref_raw    TEXT,               -- original "AC-2 a" from the index column (provenance)
+    r4_ref_raw    TEXT,               -- original index ref from the source (provenance)
+    basis         TEXT,               -- r5_native | r4_identity | appj_absorption | xlsx_legacy
     source_file   TEXT,
     source_row    INTEGER
 );
@@ -361,14 +362,28 @@ CREATE INDEX IF NOT EXISTS idx_ccibridge_cci     ON cci_bridge(cci_id);
 CREATE TABLE IF NOT EXISTS control_odps (
     odp_id        TEXT NOT NULL,      -- canonical OSCAL id "ac-02_odp.01" (or "<ctrl>_param.NN" fallback)
     control_id    TEXT NOT NULL,      -- "AC-2"
-    r5_subpart    TEXT,               -- sub-part it parameterizes (NULL = control-level for now)
+    r5_subpart    TEXT,               -- sub-part it parameterizes (NULL = control-level)
     type          TEXT,               -- assignment | selection
     label         TEXT,
     ordinal       INTEGER,
     rekey_basis   TEXT,               -- oscal_positional_zip | positional_fallback
+    link_basis    TEXT,               -- oscal_part_insert | deepest_reference | control_scope | crosswalk_reference
     PRIMARY KEY (odp_id, control_id)
 );
 CREATE INDEX IF NOT EXISTS idx_odps_ctrl ON control_odps(control_id);
+
+-- ── 800-53A assessment objectives (sub-part anchors from the raw OSCAL catalog) ──
+CREATE TABLE IF NOT EXISTS assessment_objectives (
+    objective_id  TEXT PRIMARY KEY,   -- OSCAL part id "ac-2_obj.d.3-1"
+    control_id    TEXT NOT NULL,      -- "AC-2"
+    r5_subpart    TEXT,               -- "AC-2 d.3" (NULL = control-level objective)
+    label         TEXT,               -- 53A objective label "AC-02d.03[01]"
+    prose         TEXT,
+    source_file   TEXT,
+    source_row    INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_objectives_ctrl    ON assessment_objectives(control_id);
+CREATE INDEX IF NOT EXISTS idx_objectives_subpart ON assessment_objectives(r5_subpart);
 
 -- ── Universal projection: any framework native control -> spine coordinate ─────
 CREATE TABLE IF NOT EXISTS framework_projection (
@@ -994,7 +1009,14 @@ def build_db(
     catalog_ids = {r["nist_id"] for r in ctrl_rows} | {r["id"] for r in enh_rows}
     import uncertainty as _unc  # type: ignore
     confirmations = _unc.load_confirmations(REPO_ROOT / "canonical-sources" / "confirmations.jsonl")
-    cci_bridge_rows, spine_disa_rows, cci_stats = spine_loader.load_cci_bridge(catalog_ids)
+    # CCI bridge: prefer the current DISA CCI List XML (native rev-5 refs + App J
+    # absorption recovery); fall back to the legacy xlsx derivative if absent.
+    if spine_loader.CCI_XML_PATH.exists():
+        cci_bridge_rows, spine_disa_rows, cci_stats = spine_loader.load_cci_bridge_xml(catalog_ids)
+    else:
+        cci_bridge_rows, spine_disa_rows, cci_stats = spine_loader.load_cci_bridge(catalog_ids)
+        for r in cci_bridge_rows:
+            r.setdefault("basis", "xlsx_legacy")
     subpart_rows = spine_loader.load_nist_subparts(catalog_ids, cci_bridge_rows)
     odp_rows, odp_stats = spine_loader.load_control_odps(param_rows)
     print(f"  cci_bridge: {cci_stats}")
@@ -1007,8 +1029,8 @@ def build_db(
     """, subpart_rows, "nist_subparts")
 
     _executemany_chunked(conn, """
-        INSERT INTO cci_bridge (cci_id, r5_control, r5_subpart, r4_ref_raw, source_file, source_row)
-        VALUES (:cci_id, :r5_control, :r5_subpart, :r4_ref_raw, :source_file, :source_row)
+        INSERT INTO cci_bridge (cci_id, r5_control, r5_subpart, r4_ref_raw, basis, source_file, source_row)
+        VALUES (:cci_id, :r5_control, :r5_subpart, :r4_ref_raw, :basis, :source_file, :source_row)
     """, cci_bridge_rows, "cci_bridge")
 
     _executemany_chunked(conn, """
@@ -1017,13 +1039,28 @@ def build_db(
         VALUES (:odp_id, :control_id, :r5_subpart, :type, :label, :ordinal, :rekey_basis)
     """, odp_rows, "control_odps")
 
-    # Populate disa_ccis from the CCI xlsx (real data; the Trackr JSON step below
+    # Populate disa_ccis from the CCI source (real data; the Trackr JSON step below
     # will REPLACE/augment these if that source is present).
     _executemany_chunked(conn, """
         INSERT OR REPLACE INTO disa_ccis
             (cci_id, definition, type, status, nist_rev4_refs, nist_rev5_refs, fetched_at)
         VALUES (:cci_id, :definition, :type, :status, :nist_rev4_refs, :nist_rev5_refs, :fetched_at)
     """, spine_disa_rows, "disa_ccis")
+
+    # 1c. OSCAL structural walk — definitive ODP -> sub-part links + 800-53A
+    # assessment objectives (sub-part anchors for families without CCIs).
+    oscal_links, objective_rows, oscal_stats = spine_loader.load_oscal_structural(catalog_ids)
+    conn.commit()
+    n_odp_linked = spine_loader.link_odps_to_subparts_from_oscal(oscal_links, conn)
+    print(f"  oscal_structural: controls={oscal_stats.get('controls_seen')} "
+          f"odp_links={oscal_stats.get('odp_links')} objectives={oscal_stats.get('objectives')} "
+          f"link_bases={oscal_stats.get('link_basis_counts')}")
+    print(f"  odp_backfill(oscal): {n_odp_linked} control_odps rows linked")
+    _executemany_chunked(conn, """
+        INSERT OR REPLACE INTO assessment_objectives
+            (objective_id, control_id, r5_subpart, label, prose, source_file, source_row)
+        VALUES (:objective_id, :control_id, :r5_subpart, :label, :prose, :source_file, :source_row)
+    """, objective_rows, "assessment_objectives")
 
     # Framework projection edges — Phase 2: NIST 800-53 <-> ISO 27001 via the OLIR.
     olir_edges, olir_stats = spine_loader.load_olir_projection(catalog_ids)
@@ -1369,8 +1406,8 @@ def build_db(
                 "cisa_kev", "cfr_requirements", "attack_techniques", "edgar_cyber_incidents",
                 "nvd_cves", "disa_ccis", "eurlex_articles",
                 "nist_800_63b_requirements", "fips_140_validations",
-                "nist_subparts", "cci_bridge", "control_odps", "framework_projection",
-                "hitrust_hub", "odp_values", "overlap_matrix"):
+                "nist_subparts", "cci_bridge", "control_odps", "assessment_objectives",
+                "framework_projection", "hitrust_hub", "odp_values", "overlap_matrix"):
         row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
         counts[tbl] = row[0]
 
