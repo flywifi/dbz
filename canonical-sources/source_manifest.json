@@ -554,7 +554,7 @@
         "domains[].controls[].title": "control_title",
         "domains[].controls[].specification": "control_text"
       },
-      "notes": "YAML structure: {name, version, url, domains: [{id, title, controls: [{id, title, specification}]}]}. 17 domains. License: CC-BY. JSON equivalent at CCM/primary-dataset.json. NIST 800-53 mapping in CCM/mappings/ (if present) or CAIQ dataset. AUTHORITY SCOPE: authoritative ONLY for CSA STAR audits/certifications. Must never override or modify NIST/ISO/other standards' data; any canonical conflict is surfaced via the minority-report policy, not merged. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL mapping targets resolve in the r5.2.0 catalog (0 conflicts).",
+      "notes": "YAML structure: {name, version, url, domains: [{id, title, controls: [{id, title, specification}]}]}. 17 domains. License: CC-BY. JSON equivalent at CCM/primary-dataset.json. NIST 800-53 mapping in CCM/mappings/ (if present) or CAIQ dataset. ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
       "authority_scope": "csa_star_only"
     },
     {
@@ -578,7 +578,9 @@
       "source_url": "https://github.com/securecontrolsframework/securecontrolsframework",
       "sha256_prefix": "ef13a69f58e32901",
       "role": "scf_meta_framework",
-      "notes": "Creative-Commons meta-framework: controls + Authoritative Sources crosswalk + Assessment Objectives + Evidence Request List sheets. VERSION ANCHOR for the SCF column in crosswalk_80053_master.json / control_crosswalk.json (those files carried SCF ids with no version pin). No loader yet — projection semantics need review before ingestion."
+      "notes": "Creative-Commons meta-framework: controls + Authoritative Sources crosswalk + Assessment Objectives + Evidence Request List sheets. VERSION ANCHOR for the SCF column in crosswalk_80053_master.json. Errata pinned (scf-errata). Full CAP ecosystem in source_data/scf/. ACCEPTANCE-AUTHORITY MODEL: a framework owner's crosswalk is the acceptance rule for THEIR OWN framework — SCF's mappings state what SCF/CAP assessments accept as satisfying SCF controls. They are not claims about what NIST/ISO/CSA accept, and they never modify other standards' data. SCF's columns describing other frameworks are bundled-crosswalk tier (below source-provided mappings in precedence).",
+      "authority_scope": "scf_only",
+      "errata_file": "canonical-sources/source_data/scf/Errata - SCF 2026.1.1.txt"
     },
     {
       "id": "microsoft-sspa-dpr-v12",
@@ -635,7 +637,7 @@
       "retrieved": "2026-07-02",
       "role": "csa_ccm",
       "sha256_prefix": "15ed274945743019",
-      "notes": "User-provided CSA STAR bundle. Supersedes the older CCM v4.0.x file as the freshest CCM artifact on disk; CCM v4.1 (2026-01-28) remains registration-gated — registry tracks it as current. AUTHORITY SCOPE: authoritative ONLY for CSA STAR audits/certifications. Must never override or modify NIST/ISO/other standards' data; any canonical conflict is surfaced via the minority-report policy, not merged. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL mapping targets resolve in the r5.2.0 catalog (0 conflicts).",
+      "notes": "User-provided CSA STAR bundle. Supersedes the older CCM v4.0.x file as the freshest CCM artifact on disk; CCM v4.1 (2026-01-28) remains registration-gated — registry tracks it as current. ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
       "authority_scope": "csa_star_only"
     },
     {
@@ -646,7 +648,7 @@
       "retrieved": "2026-07-02",
       "role": "csa_ccm_oscal",
       "sha256_prefix": "876714a4412996c9",
-      "notes": "Machine-readable OSCAL rendition of CCM + mappings — candidate loader input for a future CCM spine projection (structured, no xlsx parsing needed). AUTHORITY SCOPE: authoritative ONLY for CSA STAR audits/certifications. Must never override or modify NIST/ISO/other standards' data; any canonical conflict is surfaced via the minority-report policy, not merged. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL mapping targets resolve in the r5.2.0 catalog (0 conflicts).",
+      "notes": "Machine-readable OSCAL rendition of CCM + mappings — candidate loader input for a future CCM spine projection (structured, no xlsx parsing needed). ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
       "authority_scope": "csa_star_only"
     },
     {
@@ -657,7 +659,7 @@
       "retrieved": "2026-07-02",
       "role": "csa_aicm",
       "sha256_prefix": "afebba6d2c9ede42",
-      "notes": "CSA STAR for AI: AI Controls Matrix v1.1 + AI-CAIQ questionnaire + Level 1 submission guide. CURRENT as of upload (June 2026). AUTHORITY SCOPE: authoritative ONLY for CSA STAR audits/certifications. Must never override or modify NIST/ISO/other standards' data; any canonical conflict is surfaced via the minority-report policy, not merged. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL mapping targets resolve in the r5.2.0 catalog (0 conflicts).",
+      "notes": "CSA STAR for AI: AI Controls Matrix v1.1 + AI-CAIQ questionnaire + Level 1 submission guide. CURRENT as of upload (June 2026). ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
       "authority_scope": "csa_star_only"
     },
     {
@@ -667,8 +669,81 @@
       "version": "CAIQ v4.0.3 (2024-05-20)",
       "retrieved": "2026-07-02",
       "role": "csa_caiq",
-      "notes": "STAR self-assessment questionnaire matching CCM v4.0.x. CAIQ v4.1 (283 questions) is registration-gated; registry tracks it. AUTHORITY SCOPE: authoritative ONLY for CSA STAR audits/certifications. Must never override or modify NIST/ISO/other standards' data; any canonical conflict is surfaced via the minority-report policy, not merged. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL mapping targets resolve in the r5.2.0 catalog (0 conflicts).",
+      "notes": "STAR self-assessment questionnaire matching CCM v4.0.x. CAIQ v4.1 (283 questions) is registration-gated; registry tracks it. ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
       "authority_scope": "csa_star_only"
+    },
+    {
+      "id": "scf-errata",
+      "file": "canonical-sources/source_data/scf/Errata - SCF 2026.1.1.txt",
+      "format": "txt",
+      "version": "SCF 2026.1.1 errata",
+      "retrieved": "2026-07-02",
+      "sha256_prefix": "dd93632bea3bb123",
+      "role": "scf_errata",
+      "authority_scope": "scf_only",
+      "notes": "2026.1.1 corrects trailing-zero formatting in ISO 27002:2022 refs (5.10/5.20/5.30/7.10/8.10/8.20/8.30). 2026.1 STRM refresh; authoritative sources ADDED: CR-CMM, GovRAMP, IEC 62443-2-1/-3-3/-4-1, ISO 27018:2025, ISO 31000:2018, OWASP Top 10:2025, SWIFT CSCF 2025, TISAX 6.0.3, SIG 2025, CJIS v6.0, TX DIR v2.2; REMOVED incl. NIST SP 800-63B, OWASP 2021, FedRAMP R4, FFIEC, ITAR, HICP. Errata is provenance only — never silently applied to derived data."
+    },
+    {
+      "id": "scf-guidebook",
+      "file": "canonical-sources/source_data/scf/START HERE - SCF Overview & Practioner Guidebook (2026.2).pdf",
+      "format": "pdf",
+      "version": "SCF Overview & Practitioner Guidebook 2026.2",
+      "retrieved": "2026-07-02",
+      "sha256_prefix": "648e9dec12daff6a",
+      "role": "scf_guidebook",
+      "authority_scope": "scf_only",
+      "notes": "NOTE: guidebook line is versioned 2026.2 while the controls xlsx is 2026.1.1 — SCF versions its documents independently. ACCEPTANCE-AUTHORITY MODEL: a framework owner's crosswalk is the acceptance rule for THEIR OWN framework — SCF's mappings state what SCF/CAP assessments accept as satisfying SCF controls. They are not claims about what NIST/ISO/CSA accept, and they never modify other standards' data. SCF's columns describing other frameworks are bundled-crosswalk tier (below source-provided mappings in precedence)."
+    },
+    {
+      "id": "scf-cap-bok",
+      "file": "canonical-sources/source_data/scf/cap/SCF CAP Body of Knowledge (2026.1).pdf",
+      "format": "pdf",
+      "version": "SCF CAP Body of Knowledge 2026.1",
+      "retrieved": "2026-07-02",
+      "sha256_prefix": "4f47780f7e59e4cd",
+      "role": "scf_cap",
+      "authority_scope": "scf_only",
+      "notes": "Conformity Assessment Program body of knowledge — the assessment rules for SCF-based certifications. Companion: SCF CAP Ecosystem.pdf (same dir). ACCEPTANCE-AUTHORITY MODEL: a framework owner's crosswalk is the acceptance rule for THEIR OWN framework — SCF's mappings state what SCF/CAP assessments accept as satisfying SCF controls. They are not claims about what NIST/ISO/CSA accept, and they never modify other standards' data. SCF's columns describing other frameworks are bundled-crosswalk tier (below source-provided mappings in precedence)."
+    },
+    {
+      "id": "scf-assessment-guides",
+      "file": "canonical-sources/source_data/scf/assessment-guides/",
+      "format": "directory",
+      "version": "SCF Assessment Guides (2026.1 era)",
+      "retrieved": "2026-07-02",
+      "role": "scf_assessment_guides",
+      "authority_scope": "scf_only",
+      "notes": "12 per-framework assessment guides: CMMC L1, CMMC L2+NIST CSF, NIST 800-171 r3, 800-161 r1, 800-218 SSDF, CSF 2.0, HIPAA Security, NYDFS 23 NYCRR 500, CISA SSDAF, NZ HISF suppliers, SCF core fundamentals, SCF tailored. These document how SCF CAP assesses AGAINST those frameworks — SCF's acceptance view, not the framework owners'."
+    },
+    {
+      "id": "scf-training",
+      "file": "canonical-sources/source_data/scf/training/",
+      "format": "directory",
+      "version": "SCF training syllabi (architect/assessor/practitioner)",
+      "retrieved": "2026-07-02",
+      "role": "scf_training",
+      "authority_scope": "scf_only",
+      "notes": "Certification-track syllabi for the SCF CAP ecosystem."
+    },
+    {
+      "id": "scf-standards-cdpas-madss",
+      "file": "canonical-sources/source_data/scf/standards/",
+      "format": "directory",
+      "version": "CDPAS + MADSS (SCF assessment standards)",
+      "retrieved": "2026-07-02",
+      "role": "scf_standards",
+      "authority_scope": "scf_only",
+      "notes": "Cybersecurity & Data Protection Assessment Standards (CDPAS) and M&A/Divestitures Security Standards (MADSS) — SCF's own assessment standards."
+    },
+    {
+      "id": "scf-scrms-playbook",
+      "file": "canonical-sources/source_data/scf/scrms/",
+      "format": "directory",
+      "version": "SCRMS 2026.1 + Prioritized Implementation Guide + ISMS-transition decks",
+      "retrieved": "2026-07-02",
+      "role": "scf_scrms",
+      "authority_scope": "scf_only",
+      "notes": "Security, Compliance & Resilience Management System — SCF's management-system layer ('How To GRC Playbook'). Includes due-diligence/due-care flow chart."
     }
   ],
   "er_crosswalk_csvs": {

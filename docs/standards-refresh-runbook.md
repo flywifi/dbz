@@ -52,15 +52,32 @@ usage. Data feeds are stored artifacts (KEV, ATT&CK, eCFR, EDGAR are in `canonic
 and loaded into grc.db at build). A feed may only be `fetch_blocked` (endpoint unreachable —
 listed below with the fix) — never silently "on demand".
 
-## Authority scoping — CSA STAR
+## Authority model — acceptance rules, not adversarial claims
 
-CSA materials (CCM, CAIQ, AICM, STAR) are authoritative **only for CSA STAR audits and
-certifications**. They must never override or modify NIST / ISO / other standards' data. Any
-canonical conflict between CSA and another standard is surfaced through the minority-report
-policy (`skills/shared/minority-report.md`) with both citations — reported, not merged.
-Id-level check 2026-07-02: all 1,684 CCM→800-53 OSCAL mapping targets resolve in the
-r5.2.0 catalog (zero conflicts found); semantic mapping-quality conflicts will be evaluated
-if/when a CSA projection phase is approved.
+A framework owner's crosswalk is the **acceptance rule for their own framework**:
+
+- **CSA** saying "800-53 control X maps to CCM requirement Y" means CSA accepts X as
+  satisfying Y **for CSA STAR audits and certifications**. It is not a claim about what
+  NIST accepts.
+- **SCF** saying "SCF #1 maps to control X" means SCF accepts X as satisfying SCF #1
+  **for SCF/CAP purposes**. Same principle.
+
+Consequences the engine and future loaders must respect:
+1. Owner-authored mappings are authoritative *within the owner's scope* (source-provided
+   tier). Third-party views of someone else's framework (e.g. SCF's CCM column, HITRUST's
+   ISO column) are bundled-crosswalk tier — one rung lower in the CLAUDE.md precedence.
+2. Divergences BETWEEN owners (CSA's CCM→NIST vs SCF's CCM↔NIST view) are **not conflicts
+   to adjudicate** — both are simultaneously valid in their own scopes. They become
+   minority-report entries only when the engine must answer a single question (e.g. "does
+   satisfying AC-2 satisfy CCM IAM-04 for a STAR audit?") and sources of different tiers
+   disagree: the owner's mapping wins as primary, the dissent line records the
+   lower-tier variance with both citations.
+3. No owner's mapping ever modifies another standard's data.
+
+Id-level sanity check 2026-07-02: all 1,684 CCM→800-53 OSCAL mapping targets resolve in the
+r5.2.0 catalog. The CCM↔SCF divergence analysis (194 controls compared) lives in
+`cross-mapping/output/ccm_discrepancy_report.json` — under this model those divergences are
+scope-relative acceptance differences, not errors.
 
 ## Known open follow-ups (as of 2026-07-02)
 
@@ -70,7 +87,10 @@ if/when a CSA projection phase is approved.
 - `olir_crawler.py` endpoint (`csrc.nist.gov/api/olir/finalized`) 404s — re-point to the
   CPRT OLIR catalog.
 - SCF + CCM OSCAL loaded as pinned artifacts only — spine projection is a future phase
-  (CSA subject to the authority-scope rule above).
+  (both subject to the acceptance-authority model above).
+- SCF errata note: the 2026.1 release REMOVED NIST SP 800-63B, OWASP 2021, FedRAMP R4 and
+  others from SCF's authoritative sources and added 13 (OWASP 2025, CJIS v6.0, IEC 62443
+  set, GovRAMP…) — relevant when SCF projection lands.
 - **fetch_blocked** (endpoint fixes needed): NVD (set `NVD_API_KEY`, run
   `nvd_api_loader.py --days 90`), EUR-Lex (rework loader against the Cellar/ELI API),
   FIPS-CMVP (re-point the loader). EDGAR is fetched and stored (85 disclosures).

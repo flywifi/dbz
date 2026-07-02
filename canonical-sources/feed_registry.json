@@ -618,7 +618,7 @@
       "github_repo": "cloudsecurityalliance/cloud-controls-matrix",
       "last_checked": null,
       "last_changed": "2026-01-28",
-      "notes": "CCM v4.1 released 2026-01-28 (207 controls / 17 domains; CAIQ v4.1 283 questions) — registration-gated download; registry tracks it as current release. On disk: CCM v4.0.13 xlsx (last v4.0.x, user-provided 2026-07-02), CCM v4.0.12 OSCAL dataset + mappings JSON, CAIQ v4.0.3, Implementation Guidelines v2.0, Auditing Guidelines. AUTHORITY SCOPE: CSA STAR audits/certifications only — never overrides NIST/ISO data; conflicts surface via minority-report.",
+      "notes": "CCM v4.1 released 2026-01-28 (207 controls / 17 domains; CAIQ v4.1 283 questions) — registration-gated download; registry tracks it as current release. On disk: CCM v4.0.13 xlsx (last v4.0.x, user-provided 2026-07-02), CCM v4.0.12 OSCAL dataset + mappings JSON, CAIQ v4.0.3, Implementation Guidelines v2.0, Auditing Guidelines. ACCEPTANCE-AUTHORITY: CSA's mappings are CSA STAR's acceptance rules — '800-53 X maps to CCM Y' means CSA accepts X as satisfying Y for STAR audits/certifications. Never a claim about NIST's acceptance; never modifies NIST/ISO data.",
       "announcement_feeds": [
         {
           "url": "https://cloudsecurityalliance.org/feed",
@@ -1412,7 +1412,7 @@
       "github_repo": "cloudsecurityalliance/cloud-controls-matrix",
       "last_checked": null,
       "last_changed": "2023-11-01",
-      "notes": "CCM v5 restructuring in progress — will change domain IDs and control structure. When v5 is released, canonical-sources/ccm-v4/ and source_manifest pinning will need updating. Separate from csa-ccm which tracks stable v4 for production use. AUTHORITY SCOPE: CSA STAR audits/certifications only — never overrides NIST/ISO data; conflicts surface via minority-report.",
+      "notes": "CCM v5 restructuring in progress — will change domain IDs and control structure. When v5 is released, canonical-sources/ccm-v4/ and source_manifest pinning will need updating. Separate from csa-ccm which tracks stable v4 for production use. ACCEPTANCE-AUTHORITY: CSA's mappings are CSA STAR's acceptance rules — '800-53 X maps to CCM Y' means CSA accepts X as satisfying Y for STAR audits/certifications. Never a claim about NIST's acceptance; never modifies NIST/ISO data.",
       "announcement_feeds": [
         {
           "url": "https://cloudsecurityalliance.org/feed",
@@ -5088,11 +5088,12 @@
       "check_strategy": "github_release",
       "last_checked": null,
       "last_changed": "2026-04-22",
-      "notes": "Free CC-licensed meta-framework mapping 100+ laws/regulations/frameworks. Artifact fetched to canonical-sources (scf-controls manifest entry) — the version anchor for the SCF column in crosswalk_80053_master.json. Quarterly-ish release cadence on GitHub.",
+      "notes": "Free CC-licensed meta-framework. On disk: controls xlsx 2026.1.1 (+ ERRATA pinned), Overview & Practitioner Guidebook 2026.2 (docs versioned independently), CAP Body of Knowledge 2026.1 + CAP Ecosystem, 12 per-framework assessment guides, training syllabi, CDPAS/MADSS standards, SCRMS 2026.1 playbook (source_data/scf/). 2026.1 STRM refresh added 13 authoritative sources (incl. OWASP 2025, CJIS v6, IEC 62443 set) and removed others (incl. NIST 800-63B, FedRAMP R4). Quarterly-ish GitHub cadence. ACCEPTANCE-AUTHORITY: SCF's mappings are SCF's acceptance rules — 'SCF #1 maps to control X' means SCF accepts X as satisfying SCF #1 for SCF/CAP purposes. Never a claim about other frameworks' acceptance; never modifies their data.",
       "draft_status": "none",
       "auto_fetch": true,
       "artifact_status": "current",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "authority_scope": "scf_only"
     },
     "microsoft-sspa": {
       "label": "Microsoft SSPA / Supplier Data Protection Requirements (DPR)",
@@ -5358,7 +5359,7 @@
       "check_strategy": "poll_landing",
       "last_checked": null,
       "last_changed": "2026-06-18",
-      "notes": "AI Controls Matrix v1.1 + AI-CAIQ v1.1 + STAR for AI Level 1 submission guide on disk (csa-aicm-v1.1 manifest entry, user-provided 2026-07-02). AUTHORITY SCOPE: CSA STAR audits/certifications only — never overrides NIST/ISO data; conflicts surface via minority-report.",
+      "notes": "AI Controls Matrix v1.1 + AI-CAIQ v1.1 + STAR for AI Level 1 submission guide on disk (csa-aicm-v1.1 manifest entry, user-provided 2026-07-02). ACCEPTANCE-AUTHORITY: CSA's mappings are CSA STAR's acceptance rules — '800-53 X maps to CCM Y' means CSA accepts X as satisfying Y for STAR audits/certifications. Never a claim about NIST's acceptance; never modifies NIST/ISO data.",
       "draft_status": "none",
       "auto_fetch": false,
       "artifact_status": "current",

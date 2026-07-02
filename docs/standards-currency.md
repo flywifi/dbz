@@ -13,6 +13,15 @@
 > (point-in-time vs period), not framework versions. The four ER crosswalk CSVs map to two
 > standards: SOC 1 → SSAE clarified standards (AT-C 320, SSAE No. 22 current), SOC 2 → AICPA
 > TSC 2017 + 2022 revised points of focus.
+>
+> **Phase 15 (2026-07-02):** full SCF ecosystem ingested (user-provided) — controls xlsx
+> 2026.1.1 verified byte-identical to the GitHub fetch, plus the pieces the xlsx-only fetch
+> missed: **Errata 2026.1.1** (ISO 27002 trailing-zero fix; 13 authoritative sources added,
+> 800-63B/OWASP-2021/FedRAMP-R4 removed), Guidebook **2026.2**, CAP Body of Knowledge, 12
+> assessment guides, CDPAS/MADSS, SCRMS playbook (`source_data/scf/`). Authority semantics
+> refined to the **acceptance model**: an owner's crosswalk states what THEY accept for their
+> own framework's audits (CSA→STAR, SCF→CAP) — scope-relative, never modifying other
+> standards; see the runbook's authority-model section.
 
 Every framework version pinned in this repo was checked against the latest published release
 (live sources: csrc.nist.gov, hitrustalliance.net, pcisecuritystandards.org, cisecurity.org,

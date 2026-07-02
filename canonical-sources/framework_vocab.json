@@ -47,7 +47,11 @@
       "NIST SP 800-172 Rev 3",
       "NIST SP 800-63-4",
       "MITRE ATT&CK v19",
-      "OWASP Top 10:2025"
+      "OWASP Top 10:2025",
+      "SCF CAP",
+      "SCRMS",
+      "CDPAS",
+      "MADSS"
     ]
   },
   "relationship_types": {
