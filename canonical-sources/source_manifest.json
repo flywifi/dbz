@@ -747,7 +747,7 @@
     }
   ],
   "er_crosswalk_csvs": {
-    "_description": "ER/local-control crosswalk CSVs from compliance-report-analyzer. Each row is one ER control. 'Local Controls (Linked)' and 'Framework (from Local Controls (Linked))' are comma-separated positionally-aligned lists — split both by comma to get per-framework control pairs.",
+    "_description": "ER/local-control crosswalk CSVs — a production compliance-platform export (provider identifiers proprietary). Each row is one ER control. 'Local Controls (Linked)' and 'Framework (from Local Controls (Linked))' are comma-separated positionally-aligned lists — split both by comma to get per-framework control pairs.",
     "files": [
       {
         "id": "er-soc1-t1",
@@ -893,7 +893,8 @@
         ],
         "role": "overlap_oracle"
       }
-    ]
+    ],
+    "_privacy": "PROPRIETARY IDENTIFIERS: the evidence-request ids (ER-*) and requirement ids (REQ-*) in these files belong to the platform provider. They must NEVER appear in docs, reports, query output, consensus edges, or ledger citations — aggregate counts only. The provider is not named in repo files. The SOC 1/2 requirement ids are the provider's own control set (a firm-local dialect), NOT AICPA TSC criteria — cross-source comparison keys on TSC criteria only. Enforced by health_audit's publication-hygiene guard."
   },
   "overlap_data": {
     "_description": "Customer-success overlap datasets for HIPAA↔HITRUST and SOC2↔HITRUST analysis.",

@@ -46,7 +46,7 @@ dbz/
 - Combination crosswalks (e.g. `SOC 2 T2 & ISO 27001.csv`) are **overlap oracles** for validation.
 
 ## Branching & git
-- Develop on `claude/grc-backend-enhancements-0yxff6`. **Never push to `main`.**
+- Develop on the designated feature branch. **Never push to `main`.**
 - Push with `git push -u origin <branch>`; retry network failures with backoff.
 - Do not open a PR unless explicitly asked.
 
@@ -64,3 +64,15 @@ Skills in `skills/` follow the `SKILL.md` + `references/` + `scripts/` conventio
 
 ## Commit messages
 Describe the change and reference the affected component (ingestion loader, overlap engine, ER crosswalk, skill). Update `docs/` at phase boundaries.
+
+## Publication hygiene (non-negotiable)
+- Commits, trailers, and repo files carry **no chat/session links, no internal notes, and no
+  personal information** (no personal emails, no session identifiers). `Co-Authored-By: Claude
+  <noreply@anthropic.com>` attribution is the only trailer.
+- If a human author identity is ever required, use the account's GitHub noreply routing address
+  (`<id>+<login>@users.noreply.github.com`) — never a real email.
+- Provider-proprietary identifiers from production data exports (evidence-request / requirement
+  ids) never appear in docs, reports, query output, or ledger citations — aggregate counts only.
+  The data files themselves are the private canonical data and stay confined to their mapping
+  directories.
+- `tools/health_audit.py` enforces the file-side rules on every scan.

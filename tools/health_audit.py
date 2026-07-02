@@ -461,6 +461,51 @@ def check_feed_staleness(max_age_days: int = 90) -> List[Dict[str, Any]]:
     return findings
 
 
+_PUB_PATTERNS = [
+    (re.compile(r"claude\.ai/code"), "chat/session link"),
+    (re.compile(r"session_01[a-zA-Z0-9]{10,}"), "session identifier"),
+    (re.compile(r"\b[A-Za-z0-9._%+-]+@(?!anthropic\.com|users\.noreply\.github\.com)"
+                r"[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"), "email address"),
+    (re.compile(r"\b(?:ER|REQ)-\d+\b"), "provider-proprietary identifier"),
+]
+
+
+def check_publication_hygiene() -> List[Dict[str, Any]]:
+    """Blocking guard: no chat/session links, no personal emails, and no
+    provider-proprietary evidence/requirement identifiers in publishable text
+    files (docs, skill instructions, registry/manifest/changelog/vocab).
+    Data CSVs are exempt — they ARE the private canonical data."""
+    findings: List[Dict[str, Any]] = []
+    targets: List[Path] = []
+    targets += sorted((ROOT / "docs").glob("**/*.md"))
+    targets += sorted(ROOT.glob("README*"))
+    targets += sorted((ROOT / "skills").glob("**/SKILL.md"))
+    targets += sorted((ROOT / "skills").glob("**/MAINTAINER.md"))
+    targets += sorted((ROOT / "skills").glob("**/references/**/*.md"))
+    for name in ("source_manifest.json", "feed_registry.json",
+                 "framework_changelog.json", "framework_vocab.json",
+                 "uncertainty_ledger.jsonl"):
+        p = ROOT / "canonical-sources" / name
+        if p.exists():
+            targets.append(p)
+    targets.append(ROOT / "CLAUDE.md")
+    for path in targets:
+        if _excluded(path) or not path.is_file():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        for pat, label in _PUB_PATTERNS:
+            m = pat.search(text)
+            if m:
+                findings.append(_f("blocking", "publication_hygiene",
+                    f"{label} ('{m.group(0)[:40]}') in publishable file",
+                    f"remove it from {path.relative_to(ROOT)} (see CLAUDE.md publication hygiene)",
+                    False, str(path.relative_to(ROOT))))
+    return findings
+
+
 def run_audit(full: bool = False, data_target: Path | None = None) -> Dict[str, Any]:
     reg = json.loads(REGISTRY.read_text(encoding="utf-8")) if REGISTRY.exists() else {"atoms": []}
     reg_ids = {a["id"] for a in reg.get("atoms", [])}
@@ -470,6 +515,7 @@ def run_audit(full: bool = False, data_target: Path | None = None) -> Dict[str, 
     findings += check_workflows(reg_ids)
     findings += check_uncertainty_ledger()
     findings += check_feed_staleness()
+    findings += check_publication_hygiene()
     if data_target is not None:
         findings += check_vocab_file(data_target)
     elif full:
