@@ -260,12 +260,37 @@
       "notes": "Relationship/Fulfilled By/Strength columns are empty in this OLIR release; NIST<->ISO relationship type is derived structurally from fan-out cardinality (relationship_basis=derived_cardinality), not read from the source."
     },
     {
+      "id": "cprt-sp800-53-5.2.0",
+      "file": "canonical-sources/source_data/cprt_SP_800_53_5_2_0_03-04-2026.xlsx",
+      "format": "xlsx",
+      "sheet": "SP 800-53 Rev 5.2.0",
+      "header_row": 0,
+      "version": "NIST SP 800-53 Release 5.2.0 (CPRT export 2026-03-04)",
+      "retrieved": "2026-07-02",
+      "role": "nist_catalog_cprt_oracle",
+      "column_roles": {
+        "Control Family": "family",
+        "Control (or Control Enhancement) Identifier": "nist_id",
+        "Control (or Control Enhancement) Name": "title",
+        "Control Statement": "control_text",
+        "Discussion": "discussion",
+        "Related Controls": "related_controls",
+        "Privacy Baseline": "privacy_baseline",
+        "Security Baseline - Low": "baseline_low",
+        "Security Baseline - Moderate": "baseline_moderate",
+        "Security Baseline - High": "baseline_high",
+        "Reference": "reference"
+      },
+      "notes": "NIST CPRT export of Release 5.2.0. Used as a completeness ORACLE for the generated catalog (validate_spine.py), not a loader input — the OSCAL supplement remains the catalog source of truth. Control Statement is flattened prose (no structured parts); 1,196 rows with non-null identifiers."
+    },
+    {
       "id": "hitrust-csf-cross-reference",
       "file": "canonical-sources/source_data/HITRUST CSF v11.4.0 Authoritative Sources Cross-Reference_ms_March2025.xlsx",
       "format": "xlsx",
       "sheet": "CSF Cross-Reference",
       "header_row": 0,
-      "version": "HITRUST CSF v11.5.0",
+      "version": "HITRUST CSF v11.4.0",
+      "version_note": "Current HITRUST release is v11.8.0 (2026-05-08); the hub mapping stays pinned to this licensed v11.4.0 cross-reference artifact until a newer one is provided.",
       "retrieved": "2025-03",
       "role": "hitrust_to_all_frameworks",
       "column_roles": {

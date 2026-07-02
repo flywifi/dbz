@@ -958,6 +958,37 @@ def link_odps_to_subparts_from_oscal(odp_links: List[dict], conn) -> int:
     return updated
 
 
+def complete_subpart_inventory(conn) -> int:
+    """
+    Union every sub-part referenced by framework_projection or assessment_objectives
+    into nist_subparts.  The inventory is otherwise built only from the catalog and
+    the CCI bridge, which leaves control-level footprint expansion unable to
+    enumerate sub-parts that only objectives or projections name — asymmetrically
+    deflating subpart-basis overlap.  Every inserted row derives from real rows in
+    the referencing table (source_file names it); nothing is fabricated.
+    Deterministic: ordered SELECT, INSERT OR IGNORE.
+    """
+    inserted = 0
+    for table, ctrl_col in (("framework_projection", "r5_control"),
+                            ("assessment_objectives", "control_id")):
+        rows = conn.execute(f"""
+            SELECT DISTINCT r5_subpart, {ctrl_col} FROM {table}
+            WHERE r5_subpart IS NOT NULL
+              AND r5_subpart NOT IN (SELECT subpart_id FROM nist_subparts)
+            ORDER BY r5_subpart""").fetchall()
+        for subpart, ctrl in rows:
+            if not subpart.startswith(ctrl + " "):
+                continue  # malformed — never guess a path
+            path = subpart[len(ctrl) + 1:]
+            cur = conn.execute("""
+                INSERT OR IGNORE INTO nist_subparts
+                    (subpart_id, r5_control, path, ordinal, source_file, source_sheet, source_row)
+                VALUES (?, ?, ?, 0, ?, '', -1)""",
+                (subpart, ctrl, path, table))
+            inserted += cur.rowcount
+    return inserted
+
+
 # ── CCI bridge from the current DISA CCI XML (native r5 refs, Phase 11) ────────
 
 CCI_XML_PATH = REPO_ROOT / "canonical-sources" / "source_data" / "U_CCI_List.xml"
@@ -981,17 +1012,28 @@ def load_appj_absorption_map(catalog_ids: Set[str]) -> Dict[str, List[str]]:
         return {}
     df = pd.read_excel(path, sheet_name=sheet_name(src), header=header_row(src))
     cols = list(df.columns)
-    # The merged first header row hides 'Change Details' behind an unnamed column;
-    # detect it by content: the column whose cells mention 'App J'.
+    # Resolve both columns from the manifest roles first; the merged first header
+    # row can hide 'Change Details' behind an unnamed column, so fall back to
+    # content detection (the column whose cells mention 'App J') only if needed.
     detail_col = None
-    for c in cols:
-        s = df[c].astype(str)
-        if s.str.contains("App J", na=False).any():
-            detail_col = c
-            break
+    id_col = None
+    try:
+        detail_col = _find_col(cols, col(src, "change_details"))
+        id_col = _find_col(cols, col(src, "r5_id"))
+    except Exception:
+        pass
+    if detail_col is None:
+        for c in cols:
+            if c == id_col:
+                continue
+            s = df[c].astype(str)
+            if s.str.contains("App J", na=False).any():
+                detail_col = c
+                break
     if detail_col is None:
         return {}
-    id_col = _find_col(cols, "ID") or cols[0]
+    if id_col is None:
+        id_col = cols[0]
 
     absorb: Dict[str, Set[str]] = {}
     for _, row in df.iterrows():

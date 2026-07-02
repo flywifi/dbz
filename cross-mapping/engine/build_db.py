@@ -1133,6 +1133,14 @@ def build_db(
              :hop_count, :needs_confirmation, :uncertainty_id, :status, :source_file, :source_sheet, :source_row)
     """, hub_edges, "framework_projection")
 
+    # Complete the sub-part inventory: union every sub-part referenced by
+    # framework_projection or assessment_objectives into nist_subparts, so
+    # control-level footprint expansion enumerates the same denominator that
+    # sub-part-level edges name directly (each row traces to real source rows
+    # in the referencing table).
+    n_inv = spine_loader.complete_subpart_inventory(conn)
+    print(f"  subpart_inventory: +{n_inv} sub-parts unioned from projections/objectives")
+
     # Phase 4: concrete ODP values pinned in DAAPM (DoD) prose.
     odpval_rows, odpval_stats = spine_loader.load_odp_values(catalog_ids)
     print(f"  odp_values: rows={odpval_stats.get('rows')} controls={odpval_stats.get('controls_with_values')}")
@@ -1291,12 +1299,16 @@ def build_db(
         print(f"  nvd_cves: 0 rows (run nvd_api_loader.py to populate)")
     conn.commit()
 
-    # 12. DISA CCI data
+    # 12. DISA CCI data (Trackr JSON). Precedence: when the authoritative CCI List
+    # XML populated disa_ccis in step 1b, its r5-resolved refs win — the trackr
+    # rows only fill CCIs the XML didn't cover (INSERT OR IGNORE). Without the
+    # XML, trackr may REPLACE the legacy xlsx-derived rows.
     print(f"\n[12/15] Loading DISA CCI data: {cci_path.name}")
     cci_rows = load_cci_data(cci_path)
     if cci_rows:
-        _executemany_chunked(conn, """
-            INSERT OR REPLACE INTO disa_ccis
+        _verb = "IGNORE" if spine_loader.CCI_XML_PATH.exists() else "REPLACE"
+        _executemany_chunked(conn, f"""
+            INSERT OR {_verb} INTO disa_ccis
                 (cci_id, definition, type, status, nist_rev4_refs, nist_rev5_refs, fetched_at)
             VALUES
                 (:cci_id, :definition, :type, :status, :nist_rev4_refs, :nist_rev5_refs, :fetched_at)

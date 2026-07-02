@@ -1,8 +1,7 @@
 {
   "_purpose": "Controlled vocabularies the health auditor validates against, so a typo or a fabricated identifier is caught before it corrupts a query. Deterministic allow-lists only — never fabricate an entry to make a check pass; add the real canonical name.",
   "_version": "1.0.0",
-  "_generated": "2026-07-01",
-
+  "_generated": "2026-07-02",
   "framework_names": {
     "_note": "Canonical framework names as they must appear in crosswalk/catalog data. A name not on this list (e.g. 'ISO 27001' missing the '/IEC') is flagged so overlap queries don't silently miss it.",
     "allowed": [
@@ -31,21 +30,49 @@
       "SOX",
       "NIS2",
       "DORA",
-      "EU AI Act"
+      "EU AI Act",
+      "PCI DSS v4.0.1",
+      "CSA CCM v4.1",
+      "NIST 800-53 Release 5.2.0",
+      "CIS Controls v8.1"
     ]
   },
-
   "relationship_types": {
     "_note": "Mirrors VALID_RELATIONSHIP_TYPES in cross-mapping/nist-catalog/ingestion/validate_catalog.py — kept in sync so the auditor and the catalog validator agree.",
-    "allowed": ["Subset", "Superset", "Equal", "Intersecting", "mapped_to", "transitive_via_hitrust", ""]
+    "allowed": [
+      "Subset",
+      "Superset",
+      "Equal",
+      "Intersecting",
+      "mapped_to",
+      "transitive_via_hitrust",
+      ""
+    ]
   },
-
   "cci_pattern": "^CCI-\\d{6}$",
-
   "orchestration_enums": {
-    "mode": ["read-fanout", "mutate", "external"],
-    "status": ["complete", "partial", "blocked"],
-    "confidence": ["high", "medium", "low", "uncertain"],
-    "cci_provenance_tier": ["Confirmed-Direct", "Confirmed-Subject", "Implied-Bridge", "Implied-Heuristic", "Not-Applicable"]
+    "mode": [
+      "read-fanout",
+      "mutate",
+      "external"
+    ],
+    "status": [
+      "complete",
+      "partial",
+      "blocked"
+    ],
+    "confidence": [
+      "high",
+      "medium",
+      "low",
+      "uncertain"
+    ],
+    "cci_provenance_tier": [
+      "Confirmed-Direct",
+      "Confirmed-Subject",
+      "Implied-Bridge",
+      "Implied-Heuristic",
+      "Not-Applicable"
+    ]
   }
 }

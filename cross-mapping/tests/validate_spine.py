@@ -38,6 +38,43 @@ def note(msg: str) -> None:
     NOTES.append(msg)
 
 
+def _check_cprt_oracle(conn) -> None:
+    """
+    Reconcile the DB's controls+enhancements against the NIST CPRT Release 5.2.0
+    export (an independent NIST-generated inventory).  Any identifier present in
+    CPRT but absent from the DB means the catalog is incomplete; extras in the DB
+    that CPRT lacks are noted (withdrawn stubs are expected there).
+    """
+    sys.path.insert(0, str(ROOT / "cross-mapping" / "nist-catalog" / "ingestion"))
+    sys.path.insert(0, str(ROOT / "cross-mapping" / "engine"))
+    try:
+        from config import source_path, sheet_name, header_row, col  # type: ignore
+        from spine_normalize import normalize_control_id  # type: ignore
+        import pandas as pd  # type: ignore
+        src = "cprt-sp800-53-5.2.0"
+        path = source_path(src)
+    except Exception as e:
+        note(f"CPRT oracle skipped ({e})")
+        return
+    if not path.exists():
+        note("CPRT oracle skipped (5.2.0 export not on disk)")
+        return
+    df = pd.read_excel(path, sheet_name=sheet_name(src), header=header_row(src))
+    id_col = col(src, "nist_id")
+    cprt_ids = set()
+    for raw in df[id_col].dropna().astype(str):
+        cid = normalize_control_id(raw.strip())
+        if cid:
+            cprt_ids.add(cid)
+    db_ids = {r[0] for r in conn.execute("SELECT nist_id FROM controls")}
+    db_ids |= {r[0] for r in conn.execute("SELECT id FROM enhancements")}
+    missing = sorted(cprt_ids - db_ids)
+    if missing:
+        fail(f"catalog missing {len(missing)} CPRT 5.2.0 identifiers (e.g. {missing[:5]})")
+    else:
+        note(f"CPRT 5.2.0 oracle: all {len(cprt_ids)} identifiers present in the catalog")
+
+
 def main() -> int:
     if not DB.exists():
         print("validate_spine: grc.db not built — run python3 cross-mapping/engine/build_db.py")
@@ -94,6 +131,21 @@ def main() -> int:
         fail(f"uncertainty ledger has {len(blocking)} blocking finding(s)")
     else:
         note("ledger: committed uncertainty_ledger.jsonl clean")
+
+    # 5. Catalog completeness vs the NIST CPRT 5.2.0 export (independent oracle).
+    _check_cprt_oracle(conn)
+
+    # 6. Sub-part inventory completeness — every sub-part any table references
+    # must be enumerable via nist_subparts (control-level expansion symmetry).
+    for table in ("framework_projection", "assessment_objectives"):
+        missing = conn.execute(f"""
+            SELECT COUNT(DISTINCT r5_subpart) FROM {table}
+            WHERE r5_subpart IS NOT NULL
+              AND r5_subpart NOT IN (SELECT subpart_id FROM nist_subparts)""").fetchone()[0]
+        if missing:
+            fail(f"subpart inventory incomplete: {missing} sub-parts in {table} missing from nist_subparts")
+        else:
+            note(f"subpart inventory: all {table} sub-parts enumerated in nist_subparts")
 
     conn.close()
 

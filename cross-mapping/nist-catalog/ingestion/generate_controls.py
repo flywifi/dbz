@@ -37,7 +37,7 @@ if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
 SCHEMA_VERSION = "1.1.0"
-CATALOG_SOURCE = "NIST 800-53 Rev 5.0"
+CATALOG_SOURCE = "NIST 800-53 Release 5.2.0"
 
 # ── Assignment/Selection parameter extraction ──────────────────────────────────
 

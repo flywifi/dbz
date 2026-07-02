@@ -235,8 +235,9 @@ def parse_objective(raw: str) -> List[Tuple[str, Optional[str], Optional[str]]]:
 
 _OSCAL_ID_RE = re.compile(r"^([a-z]{2,3})-(\d{1,3})(?:\.(\d{1,3}))?$")
 _OSCAL_INSERT_RE = re.compile(r"insert:\s*param,\s*([a-z0-9_.\-]+)")
-# objective ids append '-N' below the statement-part level: 'ac-2_obj.d.3-1'
-_OBJ_LEAF_SUFFIX = re.compile(r"-\d+$")
+# objective ids append '-N' (possibly repeated) below the statement-part level:
+# 'ac-2_obj.d.3-1'; strip every trailing '-N' so 'a-1-2' collapses to 'a'.
+_OBJ_LEAF_SUFFIX = re.compile(r"(?:-\d+)+$")
 
 
 def oscal_control_id(oscal_id: str) -> Optional[str]:

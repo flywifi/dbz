@@ -72,6 +72,12 @@ if _OSCAL_CACHE.exists():
     check(_obj.get("ac-2_obj.d.3-1") == "d.3", "objective leaf ac-2_obj.d.3-1 collapses to d.3")
     check(_obj.get("ac-2_obj") == "", "objective root is control-level")
 
+# repeated '-N' objective suffixes all strip (synthetic — no such id in current data)
+_synth = {"parts": [{"id": "xx-1_obj", "name": "assessment-objective", "parts": [
+    {"id": "xx-1_obj.a-1-2", "name": "assessment-objective", "prose": ""}]}]}
+_srecs = {r["part_id"]: r["subpath"] for r in SN.parse_oscal_parts(_synth)}
+check(_srecs.get("xx-1_obj.a-1-2") == "a", "objective id a-1-2 collapses to a (repeat suffix strip)")
+
 # ── 2. Spine loaders against the real catalog + CCI list ───────────────────────
 ctrl_rows, enh_rows, param_rows, _ = B.load_catalog(B.DEFAULT_CATALOG)
 catalog_ids = {r["nist_id"] for r in ctrl_rows} | {r["id"] for r in enh_rows}
