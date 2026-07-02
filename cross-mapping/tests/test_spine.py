@@ -85,6 +85,16 @@ check(SN.normalize_iso_id("5.1") == ("5.1", "ambiguous"), "iso bare 5.1 stays am
 check(SN.normalize_iso_id("5.99") == (None, "unknown"), "iso beyond both ranges -> unknown")
 check(SN.normalize_iso_id("garbage") == (None, "unknown"), "iso garbage -> unknown")
 
+# TSC + PCI canonicalizers (consensus keys)
+check(SN.normalize_tsc_id("AICPA 2017 CC6.1") == "CC6.1", "tsc AICPA-prefixed")
+check(SN.normalize_tsc_id("cc 06.01") == "CC6.1", "tsc padded/lower")
+check(SN.normalize_tsc_id("PI1.4") == "PI1.4", "tsc PI series")
+check(SN.normalize_tsc_id("REQ-17") is None, "tsc rejects firm-local ids (never guess)")
+check(SN.normalize_pci_id("Req 1.2.3") == "1.2.3", "pci Req prefix")
+check(SN.normalize_pci_id("01.02") == "1.2", "pci zero-padded")
+check(SN.normalize_pci_id("13.1") is None, "pci out-of-range top level")
+check(SN.normalize_pci_id("A.8.20") is None, "pci rejects ISO ids")
+
 # repeated '-N' objective suffixes all strip (synthetic — no such id in current data)
 _synth = {"parts": [{"id": "xx-1_obj", "name": "assessment-objective", "parts": [
     {"id": "xx-1_obj.a-1-2", "name": "assessment-objective", "prose": ""}]}]}
@@ -328,6 +338,23 @@ if _DB.exists():
     if (ROOT / "canonical-sources" / "edgar-8k-cyber.json").exists():
         n_edg = _c2.execute("SELECT COUNT(*) FROM edgar_cyber_incidents").fetchone()[0]
         check(n_edg > 0, f"edgar_cyber_incidents populated from stored 8-K data (got {n_edg})")
+    # Consensus edges (Phase 16): the user's example class — SOC2(TSC)<->ISO pairs
+    # carried by >=3 independent voters, with computed extent + shared spine atoms.
+    n_cons = _c2.execute("SELECT COUNT(*) FROM consensus_edges WHERE tier='strong'").fetchone()[0]
+    check(n_cons > 100, f"consensus: >100 strong pairs (got {n_cons})")
+    n_ti = _c2.execute("""SELECT COUNT(*) FROM consensus_edges WHERE tier='strong'
+        AND ((fw_a='SOC 2 (TSC)' AND fw_b='ISO 27001/2 (2022)')
+          OR (fw_b='SOC 2 (TSC)' AND fw_a='ISO 27001/2 (2022)'))""").fetchone()[0]
+    check(n_ti > 0, f"consensus: strong SOC2(TSC)<->ISO pairs exist (got {n_ti})")
+    n_char = _c2.execute("""SELECT COUNT(*) FROM consensus_edges WHERE tier='strong'
+        AND extent IS NOT NULL AND uncertainty_id IS NOT NULL""").fetchone()[0]
+    check(n_char == n_cons, f"every strong pair characterized + id'd ({n_char}/{n_cons})")
+    # privacy: no proprietary ids anywhere in consensus output columns
+    n_leak = _c2.execute("""SELECT COUNT(*) FROM consensus_edges
+        WHERE native_a GLOB '*REQ-[0-9]*' OR native_b GLOB '*REQ-[0-9]*'
+           OR native_a GLOB '*ER-[0-9]*' OR native_b GLOB '*ER-[0-9]*'
+           OR evidence GLOB '*REQ-[0-9]*' OR evidence GLOB '*ER-[0-9]*'""").fetchone()[0]
+    check(n_leak == 0, f"consensus carries no proprietary identifiers (got {n_leak})")
     _c2.close()
 
 # ── 8. Durable ledger + health-audit detector (Phase 7) ────────────────────────

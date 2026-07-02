@@ -306,6 +306,46 @@ def normalize_iso_id(raw: str) -> Tuple[Optional[str], str]:
     return None, "unknown"
 
 
+# ── AICPA TSC (SOC 2) + PCI DSS canonical ids ──────────────────────────────────
+
+_TSC_RE = re.compile(r"^(?:AICPA\s*(?:2017)?\s*)?(CC|PI|A|C|P)\s*(\d{1,2})\.(\d{1,2})\s*$",
+                     re.IGNORECASE)
+
+
+def normalize_tsc_id(raw: str) -> Optional[str]:
+    """
+    Canonicalize an AICPA Trust Services Criteria id: 'CC6.1', 'AICPA 2017 CC6.1',
+    'cc 6.1' -> 'CC6.1'.  Series: CC, A, C, PI, P.  Returns None when the string is
+    not a TSC criterion (e.g. a firm-local control id) — never guess.
+    """
+    if not isinstance(raw, str):
+        return None
+    m = _TSC_RE.match(raw.strip())
+    if not m:
+        return None
+    return f"{m.group(1).upper()}{int(m.group(2))}.{int(m.group(3))}"
+
+
+_PCI_RE = re.compile(r"^(?:Req(?:uirement)?\.?\s*)?(\d{1,2})((?:\.\d{1,3}){0,3})\s*$",
+                     re.IGNORECASE)
+
+
+def normalize_pci_id(raw: str) -> Optional[str]:
+    """
+    Canonicalize a PCI DSS requirement id: '1.2.3', 'Req 1.2.3', '01.02' -> '1.2.3'.
+    1–4 dotted numeric segments; anything else returns None.
+    """
+    if not isinstance(raw, str):
+        return None
+    m = _PCI_RE.match(raw.strip())
+    if not m:
+        return None
+    segs = [int(m.group(1))] + [int(t) for t in m.group(2).split(".") if t]
+    if segs[0] < 1 or segs[0] > 12:
+        return None
+    return ".".join(str(s) for s in segs)
+
+
 # ── OSCAL structured parts (raw catalog: catalog.groups[].controls[]) ──────────
 
 _OSCAL_ID_RE = re.compile(r"^([a-z]{2,3})-(\d{1,3})(?:\.(\d{1,3}))?$")

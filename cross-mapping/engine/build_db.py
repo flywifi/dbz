@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.4"   # v3.4: OSCAL structural ODP links, assessment_objectives, CCI XML bridge
+SCHEMA_VERSION = "3.5"   # v3.5: consensus_edges (cross-source agreement on third-party pairs)
 
 CHUNK = 500  # executemany batch size
 
@@ -384,6 +384,29 @@ CREATE TABLE IF NOT EXISTS assessment_objectives (
 );
 CREATE INDEX IF NOT EXISTS idx_objectives_ctrl    ON assessment_objectives(control_id);
 CREATE INDEX IF NOT EXISTS idx_objectives_subpart ON assessment_objectives(r5_subpart);
+
+-- ── Cross-source consensus: independent voters agreeing on third-party pairs ───
+CREATE TABLE IF NOT EXISTS consensus_edges (
+    fw_a               TEXT NOT NULL,
+    native_a           TEXT NOT NULL,
+    fw_b               TEXT NOT NULL,
+    native_b           TEXT NOT NULL,
+    votes              INTEGER NOT NULL,     -- distinct independent voters
+    tier               TEXT NOT NULL,        -- strong (>=3) | moderate (2) | single
+    voters             TEXT,                 -- JSON list of voter names
+    evidence           TEXT,                 -- JSON: voter -> [{derivation,strength,source}]
+    production_support INTEGER DEFAULT 0,    -- aggregate co-occurrence count (no ids)
+    nist_ancestry_overlap INTEGER DEFAULT 0, -- olir+cmmc171 both voted (shared lineage)
+    extent             TEXT,                 -- equal|a_subset_b|b_subset_a|intersect|atoms_disjoint|no_spine_footprint
+    shared_atoms_count INTEGER,
+    shared_atoms       TEXT,                 -- JSON list (capped) of shared spine sub-parts
+    text_confirmation  TEXT,                 -- texts_on_file | pending_licensed_artifact
+    uncertainty_id     TEXT,
+    needs_confirmation INTEGER DEFAULT 1,
+    PRIMARY KEY (fw_a, native_a, fw_b, native_b)
+);
+CREATE INDEX IF NOT EXISTS idx_consensus_tier ON consensus_edges(tier);
+CREATE INDEX IF NOT EXISTS idx_consensus_fws  ON consensus_edges(fw_a, fw_b);
 
 -- ── Universal projection: any framework native control -> spine coordinate ─────
 CREATE TABLE IF NOT EXISTS framework_projection (
@@ -1397,6 +1420,23 @@ def build_db(
     """, om_rows, "overlap_matrix")
     conn.commit()
     print(f"  overlap_matrix: {len(om_rows)} pairs")
+
+    # Cross-source consensus: independent voters agreeing on third-party pairs.
+    import consensus_detector as _cd  # type: ignore
+    consensus_rows, cd_stats = _cd.detect(conn)
+    _executemany_chunked(conn, """
+        INSERT OR REPLACE INTO consensus_edges
+            (fw_a, native_a, fw_b, native_b, votes, tier, voters, evidence,
+             production_support, nist_ancestry_overlap, extent, shared_atoms_count,
+             shared_atoms, text_confirmation, uncertainty_id, needs_confirmation)
+        VALUES
+            (:fw_a, :native_a, :fw_b, :native_b, :votes, :tier, :voters, :evidence,
+             :production_support, :nist_ancestry_overlap, :extent, :shared_atoms_count,
+             :shared_atoms, :text_confirmation, :uncertainty_id, :needs_confirmation)
+    """, consensus_rows, "consensus_edges")
+    conn.commit()
+    print(f"  consensus_edges: pairs={cd_stats['pairs']} tiers={cd_stats['tiers']} "
+          f"production_corroborated={cd_stats['with_production_support']}")
 
     # Durable, committed uncertainty ledger (what the health tools scan).
     ledger_path = REPO_ROOT / "canonical-sources" / "uncertainty_ledger.jsonl"

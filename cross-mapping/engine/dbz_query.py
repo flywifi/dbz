@@ -281,6 +281,44 @@ def cmd_overlap(args, conn: sqlite3.Connection) -> int:
     return 0
 
 
+def cmd_consensus(args, conn: sqlite3.Connection) -> int:
+    """Cross-source consensus pairs: where independent mapping authorities agree."""
+    where, params = ["1=1"], []
+    if getattr(args, "framework_a", None):
+        where.append("(fw_a=? OR fw_b=?)")
+        params += [args.framework_a, args.framework_a]
+    if getattr(args, "framework_b", None):
+        where.append("(fw_a=? OR fw_b=?)")
+        params += [args.framework_b, args.framework_b]
+    tier = getattr(args, "tier", "strong") or "strong"
+    if tier != "all":
+        where.append("tier=?")
+        params.append(tier)
+    rows = conn.execute(f"""
+        SELECT fw_a, native_a, fw_b, native_b, votes, tier, voters, extent,
+               shared_atoms_count, production_support, text_confirmation, evidence
+        FROM consensus_edges WHERE {' AND '.join(where)}
+        ORDER BY votes DESC, fw_a, native_a, fw_b, native_b
+        LIMIT ?""", (*params, getattr(args, "limit", 40) or 40)).fetchall()
+    if args.format == "json":
+        cols = ["fw_a", "native_a", "fw_b", "native_b", "votes", "tier", "voters",
+                "extent", "shared_atoms_count", "production_support",
+                "text_confirmation", "evidence"]
+        print(json.dumps([dict(zip(cols, r)) for r in rows], indent=2))
+        return 0
+    if not rows:
+        print("No consensus pairs match. (Tiers: strong >=3 voters, moderate=2; use --tier all.)")
+        return 0
+    print(f"{len(rows)} consensus pair(s) — agreement across independent mapping authorities.")
+    print("Consensus is derived evidence with citations; it never overrides any owner's mapping.\n")
+    for fw_a, na, fw_b, nb, votes, t, voters, extent, atoms, prod, txt, _ev in rows:
+        prod_s = f"  production-corroborated x{prod}" if prod else ""
+        print(f"[{t}:{votes}] {fw_a} {na}  <->  {fw_b} {nb}")
+        print(f"        voters={voters}  extent={extent}  shared_atoms={atoms}  "
+              f"text={txt}{prod_s}")
+    return 0
+
+
 def cmd_search(args, conn: sqlite3.Connection) -> int:
     """Full-text search across control text/title/discussion."""
     kw = args.keyword.strip()
@@ -817,6 +855,18 @@ def build_parser() -> argparse.ArgumentParser:
                     help="Include per-control full/partial/none breakdown")
     _add_format(ov); _add_db(ov)
 
+    # consensus
+    cons = subs.add_parser("consensus",
+                           help="Cross-source consensus pairs (independent authorities agreeing)")
+    cons.add_argument("--framework-a", metavar="FW_A",
+                      help="Filter: pair touches this framework (e.g. 'SOC 2 (TSC)')")
+    cons.add_argument("--framework-b", metavar="FW_B",
+                      help="Filter: pair also touches this framework")
+    cons.add_argument("--tier", choices=["strong", "moderate", "single", "all"],
+                      default="strong", help="Consensus tier (default: strong = >=3 voters)")
+    cons.add_argument("--limit", type=int, default=40)
+    _add_format(cons); _add_db(cons)
+
     # search
     srch = subs.add_parser("search", help="Full-text search across control text")
     srch.add_argument("--keyword", required=True, help="Search term (e.g. 'multi-factor')")
@@ -944,6 +994,7 @@ def main(argv=None) -> int:
         "forward": cmd_forward,
         "scope": cmd_scope,
         "overlap": cmd_overlap,
+        "consensus": cmd_consensus,
         "search": cmd_search,
         "changelog": cmd_changelog,
         "feeds": cmd_feeds,
