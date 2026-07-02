@@ -618,7 +618,7 @@
       "github_repo": "cloudsecurityalliance/cloud-controls-matrix",
       "last_checked": null,
       "last_changed": "2026-01-28",
-      "notes": "CCM v4.1 released 2026-01-28 (207 controls / 17 domains; CAIQ v4.1 283 questions) — registration-gated download; registry tracks it as current release. On disk: CCM v4.0.13 xlsx (last v4.0.x, user-provided 2026-07-02), CCM v4.0.12 OSCAL dataset + mappings JSON, CAIQ v4.0.3, Implementation Guidelines v2.0, Auditing Guidelines.",
+      "notes": "CCM v4.1 released 2026-01-28 (207 controls / 17 domains; CAIQ v4.1 283 questions) — registration-gated download; registry tracks it as current release. On disk: CCM v4.0.13 xlsx (last v4.0.x, user-provided 2026-07-02), CCM v4.0.12 OSCAL dataset + mappings JSON, CAIQ v4.0.3, Implementation Guidelines v2.0, Auditing Guidelines. AUTHORITY SCOPE: CSA STAR audits/certifications only — never overrides NIST/ISO data; conflicts surface via minority-report.",
       "announcement_feeds": [
         {
           "url": "https://cloudsecurityalliance.org/feed",
@@ -659,7 +659,8 @@
       "cci_coverage_notes": "Implied-Bridge: CSA CCM v4.1 → 800-53 via CCM control baseline mappings. IAM domain → IA/AC CCIs; DSP domain → MP/SC CCIs; AIS domain → SA/SI CCIs. CCM control IDs not in CCI text; Implied-Bridge.",
       "auto_fetch": false,
       "artifact_status": "current",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "authority_scope": "csa_star_only"
     },
     "soc2": {
       "label": "AICPA SOC 2 Trust Services Criteria",
@@ -1411,7 +1412,7 @@
       "github_repo": "cloudsecurityalliance/cloud-controls-matrix",
       "last_checked": null,
       "last_changed": "2023-11-01",
-      "notes": "CCM v5 restructuring in progress — will change domain IDs and control structure. When v5 is released, canonical-sources/ccm-v4/ and source_manifest pinning will need updating. Separate from csa-ccm which tracks stable v4 for production use.",
+      "notes": "CCM v5 restructuring in progress — will change domain IDs and control structure. When v5 is released, canonical-sources/ccm-v4/ and source_manifest pinning will need updating. Separate from csa-ccm which tracks stable v4 for production use. AUTHORITY SCOPE: CSA STAR audits/certifications only — never overrides NIST/ISO data; conflicts surface via minority-report.",
       "announcement_feeds": [
         {
           "url": "https://cloudsecurityalliance.org/feed",
@@ -1453,7 +1454,8 @@
       "cci_coverage_notes": "Implied-Bridge: CSA STAR uses CCM v4.1 as its control baseline (prior notes referenced v4.0.12 — updated to v4.1 as current per FRA-6). CCI connections inherit from csa-ccm entry. STAR certification layer adds no new CCIs; Implied-Bridge via CCM→800-53 chain.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "authority_scope": "csa_star_only"
     },
     "nist-ai-rmf": {
       "label": "NIST AI RMF 1.0 + GenAI Profile",
@@ -2311,7 +2313,7 @@
         "landing": "https://nvd.nist.gov/developers/vulnerabilities"
       },
       "check_strategy": "poll_landing",
-      "notes": "NVD v1.x JSON gz feeds deprecated. Use API 2.0 with incremental date-range pulls (lastModStartDate/lastModEndDate params). No API key required for light use.",
+      "notes": "NVD v1.x JSON gz feeds deprecated. Use API 2.0 with incremental date-range pulls (lastModStartDate/lastModEndDate params). No API key required for light use. FETCH BLOCKED (2026-07-02): NVD API 2.0 rejects unauthenticated bulk pulls from this environment — set NVD_API_KEY and run nvd_api_loader.py --days 90; empty stub NOT committed as current.",
       "last_checked": null,
       "last_changed": "2024-01-01",
       "announcement_feeds": [
@@ -2350,7 +2352,7 @@
       "version_signal": "file_hash",
       "cci_coverage_notes": "Implied-Bridge: NVD CVE → 800-53 via CWE→CAPEC→ATT&CK→800-53 chain. SI-2 flaw remediation (CCI-001643–001645) and RA-5 vulnerability scanning (CCI-002515–002517): Confirmed-Subject for patch/vulnerability language. CVE IDs not in CCI text; all connections Implied-Bridge.",
       "auto_fetch": false,
-      "artifact_status": "on_demand",
+      "artifact_status": "fetch_blocked",
       "last_verified": "2026-07-02"
     },
     "nist-privacy-fw": {
@@ -2627,9 +2629,9 @@
         "landing": "https://www.sec.gov/cgi-bin/browse-edgar"
       },
       "check_strategy": "poll_landing",
-      "notes": "Machine-readable 8-K Item 1.05 filings via EDGAR Submissions API (data.sec.gov). No API key required. Search: efts.sec.gov full-text search.",
+      "notes": "Machine-readable 8-K Item 1.05 filings via EDGAR Submissions API (data.sec.gov). No API key required. Search: efts.sec.gov full-text search. 85 8-K Item 1.05 cyber disclosures (2023-12-18 onward) stored in repo 2026-07-02 — day-1 data, no runtime fetch needed.",
       "last_checked": null,
-      "last_changed": null,
+      "last_changed": "2026-07-02",
       "announcement_feeds": [
         {
           "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom",
@@ -2658,7 +2660,7 @@
       "version_signal": "latest_item_guid",
       "cci_coverage_notes": "Implied-Heuristic: 8-K Item 1.05 disclosures are evidence inputs, not control standards. CCIs classified by incident type in edgar_loader.py (ransomware→IR/SC, breach→AC/AU).",
       "auto_fetch": false,
-      "artifact_status": "on_demand",
+      "artifact_status": "current",
       "last_verified": "2026-07-02"
     },
     "finra-guidance": {
@@ -5356,11 +5358,12 @@
       "check_strategy": "poll_landing",
       "last_checked": null,
       "last_changed": "2026-06-18",
-      "notes": "AI Controls Matrix v1.1 + AI-CAIQ v1.1 + STAR for AI Level 1 submission guide on disk (csa-aicm-v1.1 manifest entry, user-provided 2026-07-02).",
+      "notes": "AI Controls Matrix v1.1 + AI-CAIQ v1.1 + STAR for AI Level 1 submission guide on disk (csa-aicm-v1.1 manifest entry, user-provided 2026-07-02). AUTHORITY SCOPE: CSA STAR audits/certifications only — never overrides NIST/ISO data; conflicts surface via minority-report.",
       "draft_status": "none",
       "auto_fetch": false,
       "artifact_status": "current",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "authority_scope": "csa_star_only"
     }
   },
   "check_schedule": {

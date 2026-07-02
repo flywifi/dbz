@@ -554,7 +554,8 @@
         "domains[].controls[].title": "control_title",
         "domains[].controls[].specification": "control_text"
       },
-      "notes": "YAML structure: {name, version, url, domains: [{id, title, controls: [{id, title, specification}]}]}. 17 domains. License: CC-BY. JSON equivalent at CCM/primary-dataset.json. NIST 800-53 mapping in CCM/mappings/ (if present) or CAIQ dataset."
+      "notes": "YAML structure: {name, version, url, domains: [{id, title, controls: [{id, title, specification}]}]}. 17 domains. License: CC-BY. JSON equivalent at CCM/primary-dataset.json. NIST 800-53 mapping in CCM/mappings/ (if present) or CAIQ dataset. AUTHORITY SCOPE: authoritative ONLY for CSA STAR audits/certifications. Must never override or modify NIST/ISO/other standards' data; any canonical conflict is surfaced via the minority-report policy, not merged. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL mapping targets resolve in the r5.2.0 catalog (0 conflicts).",
+      "authority_scope": "csa_star_only"
     },
     {
       "id": "nist-800-172-r3-oscal",
@@ -634,7 +635,8 @@
       "retrieved": "2026-07-02",
       "role": "csa_ccm",
       "sha256_prefix": "15ed274945743019",
-      "notes": "User-provided CSA STAR bundle. Supersedes the older CCM v4.0.x file as the freshest CCM artifact on disk; CCM v4.1 (2026-01-28) remains registration-gated — registry tracks it as current."
+      "notes": "User-provided CSA STAR bundle. Supersedes the older CCM v4.0.x file as the freshest CCM artifact on disk; CCM v4.1 (2026-01-28) remains registration-gated — registry tracks it as current. AUTHORITY SCOPE: authoritative ONLY for CSA STAR audits/certifications. Must never override or modify NIST/ISO/other standards' data; any canonical conflict is surfaced via the minority-report policy, not merged. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL mapping targets resolve in the r5.2.0 catalog (0 conflicts).",
+      "authority_scope": "csa_star_only"
     },
     {
       "id": "csa-ccm-v4.0.12-oscal",
@@ -644,7 +646,8 @@
       "retrieved": "2026-07-02",
       "role": "csa_ccm_oscal",
       "sha256_prefix": "876714a4412996c9",
-      "notes": "Machine-readable OSCAL rendition of CCM + mappings — candidate loader input for a future CCM spine projection (structured, no xlsx parsing needed)."
+      "notes": "Machine-readable OSCAL rendition of CCM + mappings — candidate loader input for a future CCM spine projection (structured, no xlsx parsing needed). AUTHORITY SCOPE: authoritative ONLY for CSA STAR audits/certifications. Must never override or modify NIST/ISO/other standards' data; any canonical conflict is surfaced via the minority-report policy, not merged. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL mapping targets resolve in the r5.2.0 catalog (0 conflicts).",
+      "authority_scope": "csa_star_only"
     },
     {
       "id": "csa-aicm-v1.1",
@@ -654,7 +657,8 @@
       "retrieved": "2026-07-02",
       "role": "csa_aicm",
       "sha256_prefix": "afebba6d2c9ede42",
-      "notes": "CSA STAR for AI: AI Controls Matrix v1.1 + AI-CAIQ questionnaire + Level 1 submission guide. CURRENT as of upload (June 2026)."
+      "notes": "CSA STAR for AI: AI Controls Matrix v1.1 + AI-CAIQ questionnaire + Level 1 submission guide. CURRENT as of upload (June 2026). AUTHORITY SCOPE: authoritative ONLY for CSA STAR audits/certifications. Must never override or modify NIST/ISO/other standards' data; any canonical conflict is surfaced via the minority-report policy, not merged. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL mapping targets resolve in the r5.2.0 catalog (0 conflicts).",
+      "authority_scope": "csa_star_only"
     },
     {
       "id": "csa-caiq-v4.0.3",
@@ -663,7 +667,8 @@
       "version": "CAIQ v4.0.3 (2024-05-20)",
       "retrieved": "2026-07-02",
       "role": "csa_caiq",
-      "notes": "STAR self-assessment questionnaire matching CCM v4.0.x. CAIQ v4.1 (283 questions) is registration-gated; registry tracks it."
+      "notes": "STAR self-assessment questionnaire matching CCM v4.0.x. CAIQ v4.1 (283 questions) is registration-gated; registry tracks it. AUTHORITY SCOPE: authoritative ONLY for CSA STAR audits/certifications. Must never override or modify NIST/ISO/other standards' data; any canonical conflict is surfaced via the minority-report policy, not merged. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL mapping targets resolve in the r5.2.0 catalog (0 conflicts).",
+      "authority_scope": "csa_star_only"
     }
   ],
   "er_crosswalk_csvs": {

@@ -45,6 +45,23 @@ The health auditor treats unconfirmed entries as advisory, never authoritative.
 - `validate_spine.py` holds the CPRT 5.2.0 completeness oracle + sub-part inventory checks,
   so a botched refresh fails the gate rather than shipping.
 
+## Day-1 completeness policy
+
+Everything a user needs ships in the repo — no runtime fetches, no surprise token/network
+usage. Data feeds are stored artifacts (KEV, ATT&CK, eCFR, EDGAR are in `canonical-sources/`
+and loaded into grc.db at build). A feed may only be `fetch_blocked` (endpoint unreachable —
+listed below with the fix) — never silently "on demand".
+
+## Authority scoping — CSA STAR
+
+CSA materials (CCM, CAIQ, AICM, STAR) are authoritative **only for CSA STAR audits and
+certifications**. They must never override or modify NIST / ISO / other standards' data. Any
+canonical conflict between CSA and another standard is surfaced through the minority-report
+policy (`skills/shared/minority-report.md`) with both citations — reported, not merged.
+Id-level check 2026-07-02: all 1,684 CCM→800-53 OSCAL mapping targets resolve in the
+r5.2.0 catalog (zero conflicts found); semantic mapping-quality conflicts will be evaluated
+if/when a CSA projection phase is approved.
+
 ## Known open follow-ups (as of 2026-07-02)
 
 - `nist-800-63b-requirements.json` still derives from 63B **r3**; regenerate from 63B-4.
@@ -52,5 +69,8 @@ The health auditor treats unconfirmed entries as advisory, never authoritative.
   DoD's Apr-2025 Rev-3 ODP memo is the seed for `odp_values` when it starts.
 - `olir_crawler.py` endpoint (`csrc.nist.gov/api/olir/finalized`) 404s — re-point to the
   CPRT OLIR catalog.
-- SCF loaded as a pinned artifact only — projection into the spine is a future phase.
-- NVD / EUR-Lex / EDGAR / FIPS-CMVP loaders remain `on_demand` by design.
+- SCF + CCM OSCAL loaded as pinned artifacts only — spine projection is a future phase
+  (CSA subject to the authority-scope rule above).
+- **fetch_blocked** (endpoint fixes needed): NVD (set `NVD_API_KEY`, run
+  `nvd_api_loader.py --days 90`), EUR-Lex (rework loader against the Cellar/ELI API),
+  FIPS-CMVP (re-point the loader). EDGAR is fetched and stored (85 disclosures).

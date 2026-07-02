@@ -325,6 +325,9 @@ if _DB.exists():
     if (ROOT / "canonical-sources" / "cfr" / "45-cfr-164.json").exists():
         n_cfr = _c2.execute("SELECT COUNT(*) FROM cfr_requirements").fetchone()[0]
         check(n_cfr > 0, f"cfr_requirements populated from eCFR part 164 (got {n_cfr})")
+    if (ROOT / "canonical-sources" / "edgar-8k-cyber.json").exists():
+        n_edg = _c2.execute("SELECT COUNT(*) FROM edgar_cyber_incidents").fetchone()[0]
+        check(n_edg > 0, f"edgar_cyber_incidents populated from stored 8-K data (got {n_edg})")
     _c2.close()
 
 # ── 8. Durable ledger + health-audit detector (Phase 7) ────────────────────────
