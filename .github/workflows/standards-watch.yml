@@ -1,0 +1,72 @@
+name: standards-watch
+
+# Monthly standards drift check: runs the registry-driven monitors, uploads the
+# drift report, and files/updates a "standards drift report" issue when anything
+# moved. Artifact fetch + rebuild is HUMAN-TRIGGERED only (workflow_dispatch with
+# fetch=true) so canonical-source changes always arrive as a reviewable commit.
+
+on:
+  schedule:
+    - cron: '17 6 3 * *'   # 06:17 UTC on the 3rd of every month
+  workflow_dispatch:
+    inputs:
+      fetch:
+        description: 'Also re-fetch auto_fetch artifacts (writes files; commit the diff manually)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  drift-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install minimal deps
+        run: pip install pandas openpyxl
+
+      - name: Standards drift check
+        run: python3 tools/standards_refresh.py --check
+
+      - name: Optional artifact fetch (manual dispatch only)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.fetch == 'true' }}
+        run: python3 tools/standards_refresh.py --fetch
+
+      - name: Upload drift report
+        uses: actions/upload-artifact@v4
+        with:
+          name: standards-drift-report
+          path: cross-mapping/output/standards_drift_report.json
+
+      - name: File / update drift issue
+        if: ${{ always() }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'cross-mapping/output/standards_drift_report.json';
+            if (!fs.existsSync(path)) return;
+            const report = JSON.parse(fs.readFileSync(path, 'utf8'));
+            const summary = report.summary || {};
+            const drifted = (summary.registry_stale || 0) + (summary.artifact_stale || 0) + (summary.check_failed || 0);
+            if (drifted === 0) { core.info('no drift — no issue'); return; }
+            const title = 'standards drift report';
+            const lines = ['| framework | version | status | last_verified |', '|---|---|---|---|'];
+            for (const f of report.feeds) {
+              if (['registry_stale','artifact_stale','check_failed'].includes(f.classification)) {
+                lines.push(`| ${f.framework_id} | ${f.current_version} | ${f.classification} | ${f.last_verified} |`);
+              }
+            }
+            const body = `Generated ${report.generated_at}\n\n${lines.join('\n')}\n\nFull report in the workflow artifact. Runbook: docs/standards-refresh-runbook.md`;
+            const issues = await github.rest.issues.listForRepo({owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'standards-drift'});
+            if (issues.data.length) {
+              await github.rest.issues.update({owner: context.repo.owner, repo: context.repo.repo, issue_number: issues.data[0].number, body});
+            } else {
+              await github.rest.issues.create({owner: context.repo.owner, repo: context.repo.repo, title, body, labels: ['standards-drift']});
+            }

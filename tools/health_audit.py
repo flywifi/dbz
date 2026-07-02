@@ -426,6 +426,41 @@ def score(findings: List[Dict[str, Any]]) -> Dict[str, Any]:
             "release_gate_recommendation": gate}
 
 
+def check_feed_staleness(max_age_days: int = 90) -> List[Dict[str, Any]]:
+    """Warn when an auto_fetch feed hasn't been checked within max_age_days —
+    the cheap alarm that catches a dead standards-watch cron."""
+    findings: List[Dict[str, Any]] = []
+    path = ROOT / "canonical-sources" / "feed_registry.json"
+    if not path.exists():
+        return findings
+    try:
+        feeds = json.loads(path.read_text(encoding="utf-8")).get("feeds", {})
+    except Exception:
+        return findings
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc)
+    for fid, e in feeds.items():
+        if not (isinstance(e, dict) and e.get("auto_fetch")):
+            continue
+        stamp = e.get("last_checked") or e.get("last_verified")
+        if not stamp:
+            continue
+        try:
+            then = datetime.fromisoformat(str(stamp).replace("Z", "+00:00"))
+            if then.tzinfo is None:
+                then = then.replace(tzinfo=timezone.utc)
+        except ValueError:
+            continue
+        age = (now - then).days
+        if age > max_age_days:
+            findings.append(_f("warning", "feed_registry",
+                f"auto_fetch feed '{fid}' unchecked for {age} days (>{max_age_days}) — "
+                "standards-watch cron may be dead",
+                "run tools/standards_refresh.py --check",
+                False, "canonical-sources/feed_registry.json"))
+    return findings
+
+
 def run_audit(full: bool = False, data_target: Path | None = None) -> Dict[str, Any]:
     reg = json.loads(REGISTRY.read_text(encoding="utf-8")) if REGISTRY.exists() else {"atoms": []}
     reg_ids = {a["id"] for a in reg.get("atoms", [])}
@@ -434,6 +469,7 @@ def run_audit(full: bool = False, data_target: Path | None = None) -> Dict[str, 
     findings += check_atoms_json_scripts()
     findings += check_workflows(reg_ids)
     findings += check_uncertainty_ledger()
+    findings += check_feed_staleness()
     if data_target is not None:
         findings += check_vocab_file(data_target)
     elif full:

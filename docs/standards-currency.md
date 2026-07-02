@@ -1,5 +1,19 @@
 # Standards currency — audit of 2026-07-02
 
+> **Phase 14 refresh (same day):** live data feeds populated (CISA KEV 2026.07.01 — 1,631 CVEs;
+> MITRE ATT&CK v19.1 — 697 techniques; eCFR 45 CFR 164 subpart C — 9 sections), new artifacts
+> fetched and sha-pinned (NIST SP 800-172 Rev 3 OSCAL, SCF 2026.1.1, Microsoft SSPA DPR v12,
+> CSA STAR bundle incl. CCM v4.0.13 + CCM OSCAL dataset + AICM v1.1), and the keep-current
+> pipeline stood up: `tools/standards_refresh.py` (check/fetch/gate stages),
+> `.github/workflows/standards-watch.yml` (monthly cron + drift issue), registry hygiene
+> fields (`auto_fetch` / `artifact_status` / `last_verified`) on all 129 feeds, and a
+> dead-cron alarm in `health_audit.py`. Operating procedure: `docs/standards-refresh-runbook.md`.
+>
+> **SOC report-type classification:** SOC 1/2 "Type 1" vs "Type 2" are report types
+> (point-in-time vs period), not framework versions. The four ER crosswalk CSVs map to two
+> standards: SOC 1 → SSAE clarified standards (AT-C 320, SSAE No. 22 current), SOC 2 → AICPA
+> TSC 2017 + 2022 revised points of focus.
+
 Every framework version pinned in this repo was checked against the latest published release
 (live sources: csrc.nist.gov, hitrustalliance.net, pcisecuritystandards.org, cisecurity.org,
 hhs.gov, fedramp.gov, cloudsecurityalliance.org, dl.dod.cyber.mil, aicpa-cima.com).

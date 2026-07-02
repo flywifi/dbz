@@ -37,7 +37,17 @@
       "CIS Controls v8.1",
       "ISO/IEC 27001:2013",
       "ISO/IEC 27002:2013",
-      "ISO/IEC 27001:2022/Amd 1:2024"
+      "ISO/IEC 27001:2022/Amd 1:2024",
+      "Secure Controls Framework (SCF)",
+      "SCF 2026.1",
+      "SSAE No. 22",
+      "AT-C 320",
+      "Microsoft SSPA DPR v12",
+      "CNSSI 1253",
+      "NIST SP 800-172 Rev 3",
+      "NIST SP 800-63-4",
+      "MITRE ATT&CK v19",
+      "OWASP Top 10:2025"
     ]
   },
   "relationship_types": {

@@ -314,6 +314,17 @@ if _DB.exists():
             SELECT DISTINCT native_id FROM er_mappings WHERE framework=?)""",
         (_iso, _iso)).fetchone()[0]
     check(_shared > 0, f"ER and projection ISO canonical ids intersect (got {_shared}, was 0)")
+    # Data feeds (Phase 14) — assert only when the source artifact is on disk,
+    # so offline rebuilds without the fetched feeds still pass.
+    if (ROOT / "canonical-sources" / "known_exploited_vulnerabilities.json").stat().st_size > 1000:
+        n_kev = _c2.execute("SELECT COUNT(*) FROM cisa_kev").fetchone()[0]
+        check(n_kev > 1000, f"cisa_kev populated from fetched KEV catalog (got {n_kev})")
+    if (ROOT / "canonical-sources" / "mitre-attack-techniques.json").exists():
+        n_atk = _c2.execute("SELECT COUNT(*) FROM attack_techniques").fetchone()[0]
+        check(n_atk > 600, f"attack_techniques populated from ATT&CK v19 STIX (got {n_atk})")
+    if (ROOT / "canonical-sources" / "cfr" / "45-cfr-164.json").exists():
+        n_cfr = _c2.execute("SELECT COUNT(*) FROM cfr_requirements").fetchone()[0]
+        check(n_cfr > 0, f"cfr_requirements populated from eCFR part 164 (got {n_cfr})")
     _c2.close()
 
 # ── 8. Durable ledger + health-audit detector (Phase 7) ────────────────────────

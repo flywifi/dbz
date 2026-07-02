@@ -555,6 +555,115 @@
         "domains[].controls[].specification": "control_text"
       },
       "notes": "YAML structure: {name, version, url, domains: [{id, title, controls: [{id, title, specification}]}]}. 17 domains. License: CC-BY. JSON equivalent at CCM/primary-dataset.json. NIST 800-53 mapping in CCM/mappings/ (if present) or CAIQ dataset."
+    },
+    {
+      "id": "nist-800-172-r3-oscal",
+      "file": "canonical-sources/source_data/NIST_SP800-172_rev3_catalog.json",
+      "format": "json",
+      "version": "NIST SP 800-172 Rev 3 (May 2026), OSCAL 1.0.0 content (last-modified 2026-05-12)",
+      "retrieved": "2026-07-02",
+      "source_url": "https://raw.githubusercontent.com/usnistgov/oscal-content/v1.5.0/nist.gov/SP800-172/rev3/json/NIST_SP800-172_rev3_catalog.json",
+      "sha256_prefix": "21c6df17c7ff1c83",
+      "role": "nist_800_172_r3",
+      "notes": "17 families / 115 enhanced requirements aligned to 800-171r3 numbering. DUAL PIN: the 2021-era sp800-172-enhanced-security-reqs.xlsx stays pinned because CMMC Level 3 still cites the 2021 edition; do not replace it until DoD transitions."
+    },
+    {
+      "id": "scf-controls",
+      "file": "canonical-sources/source_data/Secure Controls Framework (SCF) - 2026.1.1.xlsx",
+      "format": "xlsx",
+      "sheet": "SCF 2026.1",
+      "version": "SCF 2026.1.1 (2026-04-22)",
+      "retrieved": "2026-07-02",
+      "source_url": "https://github.com/securecontrolsframework/securecontrolsframework",
+      "sha256_prefix": "ef13a69f58e32901",
+      "role": "scf_meta_framework",
+      "notes": "Creative-Commons meta-framework: controls + Authoritative Sources crosswalk + Assessment Objectives + Evidence Request List sheets. VERSION ANCHOR for the SCF column in crosswalk_80053_master.json / control_crosswalk.json (those files carried SCF ids with no version pin). No loader yet — projection semantics need review before ingestion."
+    },
+    {
+      "id": "microsoft-sspa-dpr-v12",
+      "file": "canonical-sources/source_data/Microsoft_SSPA_DPR_v12_FY26.pdf",
+      "format": "pdf",
+      "version": "Microsoft SSPA DPR v12 (FY26, March 2026)",
+      "retrieved": "2026-07-02",
+      "source_url": "https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/accex/documents/presentations/FY26-Microsoft-Supplier-Data-Protection-Requirements-v12_en-US.pdf",
+      "sha256_prefix": "2070afca18465d27",
+      "role": "vendor_supplier_requirements",
+      "notes": "CURRENT DPR: 63 requirements (was 67 in v11), AI Publisher/Deployer split, Red Status sanctions. Supersedes the v11 seed PDFs (kept for delta reference: MICROSOFT_SSPA_OVERVIEW_v11_APRIL_2025.pdf, Microsoft_SSPA_DPR_v11_FY25.pdf)."
+    },
+    {
+      "id": "microsoft-sspa-dpr-v11-seed",
+      "file": "canonical-sources/source_data/Microsoft_SSPA_DPR_v11_FY25.pdf",
+      "format": "pdf",
+      "version": "Microsoft SSPA DPR v11 (FY25, April 2025) — SUPERSEDED by v12",
+      "retrieved": "2026-07-02",
+      "role": "vendor_supplier_requirements_superseded",
+      "notes": "User-provided seed. Superseded 2026-03 by DPR v12 (see microsoft-sspa-dpr-v12). Kept for v11->v12 delta analysis."
+    },
+    {
+      "id": "cnssi-1253",
+      "file": "canonical-sources/source_data/CNSSI_1253_Final_CORRECTED_COPY_6Oct22.pdf",
+      "format": "pdf",
+      "version": "CNSSI No. 1253 (2022 corrected copy, 6 Oct 2022) — current base instruction",
+      "retrieved": "2026-07-02",
+      "role": "nss_categorization",
+      "notes": "Security categorization + control selection for National Security Systems, built on 800-53 r5. STILL CURRENT as the base instruction (verified 2026-07-02). Newest companion: CNSSI 1253F Attachment 2 Space Platform Overlay (Aug 2025) and CNSSI 1200 (Aug 2025) — not in repo; registry watches cnss.gov."
+    },
+    {
+      "id": "dod-dfars-bundle",
+      "file": "canonical-sources/source_data/dod-dfars/",
+      "format": "directory",
+      "version": "Mixed 2018-2024 seed bundle (DFARS 252.204 clauses, 800-171 Assessment Methodology v1.2.1, SPRS, DIBCAC, DoD SSP guidance, Cloud SRG presentation, DLA Privacy Overlay)",
+      "retrieved": "2026-07-02",
+      "role": "dod_acquisition_reference",
+      "notes": "User-provided seeds, PARTLY SUPERSEDED: the DFARS CMMC final rule (2025-09, effective 2025-11-10) supersedes pre-CMMC guidance; DISA rebranded the Cloud Computing SRG (CSP SRG v1r3 era, 170 new IL5 controls). Kept as historical reference; registry entries dfars-cyber + disa-cloud-srg watch the current sources."
+    },
+    {
+      "id": "disa-classified-overlay-pdf",
+      "file": "canonical-sources/source_data/DoD DISA Classified_Systems_Overlay_FINAL_Dated.pdf",
+      "format": "pdf",
+      "version": "DoD DISA Classified Systems Overlay (FINAL, dated)",
+      "retrieved": "2026-07-02",
+      "role": "dod_overlay",
+      "notes": "User-provided seed for the classified-systems overlay atop 800-53/CNSSI 1253. Registry watches for successor releases via DISA/CNSS."
+    },
+    {
+      "id": "csa-ccm-v4.0.13",
+      "file": "canonical-sources/source_data/csa-star/CCMv4.0.13_Generated-at_2024-10-31.xlsx",
+      "format": "xlsx",
+      "version": "CCM v4.0.13 (generated 2024-10-31) — last v4.0.x before v4.1",
+      "retrieved": "2026-07-02",
+      "role": "csa_ccm",
+      "sha256_prefix": "15ed274945743019",
+      "notes": "User-provided CSA STAR bundle. Supersedes the older CCM v4.0.x file as the freshest CCM artifact on disk; CCM v4.1 (2026-01-28) remains registration-gated — registry tracks it as current."
+    },
+    {
+      "id": "csa-ccm-v4.0.12-oscal",
+      "file": "canonical-sources/source_data/csa-star/CCMv4.0.12-OSCAL-Dataset_Generated-at_2024-06-03/ccm-v4.0.12-oscal.json",
+      "format": "json",
+      "version": "CCM v4.0.12 OSCAL dataset (2024-06-03) + ccm-oscal-mappings.json",
+      "retrieved": "2026-07-02",
+      "role": "csa_ccm_oscal",
+      "sha256_prefix": "876714a4412996c9",
+      "notes": "Machine-readable OSCAL rendition of CCM + mappings — candidate loader input for a future CCM spine projection (structured, no xlsx parsing needed)."
+    },
+    {
+      "id": "csa-aicm-v1.1",
+      "file": "canonical-sources/source_data/csa-star/AICM v1.1/AICMv1.1.0-generated_at_2026_06_18(1).xlsx",
+      "format": "xlsx",
+      "version": "CSA AI Controls Matrix (AICM) v1.1.0 (generated 2026-06-18)",
+      "retrieved": "2026-07-02",
+      "role": "csa_aicm",
+      "sha256_prefix": "afebba6d2c9ede42",
+      "notes": "CSA STAR for AI: AI Controls Matrix v1.1 + AI-CAIQ questionnaire + Level 1 submission guide. CURRENT as of upload (June 2026)."
+    },
+    {
+      "id": "csa-caiq-v4.0.3",
+      "file": "canonical-sources/source_data/csa-star/CAIQv4.0.3_STAR-Security-Questionnaire_Generated-at_2024-05-20.xlsx",
+      "format": "xlsx",
+      "version": "CAIQ v4.0.3 (2024-05-20)",
+      "retrieved": "2026-07-02",
+      "role": "csa_caiq",
+      "notes": "STAR self-assessment questionnaire matching CCM v4.0.x. CAIQ v4.1 (283 questions) is registration-gated; registry tracks it."
     }
   ],
   "er_crosswalk_csvs": {

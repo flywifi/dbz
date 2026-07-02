@@ -1,5 +1,5 @@
 {
-  "_schema_version": "1.3.0",
+  "_schema_version": "1.4.0",
   "_purpose": "Authoritative sources to monitor for GRC framework updates. Used by framework_monitor.py and announcement_monitor.py to detect version changes, draft releases, and public-comment periods.",
   "_generated": "2026-06-30",
   "feeds": {
@@ -74,13 +74,16 @@
       ],
       "next_expected_version": "Rev 5.2 or Rev 6 (not yet announced; monitor csrc.nist.gov)",
       "cci_coverage_notes": "Mixed: Full CCI coverage across all 18 control families. Confirmed-Direct: IA-8 PIV (CCI-001764, CCI-001948 — names PIV/SP800-63 explicitly). Confirmed-Subject: SC-13 (CCI-002450–002453, 'FIPS-validated cryptography'), IA-7 (CCI-000803–000804), SC-8(1) (CCI-002469), SC-28(1) (CCI-001199), SC-12 (CCI-002449, 'key establishment and management'). Implied-Bridge: ~30% of CCIs via r4→r5 bridge for Rev5-new controls. PM family Not-Applicable. See plan §7.10 for full per-control CCI provenance table.",
-      "notes": "Release 5.2.0 (EO 14306): new/updated software-update and patch-integrity controls (incl. SA-24 Design for Cyber Resiliency); OSCAL content bundles 800-53A r5.2.0 assessment procedures. Catalog data in this repo verified 5.2.0-complete 2026-07-02."
+      "notes": "Release 5.2.0 (EO 14306): new/updated software-update and patch-integrity controls (incl. SA-24 Design for Cyber Resiliency); OSCAL content bundles 800-53A r5.2.0 assessment procedures. Catalog data in this repo verified 5.2.0-complete 2026-07-02.",
+      "auto_fetch": true,
+      "artifact_status": "current",
+      "last_verified": "2026-07-02"
     },
     "nist-800-53b": {
       "label": "NIST SP 800-53B Control Baselines",
       "authority": "primary",
       "framework_id": "nist-800-53b",
-      "current_version": "Initial Public Draft + Final (Oct 2020)",
+      "current_version": "800-53B baselines, maintained with 5.x releases (5.2.0 baselines in CPRT)",
       "urls": {
         "landing": "https://csrc.nist.gov/publications/detail/sp/800-53b/final",
         "excel": "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53b/final/documents/sp800-53b-control-baselines.xlsx",
@@ -88,7 +91,7 @@
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
-      "last_changed": "2020-10-29",
+      "last_changed": "2025-08-27",
       "announcement_feeds": [
         {
           "url": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
@@ -129,7 +132,10 @@
         ".zip"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Implied-Bridge: Baseline profiles inherit CCI coverage from included controls. Baseline selection itself has no direct CCI; apply via the primary nist-800-53 entry at the individual control level."
+      "cci_coverage_notes": "Implied-Bridge: Baseline profiles inherit CCI coverage from included controls. Baseline selection itself has no direct CCI; apply via the primary nist-800-53 entry at the individual control level.",
+      "auto_fetch": true,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nist-800-171": {
       "label": "NIST SP 800-171 Protecting CUI",
@@ -205,13 +211,16 @@
       ],
       "version_signal": "page_heading_date",
       "cci_coverage_notes": "Implied-Bridge: 800-171 Rev 3 controls map to 800-53 Rev 5 via CMMC crosswalk; CCIs apply through that two-hop bridge. No direct DISA CCI List entries for 800-171 Rev 3. Rev 2 had partial CCI coverage via DFARS clauses.",
-      "next_expected_version": "Rev 4 (not yet announced; monitor csrc.nist.gov post-2027)"
+      "next_expected_version": "Rev 4 (not yet announced; monitor csrc.nist.gov post-2027)",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nist-800-172": {
       "label": "NIST SP 800-172 Enhanced Security Req for CUI",
       "authority": "primary",
       "framework_id": "nist-800-172",
-      "current_version": "Initial Public Draft (Feb 2021)",
+      "current_version": "Rev 3 (May 2026)",
       "urls": {
         "landing": "https://csrc.nist.gov/publications/detail/sp/800-172/final",
         "excel": "https://csrc.nist.gov/CSRC/media/Publications/sp/800-172/final/documents/sp800-172-enhanced-security-reqs.xlsx",
@@ -219,7 +228,7 @@
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
-      "last_changed": "2021-02-02",
+      "last_changed": "2026-05-01",
       "announcement_feeds": [
         {
           "url": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
@@ -259,7 +268,11 @@
       ],
       "version_signal": "page_heading_date",
       "next_expected_version": "Rev 3 (target May 2026; IPD out for comment)",
-      "cci_coverage_notes": "Implied-Bridge: Enhanced requirements build on 800-171; CCIs apply transitively via 800-53 Rev 5 mapping. No direct DISA CCI List entries for 800-172 enhanced requirements."
+      "cci_coverage_notes": "Implied-Bridge: Enhanced requirements build on 800-171; CCIs apply transitively via 800-53 Rev 5 mapping. No direct DISA CCI List entries for 800-172 enhanced requirements.",
+      "notes": "800-172r3 + 800-172Ar3 released May 2026 (17 families / 115 enhanced requirements, aligned to 171r3 numbering). OSCAL artifact fetched 2026-07-02 (nist-800-172-r3-oscal). DUAL PIN: CMMC Level 3 still cites the 2021 edition — old xlsx retained.",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-02"
     },
     "cmmc": {
       "label": "Cybersecurity Maturity Model Certification (CMMC)",
@@ -326,7 +339,10 @@
         ".zip"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Implied-Bridge: CMMC Level 2 → 800-171 Rev 2 → 800-53 Rev 4/5 → CCI (two hops). Level 3 → 800-172. IA.L3-3.5.3 (MFA): Confirmed-Subject via IA-2 CCIs (CCI-000765–768, 'multifactor authentication'). FIPS 201 PIV not required for DIB contractors; PIV CCIs are Implied-Bridge only."
+      "cci_coverage_notes": "Implied-Bridge: CMMC Level 2 → 800-171 Rev 2 → 800-53 Rev 4/5 → CCI (two hops). Level 3 → 800-172. IA.L3-3.5.3 (MFA): Confirmed-Subject via IA-2 CCIs (CCI-000765–768, 'multifactor authentication'). FIPS 201 PIV not required for DIB contractors; PIV CCIs are Implied-Bridge only.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "fedramp": {
       "label": "FedRAMP Program",
@@ -398,7 +414,10 @@
       ],
       "version_signal": "github_release_tag",
       "cci_coverage_notes": "Confirmed-Direct: FedRAMP inherits all 800-53 Rev 5 CCIs at baseline levels. IA-8 PIV (CCI-001948, CCI-001764–1769): Confirmed-Direct for FedRAMP High (PIV mandatory). IA-2 MFA (CCI-000765–768): Confirmed-Subject. FedRAMP 20x KSIs: Not-Applicable (no CCI equivalents yet).",
-      "next_expected_version": "FedRAMP 20x Phase 2 (2026); full 20x automation mandate TBD"
+      "next_expected_version": "FedRAMP 20x Phase 2 (2026); full 20x automation mandate TBD",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "hitrust": {
       "label": "HITRUST CSF",
@@ -458,7 +477,10 @@
       "version_signal": "page_heading_date",
       "cci_coverage_notes": "Implied-Bridge: HITRUST CSF v11.5.0 is the 64-framework transitive hub. CCI connections derived via HITRUST→800-53 column mappings. HITRUST does not publish direct CCI mappings; all connections are Implied-Bridge via the hub crosswalk.",
       "next_expected_version": "v11.6.0 (anticipated 2026; adds new framework columns)",
-      "expected_next": "v11.9 / v12 (HITRUST ~2-release/yr cadence)"
+      "expected_next": "v11.9 / v12 (HITRUST ~2-release/yr cadence)",
+      "auto_fetch": false,
+      "artifact_status": "licensed_pinned",
+      "last_verified": "2026-07-02"
     },
     "iso-27001": {
       "label": "ISO/IEC 27001:2022",
@@ -473,7 +495,7 @@
       "check_strategy": "poll_landing",
       "last_checked": null,
       "last_changed": "2022-10-25",
-      "notes": "Third edition 2022-10-25; Amd 1:2024 adds climate-action consideration text (no control changes). Transition from 2013 ended 2025-10-31 — 2013 certificates invalid. Next: routine ISO 5-year systematic review (~2027-2028, nothing announced). 2013->2022 restructure recorded in framework_changelog.json (93 controls / 4 themes).",
+      "notes": "Third edition 2022-10-25; Amd 1:2024 adds climate-action consideration text (no control changes). Transition from 2013 ended 2025-10-31 — 2013 certificates invalid. Next: routine ISO 5-year systematic review (~2027-2028, nothing announced). 2013->2022 restructure recorded in framework_changelog.json (93 controls / 4 themes). NOTE: the unofficial csrc.nist.gov/api/olir/finalized endpoint now 404s — olir_crawler needs re-pointing to the CPRT OLIR catalog page.",
       "announcement_feeds": [
         {
           "url": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
@@ -525,7 +547,10 @@
       ],
       "version_signal": "page_heading_date",
       "next_expected_version": "Amendment cycle anticipated 2026-2027",
-      "cci_coverage_notes": "Implied-Bridge: ISO 27001:2022 → 800-53 Rev 5 via NIST IR 8477 STRM OLIR (3,862 unified_mappings). CCIs apply at the 800-53 control end (two-hop: ISO ctrl → 800-53 Rev 5 → r4 CCI). ISO annex controls not in DISA CCI List."
+      "cci_coverage_notes": "Implied-Bridge: ISO 27001:2022 → 800-53 Rev 5 via NIST IR 8477 STRM OLIR (3,862 unified_mappings). CCIs apply at the 800-53 control end (two-hop: ISO ctrl → 800-53 Rev 5 → r4 CCI). ISO annex controls not in DISA CCI List.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "disa-cci": {
       "label": "DISA CCI List (Control Correlation Identifiers)",
@@ -572,7 +597,10 @@
         ".zip"
       ],
       "version_signal": "file_hash",
-      "cci_coverage_notes": "Confirmed-Direct: This IS the CCI source. DISA CCI List (U_CCI_List) defines all CCIs with 800-53 Rev 4 control references and implementation statements. CCI numbers, definitions, and Rev 4 control IDs are authoritative. Rev 5 bridge via nist-r4-to-r5-bridge entry produces Implied-Bridge for Rev 5-only controls."
+      "cci_coverage_notes": "Confirmed-Direct: This IS the CCI source. DISA CCI List (U_CCI_List) defines all CCIs with 800-53 Rev 4 control references and implementation statements. CCI numbers, definitions, and Rev 4 control IDs are authoritative. Rev 5 bridge via nist-r4-to-r5-bridge entry produces Implied-Bridge for Rev 5-only controls.",
+      "auto_fetch": true,
+      "artifact_status": "current",
+      "last_verified": "2026-07-02"
     },
     "csa-ccm": {
       "label": "CSA Cloud Controls Matrix v4",
@@ -590,7 +618,7 @@
       "github_repo": "cloudsecurityalliance/cloud-controls-matrix",
       "last_checked": null,
       "last_changed": "2026-01-28",
-      "notes": "CCM v4.1 released 2026-01-28 (succeeds v4.0.13): 207 controls / 17 domains; CAIQ v4.1 283 questions. Repo raw file remains CCM v4.0.x.",
+      "notes": "CCM v4.1 released 2026-01-28 (207 controls / 17 domains; CAIQ v4.1 283 questions) — registration-gated download; registry tracks it as current release. On disk: CCM v4.0.13 xlsx (last v4.0.x, user-provided 2026-07-02), CCM v4.0.12 OSCAL dataset + mappings JSON, CAIQ v4.0.3, Implementation Guidelines v2.0, Auditing Guidelines.",
       "announcement_feeds": [
         {
           "url": "https://cloudsecurityalliance.org/feed",
@@ -628,7 +656,10 @@
         ".zip"
       ],
       "version_signal": "github_release_tag",
-      "cci_coverage_notes": "Implied-Bridge: CSA CCM v4.1 → 800-53 via CCM control baseline mappings. IAM domain → IA/AC CCIs; DSP domain → MP/SC CCIs; AIS domain → SA/SI CCIs. CCM control IDs not in CCI text; Implied-Bridge."
+      "cci_coverage_notes": "Implied-Bridge: CSA CCM v4.1 → 800-53 via CCM control baseline mappings. IAM domain → IA/AC CCIs; DSP domain → MP/SC CCIs; AIS domain → SA/SI CCIs. CCM control IDs not in CCI text; Implied-Bridge.",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-02"
     },
     "soc2": {
       "label": "AICPA SOC 2 Trust Services Criteria",
@@ -682,7 +713,10 @@
         ".zip"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Implied-Bridge: SOC 2 TSC criteria → 800-53 via ER crosswalk CSVs. CC6 (Access) → AC/IA CCIs; CC7 (Operations) → SI/AU CCIs. No direct DISA CCI entries for TSC criteria."
+      "cci_coverage_notes": "Implied-Bridge: SOC 2 TSC criteria → 800-53 via ER crosswalk CSVs. CC6 (Access) → AC/IA CCIs; CC7 (Operations) → SI/AU CCIs. No direct DISA CCI entries for TSC criteria.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "hipaa": {
       "label": "HIPAA Security Rule",
@@ -751,7 +785,10 @@
       ],
       "version_signal": "ecfr_as_of_date",
       "next_expected_version": "2026 Final Rule (NPRM Jan 2025; comment period closed Mar 7 2025)",
-      "cci_coverage_notes": "Implied-Bridge (two-hop): HIPAA §§164.308/310/312/316 → 800-53 via HHS/NIST crosswalk → r4 CCI. §164.312(a)(1) AC → AC CCIs. §164.312(e)(1) Encryption → SC-28 (CCI-001199, Confirmed-Subject: 'encryption'). §164.308(a)(5) Auth → IA CCIs (Confirmed-Subject: 'authentication'). HIPAA section numbers not in any CCI definition text."
+      "cci_coverage_notes": "Implied-Bridge (two-hop): HIPAA §§164.308/310/312/316 → 800-53 via HHS/NIST crosswalk → r4 CCI. §164.312(a)(1) AC → AC CCIs. §164.312(e)(1) Encryption → SC-28 (CCI-001199, Confirmed-Subject: 'encryption'). §164.308(a)(5) Auth → IA CCIs (Confirmed-Subject: 'authentication'). HIPAA section numbers not in any CCI definition text.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "eu-ai-act": {
       "label": "EU Artificial Intelligence Act (base regulation)",
@@ -824,7 +861,10 @@
       ],
       "version_signal": "page_heading_date",
       "next_expected_version": "GPAI implementing acts Aug 2025; high-risk implementing acts 2026-2027",
-      "cci_coverage_notes": "Not-Applicable: EU AI Act is an EU regulation; no DISA CCI coverage. Closest 800-53 families (SA-11, SI-10, RA-3) have Implied-Heuristic connections at best."
+      "cci_coverage_notes": "Not-Applicable: EU AI Act is an EU regulation; no DISA CCI coverage. Closest 800-53 families (SA-11, SI-10, RA-3) have Implied-Heuristic connections at best.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nis2": {
       "label": "EU NIS2 Directive",
@@ -887,7 +927,10 @@
         ".zip"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Not-Applicable: NIS2 Directive is EU law; no DISA CCI coverage. Art. 21 security measures → 800-53 families via Implied-Heuristic only."
+      "cci_coverage_notes": "Not-Applicable: NIS2 Directive is EU law; no DISA CCI coverage. Art. 21 security measures → 800-53 families via Implied-Heuristic only.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "eu-dora": {
       "label": "EU Digital Operational Resilience Act (DORA)",
@@ -950,7 +993,10 @@
         ".zip"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Not-Applicable: DORA is EU financial regulation; no DISA CCI coverage. ICT risk management (Art. 6–16) → PM/RA families via Implied-Heuristic."
+      "cci_coverage_notes": "Not-Applicable: DORA is EU financial regulation; no DISA CCI coverage. ICT risk management (Art. 6–16) → PM/RA families via Implied-Heuristic.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "uk-gdpr": {
       "label": "UK GDPR / Data Protection Act 2018",
@@ -1002,7 +1048,10 @@
         ".zip"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Not-Applicable: UK GDPR / DPA 2018 is UK law; no DISA CCI coverage. Art. 32 technical measures → SC/AC via HITRUST bridge (Implied-Bridge at best)."
+      "cci_coverage_notes": "Not-Applicable: UK GDPR / DPA 2018 is UK law; no DISA CCI coverage. Art. 32 technical measures → SC/AC via HITRUST bridge (Implied-Bridge at best).",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "iso-42001": {
       "label": "ISO/IEC 42001:2023 (AI Management System)",
@@ -1052,7 +1101,10 @@
         ".zip"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Not-Applicable: ISO 42001:2023 (AI Management) is a new standard with no DISA CCI coverage."
+      "cci_coverage_notes": "Not-Applicable: ISO 42001:2023 (AI Management) is a new standard with no DISA CCI coverage.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "pci-dss": {
       "label": "PCI DSS",
@@ -1095,7 +1147,10 @@
       ],
       "version_signal": "page_heading_date",
       "next_expected_version": "v4.1 (not announced; future-dated v4.0.1 reqs active Mar 31 2025)",
-      "cci_coverage_notes": "Implied-Bridge: PCI DSS v4.0.1 → 800-53 via HITRUST bridge. Req 8 (Auth) → IA CCIs (Confirmed-Subject: 'multifactor authentication'); Req 10 (Logging) → AU CCIs; Req 6 (Patching) → SI-2 CCIs. PCI requirement numbers not in CCI text."
+      "cci_coverage_notes": "Implied-Bridge: PCI DSS v4.0.1 → 800-53 via HITRUST bridge. Req 8 (Auth) → IA CCIs (Confirmed-Subject: 'multifactor authentication'); Req 10 (Logging) → AU CCIs; Req 6 (Patching) → SI-2 CCIs. PCI requirement numbers not in CCI text.",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-02"
     },
     "eu-ai-act-impl": {
       "label": "EU AI Act Implementing Acts & Delegated Regulations",
@@ -1172,13 +1227,16 @@
         ".zip"
       ],
       "version_signal": "latest_item_guid",
-      "cci_coverage_notes": "Not-Applicable: EU AI Act implementing acts are EU delegated regulations; no DISA CCI coverage. Implied-Heuristic via AI-risk → SA/RA control families."
+      "cci_coverage_notes": "Not-Applicable: EU AI Act implementing acts are EU delegated regulations; no DISA CCI coverage. Implied-Heuristic via AI-risk → SA/RA control families.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "owasp-top10": {
       "label": "OWASP Top 10",
       "authority": "primary",
       "framework_id": "owasp-top10",
-      "current_version": "2021",
+      "current_version": "OWASP Top 10:2025 (final Jan 2026)",
       "expected_next": "2025 edition (in active development)",
       "urls": {
         "landing": "https://owasp.org/Top10/",
@@ -1188,8 +1246,8 @@
       "check_strategy": "github_release",
       "github_repo": "OWASP/Top10",
       "last_checked": null,
-      "last_changed": "2021-09-24",
-      "notes": "OWASP Top 10 2021 maps to NIST 800-53 SA/SI/SC families. 2025 edition in active development with data collection phase expected 2024-2025. Crosswalked to 800-53 transitively via HITRUST hub.",
+      "last_changed": "2026-01-01",
+      "notes": "2025 list: 2 new categories (Software Supply Chain Failures; Mishandling of Exceptional Conditions), SSRF absorbed into Broken Access Control, 248 CWEs mapped.",
       "announcement_feeds": [
         {
           "url": "https://owasp.org/feed.xml",
@@ -1214,7 +1272,7 @@
         }
       ],
       "draft_landing_url": "https://github.com/OWASP/Top10",
-      "draft_status": "second_draft",
+      "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
       "crawl_seeds": [
@@ -1228,7 +1286,10 @@
       ],
       "version_signal": "github_release_tag",
       "next_expected_version": "2025 edition (second draft in progress as of mid-2025)",
-      "cci_coverage_notes": "Implied-Bridge: OWASP Top 10 (2021) → 800-53 via CWE chain. A02 (Crypto Failures) → SC-13 CCIs (Confirmed-Subject: 'FIPS-validated cryptography'); A07 (Authn Failures) → IA CCIs (Confirmed-Subject: 'authentication'); A01 (Broken AC) → AC CCIs. OWASP category names not in CCI text."
+      "cci_coverage_notes": "Implied-Bridge: OWASP Top 10 (2021) → 800-53 via CWE chain. A02 (Crypto Failures) → SC-13 CCIs (Confirmed-Subject: 'FIPS-validated cryptography'); A07 (Authn Failures) → IA CCIs (Confirmed-Subject: 'authentication'); A01 (Broken AC) → AC CCIs. OWASP category names not in CCI text.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "owasp-asvs": {
       "label": "OWASP ASVS (Application Security Verification Standard)",
@@ -1283,7 +1344,10 @@
         ".json"
       ],
       "version_signal": "github_release_tag",
-      "cci_coverage_notes": "Implied-Bridge: OWASP ASVS v5.0.0 → 800-53 via CWE + formal ASVS→NIST mapping. V2 (Auth) → IA CCIs; V4 (AC) → AC CCIs; V9 (Comms) → SC CCIs. ASVS requirement numbers not in CCI text; Implied-Bridge."
+      "cci_coverage_notes": "Implied-Bridge: OWASP ASVS v5.0.0 → 800-53 via CWE + formal ASVS→NIST mapping. V2 (Auth) → IA CCIs; V4 (AC) → AC CCIs; V9 (Comms) → SC CCIs. ASVS requirement numbers not in CCI text; Implied-Bridge.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "cis-controls": {
       "label": "CIS Controls v8",
@@ -1327,7 +1391,10 @@
         ".zip"
       ],
       "version_signal": "file_hash",
-      "cci_coverage_notes": "Implied-Bridge: CIS Controls v8.1 Safeguards → 800-53 Rev 5 via CIS-NIST crosswalk (CIS Controls Navigator). IG1 Safeguard 5.3 (MFA) → IA-2 CCIs (CCI-000765–768, Confirmed-Subject: \"multifactor authentication\"); IG1 Safeguard 3.1 (Inventory) → CM-8 CCIs (Confirmed-Subject: \"inventory\"); IG2 Safeguard 8.2 (Audit Logs) → AU CCIs (Confirmed-Subject: \"audit records\"). CIS Safeguard identifiers not in CCI text; all connections Implied-Bridge via 800-53 crosswalk."
+      "cci_coverage_notes": "Implied-Bridge: CIS Controls v8.1 Safeguards → 800-53 Rev 5 via CIS-NIST crosswalk (CIS Controls Navigator). IG1 Safeguard 5.3 (MFA) → IA-2 CCIs (CCI-000765–768, Confirmed-Subject: \"multifactor authentication\"); IG1 Safeguard 3.1 (Inventory) → CM-8 CCIs (Confirmed-Subject: \"inventory\"); IG2 Safeguard 8.2 (Audit Logs) → AU CCIs (Confirmed-Subject: \"audit records\"). CIS Safeguard identifiers not in CCI text; all connections Implied-Bridge via 800-53 crosswalk.",
+      "auto_fetch": false,
+      "artifact_status": "licensed_pinned",
+      "last_verified": "2026-07-02"
     },
     "csa-star-ccm5": {
       "label": "CSA STAR / Cloud Controls Matrix v5 (in development)",
@@ -1383,7 +1450,10 @@
         ".zip"
       ],
       "version_signal": "github_release_tag",
-      "cci_coverage_notes": "Implied-Bridge: CSA STAR uses CCM v4.1 as its control baseline (prior notes referenced v4.0.12 — updated to v4.1 as current per FRA-6). CCI connections inherit from csa-ccm entry. STAR certification layer adds no new CCIs; Implied-Bridge via CCM→800-53 chain."
+      "cci_coverage_notes": "Implied-Bridge: CSA STAR uses CCM v4.1 as its control baseline (prior notes referenced v4.0.12 — updated to v4.1 as current per FRA-6). CCI connections inherit from csa-ccm entry. STAR certification layer adds no new CCIs; Implied-Bridge via CCM→800-53 chain.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nist-ai-rmf": {
       "label": "NIST AI RMF 1.0 + GenAI Profile",
@@ -1451,7 +1521,10 @@
         ".zip"
       ],
       "version_signal": "github_release_tag",
-      "cci_coverage_notes": "Implied-Heuristic: NIST AI RMF 1.0 → 800-53 via NIST OLIR (draft). GOVERN/MAP/MEASURE/MANAGE functions → RA/PM/SA/SI families via Implied-Heuristic. No CCI definitions reference AI RMF functions."
+      "cci_coverage_notes": "Implied-Heuristic: NIST AI RMF 1.0 → 800-53 via NIST OLIR (draft). GOVERN/MAP/MEASURE/MANAGE functions → RA/PM/SA/SI families via Implied-Heuristic. No CCI definitions reference AI RMF functions.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "ccpa-cppa": {
       "label": "CCPA / CPPA Rulemaking (California Consumer Privacy Act)",
@@ -1495,7 +1568,10 @@
         ".zip"
       ],
       "version_signal": "latest_item_guid",
-      "cci_coverage_notes": "Not-Applicable: CCPA/CPRA is California privacy law; no DISA CCI coverage. Security measures → MP/AC/SC via Implied-Heuristic."
+      "cci_coverage_notes": "Not-Applicable: CCPA/CPRA is California privacy law; no DISA CCI coverage. Security measures → MP/AC/SC via Implied-Heuristic.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "iso-27701": {
       "label": "ISO/IEC 27701:2019 (Privacy Information Management)",
@@ -1544,13 +1620,16 @@
         ".zip"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Implied-Bridge: ISO 27701 extends ISO 27001/27002; CCIs via ISO 27001 OLIR bridge (two-hop: 27701→27001→800-53→CCI). Privacy extensions (P.x.x) have no direct CCI coverage."
+      "cci_coverage_notes": "Implied-Bridge: ISO 27701 extends ISO 27001/27002; CCIs via ISO 27001 OLIR bridge (two-hop: 27701→27001→800-53→CCI). Privacy extensions (P.x.x) have no direct CCI coverage.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "oscal-format": {
       "label": "OSCAL (Open Security Controls Assessment Language) Schema",
       "authority": "primary",
       "framework_id": "oscal-format",
-      "current_version": "v1.1.2",
+      "current_version": "v1.1.3 (patch release)",
       "urls": {
         "landing": "https://pages.nist.gov/OSCAL/",
         "github": "https://github.com/usnistgov/OSCAL",
@@ -1560,7 +1639,7 @@
       "check_strategy": "github_release",
       "github_repo": "usnistgov/OSCAL",
       "last_checked": null,
-      "last_changed": "2023-06-22",
+      "last_changed": "2026-01-01",
       "notes": "Critical for grc.db build pipeline — OSCAL schema changes may require catalog re-ingestion via oscal_diff.py. OSCAL v2.0 (metaschema-native) in long-term development. Monitor for breaking schema changes that affect NIST_SP-800-53_rev5_catalog.json.",
       "announcement_feeds": [
         {
@@ -1610,7 +1689,10 @@
         ".zip"
       ],
       "version_signal": "github_release_tag",
-      "cci_coverage_notes": "Not-Applicable: OSCAL is a data format standard, not a control framework. The DISA CCI List is distributed in OSCAL format but the format spec has no CCI connection as a 'framework'."
+      "cci_coverage_notes": "Not-Applicable: OSCAL is a data format standard, not a control framework. The DISA CCI List is distributed in OSCAL format but the format spec has no CCI connection as a 'framework'.",
+      "auto_fetch": true,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "fedramp-20x": {
       "label": "FedRAMP 20x / Key Security Indicators (KSI) Pilot",
@@ -1679,7 +1761,10 @@
         ".zip"
       ],
       "version_signal": "github_release_tag",
-      "cci_coverage_notes": "Not-Applicable for KSIs: FedRAMP 20x KSIs are automated evidence artifacts, not control specifications. No DISA CCIs assigned to KSIs yet. The underlying 800-53 controls that KSIs test DO have CCIs (see fedramp entry), but KSI→CCI linkage is Not-Applicable pending FedRAMP 20x final rule."
+      "cci_coverage_notes": "Not-Applicable for KSIs: FedRAMP 20x KSIs are automated evidence artifacts, not control specifications. No DISA CCIs assigned to KSIs yet. The underlying 800-53 controls that KSIs test DO have CCIs (see fedramp entry), but KSI→CCI linkage is Not-Applicable pending FedRAMP 20x final rule.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "enisa-pub": {
       "label": "ENISA Publications (all topics)",
@@ -1724,7 +1809,10 @@
         ".zip"
       ],
       "version_signal": "latest_item_guid",
-      "cci_coverage_notes": "Not-Applicable: ENISA publications are EU cybersecurity guidance; no DISA CCI coverage. ENISA Threat Landscape → threat intelligence → RA/SI CCIs via Implied-Heuristic."
+      "cci_coverage_notes": "Not-Applicable: ENISA publications are EU cybersecurity guidance; no DISA CCI coverage. ENISA Threat Landscape → threat intelligence → RA/SI CCIs via Implied-Heuristic.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "ncsc-guidance": {
       "label": "NCSC (UK) Technical Guidance",
@@ -1780,7 +1868,10 @@
         ".zip"
       ],
       "version_signal": "latest_item_guid",
-      "cci_coverage_notes": "Not-Applicable: UK NCSC guidance publications are advisory; no DISA CCI coverage. Password guidance → IA-5 CCIs via Implied-Heuristic."
+      "cci_coverage_notes": "Not-Applicable: UK NCSC guidance publications are advisory; no DISA CCI coverage. Password guidance → IA-5 CCIs via Implied-Heuristic.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "cisa-kev": {
       "label": "CISA Known Exploited Vulnerabilities Catalog",
@@ -1794,9 +1885,9 @@
         "landing": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
       },
       "check_strategy": "github_release",
-      "notes": "CISA RSS feeds DEPRECATED May 12, 2025. Use GitHub mirror (cisagov/kev-data) as primary update signal. Daily refresh.",
+      "notes": "KEV catalog 2026.07.01 ingested 2026-07-02 (1,631 CVEs) via kev_loader.",
       "last_checked": null,
-      "last_changed": "2026-06-30",
+      "last_changed": "2026-07-01",
       "announcement_feeds": [
         {
           "url": "https://github.com/cisagov/kev-data/releases.atom",
@@ -1822,7 +1913,10 @@
       ],
       "github_repo": "cisagov/kev-data",
       "version_signal": "github_release_tag",
-      "cci_coverage_notes": "Implied-Bridge: CISA KEV inherits CVE→800-53 mapping from NVD. SI-2 (CCI-001643–001645): Confirmed-Subject for 'patch' / 'vulnerability' language. RA-5 (CCI-002515–002517): Confirmed-Subject. KEV-specific exploitability status not in CCI text — Implied-Bridge for the KEV catalog as a distinct source."
+      "cci_coverage_notes": "Implied-Bridge: CISA KEV inherits CVE→800-53 mapping from NVD. SI-2 (CCI-001643–001645): Confirmed-Subject for 'patch' / 'vulnerability' language. RA-5 (CCI-002515–002517): Confirmed-Subject. KEV-specific exploitability status not in CCI text — Implied-Bridge for the KEV catalog as a distinct source.",
+      "auto_fetch": true,
+      "artifact_status": "current",
+      "last_verified": "2026-07-02"
     },
     "cisa-cpg": {
       "label": "CISA Cross-Sector Cybersecurity Performance Goals",
@@ -1861,7 +1955,10 @@
         ".pdf"
       ],
       "version_signal": "file_hash",
-      "cci_coverage_notes": "Implied-Bridge: CISA CPGs 2.0 → 800-53 via CPG alignment table. CPG 2.E (MFA) → IA-2 CCIs (Confirmed-Subject: 'multifactor authentication'); CPG 2.F (Passwords) → IA-5 CCIs (Confirmed-Subject). CPG 1.A (Inventory) → CM CCIs. CPG identifiers not in CCI text."
+      "cci_coverage_notes": "Implied-Bridge: CISA CPGs 2.0 → 800-53 via CPG alignment table. CPG 2.E (MFA) → IA-2 CCIs (Confirmed-Subject: 'multifactor authentication'); CPG 2.F (Passwords) → IA-5 CCIs (Confirmed-Subject). CPG 1.A (Inventory) → CM CCIs. CPG identifiers not in CCI text.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "cisa-scubagear": {
       "label": "CISA ScubaGear M365 Secure Configuration Baselines",
@@ -1900,7 +1997,10 @@
       ],
       "github_repo": "cisagov/ScubaGear",
       "version_signal": "github_release_tag",
-      "cci_coverage_notes": "Implied-Bridge: ScubaGear M365 baselines → 800-53 via ScubaGear control mappings. Teams/Exchange/AAD policies → AC/IA/SC CCIs. ScubaGear policy IDs not in CCI text; Implied-Bridge."
+      "cci_coverage_notes": "Implied-Bridge: ScubaGear M365 baselines → 800-53 via ScubaGear control mappings. Teams/Exchange/AAD policies → AC/IA/SC CCIs. ScubaGear policy IDs not in CCI text; Implied-Bridge.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "cisa-csaf": {
       "label": "CISA Common Security Advisory Framework (CSAF)",
@@ -1936,7 +2036,10 @@
       ],
       "github_repo": "cisagov/CSAF",
       "version_signal": "github_release_tag",
-      "cci_coverage_notes": "Implied-Bridge: CISA CSAF advisories inherit CVE→800-53 chain from NVD. SI-2 and RA-5 CCIs: Confirmed-Subject for vulnerability remediation language. CSAF-specific disclosure metadata not in CCI text."
+      "cci_coverage_notes": "Implied-Bridge: CISA CSAF advisories inherit CVE→800-53 chain from NVD. SI-2 and RA-5 CCIs: Confirmed-Subject for vulnerability remediation language. CSAF-specific disclosure metadata not in CCI text.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "disa-cci-trackr": {
       "label": "CCI Trackr Public API (DISA CCIs + 800-53 mappings)",
@@ -1965,7 +2068,10 @@
         ".json"
       ],
       "version_signal": "file_hash",
-      "cci_coverage_notes": "Confirmed-Direct: cyber.trackr.live/cci provides the same CCI data (3,551 CCIs) via public REST API, including Rev 4 and Rev 5 control references where DISA published them. Rev 5 fields: Confirmed-Direct where DISA explicitly added Rev 5 mappings; Implied-Bridge where derived from the r4→r5 bridge workbook."
+      "cci_coverage_notes": "Confirmed-Direct: cyber.trackr.live/cci provides the same CCI data (3,551 CCIs) via public REST API, including Rev 4 and Rev 5 control references where DISA published them. Rev 5 fields: Confirmed-Direct where DISA explicitly added Rev 5 mappings; Implied-Bridge where derived from the r4→r5 bridge workbook.",
+      "auto_fetch": true,
+      "artifact_status": "current",
+      "last_verified": "2026-07-02"
     },
     "dod-zig": {
       "label": "DoD Zero Trust Implementation Guidelines",
@@ -2003,7 +2109,10 @@
         ".pdf"
       ],
       "version_signal": "pdf_filename_version",
-      "cci_coverage_notes": "Implied-Bridge: DoD Zero Trust Implementation Guides (Discovery/Phase1/Phase2) reference 800-207 and 800-53 ZT activities. AC/IA/SC CCIs apply transitively. ZT pillar activities not in CCI text; Implied-Bridge via ZT activity → 800-53 → CCI chain."
+      "cci_coverage_notes": "Implied-Bridge: DoD Zero Trust Implementation Guides (Discovery/Phase1/Phase2) reference 800-207 and 800-53 ZT activities. AC/IA/SC CCIs apply transitively. ZT pillar activities not in CCI text; Implied-Bridge via ZT activity → 800-53 → CCI chain.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "jsig": {
       "label": "Joint SAP Implementation Guide",
@@ -2028,7 +2137,10 @@
         ".pdf"
       ],
       "version_signal": "pdf_filename_version",
-      "cci_coverage_notes": "Not-Applicable for SAP overlays: JSIG is a classified supplement; public version limited. Standard 800-53 controls have CCIs (Confirmed-Direct/Subject as applicable), but JSIG-specific SAP tailoring not in CCI List. Implied-Bridge for standard controls."
+      "cci_coverage_notes": "Not-Applicable for SAP overlays: JSIG is a classified supplement; public version limited. Standard 800-53 controls have CCIs (Confirmed-Direct/Subject as applicable), but JSIG-specific SAP tailoring not in CCI List. Implied-Bridge for standard controls.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "icd-503": {
       "label": "ICD 503 — IC IT Systems Security Risk Management",
@@ -2053,13 +2165,16 @@
         ".pdf"
       ],
       "version_signal": "pdf_filename_version",
-      "cci_coverage_notes": "Implied-Bridge: ICD 503 references 800-53 Rev 5 as baseline with IC-specific overlays. Standard control CCIs apply at baseline level; IC overlay requirements Not-Applicable (no public CCI definitions for IC-specific enhancements)."
+      "cci_coverage_notes": "Implied-Bridge: ICD 503 references 800-53 Rev 5 as baseline with IC-specific overlays. Standard control CCIs apply at baseline level; IC overlay requirements Not-Applicable (no public CCI definitions for IC-specific enhancements).",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "mitre-attack": {
       "label": "MITRE ATT&CK Enterprise Framework",
       "authority": "primary",
       "framework_id": "mitre-attack",
-      "current_version": "v16 (Oct 2024)",
+      "current_version": "v19.1 (Apr 2026)",
       "urls": {
         "stix_github": "https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json",
         "taxii": "https://cti-taxii.mitre.org/taxii/",
@@ -2068,7 +2183,7 @@
       },
       "check_strategy": "github_release",
       "last_checked": null,
-      "last_changed": "2024-10-14",
+      "last_changed": "2026-04-22",
       "announcement_feeds": [
         {
           "url": "https://github.com/mitre/cti/releases.atom",
@@ -2094,7 +2209,11 @@
       ],
       "github_repo": "mitre/cti",
       "version_signal": "github_release_tag",
-      "cci_coverage_notes": "Implied-Bridge: ATT&CK → 800-53 via official NIST ATT&CK↔800-53 mapping (SP800-53_ATT&CK_v13_v1.xlsx; 195 techniques mapped). CCIs apply at the 800-53 control end. ATT&CK technique IDs not in CCI text; all Implied-Bridge. AC-2 CCIs (CCI-000004–000014) align with multiple ATT&CK persistence techniques."
+      "cci_coverage_notes": "Implied-Bridge: ATT&CK → 800-53 via official NIST ATT&CK↔800-53 mapping (SP800-53_ATT&CK_v13_v1.xlsx; 195 techniques mapped). CCIs apply at the 800-53 control end. ATT&CK technique IDs not in CCI text; all Implied-Bridge. AC-2 CCIs (CCI-000004–000014) align with multiple ATT&CK persistence techniques.",
+      "notes": "v19: Defense Evasion split into Stealth + Defense Impairment; ICS sub-techniques; Mobile detection strategies. v18 (Oct 2025) replaced Detections with Detection Strategies/Analytics. Enterprise STIX v19.1 ingested 2026-07-02 (697 techniques + 475 sub-techniques via attack_stix_loader).",
+      "auto_fetch": true,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "mitre-d3fend": {
       "label": "MITRE D3FEND Defensive Countermeasures",
@@ -2119,7 +2238,10 @@
         ".json"
       ],
       "version_signal": "file_hash",
-      "cci_coverage_notes": "Implied-Bridge: D3FEND countermeasures → ATT&CK techniques → 800-53 → CCI (three hops). D3FEND technique IDs not in CCI text; Implied-Bridge."
+      "cci_coverage_notes": "Implied-Bridge: D3FEND countermeasures → ATT&CK techniques → 800-53 → CCI (three hops). D3FEND technique IDs not in CCI text; Implied-Bridge.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "mitre-capec": {
       "label": "MITRE CAPEC — Common Attack Pattern Enumeration and Classification",
@@ -2145,7 +2267,10 @@
         ".zip"
       ],
       "version_signal": "file_hash",
-      "cci_coverage_notes": "Implied-Bridge: MITRE CAPEC → ATT&CK → 800-53 → CCI (two hops). Attack patterns not in CCI text; Implied-Bridge via technique→control connection."
+      "cci_coverage_notes": "Implied-Bridge: MITRE CAPEC → ATT&CK → 800-53 → CCI (two hops). Attack patterns not in CCI text; Implied-Bridge via technique→control connection.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "mitre-cwe": {
       "label": "MITRE CWE — Common Weakness Enumeration",
@@ -2171,7 +2296,10 @@
         ".zip"
       ],
       "version_signal": "file_hash",
-      "cci_coverage_notes": "Implied-Bridge: MITRE CWE → NVD CVE → 800-53 → CCI chain. CWE-89 (SQL Injection) → SI-10 CCIs; CWE-79 (XSS) → SI-10 CCIs. CWE identifiers not in CCI text; Implied-Bridge."
+      "cci_coverage_notes": "Implied-Bridge: MITRE CWE → NVD CVE → 800-53 → CCI chain. CWE-89 (SQL Injection) → SI-10 CCIs; CWE-79 (XSS) → SI-10 CCIs. CWE identifiers not in CCI text; Implied-Bridge.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nvd-cve": {
       "label": "NVD CVE Feed (API 2.0)",
@@ -2220,7 +2348,10 @@
         ".json"
       ],
       "version_signal": "file_hash",
-      "cci_coverage_notes": "Implied-Bridge: NVD CVE → 800-53 via CWE→CAPEC→ATT&CK→800-53 chain. SI-2 flaw remediation (CCI-001643–001645) and RA-5 vulnerability scanning (CCI-002515–002517): Confirmed-Subject for patch/vulnerability language. CVE IDs not in CCI text; all connections Implied-Bridge."
+      "cci_coverage_notes": "Implied-Bridge: NVD CVE → 800-53 via CWE→CAPEC→ATT&CK→800-53 chain. SI-2 flaw remediation (CCI-001643–001645) and RA-5 vulnerability scanning (CCI-002515–002517): Confirmed-Subject for patch/vulnerability language. CVE IDs not in CCI text; all connections Implied-Bridge.",
+      "auto_fetch": false,
+      "artifact_status": "on_demand",
+      "last_verified": "2026-07-02"
     },
     "nist-privacy-fw": {
       "label": "NIST Privacy Framework v1.0",
@@ -2267,7 +2398,10 @@
         ".pdf"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Implied-Bridge: NIST Privacy Framework 1.0 → 800-53 Privacy controls via NIST crosswalk. PT/CT control families have CCIs via r4→r5 bridge. Most Privacy Framework core functions Implied-Bridge; Privacy-specific Rev 5 enhancements Not-Applicable."
+      "cci_coverage_notes": "Implied-Bridge: NIST Privacy Framework 1.0 → 800-53 Privacy controls via NIST crosswalk. PT/CT control families have CCIs via r4→r5 bridge. Most Privacy Framework core functions Implied-Bridge; Privacy-specific Rev 5 enhancements Not-Applicable.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "ny-dfs-500": {
       "label": "NY DFS 23 NYCRR Part 500 — Cybersecurity for Financial Services",
@@ -2306,7 +2440,10 @@
         ".xlsx"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Implied-Bridge: 23 NYCRR 500 → 800-53 via unofficial mapping. §500.12 (MFA) → IA-2 CCIs (Confirmed-Subject: 'multifactor authentication'); §500.14 (Training) → AT CCIs; §500.16 (IR) → IR CCIs. NYCRR section numbers not in CCI text."
+      "cci_coverage_notes": "Implied-Bridge: 23 NYCRR 500 → 800-53 via unofficial mapping. §500.12 (MFA) → IA-2 CCIs (Confirmed-Subject: 'multifactor authentication'); §500.14 (Training) → AT CCIs; §500.16 (IR) → IR CCIs. NYCRR section numbers not in CCI text.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "glba-safeguards": {
       "label": "GLBA / FTC Safeguards Rule (16 CFR Part 314)",
@@ -2353,7 +2490,10 @@
         ".pdf"
       ],
       "version_signal": "ecfr_as_of_date",
-      "cci_coverage_notes": "Implied-Bridge: GLBA FTC Safeguards Rule (16 CFR 314) → 800-53 via FTC-NIST informal mapping. §314.4(c) Access → AC CCIs; §314.4(f) Monitoring → AU CCIs. eCFR as-of-date tracks changes. CFR section numbers not in CCI text."
+      "cci_coverage_notes": "Implied-Bridge: GLBA FTC Safeguards Rule (16 CFR 314) → 800-53 via FTC-NIST informal mapping. §314.4(c) Access → AC CCIs; §314.4(f) Monitoring → AU CCIs. eCFR as-of-date tracks changes. CFR section numbers not in CCI text.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "ffiec-handbook": {
       "label": "FFIEC IT Examination Handbook",
@@ -2392,7 +2532,10 @@
         ".pdf"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Implied-Bridge: FFIEC IT Handbook (IS Booklet) → 800-53 via regulator guidance. Authentication, logging, IR sections → IA, AU, IR CCIs respectively. Implied-Bridge; FFIEC booklet section references not in CCI text."
+      "cci_coverage_notes": "Implied-Bridge: FFIEC IT Handbook (IS Booklet) → 800-53 via regulator guidance. Authentication, logging, IR sections → IA, AU, IR CCIs respectively. Implied-Bridge; FFIEC booklet section references not in CCI text.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "ffiec-cat": {
       "label": "FFIEC Cybersecurity Assessment Tool (SUNSET)",
@@ -2416,7 +2559,10 @@
         ".pdf"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Implied-Bridge (historical/retired): FFIEC CAT (SUNSET Aug 31 2025) mapped to 800-53 via FFIEC matrix. CCIs applied transitively. Retained for historical reference only."
+      "cci_coverage_notes": "Implied-Bridge (historical/retired): FFIEC CAT (SUNSET Aug 31 2025) mapped to 800-53 via FFIEC matrix. CCIs applied transitively. Retained for historical reference only.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "sec-cyber-17cfr": {
       "label": "SEC Cybersecurity Disclosure Rules (17 CFR 229/240)",
@@ -2465,7 +2611,10 @@
         ".pdf"
       ],
       "version_signal": "ecfr_as_of_date",
-      "cci_coverage_notes": "Implied-Bridge: SEC Cybersecurity Rules (17 CFR 229 Item 1.05, 240 13a-11) → 800-53 via disclosure→control mapping. Incident reporting → IR CCIs; governance → PM CCIs. Implied-Bridge."
+      "cci_coverage_notes": "Implied-Bridge: SEC Cybersecurity Rules (17 CFR 229 Item 1.05, 240 13a-11) → 800-53 via disclosure→control mapping. Incident reporting → IR CCIs; governance → PM CCIs. Implied-Bridge.",
+      "auto_fetch": false,
+      "artifact_status": "on_demand",
+      "last_verified": "2026-07-02"
     },
     "sec-edgar-8k": {
       "label": "SEC EDGAR 8-K Item 1.05 Cyber Incident Disclosures",
@@ -2507,7 +2656,10 @@
         ".htm"
       ],
       "version_signal": "latest_item_guid",
-      "cci_coverage_notes": "Implied-Heuristic: 8-K Item 1.05 disclosures are evidence inputs, not control standards. CCIs classified by incident type in edgar_loader.py (ransomware→IR/SC, breach→AC/AU)."
+      "cci_coverage_notes": "Implied-Heuristic: 8-K Item 1.05 disclosures are evidence inputs, not control standards. CCIs classified by incident type in edgar_loader.py (ransomware→IR/SC, breach→AC/AU).",
+      "auto_fetch": false,
+      "artifact_status": "on_demand",
+      "last_verified": "2026-07-02"
     },
     "finra-guidance": {
       "label": "FINRA Cybersecurity Guidance and Annual Oversight Report",
@@ -2557,7 +2709,10 @@
         ".pdf"
       ],
       "version_signal": "file_hash",
-      "cci_coverage_notes": "Implied-Bridge: FINRA Small Firm Checklist → 800-53 via informal broker-dealer mapping. Authentication, logging sections → IA/AU CCIs. Implied-Bridge."
+      "cci_coverage_notes": "Implied-Bridge: FINRA Small Firm Checklist → 800-53 via informal broker-dealer mapping. Authentication, logging sections → IA/AU CCIs. Implied-Bridge.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "occ-bulletins": {
       "label": "OCC Cybersecurity Supervision Work Program",
@@ -2604,7 +2759,10 @@
         ".html"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Implied-Bridge: OCC Bulletin 2023-22 references NIST CSF and 800-53 as supervisory benchmark. CCIs apply via the 800-53 reference in OCC text. Implied-Bridge."
+      "cci_coverage_notes": "Implied-Bridge: OCC Bulletin 2023-22 references NIST CSF and 800-53 as supervisory benchmark. CCIs apply via the 800-53 reference in OCC text. Implied-Bridge.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "fdic-it": {
       "label": "FDIC IT Risk Management and Cybersecurity Guidance",
@@ -2650,7 +2808,10 @@
         ".pdf"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Implied-Bridge: FDIC IT Risk Management references NIST frameworks; CCIs at the 800-53 end of FDIC→NIST guidance. Implied-Bridge."
+      "cci_coverage_notes": "Implied-Bridge: FDIC IT Risk Management references NIST frameworks; CCIs at the 800-53 end of FDIC→NIST guidance. Implied-Bridge.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "federal-reserve-cyber": {
       "label": "Federal Reserve Cybersecurity Supervisory Guidance",
@@ -2689,7 +2850,10 @@
         ".html"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Implied-Bridge: SR Letters 24-7 and 24-24 reference FFIEC IT Handbook and NIST CSF; CCIs transitively. Implied-Bridge."
+      "cci_coverage_notes": "Implied-Bridge: SR Letters 24-7 and 24-24 reference FFIEC IT Handbook and NIST CSF; CCIs transitively. Implied-Bridge.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "fincen-aml": {
       "label": "FinCEN AML/BSA Cybersecurity Guidance",
@@ -2735,7 +2899,10 @@
         ".pdf"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Implied-Heuristic: FinCEN AML/BSA advisories cite cybersecurity best practices; no structured control mapping. CCIs via keyword heuristic (financial crime → IR/AU families)."
+      "cci_coverage_notes": "Implied-Heuristic: FinCEN AML/BSA advisories cite cybersecurity best practices; no structured control mapping. CCIs via keyword heuristic (financial crime → IR/AU families).",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "circia": {
       "label": "CIRCIA — Cyber Incident Reporting for Critical Infrastructure Act",
@@ -2774,7 +2941,10 @@
       ],
       "version_signal": "document_number",
       "next_expected_version": "Final Rule May 2026",
-      "cci_coverage_notes": "Implied-Bridge: CIRCIA (6 USC 681b) incident reporting → IR family. IR-6 CCIs (CCI-000835–839): Confirmed-Subject for incident notification language. Final Rule (May 2026) may add structured 800-53 alignment. Federal Register document_number tracked."
+      "cci_coverage_notes": "Implied-Bridge: CIRCIA (6 USC 681b) incident reporting → IR family. IR-6 CCIs (CCI-000835–839): Confirmed-Subject for incident notification language. Final Rule (May 2026) may add structured 800-53 alignment. Federal Register document_number tracked.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nerc-cip": {
       "label": "NERC CIP Cybersecurity Standards",
@@ -2813,7 +2983,10 @@
         ".xlsx"
       ],
       "version_signal": "file_hash",
-      "cci_coverage_notes": "Implied-Bridge: NERC CIP → 800-53 via official NERC-NIST crosswalk XLSX. CIP-005 (ESP) → AC/SC CCIs; CIP-007 (SM) → CM/SI CCIs; CIP-011 (Info Protection) → MP/SC CCIs. All Implied-Bridge; NERC CIP standard numbers not in CCI text."
+      "cci_coverage_notes": "Implied-Bridge: NERC CIP → 800-53 via official NERC-NIST crosswalk XLSX. CIP-005 (ESP) → AC/SC CCIs; CIP-007 (SM) → CM/SI CCIs; CIP-011 (Info Protection) → MP/SC CCIs. All Implied-Bridge; NERC CIP standard numbers not in CCI text.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "sox-itgc": {
       "label": "SOX ITGC — PCAOB AS 2201 Integrated Audit",
@@ -2851,7 +3024,10 @@
       ],
       "version_signal": "page_heading_date",
       "next_expected_version": "PCAOB AS 2201 updated, effective Dec 15 2026",
-      "cci_coverage_notes": "Implied-Bridge: SOX ITGC (PCAOB AS 2201) → 800-53 via IT audit → COSO → control mapping. Change management → CM CCIs; Access → AC CCIs; Ops → CP/SI CCIs. PCAOB standards not in CCI text."
+      "cci_coverage_notes": "Implied-Bridge: SOX ITGC (PCAOB AS 2201) → 800-53 via IT audit → COSO → control mapping. Change management → CM CCIs; Access → AC CCIs; Ops → CP/SI CCIs. PCAOB standards not in CCI text.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "cfaa": {
       "label": "Computer Fraud and Abuse Act (18 USC § 1030)",
@@ -2878,7 +3054,10 @@
         ".pdf"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Not-Applicable: CFAA (18 USC §1030) is a criminal statute; no DISA CCI coverage. Unauthorized access → AC/IA families via Implied-Heuristic only."
+      "cci_coverage_notes": "Not-Applicable: CFAA (18 USC §1030) is a criminal statute; no DISA CCI coverage. Unauthorized access → AC/IA families via Implied-Heuristic only.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "ecpa": {
       "label": "Electronic Communications Privacy Act (18 USC § 2510 et seq.)",
@@ -2904,7 +3083,10 @@
         ".pdf"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Not-Applicable: ECPA (18 USC §2510+) is a federal surveillance law; no DISA CCI coverage. SC/AU families via Implied-Heuristic."
+      "cci_coverage_notes": "Not-Applicable: ECPA (18 USC §2510+) is a federal surveillance law; no DISA CCI coverage. SC/AU families via Implied-Heuristic.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "dtsa": {
       "label": "Defend Trade Secrets Act (18 USC § 1836)",
@@ -2928,7 +3110,10 @@
         ".htm"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Not-Applicable: DTSA (18 USC §1836) is a trade secrets statute; no DISA CCI coverage. MP/SC families via Implied-Heuristic."
+      "cci_coverage_notes": "Not-Applicable: DTSA (18 USC §1836) is a trade secrets statute; no DISA CCI coverage. MP/SC families via Implied-Heuristic.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "eea": {
       "label": "Economic Espionage Act (18 USC §§ 1831–1839)",
@@ -2952,7 +3137,10 @@
         ".htm"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Not-Applicable: EEA (18 USC §§1831–1839) is a criminal espionage statute; no DISA CCI coverage. Implied-Heuristic via counterintelligence control families."
+      "cci_coverage_notes": "Not-Applicable: EEA (18 USC §§1831–1839) is a criminal espionage statute; no DISA CCI coverage. Implied-Heuristic via counterintelligence control families.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "wire-fraud-cyber": {
       "label": "Wire Fraud Statute — cybercrime application (18 USC § 1343)",
@@ -2976,7 +3164,10 @@
         ".htm"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Not-Applicable: Wire Fraud (18 USC §1343) is criminal law; no DISA CCI coverage. Implied-Heuristic via fraud-prevention control families."
+      "cci_coverage_notes": "Not-Applicable: Wire Fraud (18 USC §1343) is criminal law; no DISA CCI coverage. Implied-Heuristic via fraud-prevention control families.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "colorado-cpa": {
       "label": "Colorado Privacy Act",
@@ -3002,7 +3193,10 @@
         ".html"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Not-Applicable: Colorado Privacy Act is state privacy law; no DISA CCI coverage. Data protection → MP/AC/SC via Implied-Heuristic."
+      "cci_coverage_notes": "Not-Applicable: Colorado Privacy Act is state privacy law; no DISA CCI coverage. Data protection → MP/AC/SC via Implied-Heuristic.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "virginia-cdpa": {
       "label": "Virginia Consumer Data Protection Act (CDPA)",
@@ -3028,7 +3222,10 @@
         ".html"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Not-Applicable: Virginia CDPA is state privacy law; no DISA CCI coverage. Implied-Heuristic via data protection families."
+      "cci_coverage_notes": "Not-Applicable: Virginia CDPA is state privacy law; no DISA CCI coverage. Implied-Heuristic via data protection families.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "texas-tdpsa": {
       "label": "Texas Data Privacy and Security Act (TDPSA)",
@@ -3054,7 +3251,10 @@
         ".html"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Not-Applicable: Texas TDPSA is state privacy law; no DISA CCI coverage. Implied-Heuristic."
+      "cci_coverage_notes": "Not-Applicable: Texas TDPSA is state privacy law; no DISA CCI coverage. Implied-Heuristic.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "ny-shield": {
       "label": "NY SHIELD Act — Stop Hacks and Improve Electronic Data Security",
@@ -3080,7 +3280,10 @@
         ".html"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Not-Applicable: NY SHIELD Act is state breach notification / security law; no DISA CCI coverage. Reasonable safeguards → AC/SC via Implied-Heuristic."
+      "cci_coverage_notes": "Not-Applicable: NY SHIELD Act is state breach notification / security law; no DISA CCI coverage. Reasonable safeguards → AC/SC via Implied-Heuristic.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "illinois-bipa": {
       "label": "Illinois Biometric Information Privacy Act (BIPA, 740 ILCS 14)",
@@ -3105,7 +3308,10 @@
         ".html"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Not-Applicable: Illinois BIPA (740 ILCS 14) is biometric privacy law; no DISA CCI coverage. MP/SC/AC families via Implied-Heuristic."
+      "cci_coverage_notes": "Not-Applicable: Illinois BIPA (740 ILCS 14) is biometric privacy law; no DISA CCI coverage. MP/SC/AC families via Implied-Heuristic.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "washington-mhmd": {
       "label": "Washington My Health My Data Act",
@@ -3131,7 +3337,10 @@
         ".html"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Not-Applicable: Washington My Health My Data Act is state health privacy law; no DISA CCI coverage. Health data protection → HIPAA-adjacent CCIs via Implied-Heuristic."
+      "cci_coverage_notes": "Not-Applicable: Washington My Health My Data Act is state health privacy law; no DISA CCI coverage. Health data protection → HIPAA-adjacent CCIs via Implied-Heuristic.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "ma-201-cmr-17": {
       "label": "Massachusetts 201 CMR 17.00 — Standards for Personal Information Protection",
@@ -3156,7 +3365,10 @@
         ".html"
       ],
       "version_signal": "ecfr_as_of_date",
-      "cci_coverage_notes": "Implied-Bridge: Massachusetts 201 CMR 17.00 specifies encryption and access controls. AC CCIs (CCI-000004–000006) and SC-28 (CCI-001199, Confirmed-Subject: 'encryption') apply. CMR section numbers not in CCI text."
+      "cci_coverage_notes": "Implied-Bridge: Massachusetts 201 CMR 17.00 specifies encryption and access controls. AC CCIs (CCI-000004–000006) and SC-28 (CCI-001199, Confirmed-Subject: 'encryption') apply. CMR section numbers not in CCI text.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "gdpr": {
       "label": "EU GDPR (Regulation 2016/679)",
@@ -3203,7 +3415,7 @@
           "notes": "EUR-Lex Official Journal feed [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
-      "draft_status": "none",
+      "draft_status": "amendment_proposed",
       "public_comment_deadline": null,
       "source_manifest_keys": [
         "eu-gdpr"
@@ -3217,7 +3429,11 @@
         ".pdf"
       ],
       "version_signal": "latest_item_guid",
-      "cci_coverage_notes": "Not-Applicable: EU GDPR is EU law; no DISA CCI coverage. Art. 32 technical measures → SC/AC via HITRUST bridge (Implied-Bridge)."
+      "cci_coverage_notes": "Not-Applicable: EU GDPR is EU law; no DISA CCI coverage. Art. 32 technical measures → SC/AC via HITRUST bridge (Implied-Bridge).",
+      "notes": "EC 'Digital Omnibus' proposal (Nov 2025) would amend GDPR; text unchanged until adopted — watch only.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "enisa-ecsf": {
       "label": "ENISA European Cybersecurity Skills Framework (ECSF)",
@@ -3255,7 +3471,10 @@
       ],
       "github_repo": "enisaeu/ECSF",
       "version_signal": "github_release_tag",
-      "cci_coverage_notes": "Not-Applicable: ENISA ECSF is a workforce competency framework; no DISA CCI coverage. AT (Awareness Training) CCIs (CCI-000365–373) Implied-Heuristic for skills/training topics."
+      "cci_coverage_notes": "Not-Applicable: ENISA ECSF is a workforce competency framework; no DISA CCI coverage. AT (Awareness Training) CCIs (CCI-000365–373) Implied-Heuristic for skills/training topics.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "uk-ncsc-caf": {
       "label": "UK NCSC Cyber Assessment Framework (CAF)",
@@ -3299,7 +3518,10 @@
         ".xlsx"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Implied-Bridge: UK NCSC CAF → 800-53 via NCSC alignment notes. CAF B2 (Identity) → IA CCIs; B3 (Data Security) → SC/MP CCIs. Implied-Bridge; NCSC CAF not in CCI text."
+      "cci_coverage_notes": "Implied-Bridge: UK NCSC CAF → 800-53 via NCSC alignment notes. CAF B2 (Identity) → IA CCIs; B3 (Data Security) → SC/MP CCIs. Implied-Bridge; NCSC CAF not in CCI text.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "mas-trm": {
       "label": "Singapore MAS Technology Risk Management Guidelines",
@@ -3335,7 +3557,10 @@
         ".pdf"
       ],
       "version_signal": "pdf_filename_version",
-      "cci_coverage_notes": "Not-Applicable: MAS TRM (Singapore) is a regulatory guideline; no DISA CCI coverage. Technology risk controls → 800-53 via informal analysis (Implied-Heuristic)."
+      "cci_coverage_notes": "Not-Applicable: MAS TRM (Singapore) is a regulatory guideline; no DISA CCI coverage. Technology risk controls → 800-53 via informal analysis (Implied-Heuristic).",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "apra-cps234": {
       "label": "Australia APRA CPS 234 Information Security",
@@ -3371,7 +3596,10 @@
         ".pdf"
       ],
       "version_signal": "pdf_filename_version",
-      "cci_coverage_notes": "Not-Applicable: APRA CPS 234 (Australia) is a prudential standard; no DISA CCI coverage. Implied-Heuristic via HITRUST bridge."
+      "cci_coverage_notes": "Not-Applicable: APRA CPS 234 (Australia) is a prudential standard; no DISA CCI coverage. Implied-Heuristic via HITRUST bridge.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "asd-essential8": {
       "label": "Australian Signals Directorate Essential Eight Maturity Model",
@@ -3397,7 +3625,10 @@
         ".xlsx"
       ],
       "version_signal": "page_heading_date",
-      "cci_coverage_notes": "Implied-Bridge: ASD Essential Eight → 800-53 via informal mapping. Strategy 3 (MFA) → IA-2 CCIs (Confirmed-Subject: 'multifactor authentication'). Strategy 1 (App control) → CM CCIs. ASD strategy names not in CCI text."
+      "cci_coverage_notes": "Implied-Bridge: ASD Essential Eight → 800-53 via informal mapping. Strategy 3 (MFA) → IA-2 CCIs (Confirmed-Subject: 'multifactor authentication'). Strategy 1 (App control) → CM CCIs. ASD strategy names not in CCI text.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "asd-ism": {
       "label": "Australian Signals Directorate Information Security Manual (ISM)",
@@ -3428,7 +3659,10 @@
         ".pdf"
       ],
       "version_signal": "file_hash",
-      "cci_coverage_notes": "Implied-Bridge: ASD ISM → 800-53 via ASD-published crosswalk XLSX. CCIs apply at the 800-53 end. ASD ISM control numbers not in DISA CCI text."
+      "cci_coverage_notes": "Implied-Bridge: ASD ISM → 800-53 via ASD-published crosswalk XLSX. CCIs apply at the 800-53 end. ASD ISM control numbers not in DISA CCI text.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "canada-pipeda": {
       "label": "Canada PIPEDA / Bill C-27 (CPPA)",
@@ -3469,7 +3703,10 @@
       ],
       "version_signal": "page_heading_date",
       "next_expected_version": "CPPA via Bill C-27 pending Royal Assent",
-      "cci_coverage_notes": "Not-Applicable: PIPEDA is Canadian privacy legislation; no DISA CCI coverage. Safeguard principles → AC/AU control families via Implied-Heuristic."
+      "cci_coverage_notes": "Not-Applicable: PIPEDA is Canadian privacy legislation; no DISA CCI coverage. Safeguard principles → AC/AU control families via Implied-Heuristic.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "india-dpdp": {
       "label": "India Digital Personal Data Protection Act 2023",
@@ -3495,7 +3732,10 @@
         ".pdf"
       ],
       "version_signal": "pdf_filename_version",
-      "cci_coverage_notes": "Not-Applicable: India DPDP Act 2023; implementing rules still pending; CCI mapping premature."
+      "cci_coverage_notes": "Not-Applicable: India DPDP Act 2023; implementing rules still pending; CCI mapping premature.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nist-csf": {
       "label": "NIST Cybersecurity Framework 2.0",
@@ -3555,7 +3795,10 @@
         ".csv",
         ".json",
         ".zip"
-      ]
+      ],
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nsm-8": {
       "label": "NSM-8 — Improving Cybersecurity for Critical Infrastructure [RESCINDED]",
@@ -3577,7 +3820,10 @@
       "public_comment_deadline": null,
       "source_manifest_keys": [],
       "crawl_seeds": [],
-      "doc_patterns": []
+      "doc_patterns": [],
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nspm-12": {
       "label": "NSPM-12 — National Security Presidential Memorandum on Critical Infrastructure Cybersecurity",
@@ -3616,7 +3862,10 @@
       ],
       "doc_patterns": [
         ".pdf"
-      ]
+      ],
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nist-sp-800-37": {
       "label": "NIST SP 800-37 Rev 2 — Risk Management Framework",
@@ -3640,12 +3889,15 @@
       "last_changed": "2018-12-20",
       "version_signal": "csrc.nist.gov publication detail 'Publication Date' heading",
       "cci_coverage_notes": "Implied-Bridge: CA-6 (CCI-000076–000079) and CA-7 (CCI-000174–000178) use RMF process language but do not cite SP 800-37 by name. PM-7 has no CCI coverage.",
-      "notes": "Foundational RMF document underpinning all 800-53 control selection. OSCAL format may be available from usnistgov/oscal-content."
+      "notes": "Foundational RMF document underpinning all 800-53 control selection. OSCAL format may be available from usnistgov/oscal-content.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nist-sp-800-63": {
       "label": "NIST SP 800-63 Rev 3 — Digital Identity Guidelines",
       "authority": "NIST",
-      "current_version": "Rev 3 (Jun 2017)",
+      "current_version": "Rev 4 (final, Aug 2025)",
       "next_expected_version": "Rev 4 (800-63-4 in development; anticipated 2026)",
       "check_strategy": "poll_landing",
       "crawl_seeds": [
@@ -3661,15 +3913,18 @@
         "https://csrc.nist.gov/publications/drafts-open-for-comment.xml"
       ],
       "draft_status": "none",
-      "last_changed": "2017-06-22",
+      "last_changed": "2025-08-01",
       "version_signal": "csrc.nist.gov publication detail 'Publication Date' heading",
       "cci_coverage_notes": "Confirmed-Direct: CCI-001764 (IA-8) explicitly names SP 800-63. Confirmed-Subject: IA-2 MFA CCIs, IA-5 authenticator CCIs. Rev 3 specifics (WebAuthn, no-forced-rotation) are Implied-Bridge.",
-      "notes": "Normative for IA family. CPRT JSON API available: https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/sp_800_63_3/element/ALL/structure/default"
+      "notes": "SP 800-63-4 suite (63/63A/63B/63C) finalized August 2025, superseding Rev 3 (2017). The generated nist-800-63b-requirements.json still derives from 63B r3 — regeneration from 63B-4 is an open follow-up (needs the -4 artifact; do not guess).",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nist-sp-800-63a": {
       "label": "NIST SP 800-63A Rev 3 — Enrollment and Identity Proofing",
       "authority": "NIST",
-      "current_version": "Rev 3 (Jun 2017)",
+      "current_version": "Rev 4 (final, Aug 2025)",
       "next_expected_version": "Rev 4 (companion to 800-63-4)",
       "check_strategy": "poll_landing",
       "crawl_seeds": [
@@ -3685,15 +3940,18 @@
         "https://csrc.nist.gov/publications/drafts-open-for-comment.xml"
       ],
       "draft_status": "none",
-      "last_changed": "2017-06-22",
+      "last_changed": "2025-08-01",
       "version_signal": "csrc.nist.gov publication detail 'Publication Date' heading",
       "cci_coverage_notes": "Confirmed-Direct: CCI-001764/765 (IA-8(1)) cites identity proofing subject matching SP 800-63A §4. Confirmed-Subject: IA-8(2) CCI-001766 for derived PIV enrollment.",
-      "notes": "Enrollment and identity proofing; companion to SP 800-63-3."
+      "notes": "SP 800-63-4 suite (63/63A/63B/63C) finalized August 2025, superseding Rev 3 (2017). The generated nist-800-63b-requirements.json still derives from 63B r3 — regeneration from 63B-4 is an open follow-up (needs the -4 artifact; do not guess).",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nist-sp-800-63b": {
       "label": "NIST SP 800-63B Rev 3 — Authentication and Lifecycle Management",
       "authority": "NIST",
-      "current_version": "Rev 3 (Jun 2017)",
+      "current_version": "Rev 4 (final, Aug 2025)",
       "next_expected_version": "Rev 4 (companion to 800-63-4; anticipated 2026)",
       "check_strategy": "poll_landing",
       "crawl_seeds": [
@@ -3710,10 +3968,13 @@
         "https://csrc.nist.gov/publications/drafts-open-for-comment.xml"
       ],
       "draft_status": "none",
-      "last_changed": "2017-06-22",
+      "last_changed": "2025-08-01",
       "version_signal": "csrc.nist.gov publication detail 'Publication Date' heading",
       "cci_coverage_notes": "Confirmed-Subject: CCI-000765/766/767/768 (IA-2 MFA), CCI-000185–216 (IA-5 authenticators). Rev 3 AAL/WebAuthn/no-forced-rotation specifics are Implied-Bridge (CCIs authored to Rev 2 scope).",
-      "notes": "Authentication and lifecycle management; most directly relevant to IA-2 and IA-5 CCIs. CPRT JSON: https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/sp_800_63b_3/element/ALL/structure/default"
+      "notes": "SP 800-63-4 suite (63/63A/63B/63C) finalized August 2025, superseding Rev 3 (2017). The generated nist-800-63b-requirements.json still derives from 63B r3 — regeneration from 63B-4 is an open follow-up (needs the -4 artifact; do not guess).",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nist-sp-800-56a": {
       "label": "NIST SP 800-56A Rev 3 — Recommendation for Pair-Wise Key-Establishment Schemes",
@@ -3738,7 +3999,10 @@
       "last_changed": "2018-04-01",
       "version_signal": "csrc.nist.gov publication detail 'Publication Date' heading",
       "cci_coverage_notes": "Implied-Bridge: SC-12 (CCI-002449) covers 'key establishment' — SP 800-56A is the key agreement sub-publication of the 800-57 chain. Not named in any CCI definition text.",
-      "notes": "Key agreement schemes; referenced via SP 800-57 Part 1 chain. Relevant to SC-12."
+      "notes": "Key agreement schemes; referenced via SP 800-57 Part 1 chain. Relevant to SC-12.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nist-sp-800-57pt1": {
       "label": "NIST SP 800-57 Part 1 Rev 5 — Recommendation for Key Management",
@@ -3762,7 +4026,10 @@
       "last_changed": "2020-05-04",
       "version_signal": "csrc.nist.gov publication detail 'Publication Date' heading",
       "cci_coverage_notes": "Confirmed-Subject: CCI-002449 (SC-12) 'key establishment and key management' — SP 800-57 Pt 1 governs this; subject confirmed. CCI-002451 (SC-12(1)) availability also confirmed-subject.",
-      "notes": "Primary key management reference. Normative for SC-12. Rev 5 added post-quantum guidance."
+      "notes": "Primary key management reference. Normative for SC-12. Rev 5 added post-quantum guidance.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nist-sp-800-160-2": {
       "label": "NIST SP 800-160 Vol 2 Rev 1 — Developing Cyber-Resilient Systems",
@@ -3786,7 +4053,10 @@
       "last_changed": "2021-12-14",
       "version_signal": "csrc.nist.gov publication detail 'Publication Date' heading",
       "cci_coverage_notes": "Implied-Bridge: PL-8 (CCI-001771–001772) and SA-17 (CCI-002218–002224) use 'security architecture' language. 800-160 Vol 1 (Systems Security Engineering) is more directly cited; Vol 2 (Cyber Resiliency) is one layer removed.",
-      "notes": "Cyber resiliency engineering; cited in PL-8 and SA-17 for DOD/FedRAMP programs."
+      "notes": "Cyber resiliency engineering; cited in PL-8 and SA-17 for DOD/FedRAMP programs.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nist-sp-800-166": {
       "label": "NIST SP 800-166 — Reference Document for the OMB M-19-17",
@@ -3810,7 +4080,10 @@
       "last_changed": "2016-10-01",
       "version_signal": "csrc.nist.gov publication detail 'Publication Date' heading",
       "cci_coverage_notes": "Not-Applicable for derived PIV sub-controls (IA-5(2)(d)) — SP 800-166 postdates Rev 4 CCI definitions; no dedicated DISA CCIs exist for derived PIV. Implied-Bridge via shared CCI-001766 (IA-8(2)).",
-      "notes": "Derived PIV credentials for mobile devices; companion to FIPS 201 and SP 800-157."
+      "notes": "Derived PIV credentials for mobile devices; companion to FIPS 201 and SP 800-157.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nist-sp-800-189": {
       "label": "NIST SP 800-189 — Resilient Interdomain Traffic Exchange",
@@ -3835,7 +4108,10 @@
       "last_changed": "2019-12-01",
       "version_signal": "csrc.nist.gov publication detail 'Publication Date' heading",
       "cci_coverage_notes": "Implied-Heuristic: SC-5 (CCI-001094–001095) and SC-7 (CCI-000366–000385) boundary/DoS CCIs connect via keyword only. SP 800-189 (RPKI/BGP) not referenced in any CCI text by name or subject.",
-      "notes": "BGP route origin validation (RPKI); cited in SI-18 for external telecom boundary controls."
+      "notes": "BGP route origin validation (RPKI); cited in SI-18 for external telecom boundary controls.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nist-sp-800-213a": {
       "label": "NIST SP 800-213A — IoT Device Cybersecurity Guidance: IoT Federal Profile",
@@ -3859,7 +4135,10 @@
       "last_changed": "2021-11-01",
       "version_signal": "csrc.nist.gov publication detail 'Publication Date' heading",
       "cci_coverage_notes": "Implied-Bridge: AC-20 (CCI-000058–000061) and IR-9 (CCI-002887) via r4→r5 bridge. IoT-specific Rev 5 controls (SC-41, SA-9(6)) have no Rev 4 CCI equivalents. SP 800-213A not named in any CCI text.",
-      "notes": "IoT Federal Profile; generates 866 unified_mappings in current DB. Already in source_manifest as nist-800-53-to-sp800-213a."
+      "notes": "IoT Federal Profile; generates 866 unified_mappings in current DB. Already in source_manifest as nist-800-53-to-sp800-213a.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "fips-140-3": {
       "label": "FIPS 140-3 — Security Requirements for Cryptographic Modules",
@@ -3883,7 +4162,10 @@
       "last_changed": "2019-03-22",
       "version_signal": "csrc.nist.gov publication detail 'Publication Date' heading",
       "cci_coverage_notes": "Confirmed-Subject: CCI-002450–002453 (SC-13 'FIPS-validated cryptography'), CCI-000803–000804 (IA-7 'cryptographic module authentication'), CCI-002469 (SC-8(1) 'FIPS-validated mechanisms'), CCI-001199 (SC-28(1)). CCIs authored to FIPS 140-2 era; FIPS 140-3 revision specificity is Implied-Bridge.",
-      "notes": "FIPS-validated cryptography is normative for SC-13. CMVP validation list: https://csrc.nist.gov/projects/cryptographic-module-validation-program"
+      "notes": "FIPS-validated cryptography is normative for SC-13. CMVP validation list: https://csrc.nist.gov/projects/cryptographic-module-validation-program",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "fips-199": {
       "label": "FIPS 199 — Standards for Security Categorization of Federal Information",
@@ -3906,7 +4188,10 @@
       "last_changed": "2004-02-01",
       "version_signal": "csrc.nist.gov publication detail 'Publication Date' heading",
       "cci_coverage_notes": "Not-Applicable: FIPS 199 operates at system categorization level above individual CCI granularity. No DISA CCI definition references FIPS 199 by name or subject matter.",
-      "notes": "Foundational categorization standard (Low/Moderate/High) underpinning all 800-53 baseline selection."
+      "notes": "Foundational categorization standard (Low/Moderate/High) underpinning all 800-53 baseline selection.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "fips-200": {
       "label": "FIPS 200 — Minimum Security Requirements for Federal Information Systems",
@@ -3929,7 +4214,10 @@
       "last_changed": "2006-03-01",
       "version_signal": "csrc.nist.gov publication detail 'Publication Date' heading",
       "cci_coverage_notes": "Not-Applicable: FIPS 200 operates at minimum-requirements policy level above individual CCI granularity. No DISA CCI definition references FIPS 200 by name or subject.",
-      "notes": "Minimum security requirements for federal systems; governs 800-53B baseline applicability."
+      "notes": "Minimum security requirements for federal systems; governs 800-53B baseline applicability.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "fips-201-3": {
       "label": "FIPS 201-3 — Personal Identity Verification (PIV) of Federal Employees and Contractors",
@@ -3953,7 +4241,10 @@
       "last_changed": "2022-01-24",
       "version_signal": "csrc.nist.gov publication detail 'Publication Date' heading",
       "cci_coverage_notes": "Confirmed-Direct: CCI-001948 (IA-2(12) PIV), CCI-001950 (IA-2(13)), CCI-000203/205 (IA-5(2) PKI/PIV), CCI-001768/769 (IA-8(4) FICAM). Confirmed-Subject: CCI-001766 (IA-8(2) derived PIV), CCI-001767 (IA-8(3) third-party PIV). Rev 3 delta (ECDSA P-384, mobile PIV) is Implied-Bridge.",
-      "notes": "Highest-confidence confirmed-direct CCI family for any external publication. NIAP product list: https://www.niap-ccevs.org/Product/"
+      "notes": "Highest-confidence confirmed-direct CCI family for any external publication. NIAP product list: https://www.niap-ccevs.org/Product/",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "nist-ir-8477": {
       "label": "NIST IR 8477 — Cybersecurity Framework and Privacy Framework Profiles OLIR Methodology",
@@ -3979,7 +4270,10 @@
       "last_changed": "2022-10-01",
       "version_signal": "csrc.nist.gov publication detail 'Publication Date' heading",
       "cci_coverage_notes": "Not-Applicable: IR 8477 is a mapping methodology document with no implementable control requirements. CCIs are control-implementation-level; no DISA CCI definition references STRM, OLIR, or IR 8477 content.",
-      "notes": "STRM methodology for all NIST OLIRs (crosswalks). Used by load_crosswalks.py. Monitor for Final publication — when released, OLIR program expands."
+      "notes": "STRM methodology for all NIST OLIRs (crosswalks). Used by load_crosswalks.py. Monitor for Final publication — when released, OLIR program expands.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "iso-15408": {
       "label": "ISO/IEC 15408 — Common Criteria for IT Security Evaluation (NIAP/CCEVS)",
@@ -4004,7 +4298,10 @@
       "last_changed": "2017-01-01",
       "version_signal": "NIAP approved Protection Profiles list latest entry date",
       "cci_coverage_notes": "Implied-Heuristic: SA-17 (CCI-002218–002224), SA-11 (CCI-001732–001735), SA-3 (CCI-000889–000892) via 'developer security architecture' → 'formal evaluation' heuristic chain. ISO 15408, Common Criteria, and EAL levels not named in any DISA CCI text.",
-      "notes": "Common Criteria evaluation; cited in SA-17 for DoD/NIAP procurement. NIAP product list: https://www.niap-ccevs.org/Product/"
+      "notes": "Common Criteria evaluation; cited in SA-17 for DoD/NIAP procurement. NIAP product list: https://www.niap-ccevs.org/Product/",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "mcp-spec": {
       "label": "Model Context Protocol (MCP) Specification",
@@ -4052,7 +4349,10 @@
       "version_signal": "github_release_tag",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Not-Applicable: MCP is a protocol specification for AI tool integration. No DISA CCI definitions reference MCP. Compliance relevance: SC-8 (transmission integrity), SC-28 (data at rest), IA-3 (device authentication) via Implied-Heuristic for MCP transport security requirements.",
-      "notes": "Open standard for connecting AI models to tools, databases, and external services via a standardized protocol. Used in Claude, Cursor, VS Code, Zed, and other AI-enabled tools. Components: Hosts (LLM apps), Clients (protocol connectors), Servers (resource/tool providers). Uses JSON-RPC 2.0 over stdio or HTTP+SSE transport. Security relevance: authentication (OAuth 2.1), authorization scopes, prompt injection via malicious MCP servers."
+      "notes": "Open standard for connecting AI models to tools, databases, and external services via a standardized protocol. Used in Claude, Cursor, VS Code, Zed, and other AI-enabled tools. Components: Hosts (LLM apps), Clients (protocol connectors), Servers (resource/tool providers). Uses JSON-RPC 2.0 over stdio or HTTP+SSE transport. Security relevance: authentication (OAuth 2.1), authorization scopes, prompt injection via malicious MCP servers.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "openapi-spec": {
       "label": "OpenAPI Specification (OAS) — REST API Governance Standard",
@@ -4107,7 +4407,10 @@
       "version_signal": "github_release_tag",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Implied-Heuristic: SC-8 (transmission protection), SC-28 (data protection), CA-3 (system interconnections) via API governance heuristic. OpenAPI is a description format standard, not a security framework; CCI connections are entirely heuristic.",
-      "notes": "Industry-standard API description format used to document, govern, and validate REST APIs. Compliance relevance: API inventory/governance (CA-3), access control documentation (AC-3), data classification in API schemas (SC-28). OAS 4.0 (Moonwalk) will introduce webhooks, async patterns, and improved security scheme modeling."
+      "notes": "Industry-standard API description format used to document, govern, and validate REST APIs. Compliance relevance: API inventory/governance (CA-3), access control documentation (AC-3), data classification in API schemas (SC-28). OAS 4.0 (Moonwalk) will introduce webhooks, async patterns, and improved security scheme modeling.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "ietf-oauth": {
       "label": "IETF OAuth 2.x / API Authorization Standards",
@@ -4165,7 +4468,10 @@
       "version_signal": "latest_item_guid",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Confirmed-Subject: IA-2 (CCI-000765–000768, MFA requirement) via OAuth PKCE flow. IA-5 (CCI-000185–000216, credential management) via OAuth token lifecycle. SC-8(1) (CCI-002469, FIPS-validated crypto) via TLS requirement in OAuth 2.1. All connections Confirmed-Subject where OAuth addresses authentication/authorization subject matter explicitly.",
-      "notes": "Core API authorization standard. OAuth 2.1 (RFC 9700, Dec 2024) consolidates best practices: mandatory PKCE, removes implicit flow, removes resource owner password credentials. Compliance relevance: IA-2 (MFA), IA-3 (device auth via client credentials), SC-8 (TLS), SC-28 (token storage). Also track: RFC 9396 (Rich Authorization Requests), RFC 9449 (DPoP — Demonstration of Proof of Possession), RFC 8707 (Resource Indicators)."
+      "notes": "Core API authorization standard. OAuth 2.1 (RFC 9700, Dec 2024) consolidates best practices: mandatory PKCE, removes implicit flow, removes resource owner password credentials. Compliance relevance: IA-2 (MFA), IA-3 (device auth via client credentials), SC-8 (TLS), SC-28 (token storage). Also track: RFC 9396 (Rich Authorization Requests), RFC 9449 (DPoP — Demonstration of Proof of Possession), RFC 8707 (Resource Indicators).",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "anthropic-api": {
       "label": "Anthropic Claude API — Model Cards, Changelog, Usage Policies",
@@ -4215,7 +4521,10 @@
       "version_signal": "page_heading_date",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Not-Applicable: Anthropic API is a commercial AI service API, not a compliance framework. Compliance relevance: track model deprecations for system change management (CM-3), usage policy changes for acceptable use (PL-4), safety policy for AI risk management (PM-28 / NIST AI RMF cross-reference).",
-      "notes": "Track for: (1) API version deprecation notices — relevant for CM-3 (configuration change control) and SA-22 (unsupported system components); (2) Model card updates — safety evaluations, capability limits; (3) Responsible Scaling Policy (RSP) updates — ASL-2/ASL-3 thresholds; (4) Usage policy changes affecting acceptable-use clauses in contracts. Also monitor: Constitutional AI, system prompt confidentiality policies."
+      "notes": "Track for: (1) API version deprecation notices — relevant for CM-3 (configuration change control) and SA-22 (unsupported system components); (2) Model card updates — safety evaluations, capability limits; (3) Responsible Scaling Policy (RSP) updates — ASL-2/ASL-3 thresholds; (4) Usage policy changes affecting acceptable-use clauses in contracts. Also monitor: Constitutional AI, system prompt confidentiality policies.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "openai-api": {
       "label": "OpenAI API — Platform Changelog, Model Cards, API Specification",
@@ -4277,7 +4586,10 @@
       "version_signal": "github_release_tag",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Not-Applicable: OpenAI API is a commercial AI service. Compliance relevance: API deprecation notices → CM-3/SA-22; usage policy changes → PL-4; safety evaluations → PM-28 / NIST AI RMF. System cards for GPT-4/o3 series contain capability evaluations relevant to AI risk assessments.",
-      "notes": "Track openai/openai-openapi GitHub for machine-readable API spec changes. Monitor platform.openai.com/docs/changelog for deprecation notices. Key compliance items: (1) model deprecation schedules (SA-22, system lifecycle); (2) rate limit and data retention policy changes (SC-28, AU-11); (3) GDPR/CCPA data processing policy updates; (4) Function calling and tool use specification changes (for MCP-like integrations). Preferred check: GitHub release tag on openai-openapi spec."
+      "notes": "Track openai/openai-openapi GitHub for machine-readable API spec changes. Monitor platform.openai.com/docs/changelog for deprecation notices. Key compliance items: (1) model deprecation schedules (SA-22, system lifecycle); (2) rate limit and data retention policy changes (SC-28, AU-11); (3) GDPR/CCPA data processing policy updates; (4) Function calling and tool use specification changes (for MCP-like integrations). Preferred check: GitHub release tag on openai-openapi spec.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "google-gemini-api": {
       "label": "Google Gemini API — Developer Platform, Model Cards, Release Notes",
@@ -4336,7 +4648,10 @@
       "version_signal": "page_heading_date",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Not-Applicable: Gemini API is a commercial AI service. Same compliance relevance as other commercial AI APIs: CM-3 (deprecation), SA-22 (unsupported components), PL-4 (acceptable use), PM-28 (AI risk management).",
-      "notes": "Track ai.google.dev/gemini-api/docs/release-notes for model/API changes. Google publishes technical safety reports for Gemini (benchmark evaluations, dangerous capability assessments). Also monitor Google's Responsible AI Practices and AI Principles updates. Key for: organizations using Gemini APIs under Workspace or Cloud agreements — track data processing addendum updates."
+      "notes": "Track ai.google.dev/gemini-api/docs/release-notes for model/API changes. Google publishes technical safety reports for Gemini (benchmark evaluations, dangerous capability assessments). Also monitor Google's Responsible AI Practices and AI Principles updates. Key for: organizations using Gemini APIs under Workspace or Cloud agreements — track data processing addendum updates.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "owasp-llm-top10": {
       "label": "OWASP Top 10 for LLM Applications",
@@ -4383,7 +4698,10 @@
       "version_signal": "github_release_tag",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Confirmed-Subject: LLM01 (Prompt Injection) → SI-10 (CCI-002620, input validation), SI-3 (CCI-001170, malicious code protection). LLM02 (Insecure Output Handling) → SI-10, SA-11. LLM05 (Supply Chain) → SA-12 (CCI-002937, supply chain risk). LLM06 (Sensitive Info Disclosure) → SC-28 (CCI-001199), AC-3. All connections Confirmed-Subject via shared security control subject matter.",
-      "notes": "Risk categories: LLM01 Prompt Injection, LLM02 Insecure Output Handling, LLM03 Training Data Poisoning, LLM04 Model DoS, LLM05 Supply Chain Vulnerabilities, LLM06 Sensitive Information Disclosure, LLM07 Insecure Plugin Design, LLM08 Excessive Agency, LLM09 Overreliance, LLM10 Model Theft. Companion project: OWASP AI Security and Privacy Guide. Crosswalks with NIST AI RMF and MITRE ATLAS in development."
+      "notes": "Risk categories: LLM01 Prompt Injection, LLM02 Insecure Output Handling, LLM03 Training Data Poisoning, LLM04 Model DoS, LLM05 Supply Chain Vulnerabilities, LLM06 Sensitive Information Disclosure, LLM07 Insecure Plugin Design, LLM08 Excessive Agency, LLM09 Overreliance, LLM10 Model Theft. Companion project: OWASP AI Security and Privacy Guide. Crosswalks with NIST AI RMF and MITRE ATLAS in development.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "mitre-atlas": {
       "label": "MITRE ATLAS — Adversarial Threat Landscape for AI Systems",
@@ -4431,7 +4749,10 @@
       "version_signal": "github_release_tag",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Implied-Bridge: MITRE ATLAS tactics map to ML-specific attack patterns not covered in ATT&CK. ATLAS technique AML.T0043 (Craft Adversarial Data) → SI-10 (CCI-002620). AML.T0019 (Publish Poisoned Datasets) → SA-12 (CCI-002937). AML.T0040 (ML Model Inference API Access) → SC-8 (CCI-002469), AC-3 (CCI-000015). All Implied-Bridge via AI-specific attack surface extending existing NIST 800-53 controls.",
-      "notes": "Structured knowledge base of adversarial ML threats targeting AI/ML systems. Sister framework to MITRE ATT&CK focused on ML attack surface: reconnaissance of ML APIs, model evasion, model poisoning, model extraction, and system prompt injection. STIX 2.1 format available in atlas-data repo. Crosswalk to MITRE ATT&CK: some ATLAS techniques are extensions of ATT&CK techniques. Critical for AI red-teaming and threat modeling assessments."
+      "notes": "Structured knowledge base of adversarial ML threats targeting AI/ML systems. Sister framework to MITRE ATT&CK focused on ML attack surface: reconnaissance of ML APIs, model evasion, model poisoning, model extraction, and system prompt injection. STIX 2.1 format available in atlas-data repo. Crosswalk to MITRE ATT&CK: some ATLAS techniques are extensions of ATT&CK techniques. Critical for AI red-teaming and threat modeling assessments.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "uk-aisi": {
       "label": "UK AI Safety Institute (AISI) / DSIT AI Safety Publications",
@@ -4489,7 +4810,10 @@
       "version_signal": "latest_item_guid",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Implied-Heuristic: AISI evaluations cover dangerous capabilities (CBRN, cyberoffense, persuasion). Maps to PM-28 (AI risk management), RA-3 (risk assessment), SI-3 (malicious code) via AI capability evaluation heuristic. No DISA CCI definitions reference AISI or frontier AI evaluation.",
-      "notes": "UK government body responsible for evaluating and testing frontier AI models. Publishes: (1) AI model evaluation reports (dangerous capabilities, uplift assessments); (2) AI safety research; (3) International AI safety coordination (Seoul Declaration, Bletchley Process). Published inaugural report on risks of frontier AI models (Nov 2023). Key for: organizations assessing AI governance compliance with emerging UK AI regulation (AI Safety Bill anticipated) and international AI safety commitments."
+      "notes": "UK government body responsible for evaluating and testing frontier AI models. Publishes: (1) AI model evaluation reports (dangerous capabilities, uplift assessments); (2) AI safety research; (3) International AI safety coordination (Seoul Declaration, Bletchley Process). Published inaugural report on risks of frontier AI models (Nov 2023). Key for: organizations assessing AI governance compliance with emerging UK AI regulation (AI Safety Bill anticipated) and international AI safety commitments.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "cisa-ai-security": {
       "label": "CISA AI Security Guidance — Joint Advisories and Secure AI Deployment",
@@ -4535,7 +4859,10 @@
       "version_signal": "page_heading_date",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Confirmed-Subject: CISA guidance maps explicitly to NIST 800-53 controls. Deploying AI Systems Securely cites CM-7 (CCI-000381, least functionality), AC-3 (CCI-000015, access enforcement), SI-7 (CCI-002696, software integrity). All Confirmed-Subject via explicit 800-53 control citations in CISA guidance documents.",
-      "notes": "CISA's primary AI security guidance portal. Key publications: (1) 'Deploying AI Systems Securely' (Apr 2024) — joint with NSA, 15 recommendations for secure AI deployment; (2) 'Guidelines for Secure AI System Development' (Nov 2023) — joint with UK NCSC + 17 other agencies; (3) CISA AI Roadmap 2023-2024. Guidance directly maps to NIST 800-53 Rev 5 controls. Also monitor: CISA AI Tabletop Exercise resources, CISA AI risk frameworks for critical infrastructure."
+      "notes": "CISA's primary AI security guidance portal. Key publications: (1) 'Deploying AI Systems Securely' (Apr 2024) — joint with NSA, 15 recommendations for secure AI deployment; (2) 'Guidelines for Secure AI System Development' (Nov 2023) — joint with UK NCSC + 17 other agencies; (3) CISA AI Roadmap 2023-2024. Guidance directly maps to NIST 800-53 Rev 5 controls. Also monitor: CISA AI Tabletop Exercise resources, CISA AI risk frameworks for critical infrastructure.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "ieee-ai-standards": {
       "label": "IEEE AI Standards — P7000 Ethics Series, P2840, P3119, P2841",
@@ -4587,7 +4914,10 @@
       "version_signal": "page_heading_date",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Implied-Heuristic: IEEE P7001 (Transparency) → PL-8 (CCI-001771), PM-7. IEEE P7009 (Fail-Safe) → SI-13 (CCI-002404), CP-2. P3119 (AI Procurement) → SA-4 (CCI-001436, acquisition requirements), SA-9 (CCI-001513). All Implied-Heuristic via AI governance subject matter; no DISA CCI definitions reference IEEE AI standards.",
-      "notes": "Key IEEE AI standards for GRC: P7000 series (ethics/safety/transparency for autonomous systems); P2840 (Recommended Practice for Responsible AI); P3119 (Standard for the Procurement of Artificial Intelligence and Automated Decision Systems — acquisition requirements applicable to SA-4). P2841 (Framework for AI/ML Bias in Autonomous Systems). Organizations acquiring AI systems should track P3119 for procurement language. Paywalled final standards; track via standards.ieee.org for availability."
+      "notes": "Key IEEE AI standards for GRC: P7000 series (ethics/safety/transparency for autonomous systems); P2840 (Recommended Practice for Responsible AI); P3119 (Standard for the Procurement of Artificial Intelligence and Automated Decision Systems — acquisition requirements applicable to SA-4). P2841 (Framework for AI/ML Bias in Autonomous Systems). Organizations acquiring AI systems should track P3119 for procurement language. Paywalled final standards; track via standards.ieee.org for availability.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "iso-jtc1-sc42": {
       "label": "ISO/IEC JTC1 SC42 — Artificial Intelligence Standards Committee",
@@ -4637,7 +4967,10 @@
       "version_signal": "page_heading_date",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Implied-Bridge: ISO 42001 (AI Management System) → PM-7 (CCI — PM family low coverage), PM-28 (AI risk), RA-3 (CCI-001431, risk assessment), SA-15 (CCI-002152, dev process security) via AI management chain. ISO 23894 (AI risk management) → RA-3 family via Implied-Bridge. Standards are paywalled; bridge via ISO 42001 HITRUST hub mapping (ISO 23894 is a HITRUST CSF v11.5.0 column).",
-      "notes": "SC42 is the primary ISO committee for AI standards, producing: ISO/IEC 42001 (AI Management Systems — auditable AI governance framework); ISO/IEC 23894 (Guidance on AI Risk Management); ISO/IEC 24028 (Overview of trustworthiness in AI); ISO/IEC 42006 (Requirements for AI auditing body accreditation — certifiers). ISO 42001 is the AI equivalent of ISO 27001 — organizations will seek third-party certification. Track ISO 42005 (AI impact assessment, CDP-equivalent for AI) which will create compliance obligations for high-risk AI systems under EU AI Act implementation."
+      "notes": "SC42 is the primary ISO committee for AI standards, producing: ISO/IEC 42001 (AI Management Systems — auditable AI governance framework); ISO/IEC 23894 (Guidance on AI Risk Management); ISO/IEC 24028 (Overview of trustworthiness in AI); ISO/IEC 42006 (Requirements for AI auditing body accreditation — certifiers). ISO 42001 is the AI equivalent of ISO 27001 — organizations will seek third-party certification. Track ISO 42005 (AI impact assessment, CDP-equivalent for AI) which will create compliance obligations for high-risk AI systems under EU AI Act implementation.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "huggingface-hub": {
       "label": "Hugging Face Hub — Model Cards, Dataset Cards, Safety Specs",
@@ -4700,7 +5033,10 @@
       "version_signal": "github_release_tag",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Implied-Heuristic: Model Cards → SA-4 (CCI-001436, acquisition documentation), SA-10 (developer config management). Content policy → PL-4 (acceptable use), AC-17 (remote access restrictions). No DISA CCI definitions reference Hugging Face or model cards specifically.",
-      "notes": "Hugging Face Hub is the primary public repository for open-source AI models (500k+ models). Model Cards provide provenance, intended use, bias evaluations, and limitations — directly relevant to SA-4 (acquisition requirements) when procuring open-source AI models. Security relevance: (1) supply chain risk from malicious models (SA-12); (2) malicious pickle/safetensor files (SI-3, malicious code); (3) model card spec defines minimum disclosure requirements being referenced by EU AI Act technical documentation requirements. Track huggingface/hub-docs for model card spec evolution."
+      "notes": "Hugging Face Hub is the primary public repository for open-source AI models (500k+ models). Model Cards provide provenance, intended use, bias evaluations, and limitations — directly relevant to SA-4 (acquisition requirements) when procuring open-source AI models. Security relevance: (1) supply chain risk from malicious models (SA-12); (2) malicious pickle/safetensor files (SI-3, malicious code); (3) model card spec defines minimum disclosure requirements being referenced by EU AI Act technical documentation requirements. Track huggingface/hub-docs for model card spec evolution.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
     },
     "iso-27002": {
       "label": "ISO/IEC 27002:2022 — Information security controls",
@@ -4715,7 +5051,316 @@
       "last_checked": null,
       "last_changed": "2022-02-15",
       "notes": "Details the 93 Annex A controls referenced by ISO/IEC 27001:2022, with attribute tagging. Annex B carries the official 2013<->2022 correspondence tables (authoritative source for any legacy-id bridge; artifact not in repo). Amd 1:2024 climate text only.",
-      "draft_status": "none"
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
+    },
+    "soc1": {
+      "label": "SOC 1 (SSAE clarified standards, AT-C 320)",
+      "authority": "primary",
+      "framework_id": "soc1",
+      "current_version": "SSAE No. 22 / AT-C 320 (current attestation standard)",
+      "urls": {
+        "landing": "https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-1",
+        "download_page": "https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-1"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2025-06-15",
+      "notes": "SOC 1 examines controls relevant to user entities' financial reporting (ICFR). No control catalog — Type 1 (point-in-time) and Type 2 (period) are REPORT TYPES of the same standard. ER crosswalk CSVs 'SOC 1 T1'/'SOC 1 T2' both map here. Verify SSAE 22 effective date on the AICPA landing page when re-pinning.",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
+    },
+    "scf": {
+      "label": "Secure Controls Framework (SCF)",
+      "authority": "primary",
+      "framework_id": "scf",
+      "current_version": "SCF 2026.1.1 (2026-04-22)",
+      "urls": {
+        "landing": "https://github.com/securecontrolsframework/securecontrolsframework",
+        "download_page": "https://github.com/securecontrolsframework/securecontrolsframework"
+      },
+      "check_strategy": "github_release",
+      "last_checked": null,
+      "last_changed": "2026-04-22",
+      "notes": "Free CC-licensed meta-framework mapping 100+ laws/regulations/frameworks. Artifact fetched to canonical-sources (scf-controls manifest entry) — the version anchor for the SCF column in crosswalk_80053_master.json. Quarterly-ish release cadence on GitHub.",
+      "draft_status": "none",
+      "auto_fetch": true,
+      "artifact_status": "current",
+      "last_verified": "2026-07-02"
+    },
+    "microsoft-sspa": {
+      "label": "Microsoft SSPA / Supplier Data Protection Requirements (DPR)",
+      "authority": "primary",
+      "framework_id": "microsoft-sspa",
+      "current_version": "DPR v12 (FY26, March 2026)",
+      "urls": {
+        "landing": "https://www.microsoft.com/en-us/procurement/sspa",
+        "download_page": "https://www.microsoft.com/en-us/procurement/sspa"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2026-03-01",
+      "notes": "63 requirements (was 67 in v11); adds AI Publisher/Deployer supplier types + Red Status sanctions. v12 artifact fetched (microsoft-sspa-dpr-v12); v11 seeds retained for delta. Annual-ish revision cadence.",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-02"
+    },
+    "cnssi-1253": {
+      "label": "CNSSI No. 1253 — NSS Security Categorization",
+      "authority": "primary",
+      "framework_id": "cnssi-1253",
+      "current_version": "CNSSI 1253 (2022 corrected copy, 6 Oct 2022) + 1253F overlays",
+      "urls": {
+        "landing": "https://www.cnss.gov/CNSS/issuances/Instructions.cfm",
+        "download_page": "https://www.cnss.gov/CNSS/issuances/Instructions.cfm"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2025-08-01",
+      "notes": "Base instruction (800-53 r5-aligned) still current. Newest companions: CNSSI 1253F Att. 2 Space Platform Overlay (Aug 2025), CNSSI 1200 (Aug 2025). Artifact on disk (cnssi-1253 manifest entry).",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-02"
+    },
+    "dfars-cyber": {
+      "label": "DFARS cyber clauses (252.204-7012/-7019/-7020/-7021)",
+      "authority": "primary",
+      "framework_id": "dfars-cyber",
+      "current_version": "DFARS CMMC final rule (Sep 2025, effective 2025-11-10)",
+      "urls": {
+        "landing": "https://www.acquisition.gov/dfars",
+        "download_page": "https://www.acquisition.gov/dfars"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2025-11-10",
+      "notes": "The 48 CFR acquisition rule operationalizing CMMC in contracts. Seed bundle (dod-dfars-bundle manifest entry) carries pre-CMMC 2018-2024 guidance incl. 800-171 Assessment Methodology v1.2.1 + SPRS fact sheets — partly superseded.",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
+    },
+    "disa-cloud-srg": {
+      "label": "DISA Cloud (CSP) Security Requirements Guide",
+      "authority": "primary",
+      "framework_id": "disa-cloud-srg",
+      "current_version": "CSP SRG v1r3 era (adds ~170 IL5 controls; supersedes Cloud Computing SRG presentations)",
+      "urls": {
+        "landing": "https://public.cyber.mil/dccs/",
+        "download_page": "https://public.cyber.mil/dccs/"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2025-06-01",
+      "notes": "DISA rebranded/restructured the Cloud Computing SRG. Seed presentation in dod-dfars-bundle is historical. Verify exact current release on the DISA cyber exchange when re-pinning.",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
+    },
+    "disa-classified-overlay": {
+      "label": "DoD DISA Classified Systems Overlay",
+      "authority": "primary",
+      "framework_id": "disa-classified-overlay",
+      "current_version": "FINAL (dated copy on disk)",
+      "urls": {
+        "landing": "https://www.cnss.gov/CNSS/issuances/Instructions.cfm",
+        "download_page": "https://www.cnss.gov/CNSS/issuances/Instructions.cfm"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2022-01-01",
+      "notes": "Overlay atop 800-53/CNSSI 1253 for classified systems. Artifact on disk (disa-classified-overlay-pdf). Successor releases arrive via CNSS/DISA issuances.",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
+    },
+    "nist-sp-800-30": {
+      "label": "SP 800-30 Rev 1 — Guide for Conducting Risk Assessments",
+      "authority": "primary",
+      "framework_id": "nist-sp-800-30",
+      "current_version": "Rev 1 (Sep 2012)",
+      "urls": {
+        "landing": "https://csrc.nist.gov/publications/sp800",
+        "download_page": "https://csrc.nist.gov/publications/sp800"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2012-09-17",
+      "notes": "Metadata watcher: NIST SP referenced by 800-53/CMMC assessment chain. csrc.nist.gov publication page polled for revisions.",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
+    },
+    "nist-sp-800-39": {
+      "label": "SP 800-39 — Managing Information Security Risk",
+      "authority": "primary",
+      "framework_id": "nist-sp-800-39",
+      "current_version": "Final (Mar 2011)",
+      "urls": {
+        "landing": "https://csrc.nist.gov/publications/sp800",
+        "download_page": "https://csrc.nist.gov/publications/sp800"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2011-03-01",
+      "notes": "Metadata watcher: NIST SP referenced by 800-53/CMMC assessment chain. csrc.nist.gov publication page polled for revisions.",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
+    },
+    "nist-sp-800-60": {
+      "label": "SP 800-60 — Mapping Information Types to Security Categories",
+      "authority": "primary",
+      "framework_id": "nist-sp-800-60",
+      "current_version": "Vol I/II Rev 1 (Aug 2008); Rev 2 IWD/FPD in progress — verify on re-pin",
+      "urls": {
+        "landing": "https://csrc.nist.gov/publications/sp800",
+        "download_page": "https://csrc.nist.gov/publications/sp800"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2008-08-01",
+      "notes": "Metadata watcher: NIST SP referenced by 800-53/CMMC assessment chain. csrc.nist.gov publication page polled for revisions.",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
+    },
+    "nist-sp-800-137": {
+      "label": "SP 800-137 — Information Security Continuous Monitoring (ISCM)",
+      "authority": "primary",
+      "framework_id": "nist-sp-800-137",
+      "current_version": "Final (Sep 2011)",
+      "urls": {
+        "landing": "https://csrc.nist.gov/publications/sp800",
+        "download_page": "https://csrc.nist.gov/publications/sp800"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2011-09-01",
+      "notes": "Metadata watcher: NIST SP referenced by 800-53/CMMC assessment chain. csrc.nist.gov publication page polled for revisions.",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
+    },
+    "nist-sp-800-160v1": {
+      "label": "SP 800-160 Vol 1 Rev 1 — Engineering Trustworthy Secure Systems",
+      "authority": "primary",
+      "framework_id": "nist-sp-800-160v1",
+      "current_version": "Vol 1 Rev 1 (Nov 2022)",
+      "urls": {
+        "landing": "https://csrc.nist.gov/publications/sp800",
+        "download_page": "https://csrc.nist.gov/publications/sp800"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2022-11-16",
+      "notes": "Metadata watcher: NIST SP referenced by 800-53/CMMC assessment chain. csrc.nist.gov publication page polled for revisions.",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
+    },
+    "nist-sp-800-161": {
+      "label": "SP 800-161 Rev 1 — C-SCRM (SR family source)",
+      "authority": "primary",
+      "framework_id": "nist-sp-800-161",
+      "current_version": "Rev 1 (May 2022, upd1 Nov 2024)",
+      "urls": {
+        "landing": "https://csrc.nist.gov/publications/sp800",
+        "download_page": "https://csrc.nist.gov/publications/sp800"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2024-11-01",
+      "notes": "Metadata watcher: NIST SP referenced by 800-53/CMMC assessment chain. csrc.nist.gov publication page polled for revisions.",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
+    },
+    "nist-sp-800-218": {
+      "label": "SP 800-218 — Secure Software Development Framework (SSDF)",
+      "authority": "primary",
+      "framework_id": "nist-sp-800-218",
+      "current_version": "v1.1 (Feb 2022); 218A GenAI companion (Jul 2024)",
+      "urls": {
+        "landing": "https://csrc.nist.gov/publications/sp800",
+        "download_page": "https://csrc.nist.gov/publications/sp800"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2024-07-01",
+      "notes": "Metadata watcher: NIST SP referenced by 800-53/CMMC assessment chain. csrc.nist.gov publication page polled for revisions.",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
+    },
+    "nist-sp-800-171a": {
+      "label": "SP 800-171A — CUI Assessment Procedures",
+      "authority": "primary",
+      "framework_id": "nist-sp-800-171a",
+      "current_version": "Rev 2 (Jun 2018 era, CMMC basis) + Rev 3 (May 2024)",
+      "urls": {
+        "landing": "https://csrc.nist.gov/publications/sp800",
+        "download_page": "https://csrc.nist.gov/publications/sp800"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2024-05-14",
+      "notes": "Metadata watcher: NIST SP referenced by 800-53/CMMC assessment chain. csrc.nist.gov publication page polled for revisions.",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
+    },
+    "nist-sp-800-172a": {
+      "label": "SP 800-172A — Enhanced CUI Assessment Procedures",
+      "authority": "primary",
+      "framework_id": "nist-sp-800-172a",
+      "current_version": "Rev 3 (May 2026, released with 800-172r3)",
+      "urls": {
+        "landing": "https://csrc.nist.gov/publications/sp800",
+        "download_page": "https://csrc.nist.gov/publications/sp800"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2026-05-01",
+      "notes": "Metadata watcher: NIST SP referenced by 800-53/CMMC assessment chain. csrc.nist.gov publication page polled for revisions.",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-02"
+    },
+    "csa-aicm": {
+      "label": "CSA AI Controls Matrix (AICM) / STAR for AI",
+      "authority": "primary",
+      "framework_id": "csa-aicm",
+      "current_version": "AICM v1.1.0 (June 2026)",
+      "urls": {
+        "landing": "https://cloudsecurityalliance.org/artifacts/ai-controls-matrix-v1-1",
+        "download_page": "https://cloudsecurityalliance.org/artifacts/ai-controls-matrix-v1-1"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": "2026-06-18",
+      "notes": "AI Controls Matrix v1.1 + AI-CAIQ v1.1 + STAR for AI Level 1 submission guide on disk (csa-aicm-v1.1 manifest entry, user-provided 2026-07-02).",
+      "draft_status": "none",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-02"
     }
   },
   "check_schedule": {
@@ -4826,5 +5471,5 @@
     ]
   },
   "_last_patched": "2026-07-02",
-  "_patch_notes": "2026-07-02: standards-currency audit — 800-53 Release 5.2.0, HITRUST v11.8.0, FedRAMP 20x Certification Classes, PCI v4.0.1 (no v4.1), HIPAA NPRM pending, CMMC phase-2 Nov 2026, CCM v4.1 (2026-01-28)."
+  "_patch_notes": "2026-07-02 (Phase 14): artifact refresh (KEV 2026.07.01, ATT&CK v19.1, eCFR 45/164, 800-172r3 OSCAL, SCF 2026.1.1, SSPA DPR v12) + new feeds (soc1, scf, microsoft-sspa, cnssi-1253, dfars-cyber, disa-cloud-srg, disa-classified-overlay, 9 NIST SP watchers) + hygiene fields (auto_fetch, artifact_status, last_verified) on all feeds."
 }
