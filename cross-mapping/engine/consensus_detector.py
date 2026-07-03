@@ -53,6 +53,10 @@ SCF_XLSX = REPO_ROOT / "canonical-sources" / "source_data" / "Secure Controls Fr
 CCM_XLSX = REPO_ROOT / "canonical-sources" / "source_data" / "csa-star" / "CCMv4.0.13_Generated-at_2024-10-31.xlsx"
 MASTER_JSON = REPO_ROOT / "canonical-sources" / "crosswalk_80053_master.json"
 PCI_ISO_XLSX = REPO_ROOT / "canonical-sources" / "source_data" / "PCI 4.0 to ISO 27001_2022.xlsx"
+# Licensed ISO/IEC 27001:2022 Annex A text (private verification copy — see
+# source_manifest.json id iso-27001-2022-annex-a-text; text is never emitted).
+ISO_TEXT_XLSM = REPO_ROOT / "canonical-sources" / "source_data" / "iso_combined_master_enhanced.xlsm"
+_ISO_TEXT_SHEET = "Official Annex A Controls"
 
 # Canonical framework labels used for consensus keys.
 FW_TSC = "SOC 2 (TSC)"
@@ -447,6 +451,69 @@ def _atoms(conn, fw: str, native: str) -> Set[str]:
     return out
 
 
+_ANNEX_TEXT_IDS: Optional[Set[str]] = None
+
+
+def annex_text_ids() -> Set[str]:
+    """Bare Annex A control ids ('5.1'…'8.34') whose official ISO/IEC 27001:2022
+    text is on disk as a licensed private verification copy. Empty set when the
+    artifact is absent — ISO-side confirmations then stay pending_licensed_artifact.
+    The text itself is never read into results, only the id inventory.
+
+    The sheet stores ids as NUMBERS, so 5.10/5.20/5.30/7.10/8.10/8.20/8.30 collapse
+    to one-decimal floats (5.1 == 5.10). Rows are strictly sequential within each
+    family, so the ordinal position recovers the true id — accepted only when it
+    matches the parsed value exactly or via that trailing-zero collapse; any other
+    mismatch drops the row (never guess)."""
+    global _ANNEX_TEXT_IDS
+    if _ANNEX_TEXT_IDS is not None:
+        return _ANNEX_TEXT_IDS
+    ids: Set[str] = set()
+    if ISO_TEXT_XLSM.exists():
+        raw = pd.read_excel(ISO_TEXT_XLSM, sheet_name=_ISO_TEXT_SHEET, header=None)
+        family, ordinal = None, 0
+        for i in range(4, len(raw)):  # data_start_row per source_manifest.json
+            v = raw.iat[i, 0]
+            if pd.isna(v):
+                continue
+            s = str(v).strip()
+            if "." not in s:  # family-heading row ('5 Organizational controls')
+                family, ordinal = (int(s), 0) if s.isdigit() else (None, 0)
+                continue
+            if family is None:
+                continue
+            ordinal += 1
+            fam_s, _, seg_s = s.partition(".")
+            if int(fam_s) != family:
+                family, ordinal = None, 0
+                continue
+            seg = int(seg_s)
+            if seg == ordinal or (ordinal % 10 == 0 and seg == ordinal // 10):
+                ids.add(f"{family}.{ordinal}")
+            else:  # sequence break — refuse this row rather than guess
+                ordinal -= 1
+    _ANNEX_TEXT_IDS = ids
+    return ids
+
+
+def _iso_text_confirmation(fw_a: str, id_a: str, fw_b: str, id_b: str) -> str:
+    """text_confirmation for a strong pair with at least one ISO side.
+    texts_on_file_licensed only when EVERY ISO-side id is an Annex A control
+    covered by the licensed artifact; ISMS-clause ids stay pending (only
+    selected clause excerpts are on file — never overstate coverage)."""
+    covered = annex_text_ids()
+    if not covered:
+        return "pending_licensed_artifact"
+    for fw, nid in ((fw_a, id_a), (fw_b, id_b)):
+        if fw != FW_ISO:
+            continue
+        base = nid[2:] if nid.startswith("A.") else nid
+        base = base.split(" ")[0]  # drop ISMS sub-part suffixes ('6.1.1 a.1')
+        if base not in covered:
+            return "pending_licensed_artifact"
+    return "texts_on_file_licensed"
+
+
 def characterize(conn, fw_a: str, id_a: str, fw_b: str, id_b: str) -> dict:
     a = _atoms(conn, fw_a, id_a)
     b = _atoms(conn, fw_b, id_b)
@@ -511,8 +578,8 @@ def detect(conn) -> Tuple[List[dict], dict]:
                         "shared_atoms_count": ch["shared_atoms_count"],
                         "shared_atoms": json.dumps(ch["shared_atoms"])})
             row["text_confirmation"] = (
-                "pending_licensed_artifact" if FW_ISO in (fw_a, fw_b)
-                else "texts_on_file")
+                _iso_text_confirmation(fw_a, id_a, fw_b, id_b)
+                if FW_ISO in (fw_a, fw_b) else "texts_on_file")
             row["uncertainty_id"] = UNC.uncertainty_id(
                 "consensus", fw_a=fw_a, native_a=id_a, fw_b=fw_b, native_b=id_b)
         rows.append(row)
@@ -520,6 +587,9 @@ def detect(conn) -> Tuple[List[dict], dict]:
     stats["pairs"] = len(rows)
     stats["tiers"] = tier_counts
     stats["with_production_support"] = sum(1 for r in rows if r["production_support"])
+    stats["text_confirmation"] = {
+        k: sum(1 for r in rows if r["text_confirmation"] == k)
+        for k in ("texts_on_file", "texts_on_file_licensed", "pending_licensed_artifact")}
     return rows, stats
 
 

@@ -22,6 +22,14 @@
 > refined to the **acceptance model**: an owner's crosswalk states what THEY accept for their
 > own framework's audits (CSA→STAR, SCF→CAP) — scope-relative, never modifying other
 > standards; see the runbook's authority-model section.
+>
+> **Phase 17 (2026-07-03):** ISO/IEC 27001:2022 Annex A text on disk (user-provided workbook,
+> manifest id `iso-27001-2022-annex-a-text`) — a licensed private verification copy covering
+> all 93 Annex A controls (the workbook stores ids as numbers, so `5.10`-style ids are
+> recovered from ordinal position; see the manifest note). Annex-side strong consensus pairs
+> upgrade from `pending_licensed_artifact` to `texts_on_file_licensed`; ISMS-clause pairs stay
+> pending (only selected clause excerpts on file). A certification-body impartiality guidance
+> doc (`iso-cert-body-guidance`) is registered as reference-only.
 
 Every framework version pinned in this repo was checked against the latest published release
 (live sources: csrc.nist.gov, hitrustalliance.net, pcisecuritystandards.org, cisecurity.org,

@@ -37,8 +37,12 @@ Every strong pair gets:
 - **extent** — spine-footprint containment (`equal / a_subset_b / b_subset_a / intersect /
   atoms_disjoint / no_spine_footprint`) computed from each side's 800-53 sub-part footprint;
 - **shared_atoms** — the specific sub-parts both requirements reach (the "how they overlap");
-- **text_confirmation** — `texts_on_file` where we hold both requirement texts, or
-  `pending_licensed_artifact` where one side's authoritative text is licensed (ISO);
+- **text_confirmation** — `texts_on_file` where we hold both requirement texts;
+  `texts_on_file_licensed` where the ISO side is an Annex A control covered by the licensed
+  ISO/IEC 27001:2022 verification copy on disk (manifest id `iso-27001-2022-annex-a-text` —
+  the text is used for confirmation only and never reproduced in outputs);
+  `pending_licensed_artifact` where the ISO side is an ISMS clause id (only selected clause
+  excerpts are on file — coverage is never overstated);
 - a deterministic `uncertainty_id` and `needs_confirmation=1` — strong consensus makes a pair
   worth confirming, it does not make it confirmed.
 
@@ -78,12 +82,15 @@ python3 cross-mapping/engine/dbz_query.py consensus \
 ```
 
 Example (real result): `TSC CC5.3 ↔ ISO 5.1` — voters `csa + master + scf`, extent `intersect`,
-2 shared spine atoms, `pending_licensed_artifact` (ISO text licensed). Three authorities that
-never coordinated all connect "COSO Principle 12 / control deployment" territory to ISO's
-leadership-and-policy clause — go confirm against the authoritative texts, starting from the
-shared atoms.
+2 shared spine atoms, `texts_on_file_licensed` (the Annex A 5.1 wording is on disk in the
+licensed verification copy). Three authorities that never coordinated all connect "COSO
+Principle 12 / control deployment" territory to ISO's policy control — go confirm against the
+authoritative texts, starting from the shared atoms.
 
-## Current results (build of 2026-07-02)
+## Current results (build of 2026-07-03)
 
 41,427 scored pairs → **834 strong**, 5,775 moderate; 282 pairs carry production corroboration;
-21 strong SOC2(TSC)↔ISO pairs (the canonical example class). Deterministic across rebuilds.
+21 strong SOC2(TSC)↔ISO pairs (the canonical example class). Of the 226 ISO-side strong pairs,
+200 are `texts_on_file_licensed` (Annex A controls covered by the licensed verification copy);
+the 26 still `pending_licensed_artifact` are ISMS clause ids (4.x, 6.1.x, 7.5.x, 9.1, 10.1).
+Deterministic across rebuilds.

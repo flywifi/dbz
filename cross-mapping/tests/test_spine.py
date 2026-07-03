@@ -355,6 +355,25 @@ if _DB.exists():
            OR native_a GLOB '*ER-[0-9]*' OR native_b GLOB '*ER-[0-9]*'
            OR evidence GLOB '*REQ-[0-9]*' OR evidence GLOB '*ER-[0-9]*'""").fetchone()[0]
     check(n_leak == 0, f"consensus carries no proprietary identifiers (got {n_leak})")
+    # Licensed ISO text (Phase 17): with the Annex A verification copy on disk,
+    # Annex-side strong pairs flip to texts_on_file_licensed; only ISMS-clause
+    # ids (partial excerpts on file) may remain pending.
+    if (ROOT / "canonical-sources" / "source_data" / "iso_combined_master_enhanced.xlsm").exists():
+        import consensus_detector as CD  # type: ignore
+        annex = CD.annex_text_ids()
+        check(len(annex) == 93 and "5.10" in annex and "8.34" in annex,
+              f"annex_text_ids recovers all 93 ISO 27001:2022 Annex A controls (got {len(annex)})")
+        n_lic = _c2.execute("""SELECT COUNT(*) FROM consensus_edges WHERE tier='strong'
+            AND text_confirmation='texts_on_file_licensed'""").fetchone()[0]
+        check(n_lic > 0, f"consensus: ISO Annex-side strong pairs text-confirmed against licensed copy (got {n_lic})")
+        n_bad = 0
+        for (nid,) in _c2.execute("""SELECT CASE WHEN fw_a='ISO 27001/2 (2022)' THEN native_a ELSE native_b END
+            FROM consensus_edges WHERE tier='strong' AND text_confirmation='pending_licensed_artifact'
+            AND 'ISO 27001/2 (2022)' IN (fw_a, fw_b)"""):
+            base = (nid[2:] if nid.startswith("A.") else nid).split(" ")[0]
+            if base in annex:
+                n_bad += 1
+        check(n_bad == 0, f"no Annex-covered strong pair left pending (got {n_bad})")
     _c2.close()
 
 # ── 8. Durable ledger + health-audit detector (Phase 7) ────────────────────────

@@ -260,6 +260,54 @@
       "notes": "Relationship/Fulfilled By/Strength columns are empty in this OLIR release; NIST<->ISO relationship type is derived structurally from fan-out cardinality (relationship_basis=derived_cardinality), not read from the source."
     },
     {
+      "id": "iso-27001-2022-annex-a-text",
+      "file": "canonical-sources/source_data/iso_combined_master_enhanced.xlsm",
+      "format": "xlsm",
+      "sheet": "Official Annex A Controls",
+      "data_start_row": 4,
+      "column_positions": {
+        "0": "annex_a_id",
+        "1": "title",
+        "2": "control_text"
+      },
+      "version": "ISO/IEC 27001:2022(E) Annex A, Table A.1 (93 controls, families 5-8)",
+      "retrieved": "2026-07-03",
+      "role": "iso_27001_annex_a_text",
+      "license": "LICENSED ISO TEXT: ISO/IEC 27001:2022 is copyrighted by ISO/IEC. This sheet is a private verification copy used ONLY to text-confirm consensus/overlap findings against the authoritative wording. Control text is never reproduced at length in docs, reports, query output, or ledger citations — cite by control id and title only.",
+      "notes": "No header row; family-heading rows ('5 Organizational controls') interleave with control rows — take dotted ids only. CAUTION: ids are stored as NUMBERS, so 5.10/5.20/5.30/7.10/8.10/8.20/8.30 read as one-decimal floats (5.10 == 5.1); rows are strictly sequential per family (37/8/14/34 controls), so loaders recover the true id from ordinal position validated against the parsed value (consensus_detector.annex_text_ids). Ids are bare Annex A ('5.1'). This artifact upgrades consensus text_confirmation from pending_licensed_artifact to texts_on_file_licensed for Annex A-side pairs. The 'Combined ISO Tracker' sheet also carries selected official ISMS Clause 4-10 requirement text (partial — clause-side confirmations stay pending)."
+    },
+    {
+      "id": "iso-27001-evidence-tracker",
+      "file": "canonical-sources/source_data/iso_combined_master_enhanced.xlsm",
+      "format": "xlsm",
+      "sheets": [
+        "Combined ISO Tracker",
+        "ISO Evidence Tracker"
+      ],
+      "header_row": 3,
+      "role": "production_iso_evidence_tracker",
+      "column_roles": {
+        "Clause / Control Reference": "clause_or_control_ref",
+        "Data required": "data_required",
+        "Evidence names": "evidence_names",
+        "Official Annex A reference(s)": "annex_a_refs",
+        "Official control title(s)": "annex_a_titles",
+        "Official control text / requirement": "official_text",
+        "Supplemental guidance / documentation note": "guidance_note",
+        "Source note / verification": "source_note"
+      },
+      "_privacy": "PROPRIETARY: these tracker sheets derive from a compliance-platform production export (the provider is named inside the data file but is NOT named in any repo file). Evidence document names/dates are audit-engagement artifacts — aggregate use only; they never appear in docs, reports, query output, consensus edges, or ledger citations. Enforced by health_audit's publication-hygiene guard.",
+      "notes": "Clause-to-evidence tracker for an ISO 27001:2022 engagement, enriched with official Annex A references and selected Clause 4-10 requirement text. Useful as production corroboration (which clauses/controls real audits evidence together), same evidence class as the ER crosswalk CSVs."
+    },
+    {
+      "id": "iso-cert-body-guidance",
+      "file": "canonical-sources/source_data/ISO_Certification_Body_Guidance_Boundaries.docx",
+      "format": "docx",
+      "role": "reference",
+      "retrieved": "2026-07-03",
+      "notes": "Certification-body impartiality boundaries for ISO 27001: what a certification body CAN do (explain clause meaning/intent, identify nonconformities, describe the certification process) vs CANNOT do (consultancy — define scope, prescribe remediations, design the ISMS). Reference-only; no control data; not a loader input. Informs how confirmation findings are phrased: explain requirements and cite clauses, never prescribe client-specific implementations."
+    },
+    {
       "id": "cprt-sp800-53-5.2.0",
       "file": "canonical-sources/source_data/cprt_SP_800_53_5_2_0_03-04-2026.xlsx",
       "format": "xlsx",
