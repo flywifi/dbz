@@ -70,6 +70,30 @@ control B", but which specific requirement inside a control is shared.
   `data_gap`, and only an unknown framework *name* is an input error.
 - `confidence` — gated by the weaker side's strongest path (`high` / `medium` / `low` /
   `uncertain`); hub-mediated and inferred results carry `needs_confirmation`.
+- `consensus_support` — how many strong cross-source consensus pairs corroborate the framework
+  pair (`strong_edges`), and how many of those are eligible corroboration (`text_confirmed`:
+  both requirement texts on file and a real shared spine footprint). Always reported.
+- `relationship_basis: multi_source_consensus` — present only when the flag-gated consensus
+  tier applied (below).
+
+### The consensus confidence tier (flag: `consensus_provenance`)
+When at least one eligible strong consensus pair corroborates a framework pair, the pair's
+confidence reports **0.85** with `provenance: consensus` — above the hub's 0.65 (several
+independent authorities agreeing beats one hub pivot) and below owner-direct 0.95 (consensus
+is derived evidence, never an owner's own statement). Precedence and safety rules:
+- **0.95 owner-direct > 0.85 consensus > 0.65 hub** — the tier only ever lifts a weaker claim
+  (applies when the pair's confidence is below 0.85); an owner-direct pair is never touched.
+- **Confidence-only**: structural metrics (`overlap_pct`, coverage, shared atoms, per-control
+  rows) are byte-identical with the tier on or off; the tier changes labeling, not data.
+- **Never applied** to the `inferred_er` fallback, to pairs whose consensus texts are still
+  `pending_licensed_artifact`, or to pairs with no shared spine footprint.
+- Results keep `needs_confirmation: true` — corroborated, not confirmed; the confirmation
+  cascade still governs.
+The flag lives in `canonical-sources/feature_flags.json` and may be enabled only while the
+consensus oracle-validation checks in `cross-mapping/tests/validate_spine.py` pass (band
+preservation, production-evidence enrichment, ISO-side oracle coverage). The precomputed
+`overlap_matrix` is always built with the tier off (plus persisted corroboration counts), so
+build digests never depend on flag state.
 
 Every figure traces to a real source row. Nothing is fabricated; a missing bridge is reported
 as unknown, never guessed.

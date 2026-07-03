@@ -30,6 +30,14 @@
 > upgrade from `pending_licensed_artifact` to `texts_on_file_licensed`; ISMS-clause pairs stay
 > pending (only selected clause excerpts on file). A certification-body impartiality guidance
 > doc (`iso-cert-body-guidance`) is registered as reference-only.
+>
+> **Phase 18 (2026-07-03):** the consensus provenance tier went live behind the
+> `consensus_provenance` flag after its oracle-validation gate passed (validate_spine check 6:
+> structural metrics identical tier-on/off with the SOC2×ISO band held; production-corroboration
+> enrichment 2.33× strong vs moderate; ISO-side oracle coverage 55.9%). Overlap pairs
+> corroborated by strong text-confirmed consensus now report confidence 0.85
+> (`provenance: consensus`) instead of the hub-gated 0.65 — confidence-only, still
+> `needs_confirmation`. Schema 3.6 adds consensus corroboration counts to `overlap_matrix`.
 
 Every framework version pinned in this repo was checked against the latest published release
 (live sources: csrc.nist.gov, hitrustalliance.net, pcisecuritystandards.org, cisecurity.org,

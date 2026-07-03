@@ -44,6 +44,15 @@ The health auditor treats unconfirmed entries as advisory, never authoritative.
   90 days — the dead-cron detector.
 - `validate_spine.py` holds the CPRT 5.2.0 completeness oracle + sub-part inventory checks,
   so a botched refresh fails the gate rather than shipping.
+- `validate_spine.py` also holds the **consensus provenance gate** (Phase 18): the flag-gated
+  `multi_source_consensus` overlap tier (`consensus_provenance` in `feature_flags.json`) may
+  stay enabled only while (a) the tier changes no structural overlap metric and the SOC2×ISO
+  band holds with the tier on, (b) strong consensus pairs remain production-corroborated at
+  ≥ 1.2× the moderate-tier rate with ≥ 10 corroborated strong pairs, and (c) the ISO ids on
+  eligible strong pairs cover ≥ 50% of the ISO ids the ER production oracle co-cites with
+  SOC 2 (thresholds pinned below measured values at gate-authoring time — 2.3× and 55.9%).
+  A red gate run means: disable the flag (`enabled:false` or `DBZ_FF_CONSENSUS_PROVENANCE=0`),
+  then investigate — the overlap engine degrades cleanly to hub-gated 0.65 confidence.
 
 ## Day-1 completeness policy
 

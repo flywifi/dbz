@@ -260,7 +260,8 @@ def cmd_overlap(args, conn: sqlite3.Connection) -> int:
 
     print(f"Framework A : {result['framework_a']}")
     print(f"Framework B : {result['framework_b']}")
-    print(f"Basis       : {result['basis']}  (provenance: {result.get('provenance')})")
+    _rb = f", relationship_basis: {result['relationship_basis']}" if result.get("relationship_basis") else ""
+    print(f"Basis       : {result['basis']}  (provenance: {result.get('provenance')}{_rb})")
     print(f"Overlap     : {result['overlap_pct']}%  (Jaccard)")
     print(f"A covers B  : {result.get('a_covers_b_pct')}%")
     print(f"B covers A  : {result.get('b_covers_a_pct')}%")
@@ -268,6 +269,10 @@ def cmd_overlap(args, conn: sqlite3.Connection) -> int:
           f"(A={result.get('framework_a_count')}, B={result.get('framework_b_count')})")
     print(f"Confidence  : {result.get('confidence')} ({result.get('confidence_score')})  "
           f"needs_confirmation={result.get('needs_confirmation')}")
+    _cs = result.get("consensus_support") or {}
+    if _cs.get("strong_edges"):
+        print(f"Consensus   : {_cs['strong_edges']} strong cross-source pairs "
+              f"({_cs['text_confirmed']} text-confirmed corroborating)")
     for c in result.get("caveats", []):
         print(f"  ! {c}")
     if result.get("data_gap"):

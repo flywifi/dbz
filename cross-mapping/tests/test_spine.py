@@ -235,11 +235,41 @@ _DB = ROOT / "cross-mapping" / "output" / "grc.db"
 if _DB.exists():
     import spine_overlap as SO  # type: ignore
     _c = sqlite3.connect(str(_DB))
-    r = SO.compute(_c, "SOC 2", "ISO 27001/2 (2022)", want_per_control=True)
+    r = SO.compute(_c, "SOC 2", "ISO 27001/2 (2022)", want_per_control=True, consensus_tier=False)
     check(r.get("basis") in ("cci", "subpart"), f"SOC2×ISO uses a spine basis (got {r.get('basis')})")
     check(40.0 <= (r.get("overlap_pct") or 0) <= 70.0, f"SOC2×ISO overlap in band (got {r.get('overlap_pct')})")
     check(r.get("needs_confirmation") is True, "SOC2×ISO (hub-mediated) needs_confirmation")
     check(r.get("confidence") == "low", f"SOC2×ISO confidence gated by weaker hub side (got {r.get('confidence')})")
+    # Consensus provenance tier (Phase 18): confidence-only lift, flag-gated.
+    r_on = SO.compute(_c, "SOC 2", "ISO 27001/2 (2022)", consensus_tier=True)
+    _structural = ("basis", "overlap_pct", "a_covers_b_pct", "b_covers_a_pct",
+                   "shared_count", "framework_a_count", "framework_b_count", "consensus_support")
+    check(all(r.get(k) == r_on.get(k) for k in _structural),
+          "consensus tier changes no structural metric (confidence-only)")
+    _sup = r.get("consensus_support") or {}
+    check(_sup.get("strong_edges", 0) > 0 and _sup.get("text_confirmed", 0) > 0,
+          f"SOC2×ISO carries consensus support in both states (got {_sup})")
+    check(r_on.get("confidence") == "medium" and r_on.get("confidence_score") == 0.85
+          and r_on.get("provenance") == "consensus"
+          and r_on.get("relationship_basis") == "multi_source_consensus"
+          and r_on.get("needs_confirmation") is True,
+          f"tier on: 0.85/medium, provenance consensus, still needs_confirmation "
+          f"(got {r_on.get('confidence_score')}/{r_on.get('provenance')})")
+    check("relationship_basis" not in r, "tier off: no relationship_basis stamped")
+    # default path follows the consensus_provenance flag
+    import feature_flags as FF  # type: ignore
+    _flag_on = FF.FeatureFlags.load().effective("consensus_provenance")
+    r_def = SO.compute(_c, "SOC 2", "ISO 27001/2 (2022)")
+    check(r_def.get("confidence_score") == (r_on if _flag_on else r).get("confidence_score"),
+          f"default path follows the consensus_provenance flag (flag={'on' if _flag_on else 'off'})")
+    # owner-direct pairs are never downgraded by the tier
+    r_cmmc = SO.compute(_c, "CMMC 2.0", "NIST SP 800-171 r2", consensus_tier=True)
+    check(r_cmmc.get("confidence_score") == 0.95 and r_cmmc.get("provenance") == "spine",
+          f"owner-direct 0.95 pair untouched by consensus tier (got {r_cmmc.get('confidence_score')})")
+    # the local label map must stay the exact inverse of the detector's
+    import consensus_detector as CD  # type: ignore
+    check(SO._CONSENSUS_LABEL == {v: k for k, v in CD._PROJ_LABEL.items()},
+          "spine_overlap._CONSENSUS_LABEL is the inverse of consensus_detector._PROJ_LABEL")
     _partials = [p for p in r.get("per_control", []) if p["classification"] == "partial"]
     check(_partials and _partials[0]["shared_subparts"] and _partials[0]["a_unmet_subparts"],
           "per-control partial lists both met and unmet sub-parts")
@@ -355,6 +385,15 @@ if _DB.exists():
            OR native_a GLOB '*ER-[0-9]*' OR native_b GLOB '*ER-[0-9]*'
            OR evidence GLOB '*REQ-[0-9]*' OR evidence GLOB '*ER-[0-9]*'""").fetchone()[0]
     check(n_leak == 0, f"consensus carries no proprietary identifiers (got {n_leak})")
+    # overlap_matrix persists consensus corroboration counts (schema 3.6),
+    # computed flag-independently so the build digest is deterministic.
+    _om_cols = {row[1] for row in _c2.execute("PRAGMA table_info(overlap_matrix)")}
+    check({"consensus_strong_edges", "consensus_text_confirmed"} <= _om_cols,
+          "overlap_matrix carries consensus corroboration columns")
+    _om = _c2.execute("""SELECT consensus_strong_edges, consensus_text_confirmed, confidence
+        FROM overlap_matrix WHERE framework_a='ISO 27001/2 (2022)' AND framework_b='SOC 2'""").fetchone()
+    check(_om is not None and _om[0] > 0 and _om[1] > 0 and _om[2] == 0.65,
+          f"matrix SOC2×ISO row: consensus counts populated, confidence stays flag-off 0.65 (got {_om})")
     # Licensed ISO text (Phase 17): with the Annex A verification copy on disk,
     # Annex-side strong pairs flip to texts_on_file_licensed; only ISMS-clause
     # ids (partial excerpts on file) may remain pending.

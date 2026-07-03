@@ -17,10 +17,18 @@
   `overlap_pct: null` with `known_frameworks`.
 - **No fabrication.** Every contributing edge traces to a real `source_file`+`source_row`. A missing
   bridge is `unknown` / `undetermined`, never a guessed `full`.
-- Provenance precedence for the primary figure: `direct_olir / cmmc171 > hitrust_hub > inferred_er >
-  transitive`. Confidence is the WEAKER side's best path (min of the two frameworks), mapped to the
-  tier vocabulary (`>=0.9 high · 0.7–0.9 medium · 0.5–0.7 low · <0.5 uncertain`).
+- Provenance precedence for the primary figure: `direct_olir / cmmc171 (0.95) > consensus (0.85,
+  flag-gated) > hitrust_hub (0.65) > inferred_er > transitive`. Confidence is the WEAKER side's best
+  path (min of the two frameworks), mapped to the tier vocabulary (`>=0.9 high · 0.7–0.9 medium ·
+  0.5–0.7 low · <0.5 uncertain`).
 - Hub-mediated and inferred figures carry `needs_confirmation: true` and a caveat.
+- The `consensus` tier (Phase 18) is confidence-only and gated by the `consensus_provenance`
+  feature flag: it lifts hub-gated pairs to 0.85 when at least one strong, text-confirmed
+  consensus pair with a real shared spine footprint corroborates the framework pair
+  (`consensus_support.text_confirmed >= 1`). It NEVER changes a structural metric, never
+  downgrades an owner-direct 0.95 pair, never applies to `inferred_er`, and the result keeps
+  `needs_confirmation: true`. The flag may be enabled only while the consensus gate in
+  `cross-mapping/tests/validate_spine.py` passes.
 - `human_review_required: true` in every output path.
 - ODP (parameter) divergence downgrades a per-control match to `partial`; where only one baseline
   pins a value the status is `undetermined`, never silently treated as aligned.
@@ -56,8 +64,9 @@
 When two provenance tiers (direct vs. hub vs. inferred_er) yield materially different overlap for the
 same pair, or a hub-mediated figure carries `needs_confirmation`, emit `minority_report.conflicts`
 with the competing citations (each side's `source_file`+`row`) and the winning tier before returning
-the primary metric. Direct beats hub beats inferred_er. See canonical policy:
-`skills/shared/minority-report.md`.
+the primary metric. Direct beats hub beats inferred_er. The flag-gated `consensus` tier relabels
+confidence on the SAME structural figure as the hub path (identical metrics), so it never creates a
+new conflict class for this policy. See canonical policy: `skills/shared/minority-report.md`.
 
 ## Update checklist (every version bump)
 - [ ] SKILL.md description still specific + scoped, with the "Do NOT use for…" clause intact.

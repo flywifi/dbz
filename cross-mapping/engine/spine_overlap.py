@@ -167,6 +167,65 @@ def _pair_confidence(conn, a: str, b: str) -> Tuple[float, int]:
     return min(ca, cb), max(ha, hb)
 
 
+# ── multi-source consensus corroboration (Phase 18, flag-gated tier) ────────────
+
+# Projection label -> consensus_edges label. Mirror of the inverse of
+# consensus_detector._PROJ_LABEL, kept local so this module stays stdlib+sqlite
+# only (the detector needs pandas); test_spine asserts the two maps stay mutual
+# inverses so they cannot drift apart silently.
+_CONSENSUS_LABEL = {
+    "SOC 2": "SOC 2 (TSC)",
+    "ISO 27001/2 (2022)": "ISO 27001/2 (2022)",
+    "HIPAA Security": "HIPAA Security",
+    "GDPR": "GDPR",
+    "CIS CSC v8.0": "CIS v8",
+    "NIST SP 800-171 r2": "NIST SP 800-171",
+    "CMMC 2.0": "CMMC 2.0",
+}
+
+# Confidence the consensus tier assigns: above the hub's 0.65 (several independent
+# voters agreeing beats one hub pivot) and below owner-direct 0.95 (consensus is
+# derived evidence, never an owner's own statement).
+CONSENSUS_CONFIDENCE = 0.85
+
+_CONSENSUS_FLAG = "consensus_provenance"
+
+
+def consensus_support(conn, a: str, b: str) -> dict:
+    """Aggregate strong-consensus corroboration for a framework pair.
+
+    `strong_edges` counts all strong-tier consensus pairs between the two
+    frameworks; `text_confirmed` counts the subset eligible to corroborate the
+    confidence tier: both requirement texts on file (texts_on_file or
+    texts_on_file_licensed) and a real shared spine footprint (extent is not
+    atoms_disjoint / no_spine_footprint) — pending or footprint-less pairs
+    never lift confidence, so coverage is never overstated."""
+    fa, fb = _CONSENSUS_LABEL.get(a), _CONSENSUS_LABEL.get(b)
+    if not fa or not fb or a == b:
+        return {"strong_edges": 0, "text_confirmed": 0}
+    try:
+        rows = conn.execute("""
+            SELECT text_confirmation, extent, COUNT(*) FROM consensus_edges
+            WHERE tier='strong' AND ((fw_a=? AND fw_b=?) OR (fw_a=? AND fw_b=?))
+            GROUP BY text_confirmation, extent""", (fa, fb, fb, fa)).fetchall()
+    except sqlite3.OperationalError:  # db predates consensus_edges
+        return {"strong_edges": 0, "text_confirmed": 0}
+    strong = sum(n for _t, _e, n in rows)
+    eligible = sum(n for t, e, n in rows
+                   if t in ("texts_on_file", "texts_on_file_licensed")
+                   and e not in ("atoms_disjoint", "no_spine_footprint"))
+    return {"strong_edges": strong, "text_confirmed": eligible}
+
+
+def _consensus_flag_effective() -> bool:
+    """Query-time read of the consensus_provenance feature flag (off = default)."""
+    try:
+        from feature_flags import FeatureFlags  # same directory; lazy
+        return FeatureFlags.load().effective(_CONSENSUS_FLAG)
+    except Exception:
+        return False
+
+
 # ── per-control classification ──────────────────────────────────────────────────
 
 def _control_footprint_subparts(conn, fw: str, native_id: str) -> Set[str]:
@@ -256,7 +315,11 @@ def per_control(conn, a: str, b: str, limit: int = 200) -> List[dict]:
 # ── the never-error entry point ─────────────────────────────────────────────────
 
 def compute(conn, a_in: str, b_in: str, want_per_control: bool = False,
-            basis_pref: str = "auto") -> dict:
+            basis_pref: str = "auto", consensus_tier: Optional[bool] = None) -> dict:
+    """`consensus_tier`: None (default) reads the `consensus_provenance` feature
+    flag at query time; True/False force the tier on/off — build_db passes False
+    so the precomputed overlap_matrix never depends on flag state (deterministic
+    builds), and tests pass both values explicitly."""
     a = resolve_framework(conn, a_in)
     b = resolve_framework(conn, b_in)
     if not a or not b:
@@ -323,6 +386,27 @@ def compute(conn, a_in: str, b_in: str, want_per_control: bool = False,
             "human_review_required": True,
         }
 
+    # Multi-source consensus corroboration (Phase 18). The support counts are
+    # always reported; the confidence lift is gated by the consensus_provenance
+    # flag. The tier is pair-level and confidence-only: it never adds spine atoms,
+    # so every structural metric above is identical with the tier on or off. It
+    # never downgrades a stronger claim (applies only below CONSENSUS_CONFIDENCE)
+    # and never applies to the inferred_er fallback.
+    support = consensus_support(conn, a, b)
+    relationship_basis = None
+    if consensus_tier is None:
+        consensus_tier = _consensus_flag_effective()
+    if (consensus_tier and result_basis in ("cci", "subpart", "control")
+            and support["text_confirmed"] > 0 and conf < CONSENSUS_CONFIDENCE):
+        conf = CONSENSUS_CONFIDENCE
+        provenance = "consensus"
+        relationship_basis = "multi_source_consensus"
+        needs_conf = True  # corroborated, not confirmed — the cascade still applies
+        caveats.append(
+            f"confidence lifted by multi-source consensus ({support['text_confirmed']} "
+            "strong text-confirmed consensus pairs corroborate this framework pair); "
+            "individual pairs still require confirmation")
+
     conf_final = conf if result_basis != "inferred_er" else 0.5
     out = {
         "tool": "overlap-query",
@@ -338,9 +422,12 @@ def compute(conn, a_in: str, b_in: str, want_per_control: bool = False,
         "confidence": confidence_tier(conf_final),
         "confidence_score": round(conf_final, 2),
         "needs_confirmation": bool(needs_conf),
+        "consensus_support": support,
         "caveats": caveats,
         "human_review_required": True,
     }
+    if relationship_basis:
+        out["relationship_basis"] = relationship_basis
     if want_per_control and result_basis in ("cci", "subpart", "control"):
         out["per_control"] = per_control(conn, a, b)
     return out

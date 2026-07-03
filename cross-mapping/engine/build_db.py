@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.5"   # v3.5: consensus_edges (cross-source agreement on third-party pairs)
+SCHEMA_VERSION = "3.6"   # v3.6: overlap_matrix consensus corroboration counts (v3.5: consensus_edges)
 
 CHUNK = 500  # executemany batch size
 
@@ -400,7 +400,7 @@ CREATE TABLE IF NOT EXISTS consensus_edges (
     extent             TEXT,                 -- equal|a_subset_b|b_subset_a|intersect|atoms_disjoint|no_spine_footprint
     shared_atoms_count INTEGER,
     shared_atoms       TEXT,                 -- JSON list (capped) of shared spine sub-parts
-    text_confirmation  TEXT,                 -- texts_on_file | pending_licensed_artifact
+    text_confirmation  TEXT,                 -- texts_on_file | texts_on_file_licensed | pending_licensed_artifact
     uncertainty_id     TEXT,
     needs_confirmation INTEGER DEFAULT 1,
     PRIMARY KEY (fw_a, native_a, fw_b, native_b)
@@ -479,6 +479,8 @@ CREATE TABLE IF NOT EXISTS overlap_matrix (
     b_covers_a_pct     REAL NOT NULL DEFAULT 0,
     confidence         REAL NOT NULL DEFAULT 0,
     needs_confirmation INTEGER NOT NULL DEFAULT 0,
+    consensus_strong_edges   INTEGER NOT NULL DEFAULT 0,  -- strong consensus pairs between the two frameworks
+    consensus_text_confirmed INTEGER NOT NULL DEFAULT 0,  -- subset eligible to corroborate (texts on file, real shared footprint)
     PRIMARY KEY (framework_a, framework_b)
 );
 
@@ -1389,39 +1391,9 @@ def build_db(
         print(f"  fips_140_validations: 0 rows (run fips_cmvp_loader.py to populate)")
     conn.commit()
 
-    # Precompute the pairwise overlap matrix across all spine frameworks.
-    print("\n[overlap] Precomputing overlap_matrix over spine frameworks")
-    import spine_overlap as _so  # type: ignore
-    proj_fws = [r[0] for r in conn.execute(
-        "SELECT DISTINCT framework FROM framework_projection ORDER BY framework")]
-    om_rows = []
-    for i in range(len(proj_fws)):
-        for j in range(i + 1, len(proj_fws)):
-            fa, fb = proj_fws[i], proj_fws[j]
-            res = _so.compute(conn, fa, fb)
-            om_rows.append({
-                "framework_a": fa, "framework_b": fb, "basis": res.get("basis", "none"),
-                "shared_count": res.get("shared_count", 0),
-                "a_count": res.get("framework_a_count", 0),
-                "b_count": res.get("framework_b_count", 0),
-                "jaccard_pct": res.get("overlap_pct", 0.0) or 0.0,
-                "a_covers_b_pct": res.get("a_covers_b_pct", 0.0) or 0.0,
-                "b_covers_a_pct": res.get("b_covers_a_pct", 0.0) or 0.0,
-                "confidence": res.get("confidence_score", 0.0) or 0.0,
-                "needs_confirmation": int(res.get("needs_confirmation", False)),
-            })
-    _executemany_chunked(conn, """
-        INSERT OR REPLACE INTO overlap_matrix
-            (framework_a, framework_b, basis, shared_count, a_count, b_count,
-             jaccard_pct, a_covers_b_pct, b_covers_a_pct, confidence, needs_confirmation)
-        VALUES
-            (:framework_a, :framework_b, :basis, :shared_count, :a_count, :b_count,
-             :jaccard_pct, :a_covers_b_pct, :b_covers_a_pct, :confidence, :needs_confirmation)
-    """, om_rows, "overlap_matrix")
-    conn.commit()
-    print(f"  overlap_matrix: {len(om_rows)} pairs")
-
     # Cross-source consensus: independent voters agreeing on third-party pairs.
+    # Runs BEFORE the overlap matrix so the matrix can persist per-pair consensus
+    # corroboration counts.
     import consensus_detector as _cd  # type: ignore
     consensus_rows, cd_stats = _cd.detect(conn)
     _executemany_chunked(conn, """
@@ -1437,6 +1409,47 @@ def build_db(
     conn.commit()
     print(f"  consensus_edges: pairs={cd_stats['pairs']} tiers={cd_stats['tiers']} "
           f"production_corroborated={cd_stats['with_production_support']}")
+
+    # Precompute the pairwise overlap matrix across all spine frameworks.
+    # consensus_tier=False: the persisted matrix never depends on the
+    # consensus_provenance flag state, so builds stay deterministic; the
+    # corroboration counts are stored alongside and the query layer applies
+    # the flag-gated tier live.
+    print("\n[overlap] Precomputing overlap_matrix over spine frameworks")
+    import spine_overlap as _so  # type: ignore
+    proj_fws = [r[0] for r in conn.execute(
+        "SELECT DISTINCT framework FROM framework_projection ORDER BY framework")]
+    om_rows = []
+    for i in range(len(proj_fws)):
+        for j in range(i + 1, len(proj_fws)):
+            fa, fb = proj_fws[i], proj_fws[j]
+            res = _so.compute(conn, fa, fb, consensus_tier=False)
+            support = res.get("consensus_support") or {}
+            om_rows.append({
+                "framework_a": fa, "framework_b": fb, "basis": res.get("basis", "none"),
+                "shared_count": res.get("shared_count", 0),
+                "a_count": res.get("framework_a_count", 0),
+                "b_count": res.get("framework_b_count", 0),
+                "jaccard_pct": res.get("overlap_pct", 0.0) or 0.0,
+                "a_covers_b_pct": res.get("a_covers_b_pct", 0.0) or 0.0,
+                "b_covers_a_pct": res.get("b_covers_a_pct", 0.0) or 0.0,
+                "confidence": res.get("confidence_score", 0.0) or 0.0,
+                "needs_confirmation": int(res.get("needs_confirmation", False)),
+                "consensus_strong_edges": support.get("strong_edges", 0),
+                "consensus_text_confirmed": support.get("text_confirmed", 0),
+            })
+    _executemany_chunked(conn, """
+        INSERT OR REPLACE INTO overlap_matrix
+            (framework_a, framework_b, basis, shared_count, a_count, b_count,
+             jaccard_pct, a_covers_b_pct, b_covers_a_pct, confidence, needs_confirmation,
+             consensus_strong_edges, consensus_text_confirmed)
+        VALUES
+            (:framework_a, :framework_b, :basis, :shared_count, :a_count, :b_count,
+             :jaccard_pct, :a_covers_b_pct, :b_covers_a_pct, :confidence, :needs_confirmation,
+             :consensus_strong_edges, :consensus_text_confirmed)
+    """, om_rows, "overlap_matrix")
+    conn.commit()
+    print(f"  overlap_matrix: {len(om_rows)} pairs")
 
     # Durable, committed uncertainty ledger (what the health tools scan).
     ledger_path = REPO_ROOT / "canonical-sources" / "uncertainty_ledger.jsonl"

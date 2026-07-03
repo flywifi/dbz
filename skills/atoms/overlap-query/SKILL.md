@@ -37,6 +37,8 @@ DISA issued no CCIs).
 
 ## Output
 
+(example shows the un-lifted shape, i.e. with the `consensus_provenance` flag off — see below)
+
 ```json
 {
   "tool": "overlap-query",
@@ -53,10 +55,18 @@ DISA issued no CCIs).
   "confidence": "low",
   "confidence_score": 0.65,
   "needs_confirmation": true,
+  "consensus_support": {"strong_edges": 21, "text_confirmed": 8},
   "caveats": ["hub-mediated mapping (confidence 0.65); parameter and sub-part precision are approximate"],
   "human_review_required": true
 }
 ```
+
+`consensus_support` reports how many strong cross-source consensus pairs corroborate the
+framework pair (and the text-confirmed subset). When the `consensus_provenance` feature flag is
+effective and `text_confirmed >= 1`, hub-gated pairs instead report `confidence_score: 0.85`
+with `provenance: "consensus"` and `relationship_basis: "multi_source_consensus"` — a
+confidence-only lift (structural metrics are identical, owner-direct 0.95 pairs are never
+touched, `needs_confirmation` stays true). See `docs/overlap-spine.md` for the tier's rules.
 
 With `per_control: true`, also returns a `per_control` array; each entry classifies one of A's native
 controls as `full | partial | none`, with `corresponds_to` (B's matching controls), `shared_subparts`,
@@ -101,4 +111,5 @@ context, and hub-mediated / inferred figures carry `needs_confirmation`.
 When two provenance tiers (direct vs. hub vs. inferred_er) yield materially different overlap for the
 same pair, or a hub-mediated figure carries `needs_confirmation`, emit `minority_report.conflicts`
 with the competing citations before returning the primary metric. Direct beats hub beats inferred_er.
-See canonical policy: `skills/shared/minority-report.md`.
+(The flag-gated `consensus` tier relabels confidence on the same structural figure as the hub path,
+so it creates no new conflict class.) See canonical policy: `skills/shared/minority-report.md`.

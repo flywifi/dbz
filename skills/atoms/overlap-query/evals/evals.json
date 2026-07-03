@@ -55,6 +55,24 @@
       },
       "expect_pass": true,
       "notes": "Never-error contract: no spine path and no shared ER ids -> a real zero, not an exception"
+    },
+    {
+      "id": "edge-03",
+      "label": "Consensus tier is confidence-only: SOC 2 × ISO structural metrics identical tier-on vs tier-off; lift stamps 0.85/consensus and keeps needs_confirmation",
+      "input": {
+        "framework_a": "SOC 2",
+        "framework_b": "ISO 27001/2 (2022)"
+      },
+      "expected_output": {
+        "consensus_support_text_confirmed_min": 1,
+        "tier_on_confidence_score": 0.85,
+        "tier_on_provenance": "consensus",
+        "tier_on_relationship_basis": "multi_source_consensus",
+        "structural_identical_tier_on_off": true,
+        "needs_confirmation": true
+      },
+      "expect_pass": true,
+      "notes": "Phase 18: pass consensus_tier=True/False to spine_overlap.compute; overlap_pct / coverage / shared_count must match exactly between the two runs. Owner-direct 0.95 pairs (e.g. CMMC 2.0 x 800-171 r2) must be untouched by the tier."
     }
   ]
 }

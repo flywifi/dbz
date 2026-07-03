@@ -98,6 +98,10 @@ def main():
         print(f"Overlap:     {result['overlap_pct']}%  (A covers B {result.get('a_covers_b_pct')}%, "
               f"B covers A {result.get('b_covers_a_pct')}%)")
         print(f"Confidence:  {result.get('confidence')}  needs_confirmation={result.get('needs_confirmation')}")
+        cs = result.get("consensus_support") or {}
+        if cs.get("strong_edges"):
+            print(f"Consensus:   {cs['strong_edges']} strong cross-source pairs "
+                  f"({cs['text_confirmed']} text-confirmed corroborating)")
         for c in result.get("caveats", []):
             print(f"  ! {c}")
     else:

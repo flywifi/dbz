@@ -93,6 +93,17 @@
       "used_by": []
     },
 
+    "consensus_provenance": {
+      "label": "Multi-source consensus overlap-confidence tier",
+      "category": "overlap_engine",
+      "enabled": true,
+      "enabled_basis": "Oracle-validation gate green on the 2026-07-03 build: structural metrics identical tier-on/off with SOC2×ISO in band; production-corroboration enrichment 2.33x strong vs moderate (32 corroborated strong pairs); ISO-side oracle coverage 55.9% of co-cited ids with 8 eligible TSC<->ISO pairs. Disable if the validate_spine consensus gate goes red.",
+      "description": "When effective, framework pairs corroborated by strong, text-confirmed cross-source consensus (>=3 independent voters, both requirement texts on file, real shared spine footprint) report overlap confidence 0.85 with provenance=consensus and relationship_basis=multi_source_consensus — above the hub's 0.65, below owner-direct 0.95. Structural metrics (overlap %, shared atoms) are identical either way; the tier changes confidence labeling only, and results stay needs_confirmation until individually confirmed. Enable only while the consensus oracle-validation checks in cross-mapping/tests/validate_spine.py pass.",
+      "requires": {"env": [], "oauth": false, "setup_url": "docs/consensus-detection.md"},
+      "degradation": "Overlap confidence stays gated by the weakest projection edge (hub pairs report 0.65/low); consensus corroboration counts are still reported, just not applied to confidence.",
+      "used_by": ["cross-mapping/engine/spine_overlap.py"]
+    },
+
     "orchestration_hybrid_mode": {
       "label": "Orchestration hybrid engine (declarative spec compiled to Workflow)",
       "category": "orchestration",
@@ -109,6 +120,7 @@
     "crawler_enhancement": "Optional upgrades to the framework crawler (e.g. JS rendering).",
     "mcp_server": "Model Context Protocol servers that require interactive OAuth — cannot be enabled headless.",
     "grc_connector": "Live integrations to commercial GRC platforms; replace bundled sample data with a customer tenant.",
-    "orchestration": "Behavioral flags for the multi-agent orchestration bucket. No credentials; gate execution strategy, not data access."
+    "orchestration": "Behavioral flags for the multi-agent orchestration bucket. No credentials; gate execution strategy, not data access.",
+    "overlap_engine": "Behavioral flags for the overlap engine. No credentials; gate how evidence is weighted, never what data exists."
   }
 }

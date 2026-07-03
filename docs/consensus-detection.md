@@ -56,6 +56,16 @@ agreeing on *existence* is normal and preserved verbatim in the `evidence` colum
 extent disagreement on a single framework's acceptance question follows the minority-report
 policy (owner mapping wins as primary, dissent recorded).
 
+Since Phase 18 that derived evidence also feeds a **flag-gated overlap-confidence tier**
+(`consensus_provenance` in `feature_flags.json`): framework pairs corroborated by at least one
+strong, text-confirmed consensus pair with a real shared spine footprint report overlap
+confidence 0.85 (`provenance: consensus`, `relationship_basis: multi_source_consensus`) instead
+of the hub-gated 0.65. This is still not an authority: the tier is confidence-only (structural
+metrics are byte-identical either way), never touches owner-direct 0.95 pairs, and results stay
+`needs_confirmation` until individually confirmed. The flag may be enabled only while the
+oracle-validation gate in `validate_spine.py` passes — see `docs/overlap-spine.md` for the
+tier's precedence rules and `docs/standards-refresh-runbook.md` for the gate.
+
 ## SOC 2 comparability — controls vary by audit firm
 
 SOC 2 has **no standardized control list**. Per the AICPA, the [2017 Trust Services Criteria
@@ -94,3 +104,11 @@ authoritative texts, starting from the shared atoms.
 200 are `texts_on_file_licensed` (Annex A controls covered by the licensed verification copy);
 the 26 still `pending_licensed_artifact` are ISMS clause ids (4.x, 6.1.x, 7.5.x, 9.1, 10.1).
 Deterministic across rebuilds.
+
+Oracle-validation gate results (Phase 18, measured on this build): strong pairs are
+production-corroborated at 3.8% vs 1.6% for moderate pairs — a **2.3× enrichment lift**
+(32 corroborated strong pairs), and the ISO ids on eligible strong consensus pairs cover
+**55.9%** of the 93 ISO ids the ER production oracle co-cites with SOC 2. Both clear the
+pinned gate thresholds (lift ≥ 1.2×, coverage ≥ 50%), the SOC2×ISO overlap band (40–70%) is
+unchanged with the tier on, and 8 eligible TSC↔ISO pairs corroborate the canonical example
+class — so the `consensus_provenance` flag is enabled.
