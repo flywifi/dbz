@@ -24,6 +24,12 @@ python cross-mapping/nist-catalog/ingestion/generate_controls.py --family AC
 
 # Validate output
 python cross-mapping/tests/validate_catalog.py
+
+# Build grc.db, then query the master mapping surface (any framework <-> any framework)
+python cross-mapping/engine/build_db.py
+python cross-mapping/engine/dbz_query.py master --framework-a "SOC 2" --framework-b "PCI DSS v4.0"
+python cross-mapping/engine/dbz_query.py master --framework "HIPAA Security" --control "164.312(a)(2)(i)"
+python cross-mapping/engine/dbz_query.py master --framework-a "SOC 2" --scope-fedramp moderate
 ```
 
 ## Key files

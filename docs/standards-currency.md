@@ -38,6 +38,19 @@
 > corroborated by strong text-confirmed consensus now report confidence 0.85
 > (`provenance: consensus`) instead of the hub-gated 0.65 — confidence-only, still
 > `needs_confirmation`. Schema 3.6 adds consensus corroboration counts to `overlap_matrix`.
+>
+> **Phase 19 (2026-07-03):** the master mapping database — the private-sector audits merged
+> with the NIST-based audit universe. New pinned artifacts: official CPRT datasets for
+> SP 800-171 r3 / 171A r3 / 172 r3 / 172A r3 (user-provided, incl. NIST's own 171r3→53
+> [157] and 172r3→53 r5.2.0 [107] mappings), NIST's 171 r2→r3 analysis workbook + r3 CUI
+> overlay, and freshly fetched SP 800-66r2 + CSF 2.0 CPRT exports with their OLIR element
+> graphs (HIPAA→53 r5.1.1 [279 pairs], CSF2→53 r5.2.0 [746], plus owner-submitted
+> PCI 4.0.1↔CSF2 [546] and ISO 27001:2022↔CSF2 sets). Four new spine frameworks (PCI DSS
+> v4.0 bundled 0.60; CSF 2.0, 171 r3, 172 r3 NIST-stated 0.85), HIPAA upgraded to a direct
+> 0.85 path, the AICPA-TSP↔HITRUST licensed matrix loaded (235 TSC↔HITRUST pairs), and
+> schema 3.7 ships `framework_labels` + `master_mappings` (93.8k tier-arbitrated pairs,
+> minority-report corroboration) with validate_spine check-8 gates and per-table
+> determinism digests. SOC 1 is honestly excluded (no public control layer).
 
 Every framework version pinned in this repo was checked against the latest published release
 (live sources: csrc.nist.gov, hitrustalliance.net, pcisecuritystandards.org, cisecurity.org,

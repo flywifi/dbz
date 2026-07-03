@@ -224,6 +224,105 @@ def main() -> int:
         else:
             note(f"subpart inventory: all {table} sub-parts enumerated in nist_subparts")
 
+    # 8. Master mapping surface (Phase 19) — thresholds pinned from measured values
+    # at gate-authoring time (2026-07-03), each with a margin below the observation.
+    #   8a Integrity: every row source-traced; (tier, provenance, confidence) triples
+    #      exactly within the tier map; consensus/production rows carry no confidence.
+    #   8b Leak: hard-zero proprietary-id tokens across all master text columns.
+    #   8c Label round-trip: every framework label on the master surface is a
+    #      registered canonical; no alias resolves to two canonicals.
+    #   8d HIPAA reconciliation: the NIST 800-66 direct citations and the HITRUST
+    #      hub citations must substantially agree — >=50% of hub natives appear in
+    #      the direct set (observed 73.2%: 52 of 71).
+    #   8e CSF2 parity: the unified concept-crosswalk pair set must be covered by
+    #      the OLIR r5.2.0 projection at >=95% (observed 100%: 731/731; the
+    #      projection's extra pairs come from the newer r5.2.0 revision).
+    #   8f PCI on-spine: every projected PCI native re-normalizes; PCI×ISO matrix
+    #      overlap > 0 on a spine basis (observed 54.0% cci).
+    #   8g Matrix completeness: C(n,2) rows over the 14 canonical frameworks (91),
+    #      SOC 1 rows honest (inferred_er/none).
+    bad_8a = conn.execute("""SELECT COUNT(*) FROM master_mappings WHERE
+        (tier='owner_direct' AND (provenance<>'cmmc171' OR confidence<>0.95)) OR
+        (tier='nist_stated' AND confidence<>0.85) OR
+        (tier='hub' AND confidence<>0.65) OR
+        (tier='bundled' AND (provenance<>'master_crosswalk' OR confidence<>0.6)) OR
+        (tier IN ('consensus','production_aggregate') AND confidence IS NOT NULL) OR
+        source_ref IS NULL OR source_ref=''""").fetchone()[0]
+    if bad_8a:
+        fail(f"master integrity: {bad_8a} rows violate the tier/provenance/confidence map")
+    else:
+        note("master integrity: every row source-traced with a consistent tier triple")
+    n_leak = conn.execute("""SELECT COUNT(*) FROM master_mappings
+        WHERE native_a GLOB '*REQ-[0-9]*' OR native_b GLOB '*REQ-[0-9]*'
+           OR native_a GLOB '*ER-[0-9]*'  OR native_b GLOB '*ER-[0-9]*'
+           OR corroboration GLOB '*REQ-[0-9]*' OR corroboration GLOB '*ER-[0-9]*'
+           OR source_ref GLOB '*REQ-[0-9]*' OR source_ref GLOB '*ER-[0-9]*'
+           OR shared_anchors GLOB '*REQ-[0-9]*' OR shared_anchors GLOB '*ER-[0-9]*'""").fetchone()[0]
+    if n_leak:
+        fail(f"master leak: {n_leak} rows carry provider-proprietary identifiers")
+    else:
+        note("master leak scan: zero proprietary identifiers")
+    reg = {}
+    multi = 0
+    for alias, _s, canon in conn.execute("SELECT alias, surface, canonical FROM framework_labels"):
+        if alias in reg and reg[alias] != canon:
+            multi += 1
+        reg[alias] = canon
+    canonicals = {r[0] for r in conn.execute(
+        "SELECT canonical FROM framework_labels WHERE surface IN ('canonical','distinct','surface_observed')")}
+    master_fws = {r[0] for r in conn.execute(
+        "SELECT DISTINCT fw_a FROM master_mappings UNION SELECT DISTINCT fw_b FROM master_mappings")}
+    unresolved = sorted(f for f in master_fws
+                        if f not in canonicals and reg.get(f, f) not in canonicals)
+    if multi or unresolved:
+        fail(f"master labels: {multi} multi-resolving aliases; unresolved frameworks {unresolved[:5]}")
+    else:
+        note(f"master labels: {len(master_fws)} surface frameworks all resolve through the registry")
+    direct = {r[0] for r in conn.execute("""SELECT DISTINCT native_id FROM framework_projection
+        WHERE framework='HIPAA Security' AND provenance='direct_800_66'""")}
+    hub = {r[0] for r in conn.execute("""SELECT DISTINCT native_id FROM framework_projection
+        WHERE framework='HIPAA Security' AND provenance='hitrust_hub'""")}
+    if direct and hub:
+        cov = len(direct & hub) / len(hub)
+        if cov < 0.50:
+            fail(f"HIPAA reconciliation: only {cov:.1%} of hub citations in the 800-66 direct set (need >=50%)")
+        else:
+            note(f"HIPAA reconciliation: {cov:.1%} of {len(hub)} hub citations confirmed by the 800-66 direct set")
+    elif hub:
+        note("HIPAA reconciliation skipped (800-66 artifact not on disk)")
+    proj_csf = {(r[0], r[1]) for r in conn.execute(
+        "SELECT native_id, r5_control FROM framework_projection WHERE framework='NIST CSF 2.0'")}
+    uni_csf = set()
+    for tid, ctrl in conn.execute(
+            "SELECT DISTINCT target_id, control_id FROM unified_mappings WHERE framework='NIST CSF 2.0'"):
+        fam, _, num = str(tid).rpartition("-")
+        uni_csf.add((f"{fam}-{int(num)}" if num.isdigit() else tid, ctrl))
+    if proj_csf and uni_csf:
+        cov = len(proj_csf & uni_csf) / len(uni_csf)
+        if cov < 0.95:
+            fail(f"CSF2 parity: OLIR projection covers only {cov:.1%} of the concept-crosswalk pairs (need >=95%)")
+        else:
+            note(f"CSF2 parity: projection covers {cov:.1%} of {len(uni_csf)} concept-crosswalk pairs")
+    sys.path.insert(0, str(ROOT / "cross-mapping" / "nist-catalog" / "ingestion"))
+    from spine_normalize import normalize_pci_id  # type: ignore
+    bad_pci = [r[0] for r in conn.execute(
+        "SELECT DISTINCT native_id FROM framework_projection WHERE framework='PCI DSS v4.0'")
+        if normalize_pci_id(r[0]) != r[0]]
+    pci_iso = conn.execute("""SELECT jaccard_pct, basis FROM overlap_matrix
+        WHERE (framework_a='ISO 27001/2 (2022)' AND framework_b='PCI DSS v4.0')
+           OR (framework_a='PCI DSS v4.0' AND framework_b='ISO 27001/2 (2022)')""").fetchone()
+    if bad_pci or not pci_iso or pci_iso[1] not in ("cci", "subpart") or (pci_iso[0] or 0) <= 0:
+        fail(f"PCI on-spine: bad natives {bad_pci[:3]} or PCI×ISO not spine-based ({pci_iso})")
+    else:
+        note(f"PCI on-spine: natives canonical; PCI×ISO {pci_iso[0]}% on {pci_iso[1]} basis")
+    n_mx = conn.execute("SELECT COUNT(*) FROM overlap_matrix").fetchone()[0]
+    soc1_bases = {r[0] for r in conn.execute(
+        "SELECT DISTINCT basis FROM overlap_matrix WHERE framework_a='SOC 1' OR framework_b='SOC 1'")}
+    if n_mx != 91 or not soc1_bases <= {"inferred_er", "none"}:
+        fail(f"matrix completeness: {n_mx} rows (need 91) / SOC 1 bases {soc1_bases}")
+    else:
+        note(f"matrix completeness: 91 canonical pairs; SOC 1 stays inferred_er/none")
+
     conn.close()
 
     print("SPINE VALIDATION:", "FAIL" if FAILS else "PASS")

@@ -31,7 +31,10 @@ import pandas as pd  # provided via requirements.txt
 from config import source_path, sheet_name, header_row, col  # type: ignore
 from spine_normalize import (  # type: ignore
     normalize_control_id,
+    normalize_hipaa_citation,
     normalize_iso_id,
+    normalize_pci_id,
+    normalize_tsc_id,
     oscal_control_id,
     parse_cci_index,
     parse_hitrust_ref,
@@ -369,34 +372,410 @@ def load_olir_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
     return edges, stats
 
 
-def derive_iso_relationships(edges: List[dict]) -> None:
+def derive_relationships(edges: List[dict]) -> None:
     """
-    Fill `relationship` on each ISO<->NIST edge from fan-out cardinality (the OLIR
-    source states none).  From the ISO clause's perspective:
-      1:1                       -> equal
-      clause -> 1 control that maps to many clauses  -> subset  (clause ⊆ control)
-      clause -> many controls                        -> superset (clause spans controls)
+    Fill `relationship` on each native<->NIST edge from fan-out cardinality (for
+    sources that state no relationship).  From the native id's perspective:
+      1:1                                            -> equal
+      native -> 1 control that maps to many natives  -> subset  (native ⊆ control)
+      native -> many controls                        -> superset (native spans controls)
       many:many                                      -> intersect
     Always stamped relationship_basis='derived_cardinality'.
     """
-    iso_to_ctrls: Dict[str, Set[str]] = {}
-    ctrl_to_isos: Dict[str, Set[str]] = {}
+    nat_to_ctrls: Dict[str, Set[str]] = {}
+    ctrl_to_nats: Dict[str, Set[str]] = {}
     for e in edges:
-        iso_to_ctrls.setdefault(e["native_id"], set()).add(e["r5_control"])
-        ctrl_to_isos.setdefault(e["r5_control"], set()).add(e["native_id"])
+        nat_to_ctrls.setdefault(e["native_id"], set()).add(e["r5_control"])
+        ctrl_to_nats.setdefault(e["r5_control"], set()).add(e["native_id"])
     for e in edges:
-        n_ctrls = len(iso_to_ctrls[e["native_id"]])
-        n_isos = len(ctrl_to_isos[e["r5_control"]])
-        if n_ctrls == 1 and n_isos == 1:
+        n_ctrls = len(nat_to_ctrls[e["native_id"]])
+        n_nats = len(ctrl_to_nats[e["r5_control"]])
+        if n_ctrls == 1 and n_nats == 1:
             rel = "equal"
-        elif n_ctrls == 1 and n_isos > 1:
+        elif n_ctrls == 1 and n_nats > 1:
             rel = "subset"
-        elif n_ctrls > 1 and n_isos == 1:
+        elif n_ctrls > 1 and n_nats == 1:
             rel = "superset"
         else:
             rel = "intersect"
         e["relationship"] = rel
         e["relationship_basis"] = "derived_cardinality"
+
+
+def derive_iso_relationships(edges: List[dict]) -> None:
+    """Kept name for the OLIR ISO loader; the logic is framework-generic."""
+    derive_relationships(edges)
+
+
+# ── framework_projection: CPRT direct projections (Phase 19) ────────────────────
+
+def _load_cprt_export(src: str) -> dict:
+    """Read a CPRT JSON export registered in the manifest; returns the
+    response.elements block {documents, relationship_types, elements, relationships}."""
+    with open(source_path(src), encoding="utf-8") as f:
+        return json.load(f)["response"]["elements"]
+
+
+def _cprt_53_projection(src: str, framework: str, provenance: str,
+                        native_canon, dest_doc_prefix: str,
+                        catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
+    """Generic CPRT external_reference -> 800-53 projection (171r3, 172r3).
+
+    NIST's own CPRT datasets state requirement -> 800-53 control mappings as
+    external_reference relationships; edges are NIST-stated, control-level,
+    confidence 0.85 (nist_stated tier), needs_confirmation=0.  Relationships are
+    filled by fan-out cardinality (the dataset states none)."""
+    data = _load_cprt_export(src)
+    fname = source_path(src).name
+    edges: List[dict] = []
+    seen: Set[Tuple[str, str]] = set()
+    rels_seen = dropped_dest = dropped_native = 0
+    for r in data.get("relationships", []):
+        if r.get("relationship_identifier") != "external_reference":
+            continue
+        if not str(r.get("dest_doc_identifier", "")).startswith(dest_doc_prefix):
+            continue
+        rels_seen += 1
+        native = native_canon(str(r.get("source_element_identifier", "")).strip())
+        if not native:
+            dropped_native += 1
+            continue
+        ctrl = normalize_control_id(str(r.get("dest_element_identifier", "")).strip())
+        if not ctrl or ctrl not in catalog_ids:
+            dropped_dest += 1
+            continue
+        key = (native, ctrl)
+        if key in seen:
+            continue
+        seen.add(key)
+        edges.append(_projection_row(
+            framework=framework, native_id=native, r5_control=ctrl,
+            granularity="control", provenance=provenance, confidence=0.85,
+            needs_confirmation=0, source_file=fname, source_row=-1,
+        ))
+    derive_relationships(edges)
+    edges.sort(key=lambda r: (r["native_id"], r["r5_control"]))
+    return edges, {"relationships_seen": rels_seen, "edges": len(edges),
+                   "dropped_dest": dropped_dest, "dropped_native": dropped_native}
+
+
+def _canon_171r3_native(raw: str) -> Optional[str]:
+    """'03.15.01' -> '3.15.1' (the unpadded canonical 171 form used by the
+    consensus keys and the master crosswalk's 171r3 column)."""
+    m = re.match(r"^0?3\.(\d{1,2})\.(\d{1,2})$", raw)
+    return f"3.{int(m.group(1))}.{int(m.group(2))}" if m else None
+
+
+def load_171r3_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
+    """NIST SP 800-171 r3 requirements -> 800-53 r5 controls, from the official
+    CPRT dataset's external_reference relationships (dest doc SP_800_53_5_1_1;
+    ids stable into the r5.2.0 catalog)."""
+    return _cprt_53_projection(
+        "cprt-sp800-171r3", "NIST SP 800-171 r3", "direct_cprt_171r3",
+        _canon_171r3_native, "SP_800_53", catalog_ids)
+
+
+def load_172r3_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
+    """NIST SP 800-172 r3 enhanced security requirements -> 800-53 r5.2.0 controls
+    (official CPRT dataset; dest doc SP_800_53_5_2_0)."""
+    def canon(raw: str) -> Optional[str]:
+        return raw if re.match(r"^\d{1,2}\.\d{1,2}[Ee]?$|^0?3\.\d{1,2}\.\d{1,2}[Ee]?$", raw) else None
+    return _cprt_53_projection(
+        "cprt-sp800-172r3", "NIST SP 800-172 r3", "direct_cprt_172r3",
+        canon, "SP_800_53", catalog_ids)
+
+
+def _iter_graph_external_rels(graphs: dict):
+    """Yield (host_element_identifier, external_relationship_dict) from a CPRT
+    graph-harvest artifact's `graphs` block."""
+    def walk(o, host):
+        if isinstance(o, dict):
+            here = o.get("elementIdentifier") or host
+            for ext in o.get("externalRelationships") or []:
+                yield here, ext
+            for v in o.values():
+                yield from walk(v, here)
+        elif isinstance(o, list):
+            for v in o:
+                yield from walk(v, host)
+    yield from walk(graphs, None)
+
+
+def _load_graph_artifact(src: str) -> dict:
+    with open(source_path(src), encoding="utf-8") as f:
+        return json.load(f)["graphs"]
+
+
+_OLIR_800_66_53 = "SP-800-66-Rev-2-to-SP-800-53-Rev-5.1.1"
+_OLIR_CSF2_53 = "Cybersecurity-Framework-v2.0-to-SP-800-53-Rev-5-2-0"
+_OLIR_PCI_CSF2 = ("Payment-Card-Industry-Data-Security-Standards-(PCI-DSS)"
+                  "-4.0.1-to-Cybersecurity-Framework-v2.0")
+_OLIR_ISO_CSF2 = "ISO/IEC-27001:2022-to-Cybersecurity-Framework-v2.0"
+_OLIR_CSF2_171R3 = "CSF 2.0 to SP 800-171 Rev 3"
+_CSF2_SUBCAT_RE = re.compile(r"^[A-Z]{2}\.[A-Z]{2}-\d{2}$")
+
+
+def load_800_66_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
+    """HIPAA Security Rule citations -> 800-53 r5 controls, from the NIST OLIR
+    informative reference carried in the SP 800-66r2 CPRT element graphs.
+    NIST-stated, control-level, confidence 0.85 (direct_800_66), one canonical
+    citation namespace with the hub (normalize_hipaa_citation).  The graphs'
+    CSF v1.1 references are deliberately NOT loaded (version-stale)."""
+    src = "cprt-sp800-66r2-olir-graphs"
+    if not source_path(src).exists():
+        return [], {"skipped": "artifact not on disk"}
+    fname = source_path(src).name
+    edges: List[dict] = []
+    seen: Set[Tuple[str, str]] = set()
+    dropped_native = dropped_dest = 0
+    for host, ext in _iter_graph_external_rels(_load_graph_artifact(src)):
+        if ext.get("olirName") != _OLIR_800_66_53:
+            continue
+        native = normalize_hipaa_citation(str(host or ""))
+        if not native:
+            dropped_native += 1
+            continue
+        ctrl = normalize_control_id(str(ext.get("elementIdentifier", "")).strip())
+        if not ctrl or ctrl not in catalog_ids:
+            dropped_dest += 1
+            continue
+        key = (native, ctrl)
+        if key in seen:
+            continue
+        seen.add(key)
+        edges.append(_projection_row(
+            framework="HIPAA Security", native_id=native, r5_control=ctrl,
+            granularity="control", provenance="direct_800_66", confidence=0.85,
+            needs_confirmation=0, source_file=fname, source_row=-1,
+        ))
+    derive_relationships(edges)
+    edges.sort(key=lambda r: (r["native_id"], r["r5_control"]))
+    return edges, {"edges": len(edges), "dropped_native": dropped_native,
+                   "dropped_dest": dropped_dest,
+                   "distinct_citations": len({e["native_id"] for e in edges})}
+
+
+def load_csf2_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
+    """NIST CSF 2.0 subcategories -> 800-53 r5.2.0 controls, from the official
+    OLIR informative reference in the CSF 2.0 CPRT element graphs (NIST-owned,
+    pinned to the exact catalog release on disk)."""
+    src = "cprt-csf2-olir-graphs"
+    if not source_path(src).exists():
+        return [], {"skipped": "artifact not on disk"}
+    fname = source_path(src).name
+    edges: List[dict] = []
+    seen: Set[Tuple[str, str]] = set()
+    dropped_native = dropped_dest = 0
+    for host, ext in _iter_graph_external_rels(_load_graph_artifact(src)):
+        if ext.get("olirName") != _OLIR_CSF2_53:
+            continue
+        native = str(host or "").strip()
+        if not _CSF2_SUBCAT_RE.match(native):
+            dropped_native += 1
+            continue
+        # canonical CSF form drops the zero-pad: GV.OC-01 -> GV.OC-1? No — the
+        # repo's CSF canonical (consensus_detector._canon) is XX.XX-N unpadded.
+        fam, num = native.rsplit("-", 1)
+        native = f"{fam}-{int(num)}"
+        ctrl = normalize_control_id(str(ext.get("elementIdentifier", "")).strip())
+        if not ctrl or ctrl not in catalog_ids:
+            dropped_dest += 1
+            continue
+        key = (native, ctrl)
+        if key in seen:
+            continue
+        seen.add(key)
+        edges.append(_projection_row(
+            framework="NIST CSF 2.0", native_id=native, r5_control=ctrl,
+            granularity="control", provenance="direct_csf2", confidence=0.85,
+            needs_confirmation=0, source_file=fname, source_row=-1,
+        ))
+    derive_relationships(edges)
+    edges.sort(key=lambda r: (r["native_id"], r["r5_control"]))
+    return edges, {"edges": len(edges), "dropped_native": dropped_native,
+                   "dropped_dest": dropped_dest,
+                   "distinct_subcats": len({e["native_id"] for e in edges})}
+
+
+_ISO_ANNEX_DEST_RE = re.compile(r"Annex A Controls?:\s*([\d., ]+)", re.IGNORECASE)
+
+
+def collect_csf2_olir_pairs() -> Tuple[List[dict], dict]:
+    """Third-party <-> CSF 2.0 pairs from the OLIR sets in the CSF graphs, for the
+    master surface (NOT spine projections): PCI DSS 4.0.1 <-> CSF2 (owner-submitted),
+    ISO 27001:2022 <-> CSF2 (category-level; compound dest strings parsed
+    conservatively, function-level rows dropped), CSF2 <-> 171r3 (NIST).
+    Returns rows {fw, native, csf2_id, olir_name}."""
+    src = "cprt-csf2-olir-graphs"
+    if not source_path(src).exists():
+        return [], {"skipped": "artifact not on disk"}
+    rows: List[dict] = []
+    seen: Set[Tuple[str, str, str]] = set()
+    dropped = {"pci": 0, "iso": 0, "171r3": 0, "csf_host": 0}
+    for host, ext in _iter_graph_external_rels(_load_graph_artifact(src)):
+        name = ext.get("olirName")
+        if name not in (_OLIR_PCI_CSF2, _OLIR_ISO_CSF2, _OLIR_CSF2_171R3):
+            continue
+        host_s = str(host or "").strip()
+        # host must be a subcategory (or, for the category-level ISO set, a category)
+        if _CSF2_SUBCAT_RE.match(host_s):
+            fam, num = host_s.rsplit("-", 1)
+            csf_id = f"{fam}-{int(num)}"
+        elif name == _OLIR_ISO_CSF2 and re.match(r"^[A-Z]{2}\.[A-Z]{2}$", host_s):
+            csf_id = host_s  # category-level ISO rows keep the category id
+        else:
+            dropped["csf_host"] += 1
+            continue
+        dest = str(ext.get("elementIdentifier", "")).strip()
+        if name == _OLIR_PCI_CSF2:
+            pci = normalize_pci_id(dest)
+            if not pci:
+                dropped["pci"] += 1
+                continue
+            targets = [("PCI DSS v4.0", pci)]
+        elif name == _OLIR_CSF2_171R3:
+            nat = _canon_171r3_native(dest)
+            if not nat:
+                dropped["171r3"] += 1
+                continue
+            targets = [("NIST SP 800-171 r3", nat)]
+        else:  # ISO: compound dest like 'Annex A Controls: 5.26' / 'Mandatory Clause: None'
+            m = _ISO_ANNEX_DEST_RE.search(dest)
+            if not m:
+                dropped["iso"] += 1
+                continue
+            targets = []
+            for tok in re.split(r"[,\s]+", m.group(1).strip()):
+                if not tok or tok == ".":
+                    continue
+                canon, _space = normalize_iso_id(f"A.{tok}" if re.match(r"^\d+\.\d+$", tok) else tok)
+                if canon:
+                    targets.append(("ISO 27001/2 (2022)", canon))
+                else:
+                    dropped["iso"] += 1
+        for fw, nat in targets:
+            key = (name, csf_id, f"{fw}:{nat}")
+            if key in seen:
+                continue
+            seen.add(key)
+            rows.append({"fw": fw, "native": nat, "csf2_id": csf_id, "olir_name": name})
+    rows.sort(key=lambda r: (r["olir_name"], r["fw"], r["native"], r["csf2_id"]))
+    return rows, {"pairs": len(rows), "dropped": dropped,
+                  "by_set": {n: sum(1 for r in rows if r["olir_name"] == n)
+                             for n in sorted({r["olir_name"] for r in rows})}}
+
+
+def load_pci_master_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
+    """PCI DSS v4.0 requirements -> 800-53 r5 controls from the user-provided
+    master crosswalk's PCI column.  Bundled tier: co-citation by a single
+    compiler, confidence 0.60, needs_confirmation=1 — the Phase 18 consensus
+    tier lifts eligible pairs to 0.85 at query time.  Unparseable tokens are
+    counted and dropped, never guessed."""
+    path = REPO_ROOT / "canonical-sources" / "crosswalk_80053_master.json"
+    if not path.exists():
+        return [], {"skipped": "master crosswalk not on disk"}
+    with open(path, encoding="utf-8") as f:
+        master = json.load(f)
+    edges: List[dict] = []
+    seen: Set[Tuple[str, str]] = set()
+    unparseable = dropped_ctrl = 0
+    for nist_raw in sorted(master.get("map", {})):
+        ctrl = normalize_control_id(nist_raw)
+        if not ctrl or ctrl not in catalog_ids:
+            dropped_ctrl += 1
+            continue
+        for tok in master["map"][nist_raw].get("PCI DSS v4.0", []) or []:
+            pci = normalize_pci_id(str(tok).strip())
+            if not pci:
+                unparseable += 1
+                continue
+            key = (pci, ctrl)
+            if key in seen:
+                continue
+            seen.add(key)
+            edges.append(_projection_row(
+                framework="PCI DSS v4.0", native_id=pci, r5_control=ctrl,
+                relationship="intersect", relationship_basis="co_citation",
+                granularity="control", provenance="master_crosswalk",
+                confidence=0.60, needs_confirmation=1,
+                source_file=path.name, source_sheet=nist_raw, source_row=-1,
+            ))
+    edges.sort(key=lambda r: (r["native_id"], r["r5_control"]))
+    return edges, {"edges": len(edges), "unparseable_pci_tokens": unparseable,
+                   "controls_not_in_catalog": dropped_ctrl,
+                   "distinct_pci": len({e["native_id"] for e in edges})}
+
+
+def load_aicpa_tsp_hub() -> Tuple[List[dict], dict]:
+    """TSC <-> HITRUST direct pairs from the licensed 'Mapping of 2017 AICPA TSP
+    to HITRUST CSF v11.4.0' workbook (487 merged ranges resolved via openpyxl).
+
+    Layout (sheet 'CSF to AICPA Mapping'): row 1 = TSC criteria headers across
+    merged column ranges ('CC1.1 The entity demonstrates ...'); row 2 =
+    point-of-focus sub-headers; column A from row 5 = HITRUST control ids
+    ('01.b User Registration'); body cells carry an 'X' where a HITRUST control
+    covers that point of focus.  Pairs are deduped to the criterion level.
+    Emits master-surface pairs (hub tier, 0.65) — NOT a spine projection.
+    Returns rows {tsc_id, hitrust_id}."""
+    src = "aicpa-tsp-to-hitrust"
+    try:
+        path = source_path(src)
+    except Exception:
+        return [], {"skipped": "not registered"}
+    if not path.exists():
+        return [], {"skipped": "artifact not on disk"}
+    from openpyxl import load_workbook  # available via requirements.txt
+    wb = load_workbook(path, read_only=False, data_only=True)
+    ws = wb[wb.sheetnames[0]]
+    # Resolve merged header ranges: every cell in a range sees the anchor value.
+    grid: Dict[Tuple[int, int], object] = {}
+    for row in ws.iter_rows():
+        for c in row:
+            if c.value is not None:
+                grid[(c.row, c.column)] = c.value
+    for rng in ws.merged_cells.ranges:
+        anchor = grid.get((rng.min_row, rng.min_col))
+        if anchor is None:
+            continue
+        for rr in range(rng.min_row, rng.max_row + 1):
+            for cc in range(rng.min_col, rng.max_col + 1):
+                grid.setdefault((rr, cc), anchor)
+    # Column -> TSC criterion from the row-1 merged headers.
+    col_tsc: Dict[int, str] = {}
+    tsc_token = re.compile(r"\b(CC|PI|A|C|P)\s?(\d{1,2})\.(\d{1,2})\b")
+    for cc in range(2, ws.max_column + 1):
+        v = grid.get((1, cc))
+        if v is None:
+            continue
+        m = tsc_token.search(str(v))
+        if m:
+            tsc = normalize_tsc_id(f"{m.group(1)}{m.group(2)}.{m.group(3)}")
+            if tsc:
+                col_tsc[cc] = tsc
+    # Row -> HITRUST control id from column A ('01.b User Registration',
+    # '09.aa Audit Logging' — one- or two-letter suffixes).
+    hitrust_re = re.compile(r"^(\d{2}\.[a-z]{1,2})\b")
+    row_hitrust: Dict[int, str] = {}
+    for rr in range(2, ws.max_row + 1):
+        v = grid.get((rr, 1))
+        if v is None:
+            continue
+        m = hitrust_re.match(str(v).strip())
+        if m:
+            row_hitrust[rr] = str(v).strip()
+    pairs: Set[Tuple[str, str]] = set()
+    markers = 0
+    for (rr, cc), v in grid.items():
+        if rr not in row_hitrust or cc not in col_tsc:
+            continue
+        if str(v).strip().upper() == "X":
+            markers += 1
+            pairs.add((col_tsc[cc], row_hitrust[rr]))
+    rows = [{"tsc_id": t, "hitrust_id": h} for t, h in sorted(pairs)]
+    return rows, {"pairs": len(rows), "tsc_columns": len(col_tsc),
+                  "hitrust_rows": len(row_hitrust), "x_markers": markers,
+                  "distinct_tsc": len({r["tsc_id"] for r in rows}),
+                  "distinct_hitrust": len({r["hitrust_id"] for r in rows})}
 
 
 # ── framework_projection: HITRUST hub for commercial frameworks (Phase 3) ───────
@@ -466,6 +845,7 @@ def load_hitrust_hub(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], dic
     nist_tokens = 0
     iso_ambiguous = 0
     iso_label = _HUB_FRAMEWORKS.get("iso_27001_2022_id")
+    hipaa_label = _HUB_FRAMEWORKS.get("hipaa_security_id")
 
     for i, rec in enumerate(df.itertuples(index=False), start=0):
         rowd = dict(zip(df.columns, rec))
@@ -495,6 +875,12 @@ def load_hitrust_hub(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], dic
                         target_id = _canon
                     if _space == "ambiguous":
                         iso_ambiguous += 1
+                elif label == hipaa_label:
+                    # One HIPAA citation namespace with the 800-66 direct
+                    # projection ('§ 164.308(a)(1)' -> '164.308(a)(1)').
+                    _hcanon = normalize_hipaa_citation(target_id)
+                    if _hcanon:
+                        target_id = _hcanon
                 hub_rows.append({
                     "hitrust_id": hitrust_id, "framework": label,
                     "target_id": target_id, "source_row": i,

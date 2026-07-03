@@ -94,6 +94,18 @@ check(SN.normalize_pci_id("Req 1.2.3") == "1.2.3", "pci Req prefix")
 check(SN.normalize_pci_id("01.02") == "1.2", "pci zero-padded")
 check(SN.normalize_pci_id("13.1") is None, "pci out-of-range top level")
 check(SN.normalize_pci_id("A.8.20") is None, "pci rejects ISO ids")
+# PCI DSS v4 Appendix ids (A1 multi-tenant / A2 POS TLS / A3 DESV) are real (Phase 19)
+check(SN.normalize_pci_id("A3.1.1") == "A3.1.1", "pci appendix A3")
+check(SN.normalize_pci_id("a1.2.3") == "A1.2.3", "pci appendix case-normalized")
+check(SN.normalize_pci_id("A4.1") is None, "pci appendix only A1-A3")
+check(SN.normalize_pci_id("A3") is None, "pci appendix needs a segment")
+# HIPAA citation canonicalizer (Phase 19): one namespace across hub + 800-66 direct
+check(SN.normalize_hipaa_citation("§ 164.308(a)(1)") == "164.308(a)(1)", "hipaa strips § prefix")
+check(SN.normalize_hipaa_citation("45 CFR 164.312(e)(2)(ii)") == "164.312(e)(2)(ii)", "hipaa strips 45 CFR prefix")
+check(SN.normalize_hipaa_citation("164.308(a)(1)(ii)(A)") == "164.308(a)(1)(ii)(A)", "hipaa preserves level case")
+check(SN.normalize_hipaa_citation("164.308") == "164.308", "hipaa bare section ok")
+check(SN.normalize_hipaa_citation("165.308") is None, "hipaa rejects non-164 parts")
+check(SN.normalize_hipaa_citation("REQ-34-HIPAA") is None, "hipaa rejects firm-local ids (never guess)")
 
 # repeated '-N' objective suffixes all strip (synthetic — no such id in current data)
 _synth = {"parts": [{"id": "xx-1_obj", "name": "assessment-objective", "parts": [
@@ -279,9 +291,17 @@ if _DB.exists():
     # unknown name -> input error
     ru = SO.compute(_c, "SOC 2", "totally-unknown-xyz")
     check(ru.get("overlap_pct") is None and "error" in ru, "unknown framework -> input error")
-    # unbridged -> basis none, real zero, never raises
-    rn = SO.compute(_c, "PCI DSS v4.0", "GDPR")
-    check(rn.get("basis") == "none" and rn.get("overlap_pct") == 0.0, "unbridged pair -> basis:none 0.0 (no error)")
+    # unbridged -> basis none, real zero, never raises (SOC 1 has no public
+    # control layer, so no spine path and no shared ER ids with GDPR)
+    rn = SO.compute(_c, "SOC 1", "GDPR")
+    check(rn.get("basis") in ("none", "inferred_er") and (rn.get("overlap_pct") or 0.0) == 0.0,
+          f"unbridged pair -> real zero, no error (got {rn.get('basis')}/{rn.get('overlap_pct')})")
+    # PCI is on the spine since Phase 19 (bundled tier from the master crosswalk)
+    rp = SO.compute(_c, "PCI DSS v4.0", "ISO 27001/2 (2022)", consensus_tier=False)
+    check(rp.get("basis") in ("cci", "subpart") and (rp.get("overlap_pct") or 0) > 0,
+          f"PCI×ISO uses a spine basis since Phase 19 (got {rp.get('basis')}/{rp.get('overlap_pct')})")
+    check(rp.get("confidence_score") == 0.6 and rp.get("needs_confirmation") is True,
+          f"PCI side gated at bundled 0.60 needs_confirmation (got {rp.get('confidence_score')})")
     _c.close()
 else:
     print("  (skipped Phase 5 overlap checks — grc.db not built)")
@@ -394,6 +414,73 @@ if _DB.exists():
         FROM overlap_matrix WHERE framework_a='ISO 27001/2 (2022)' AND framework_b='SOC 2'""").fetchone()
     check(_om is not None and _om[0] > 0 and _om[1] > 0 and _om[2] == 0.65,
           f"matrix SOC2×ISO row: consensus counts populated, confidence stays flag-off 0.65 (got {_om})")
+    # ── Phase 19: master mapping surface ────────────────────────────────────────
+    _fws = {r[0] for r in _c2.execute("SELECT DISTINCT framework FROM framework_projection")}
+    check({"PCI DSS v4.0", "NIST CSF 2.0", "NIST SP 800-171 r3", "NIST SP 800-172 r3"} <= _fws
+          and len(_fws) == 12, f"projection has the 12 Phase 19 frameworks (got {len(_fws)})")
+    # HIPAA now reaches the spine directly (800-66, NIST-stated 0.85); hub kept beneath
+    _hc = _c2.execute("""SELECT MAX(confidence) FROM framework_projection
+        WHERE framework='HIPAA Security'""").fetchone()[0]
+    check(_hc == 0.85, f"HIPAA best path is the 800-66 direct projection at 0.85 (got {_hc})")
+    _hprov = {r[0] for r in _c2.execute("""SELECT DISTINCT provenance FROM framework_projection
+        WHERE framework='HIPAA Security'""")}
+    check(_hprov == {"direct_800_66", "hitrust_hub"}, f"HIPAA carries both direct + hub paths ({_hprov})")
+    n_para = _c2.execute("""SELECT COUNT(*) FROM framework_projection
+        WHERE framework='HIPAA Security' AND native_id LIKE '§%'""").fetchone()[0]
+    check(n_para == 0, f"hub HIPAA natives canonicalized (no '§ ' prefix remains, got {n_para})")
+    # master_mappings populated with the tier vocabulary, no proprietary ids anywhere
+    _tiers = {r[0] for r in _c2.execute("SELECT DISTINCT tier FROM master_mappings")}
+    check(_tiers == {"owner_direct", "nist_stated", "hub", "bundled", "consensus",
+                     "production_aggregate"}, f"master tier vocabulary exact ({_tiers})")
+    n_mleak = _c2.execute("""SELECT COUNT(*) FROM master_mappings
+        WHERE native_a GLOB '*REQ-[0-9]*' OR native_b GLOB '*REQ-[0-9]*'
+           OR native_a GLOB '*ER-[0-9]*'  OR native_b GLOB '*ER-[0-9]*'
+           OR corroboration GLOB '*REQ-[0-9]*' OR corroboration GLOB '*ER-[0-9]*'
+           OR source_ref GLOB '*REQ-[0-9]*' OR source_ref GLOB '*ER-[0-9]*'""").fetchone()[0]
+    check(n_mleak == 0, f"master_mappings carries no proprietary identifiers (got {n_mleak})")
+    # SOC 1 never appears at id level (no public control layer)
+    n_soc1 = _c2.execute("""SELECT COUNT(*) FROM master_mappings
+        WHERE fw_a='SOC 1' OR fw_b='SOC 1'""").fetchone()[0]
+    check(n_soc1 == 0, f"SOC 1 has no id-level master rows (got {n_soc1})")
+    # arbitration: a hub-won pair that consensus corroborates keeps the dissent
+    n_corr = _c2.execute("""SELECT COUNT(*) FROM master_mappings
+        WHERE corroboration IS NOT NULL""").fetchone()[0]
+    check(n_corr > 1000, f"master keeps minority-report corroboration on >1000 pairs (got {n_corr})")
+    # matrix covers the canonical union: C(14,2)=91 incl. SOC 1 + HITRUST CSF rows
+    n_mx = _c2.execute("SELECT COUNT(*) FROM overlap_matrix").fetchone()[0]
+    check(n_mx == 91, f"overlap_matrix covers all 91 canonical framework pairs (got {n_mx})")
+    _s1 = _c2.execute("""SELECT basis FROM overlap_matrix
+        WHERE framework_a='SOC 1' OR framework_b='SOC 1' LIMIT 1""").fetchone()
+    check(_s1 is not None and _s1[0] in ("inferred_er", "none"),
+          f"SOC 1 matrix rows stay inferred_er/none (got {_s1})")
+    # label registry loaded; the in-module dicts must match it exactly
+    import master_surface as MSF  # type: ignore
+    _reg = {r[0]: r[2] for r in _c2.execute(
+        "SELECT alias, surface, canonical FROM framework_labels")}
+    check(len(_reg) > 50, f"framework_labels loaded (got {len(_reg)})")
+    for _cons_label, _canon_label in MSF._CONSENSUS_TO_CANON.items():
+        check(_reg.get(_cons_label, _cons_label) == _canon_label,
+              f"registry agrees with master_surface for {_cons_label!r}")
+    # master_surface arbitration unit behavior (synthetic)
+    _mc = MSF._Claims()
+    _mc.add("A", "a1", "B", "b1", provenance="hitrust_hub", relationship="intersect",
+            relationship_basis="co_membership", confidence=0.65, hop_count=2,
+            needs_confirmation=1, source_ref="s1")
+    _mc.add("A", "a1", "B", "b1", provenance="cmmc171", relationship="equal",
+            relationship_basis="source_stated", confidence=0.95, hop_count=1,
+            needs_confirmation=0, source_ref="s2")
+    _mrow = _mc.rows()[0]
+    check(_mrow["tier"] == "owner_direct" and _mrow["relationship"] == "equal"
+          and json.loads(_mrow["corroboration"])[0]["provenance"] == "hitrust_hub"
+          and json.loads(_mrow["corroboration"])[0]["relationship"] == "intersect",
+          "master arbitration: strongest tier wins, dissent preserved verbatim")
+    try:
+        _mc.add("A", "REQ-34", "B", "b1", provenance="hitrust_hub", relationship="intersect",
+                relationship_basis="co_membership", confidence=0.65, hop_count=2,
+                needs_confirmation=1, source_ref="s3")
+        check(False, "proprietary id must raise at master assembly")
+    except ValueError:
+        check(True, "proprietary id refused at master assembly (raises)")
     # Licensed ISO text (Phase 17): with the Annex A verification copy on disk,
     # Annex-side strong pairs flip to texts_on_file_licensed; only ISMS-clause
     # ids (partial excerpts on file) may remain pending.

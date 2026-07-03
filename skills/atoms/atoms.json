@@ -17,7 +17,12 @@
         "gaps": "array — [{control_id, reason}] controls with no mapping",
         "human_review_required": "boolean — always true"
       },
-      "tags": ["crosswalk", "nist", "er", "mapping"]
+      "tags": [
+        "crosswalk",
+        "nist",
+        "er",
+        "mapping"
+      ]
     },
     {
       "id": "gap-analysis",
@@ -35,7 +40,12 @@
         "db_built_at": "string — ISO timestamp when grc.db was last built",
         "human_review_required": "boolean — always true"
       },
-      "tags": ["gap", "coverage", "nist", "audit"]
+      "tags": [
+        "gap",
+        "coverage",
+        "nist",
+        "audit"
+      ]
     },
     {
       "id": "overlap-query",
@@ -53,7 +63,12 @@
         "b_covers_a_pct": "number — % of A controls covered by B",
         "shared_controls": "array — control IDs in both frameworks"
       },
-      "tags": ["overlap", "jaccard", "er", "shared-audit-work"]
+      "tags": [
+        "overlap",
+        "jaccard",
+        "er",
+        "shared-audit-work"
+      ]
     },
     {
       "id": "framework-update-check",
@@ -72,7 +87,12 @@
         "changed": "boolean — true if latest_detected != current_version",
         "notes": "string — optional context (e.g. 'retired')"
       },
-      "tags": ["monitoring", "feed", "version", "registry"]
+      "tags": [
+        "monitoring",
+        "feed",
+        "version",
+        "registry"
+      ]
     },
     {
       "id": "control-search",
@@ -89,7 +109,12 @@
         "controls": "array — [{id, title, family, text}]",
         "count": "integer"
       },
-      "tags": ["search", "nist", "controls", "query"]
+      "tags": [
+        "search",
+        "nist",
+        "controls",
+        "query"
+      ]
     },
     {
       "id": "control-scope",
@@ -105,7 +130,13 @@
         "controls": "array — [{id, title, family, baseline}]",
         "count": "integer"
       },
-      "tags": ["scope", "baseline", "fedramp", "nist", "query"]
+      "tags": [
+        "scope",
+        "baseline",
+        "fedramp",
+        "nist",
+        "query"
+      ]
     },
     {
       "id": "kev-lookup",
@@ -124,7 +155,13 @@
         "nist_families": "array — NIST 800-53 control families relevant to this CVE",
         "in_kev": "boolean"
       },
-      "tags": ["kev", "cve", "vulnerability", "cisa", "query"]
+      "tags": [
+        "kev",
+        "cve",
+        "vulnerability",
+        "cisa",
+        "query"
+      ]
     },
     {
       "id": "cfr-lookup",
@@ -141,7 +178,13 @@
         "sections": "array — [{section_id, title, text, nist_families}]",
         "count": "integer"
       },
-      "tags": ["cfr", "hipaa", "glba", "regulatory", "query"]
+      "tags": [
+        "cfr",
+        "hipaa",
+        "glba",
+        "regulatory",
+        "query"
+      ]
     },
     {
       "id": "attack-mapper",
@@ -158,7 +201,13 @@
         "tactics": "array — MITRE tactic names",
         "nist_controls": "array — mapped NIST 800-53 control IDs"
       },
-      "tags": ["mitre", "attack", "technique", "nist-mapping", "query"]
+      "tags": [
+        "mitre",
+        "attack",
+        "technique",
+        "nist-mapping",
+        "query"
+      ]
     },
     {
       "id": "changelog-query",
@@ -174,7 +223,12 @@
         "entries": "array — [{framework_id, change_type, old_version, new_version, changed_at, summary}]",
         "count": "integer"
       },
-      "tags": ["changelog", "version", "history", "query"]
+      "tags": [
+        "changelog",
+        "version",
+        "history",
+        "query"
+      ]
     },
     {
       "id": "edgar-breach-search",
@@ -194,7 +248,14 @@
         "db_built_at": "string",
         "human_review_required": "boolean — always true"
       },
-      "tags": ["edgar", "sec", "breach", "incident", "nist", "query"]
+      "tags": [
+        "edgar",
+        "sec",
+        "breach",
+        "incident",
+        "nist",
+        "query"
+      ]
     },
     {
       "id": "overlap-oracle-validator",
@@ -217,7 +278,13 @@
         "oracle_status": "string — pass | fail | skipped",
         "human_review_required": "boolean — always true"
       },
-      "tags": ["overlap", "jaccard", "oracle", "er", "validation"]
+      "tags": [
+        "overlap",
+        "jaccard",
+        "oracle",
+        "er",
+        "validation"
+      ]
     },
     {
       "id": "ecfr-monitor",
@@ -240,7 +307,14 @@
         "changed": "boolean — true if as_of_date > since_date",
         "human_review_required": "boolean — always true"
       },
-      "tags": ["cfr", "ecfr", "regulatory", "hipaa", "glba", "monitor"]
+      "tags": [
+        "cfr",
+        "ecfr",
+        "regulatory",
+        "hipaa",
+        "glba",
+        "monitor"
+      ]
     },
     {
       "id": "feed-poller",
@@ -262,7 +336,13 @@
         "draft_status": "string — none | draft | retired",
         "human_review_required": "boolean — always true"
       },
-      "tags": ["monitoring", "feed", "version", "registry", "poll"]
+      "tags": [
+        "monitoring",
+        "feed",
+        "version",
+        "registry",
+        "poll"
+      ]
     },
     {
       "id": "task-decompose",
@@ -282,7 +362,12 @@
         "minority_report": "object or null — mode ambiguity recorded here",
         "human_review_required": "boolean — always true"
       },
-      "tags": ["orchestration", "decompose", "fan-out", "planning"]
+      "tags": [
+        "orchestration",
+        "decompose",
+        "fan-out",
+        "planning"
+      ]
     },
     {
       "id": "envelope-validate",
@@ -300,7 +385,12 @@
         "task_id": "string or null — echoed from the envelope",
         "human_review_required": "boolean — always true"
       },
-      "tags": ["orchestration", "validation", "drift-guard", "schema"]
+      "tags": [
+        "orchestration",
+        "validation",
+        "drift-guard",
+        "schema"
+      ]
     },
     {
       "id": "findings-consolidate",
@@ -321,7 +411,12 @@
         "minority_report": "object or null — rolled-up conflicts / failed_to_merge / residual_uncertainty",
         "human_review_required": "boolean — always true"
       },
-      "tags": ["orchestration", "consolidate", "merge", "deterministic"]
+      "tags": [
+        "orchestration",
+        "consolidate",
+        "merge",
+        "deterministic"
+      ]
     },
     {
       "id": "frontier-expand",
@@ -343,7 +438,12 @@
         "seen_out": "array — updated scope-signature set",
         "human_review_required": "boolean — always true"
       },
-      "tags": ["orchestration", "frontier", "recursion", "fan-out"]
+      "tags": [
+        "orchestration",
+        "frontier",
+        "recursion",
+        "fan-out"
+      ]
     },
     {
       "id": "finding-verify",
@@ -364,7 +464,12 @@
         "unable_votes": "integer",
         "human_review_required": "boolean — always true"
       },
-      "tags": ["orchestration", "verify", "adversarial", "skeptic"]
+      "tags": [
+        "orchestration",
+        "verify",
+        "adversarial",
+        "skeptic"
+      ]
     },
     {
       "id": "wave-judge",
@@ -385,7 +490,12 @@
         "dimension_scores": "object",
         "human_review_required": "boolean — always true"
       },
-      "tags": ["orchestration", "judge", "rubric", "stop-signal"]
+      "tags": [
+        "orchestration",
+        "judge",
+        "rubric",
+        "stop-signal"
+      ]
     },
     {
       "id": "instruction-audit",
@@ -405,7 +515,40 @@
         "minority_report": "object or null",
         "human_review_required": "boolean — always true"
       },
-      "tags": ["health", "instruction", "contradiction", "adversarial", "arbiter"]
+      "tags": [
+        "health",
+        "instruction",
+        "contradiction",
+        "adversarial",
+        "arbiter"
+      ]
+    },
+    {
+      "id": "master-crosswalk",
+      "label": "Master Mapping Surface",
+      "version": "1.0",
+      "path": "skills/atoms/master-crosswalk",
+      "script": "cross-mapping/engine/master_surface.py",
+      "input_schema": {
+        "framework_a": "string — first framework (pair/scope modes; alias ok, e.g. 'SOC 2')",
+        "framework_b": "string — second framework (pair mode)",
+        "framework": "string — framework of --control (control mode)",
+        "control": "string — one native id (control mode, e.g. 'CC6.1', '164.312(a)(1)')",
+        "scope_fedramp": "string — low|moderate|high (audit-scope mode)",
+        "min_tier": "string — owner_direct|nist_stated|hub|bundled|consensus|production_aggregate"
+      },
+      "output_schema": {
+        "rows": "array — master_mappings rows: fw/native pair, relationship, tier, provenance, confidence, votes, production_support, shared_anchors, corroboration (minority report), source_ref",
+        "summary": "string — mode-specific header (audit-scope mode reports n-of-m advisory coverage)",
+        "human_review_required": "boolean — always true"
+      },
+      "tags": [
+        "master-mapping",
+        "crosswalk",
+        "tier-arbitration",
+        "minority-report",
+        "audit-scope"
+      ]
     }
   ]
 }

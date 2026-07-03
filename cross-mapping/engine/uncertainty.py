@@ -107,9 +107,18 @@ def apply_confirmations_to_edges(edges: List[dict], confirmations: Dict[str, dic
 # ── durable uncertainty ledger (committed, deterministic) ───────────────────────
 
 def _source_citation(filename: str) -> dict:
-    """Map a bare source filename to a repo-relative, resolvable citation path."""
+    """Map a bare source filename to a repo-relative, resolvable citation path.
+    Probes the known artifact directories (source_data, its cprt/ subdir, and
+    canonical-sources root) and cites the first that exists — a citation must
+    resolve to a real committed file (health_audit blocks otherwise)."""
     if not filename:
         return {"file": "", "locator": ""}
+    repo_root = Path(__file__).resolve().parent.parent.parent
+    for rel in (f"canonical-sources/source_data/{filename}",
+                f"canonical-sources/source_data/cprt/{filename}",
+                f"canonical-sources/{filename}"):
+        if (repo_root / rel).exists():
+            return {"file": rel, "locator": filename}
     return {"file": f"canonical-sources/source_data/{filename}", "locator": filename}
 
 
@@ -155,13 +164,19 @@ def build_ledger_rows(conn, confirmations: Optional[Dict[str, dict]] = None) -> 
                    needs_confirmation FROM overlap_matrix"""):
         fa, fb, basis, pct, conf, needs = r
         uid = uncertainty_id("overlap_pair", a=fa, b=fb, basis=basis)
+        cit = _source_citation(fw_src.get(fa) or fw_src.get(fb, ""))
+        if not cit["file"] and basis in ("inferred_er", "none"):
+            # ER-only pairs (SOC 1, HITRUST CSF) have no projection source; the
+            # co-occurrence signal derives from the committed ER crosswalk CSVs.
+            cit = {"file": "cross-mapping/core-audit/mappings",
+                   "locator": "er_mappings (aggregate co-occurrence)"}
         rows.append({
             "uncertainty_id": uid,
             "kind": "overlap_pair",
             "framework_a": fa, "framework_b": fb, "basis": basis,
             "overlap_pct": pct, "confidence": conf,
             "needs_confirmation": int(needs),
-            "citation": _source_citation(fw_src.get(fa) or fw_src.get(fb, "")),
+            "citation": cit,
             "status": "open",
         })
 

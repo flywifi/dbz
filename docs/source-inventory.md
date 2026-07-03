@@ -207,7 +207,7 @@ Monitoring via `poll_landing` on `uscode.house.gov`. No machine-readable API; we
 |---|---|---|---|
 | HIPAA Audit Protocol | `https://www.hhs.gov/hipaa/for-professionals/compliance-enforcement/audit/protocol/index.html` | HTML/XLSX | Audit procedures → HIPAA safeguard mapping |
 | HIPAA↔NIST CSF Crosswalk | `https://www.nist.gov/system/files/documents/2025/03/17/nist-csf-to-hipaa-security-rule-crosswalk-02-22-2016-final.pdf` | PDF | HIPAA→NIST CSF→800-53 mapping |
-| NIST SP 800-66 Rev 2 | `https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-66r2.pdf` | PDF | NIST impl guide for HIPAA Security Rule |
+| NIST SP 800-66 Rev 2 | `https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-66r2.pdf` | PDF | NIST impl guide for HIPAA Security Rule. **On disk since Phase 19**: CPRT export + OLIR element graphs (manifest ids `cprt-sp800-66r2-export` / `cprt-sp800-66r2-olir-graphs`) — the HIPAA→800-53 r5.1.1 mapping (279 pairs) is the `direct_800_66` spine projection |
 | HHS 405(d) HICP | `https://405d.hhs.gov/cornerstone/hicp` | PDF/HTML | Top 5 cyber threats for healthcare |
 | CMS ARS 5.1 | `https://security.cms.gov/policy-guidance/cms-acceptable-risk-safeguards-ars` | PDF/HTML | CMS-tailored NIST 800-53 Rev 5 baseline |
 | ONC HTI-1 Final Rule | `https://healthit.gov/regulations/hti-rules/hti-1-final-rule/` | HTML/PDF | Algorithm transparency, USCDI v3 |

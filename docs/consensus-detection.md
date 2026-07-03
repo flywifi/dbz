@@ -66,6 +66,16 @@ metrics are byte-identical either way), never touches owner-direct 0.95 pairs, a
 oracle-validation gate in `validate_spine.py` passes — see `docs/overlap-spine.md` for the
 tier's precedence rules and `docs/standards-refresh-runbook.md` for the gate.
 
+Phase 19 notes: strong + moderate consensus pairs also feed the master mapping surface
+(`master_mappings`) as the `consensus` tier — arbitrated below every stated surface, with
+votes reported instead of a confidence number; single-voter pairs stay out of the master
+surface (inspect via `dbz_query.py consensus --tier all`). The PCI appendix-id normalizer
+extension (A1/A2/A3.x) and the PCI/CSF entries added to the label maps expanded the
+consensus key space (41,427 → 42,146 pairs; 834 → 845 strong) and gave existing PCI/CSF
+pairs real spine footprints where they previously characterized `no_spine_footprint`;
+the Phase 18 pinned gates re-measured green without re-pinning (enrichment lift 2.37×,
+ISO coverage 55.9%).
+
 ## SOC 2 comparability — controls vary by audit firm
 
 SOC 2 has **no standardized control list**. Per the AICPA, the [2017 Trust Services Criteria

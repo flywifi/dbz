@@ -324,6 +324,174 @@ def cmd_consensus(args, conn: sqlite3.Connection) -> int:
     return 0
 
 
+_MASTER_TIER_ORDER = ["owner_direct", "nist_stated", "hub", "bundled",
+                      "consensus", "production_aggregate"]
+
+
+def _master_canon_fw(conn: sqlite3.Connection, name: str) -> str | None:
+    """Resolve any framework alias/label to the master-surface canonical label
+    via the framework_labels registry (exact, case-insensitive, then substring
+    over the canonicals actually present in master_mappings)."""
+    row = conn.execute(
+        "SELECT canonical FROM framework_labels WHERE alias = ? "
+        "OR lower(alias) = lower(?) LIMIT 1", (name, name)).fetchone()
+    if row:
+        return row[0]
+    fws = [r[0] for r in conn.execute(
+        "SELECT DISTINCT fw_a FROM master_mappings "
+        "UNION SELECT DISTINCT fw_b FROM master_mappings")]
+    for f in fws:
+        if f.lower() == name.lower():
+            return f
+    for f in fws:
+        if name.lower() in f.lower():
+            return f
+    return None
+
+
+def _master_soc1_gap(fmt: str) -> int:
+    gap = {
+        "tool": "master-crosswalk",
+        "framework": "SOC 1",
+        "data_gap": "no_public_control_layer",
+        "explanation": "SOC 1 (SSAE 22 / AT-C 320) defines report standards, not "
+                       "a public control catalog — every SOC 1 control set is "
+                       "engagement-specific. The master surface carries no SOC 1 "
+                       "id-level rows; use `overlap` for the aggregate "
+                       "inferred_er signal.",
+        "human_review_required": True,
+    }
+    if fmt == "json":
+        print(json.dumps(gap, indent=2))
+    else:
+        print(f"[data gap] {gap['explanation']}")
+    return 0
+
+
+def cmd_master(args, conn: sqlite3.Connection) -> int:
+    """Master mapping surface: any framework <-> any framework, tier-arbitrated,
+    with minority-report corroboration. Pair, control, and audit-scope modes."""
+    limit = getattr(args, "limit", 100) or 100
+    min_tier = getattr(args, "min_tier", None)
+    max_rank = (_MASTER_TIER_ORDER.index(min_tier) + 1) if min_tier else len(_MASTER_TIER_ORDER)
+    tier_case = " ".join(f"WHEN '{t}' THEN {i + 1}" for i, t in enumerate(_MASTER_TIER_ORDER))
+
+    control = getattr(args, "control", None)
+    fw_single = getattr(args, "framework", None)
+    fa_in, fb_in = getattr(args, "framework_a", None), getattr(args, "framework_b", None)
+
+    if control and fw_single:  # ── control mode ────────────────────────────────
+        fw = _master_canon_fw(conn, fw_single)
+        if fw == "SOC 1":
+            return _master_soc1_gap(args.format)
+        if not fw:
+            print(f"[input error] unknown framework: {fw_single!r}", file=sys.stderr)
+            return 1
+        rows = conn.execute(f"""
+            SELECT * FROM master_mappings
+            WHERE ((fw_a = ? AND native_a = ?) OR (fw_b = ? AND native_b = ?))
+              AND (CASE tier {tier_case} END) <= ?
+            ORDER BY CASE tier {tier_case} END, fw_a, native_a, fw_b, native_b
+            LIMIT ?""", (fw, control, fw, control, max_rank, limit)).fetchall()
+        header = f"{fw} {control}: {len(rows)} master mapping(s)"
+    elif fa_in and fb_in:  # ── pair mode ───────────────────────────────────────
+        fa, fb = _master_canon_fw(conn, fa_in), _master_canon_fw(conn, fb_in)
+        if "SOC 1" in (fa, fb):
+            return _master_soc1_gap(args.format)
+        if not fa or not fb:
+            missing = [x for x, r in ((fa_in, fa), (fb_in, fb)) if not r]
+            print(f"[input error] unknown framework(s): {missing}", file=sys.stderr)
+            return 1
+        rows = conn.execute(f"""
+            SELECT * FROM master_mappings
+            WHERE ((fw_a = ? AND fw_b = ?) OR (fw_a = ? AND fw_b = ?))
+              AND (CASE tier {tier_case} END) <= ?
+            ORDER BY CASE tier {tier_case} END, fw_a, native_a, fw_b, native_b
+            LIMIT ?""", (fa, fb, fb, fa, max_rank, limit)).fetchall()
+        header = f"{fa} <-> {fb}: {len(rows)} master mapping(s)"
+    elif fa_in and (getattr(args, "fedramp", None) or getattr(args, "cui", False)
+                    or getattr(args, "privacy", False) or getattr(args, "family", None)):
+        # ── audit-scope mode: which of A's requirements touch the in-scope
+        #    NIST control set (baseline flags on controls + enhancements). ──────
+        fa = _master_canon_fw(conn, fa_in)
+        if fa == "SOC 1":
+            return _master_soc1_gap(args.format)
+        if not fa:
+            print(f"[input error] unknown framework: {fa_in!r}", file=sys.stderr)
+            return 1
+        conds, params = [], []
+        lv = (getattr(args, "fedramp", None) or "").lower()
+        if lv:
+            colname = {"low": "baseline_low", "l": "baseline_low",
+                       "moderate": "baseline_moderate", "mod": "baseline_moderate", "m": "baseline_moderate",
+                       "high": "baseline_high", "h": "baseline_high"}.get(lv)
+            if not colname:
+                print(f"[ERROR] Unknown FedRAMP level: {lv!r}. Use low/moderate/high.", file=sys.stderr)
+                return 1
+            conds.append(f"{colname} = 1")
+        if getattr(args, "privacy", False):
+            conds.append("privacy_baseline = 1")
+        if getattr(args, "cui", False):
+            conds.append("cui_applicable = 1")
+        fam_cond_c, fam_cond_e = "", ""
+        if getattr(args, "family", None):
+            fam_cond_c = " AND family = ?"
+            fam_cond_e = " AND family = ?"
+            params.append(args.family.upper())
+        where = " AND ".join(conds) if conds else "1=1"
+        scope_ids = {r[0] for r in conn.execute(
+            f"SELECT nist_id FROM controls WHERE {where}{fam_cond_c}", params)}
+        scope_ids |= {r[0] for r in conn.execute(
+            f"SELECT id FROM enhancements WHERE {where}{fam_cond_e}", params)}
+        all_rows = conn.execute(f"""
+            SELECT * FROM master_mappings
+            WHERE ((fw_a = ? AND fw_b = 'NIST 800-53') OR (fw_b = ? AND fw_a = 'NIST 800-53'))
+              AND (CASE tier {tier_case} END) <= ?
+            ORDER BY CASE tier {tier_case} END, fw_a, native_a, fw_b, native_b""",
+            (fa, fa, max_rank)).fetchall()
+        rows, natives_in, natives_all = [], set(), set()
+        for r in all_rows:
+            d = dict(r)
+            nat, ctrl = ((d["native_a"], d["native_b"]) if d["fw_a"] == fa
+                         else (d["native_b"], d["native_a"]))
+            natives_all.add(nat)
+            if ctrl in scope_ids:
+                natives_in.add(nat)
+                if len(rows) < limit:
+                    rows.append(r)
+        header = (f"{fa} x scope({', '.join(conds) if conds else 'all'}"
+                  f"{' family=' + args.family.upper() if getattr(args, 'family', None) else ''}): "
+                  f"{len(natives_in)} of {len(natives_all)} {fa} requirements touch "
+                  f"{len(scope_ids)} in-scope NIST controls (advisory — actual audit "
+                  f"scope depends on organization context)")
+    else:
+        print("[input error] master needs --framework-a + --framework-b (pair), "
+              "--framework + --control (control), or --framework-a + a scope flag "
+              "(--scope-fedramp/--cui/--privacy/--family).", file=sys.stderr)
+        return 1
+
+    results = [dict(r) for r in rows]
+    if args.format == "json":
+        print(json.dumps({"tool": "master-crosswalk", "summary": header,
+                          "rows": results, "human_review_required": True},
+                         indent=2, ensure_ascii=False))
+        return 0
+    print(header)
+    print("Tier order: owner_direct > nist_stated > hub > bundled > consensus > "
+          "production_aggregate; corroboration preserves every non-winning surface.\n")
+    for d in results:
+        conf = f" conf={d['confidence']}" if d["confidence"] is not None else ""
+        votes = f" votes={d['votes']}" if d["votes"] else ""
+        prod = f" production x{d['production_support']}" if d["production_support"] else ""
+        anch = f" anchors={d['anchor_count']}" if d["anchor_count"] else ""
+        corr = ""
+        if d["corroboration"]:
+            corr = f" (+{len(json.loads(d['corroboration']))} corroborating surface(s))"
+        print(f"[{d['tier']}:{d['provenance']}{conf}] {d['fw_a']} {d['native_a']} <-> "
+              f"{d['fw_b']} {d['native_b']} ({d['relationship']}){votes}{prod}{anch}{corr}")
+    return 0
+
+
 def cmd_search(args, conn: sqlite3.Connection) -> int:
     """Full-text search across control text/title/discussion."""
     kw = args.keyword.strip()
@@ -873,6 +1041,24 @@ def build_parser() -> argparse.ArgumentParser:
     _add_format(cons); _add_db(cons)
 
     # search
+    # master (Phase 19)
+    mst = subs.add_parser("master",
+                          help="Master mapping surface: any framework <-> any framework, tier-arbitrated")
+    mst.add_argument("--framework-a", help="pair/scope mode: first framework (alias ok)")
+    mst.add_argument("--framework-b", help="pair mode: second framework")
+    mst.add_argument("--framework", help="control mode: framework of --control")
+    mst.add_argument("--control", help="control mode: one native id (e.g. CC6.1, 164.312(a)(1), AC-2)")
+    mst.add_argument("--scope-fedramp", dest="fedramp", help="audit-scope mode: low|moderate|high")
+    mst.add_argument("--cui", action="store_true", help="audit-scope mode: CUI-applicable controls")
+    mst.add_argument("--privacy", action="store_true", help="audit-scope mode: privacy baseline")
+    mst.add_argument("--family", help="audit-scope mode: NIST family filter (e.g. IA)")
+    mst.add_argument("--min-tier", choices=["owner_direct", "nist_stated", "hub", "bundled",
+                                            "consensus", "production_aggregate"],
+                     help="only tiers at or above this rank")
+    mst.add_argument("--limit", type=int, default=100)
+    _add_format(mst)
+    _add_db(mst)
+
     srch = subs.add_parser("search", help="Full-text search across control text")
     srch.add_argument("--keyword", required=True, help="Search term (e.g. 'multi-factor')")
     srch.add_argument("--scope", metavar="LEVEL",
@@ -1000,6 +1186,7 @@ def main(argv=None) -> int:
         "scope": cmd_scope,
         "overlap": cmd_overlap,
         "consensus": cmd_consensus,
+        "master": cmd_master,
         "search": cmd_search,
         "changelog": cmd_changelog,
         "feeds": cmd_feeds,

@@ -328,22 +328,55 @@ def normalize_tsc_id(raw: str) -> Optional[str]:
 
 _PCI_RE = re.compile(r"^(?:Req(?:uirement)?\.?\s*)?(\d{1,2})((?:\.\d{1,3}){0,3})\s*$",
                      re.IGNORECASE)
+# PCI DSS v4 Appendix requirements (A1 multi-tenant, A2 POS/POI TLS, A3 DESV) are
+# real requirement id space — 'A3.1.1' etc.
+_PCI_APPENDIX_RE = re.compile(r"^A([123])((?:\.\d{1,3}){1,3})\s*$", re.IGNORECASE)
 
 
 def normalize_pci_id(raw: str) -> Optional[str]:
     """
-    Canonicalize a PCI DSS requirement id: '1.2.3', 'Req 1.2.3', '01.02' -> '1.2.3'.
-    1–4 dotted numeric segments; anything else returns None.
+    Canonicalize a PCI DSS requirement id: '1.2.3', 'Req 1.2.3', '01.02' -> '1.2.3';
+    appendix ids 'a3.1.1' -> 'A3.1.1'.  1–4 dotted numeric segments (or A1/A2/A3 +
+    1–3 segments); anything else returns None.
     """
     if not isinstance(raw, str):
         return None
-    m = _PCI_RE.match(raw.strip())
+    s = raw.strip()
+    m = _PCI_APPENDIX_RE.match(s)
+    if m:
+        segs = [int(t) for t in m.group(2).split(".") if t]
+        return f"A{m.group(1)}." + ".".join(str(x) for x in segs)
+    m = _PCI_RE.match(s)
     if not m:
         return None
     segs = [int(m.group(1))] + [int(t) for t in m.group(2).split(".") if t]
     if segs[0] < 1 or segs[0] > 12:
         return None
     return ".".join(str(s) for s in segs)
+
+
+# ── HIPAA Security Rule 45 CFR citations ────────────────────────────────────────
+
+_HIPAA_CIT_RE = re.compile(
+    r"^(?:§\s*)?(?:45\s*CFR\s*)?(164\.\d{3})((?:\([a-z0-9]{1,4}\))*)\s*$",
+    re.IGNORECASE)
+
+
+def normalize_hipaa_citation(raw: str) -> Optional[str]:
+    """
+    Canonicalize a HIPAA Security Rule citation to the bare form used across the
+    hub, the 800-66 direct projection, and the master surface:
+    '§ 164.308(a)(1)(i)' / '45 CFR 164.312(e)(2)(ii)' -> '164.308(a)(1)(i)' /
+    '164.312(e)(2)(ii)'.  The paren path is preserved exactly as written — 45 CFR
+    level case is significant ('(a)(1)(ii)(A)') and is never rewritten.
+    Anything that is not a 164.NNN citation returns None — never guess.
+    """
+    if not isinstance(raw, str):
+        return None
+    m = _HIPAA_CIT_RE.match(raw.strip())
+    if not m:
+        return None
+    return m.group(1) + m.group(2)
 
 
 # ── OSCAL structured parts (raw catalog: catalog.groups[].controls[]) ──────────

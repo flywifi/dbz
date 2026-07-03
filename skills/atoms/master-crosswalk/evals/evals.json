@@ -1,0 +1,63 @@
+{
+  "atom": "master-crosswalk",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pair-01",
+      "label": "SOC 2 × PCI DSS pair enumeration — tier-ordered with corroboration",
+      "input": {
+        "framework_a": "SOC 2",
+        "framework_b": "PCI DSS v4.0"
+      },
+      "expected_output": {
+        "rows_min": 10,
+        "tiers_subset_of": ["owner_direct", "nist_stated", "hub", "bundled", "consensus", "production_aggregate"],
+        "ordered_by_tier_rank": true,
+        "human_review_required": true
+      },
+      "expect_pass": true,
+      "notes": "Both frameworks resolve through framework_labels; rows carry tier + provenance + minority-report corroboration."
+    },
+    {
+      "id": "control-01",
+      "label": "HIPAA citation fan-out — direct 800-66 rows outrank hub rows for CPRT-form citations",
+      "input": {
+        "framework": "HIPAA Security",
+        "control": "164.312(a)(2)(i)"
+      },
+      "expected_output": {
+        "rows_min": 1,
+        "contains_tier": "nist_stated",
+        "contains_provenance": "direct_800_66"
+      },
+      "expect_pass": true,
+      "notes": "164.312(a)(2)(i) is a CPRT-form implementation-spec citation carried by the 800-66 OLIR mapping."
+    },
+    {
+      "id": "scope-01",
+      "label": "Audit-scope: SOC 2 vs FedRAMP Moderate — advisory summary with in-scope counts",
+      "input": {
+        "framework_a": "SOC 2",
+        "scope_fedramp": "moderate"
+      },
+      "expected_output": {
+        "summary_contains": ["requirements touch", "advisory"],
+        "rows_only_nist_anchored": true
+      },
+      "expect_pass": true
+    },
+    {
+      "id": "gap-01",
+      "label": "SOC 1 returns a structured data gap, never id-level rows",
+      "input": {
+        "framework_a": "SOC 1",
+        "framework_b": "GDPR"
+      },
+      "expected_output": {
+        "data_gap": "no_public_control_layer"
+      },
+      "expect_pass": true,
+      "notes": "SOC 1 has no public control catalog (SSAE 22 / AT-C 320); the master surface must say so instead of guessing."
+    }
+  ]
+}

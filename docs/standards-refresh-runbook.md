@@ -53,6 +53,14 @@ The health auditor treats unconfirmed entries as advisory, never authoritative.
   SOC 2 (thresholds pinned below measured values at gate-authoring time — 2.3× and 55.9%).
   A red gate run means: disable the flag (`enabled:false` or `DBZ_FF_CONSENSUS_PROVENANCE=0`),
   then investigate — the overlap engine degrades cleanly to hub-gated 0.65 confidence.
+- `validate_spine.py` check 8 holds the **master-surface gates** (Phase 19): tier/provenance
+  integrity, hard-zero proprietary-id leak, label round-trip through `framework_labels`,
+  HIPAA 800-66↔hub citation reconciliation ≥ 50% (observed 73.2%), CSF2 OLIR↔concept-crosswalk
+  parity ≥ 95% (observed 100%), PCI on-spine sanity, and matrix completeness (C(14,2)=91).
+  `master_mappings` and all projections are **build artifacts** — a refreshed source flows
+  through `--gate` (rebuild + battery) and the master DB regenerates; it is never hand-patched.
+  Determinism comparator: `grc_manifest.json → table_digests` (sorted-row sha256 per table),
+  identical across double builds.
 
 ## Day-1 completeness policy
 
@@ -88,11 +96,20 @@ r5.2.0 catalog. The CCM↔SCF divergence analysis (194 controls compared) lives 
 `cross-mapping/output/ccm_discrepancy_report.json` — under this model those divergences are
 scope-relative acceptance differences, not errors.
 
-## Known open follow-ups (as of 2026-07-02)
+## Known open follow-ups (as of 2026-07-03)
 
 - `nist-800-63b-requirements.json` still derives from 63B **r3**; regenerate from 63B-4.
 - CMMC → 800-171 r3 transition: waiting on DoD rulemaking (12–24 mo notice expected);
-  DoD's Apr-2025 Rev-3 ODP memo is the seed for `odp_values` when it starts.
+  DoD's Apr-2025 Rev-3 ODP memo is the seed for `odp_values` when it starts. **Phase 19
+  landed the data side**: 171r3 + 172r3 CPRT datasets pinned with NIST's own →800-53
+  mappings loaded as spine frameworks, NIST's r2→r3 analysis workbook + r3 CUI overlay
+  pinned, and `framework_changelog` entries seeded.
+- 171A r3 / 172A r3 assessment-objective loading (artifacts pinned, 157 objective-level
+  refs to 800-53A 5.1.1 available) — assessment-procedure depth for the r3 line.
+- 800-66 / CSF2 / 171r3 OLIR sets as **consensus voters** (currently projections/pairs
+  only) — would add NIST-ancestry voters, so it needs a re-measured Phase 18 gate first.
+- CSF 2.0 OLIR graph artifacts also carry CCM / SCF / CIS 8.1 / NICE / CRI reference sets —
+  raw material for the deferred SCF+CCM spine-projection phase.
 - `olir_crawler.py` endpoint (`csrc.nist.gov/api/olir/finalized`) 404s — re-point to the
   CPRT OLIR catalog.
 - SCF + CCM OSCAL loaded as pinned artifacts only — spine projection is a future phase

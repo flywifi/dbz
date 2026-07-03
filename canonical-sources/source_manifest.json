@@ -403,8 +403,12 @@
       "retrieved": "2024",
       "role": "soc2_tsc_to_hitrust",
       "column_roles": {},
-      "notes": "HITRUST CSF v11.4.0 → AICPA 2017 TSP → SOC 2 CC criteria matrix. 487 merged cell ranges, 283 columns, multi-level headers. Deferred — requires custom openpyxl merge-resolution logic.",
-      "deferred": true
+      "structure": {
+        "layout": "row 1 = TSC criteria across merged column ranges; row 2 = point-of-focus sub-headers; column A from row 5 = HITRUST control ids (one- or two-letter suffixes, e.g. 01.b / 09.aa); body 'X' = coverage marker (368 markers -> 235 criterion-level pairs)",
+        "loader": "spine_loader.load_aicpa_tsp_hub (openpyxl merged-range resolution)"
+      },
+      "notes": "HITRUST CSF v11.4.0 → AICPA 2017 TSP → SOC 2 CC criteria matrix. 487 merged cell ranges, 283 columns, multi-level headers. Loaded since Phase 19 as TSC<->HITRUST master-surface pairs (aicpa_tsp_hub, hub tier) — NOT a spine projection.",
+      "deferred": false
     },
     {
       "id": "nist-csf2-mapping",
@@ -792,6 +796,166 @@
       "role": "scf_scrms",
       "authority_scope": "scf_only",
       "notes": "Security, Compliance & Resilience Management System — SCF's management-system layer ('How To GRC Playbook'). Includes due-diligence/due-care flow chart."
+    },
+    {
+      "id": "pci-40-to-iso-27001-2022",
+      "file": "canonical-sources/source_data/PCI 4.0 to ISO 27001_2022.xlsx",
+      "format": "xlsx",
+      "sheet": 0,
+      "header_row": 0,
+      "version": "PCI DSS v4.0 to ISO/IEC 27001:2022 (pair-direct crosswalk)",
+      "retrieved": "2026-07-02",
+      "sha256": "f0914328657fd10a4c420cce8997424e437508a03c23ecc7d59b8fc6e3f23842",
+      "role": "pci_to_iso_direct",
+      "column_roles": {
+        "col0": "pci_id_title",
+        "col2": "iso_id_list"
+      },
+      "notes": "Pair-direct PCI DSS 4.0 <-> ISO 27001:2022 crosswalk; the `pci_iso` consensus voter (consensus_detector.collect_pci_iso reads leading PCI id from col 0, ISO id list from col 2). Registered in Phase 19 — was previously an unregistered voter input."
+    },
+    {
+      "id": "cprt-sp800-171r3",
+      "file": "canonical-sources/source_data/cprt/cprt_SP_800_171_3_0_0_07-03-2026.json",
+      "format": "cprt_json",
+      "version": "NIST SP 800-171 Revision 3 (CPRT dataset 3.0.0, exported 2026-07-03)",
+      "retrieved": "2026-07-03",
+      "sha256": "19d18ef88700e468f273a4bb0a00e76f1dab762f5639e5de75592fda4e61c4fa",
+      "role": "nist_171r3_catalog_and_53_mapping",
+      "structure": {
+        "path": "response.elements",
+        "keys": ["documents", "relationship_types", "elements", "relationships"],
+        "mapping_relationships": "source_doc SP_800_171_3_0_0 -> dest_doc SP_800_53_5_1_1, relationship_identifier external_reference (157 rows; requirement id '03.15.01' -> control id 'AC-01')"
+      },
+      "notes": "Official NIST CPRT export (user-provided). The external_reference relationships are NIST's own 171r3 -> 800-53r5 mapping — loader load_171r3_projection. Dest ids are r5.1.1 identifiers; ids are stable into the r5.2.0 catalog (normalize_control_id de-pads 'AC-01' -> 'AC-1')."
+    },
+    {
+      "id": "cprt-sp800-171a-r3",
+      "file": "canonical-sources/source_data/cprt/cprt_SP_800_171_A_3_0_0_07-03-2026.json",
+      "format": "cprt_json",
+      "version": "NIST SP 800-171A Revision 3 (CPRT dataset 3.0.0, exported 2026-07-03)",
+      "retrieved": "2026-07-03",
+      "sha256": "108cbd3f2f400d32061cffa032e56ef092668121d04310ad83369e06d21f60bd",
+      "role": "nist_171a_r3_assessment_procedures",
+      "notes": "171A r3 assessment objectives/determinations + 157 external_reference rows to SP 800-53A 5.1.1 objectives. Registered artifact; objective-level loading is a known follow-up (assessment-procedure depth), not loaded in Phase 19."
+    },
+    {
+      "id": "cprt-sp800-172r3",
+      "file": "canonical-sources/source_data/cprt/cprt_SP_800_172_3_0_0_07-03-2026.json",
+      "format": "cprt_json",
+      "version": "NIST SP 800-172 Revision 3 (CPRT dataset 3.0.0, exported 2026-07-03)",
+      "retrieved": "2026-07-03",
+      "sha256": "666f09a36045a9b132a4f8dbfa8b905ab5a019d192009798b30bd02acef33f3c",
+      "role": "nist_172r3_catalog_and_53_mapping",
+      "structure": {
+        "mapping_relationships": "source_doc SP_800_172_3_0_0 -> dest_doc SP_800_53_5_2_0 external_reference (107 rows) + -> SP_800_171_3_0_0 (25 rows)"
+      },
+      "notes": "Official NIST CPRT export (user-provided). The 107 external_reference rows to SP 800-53 r5.2.0 are NIST's own 172r3 -> 800-53 mapping — loader load_172r3_projection. Supersedes-in-currency the 2021 xlsx pin (nist-800-172) for mapping purposes; the r3 OSCAL catalog pin remains."
+    },
+    {
+      "id": "cprt-sp800-172a-r3",
+      "file": "canonical-sources/source_data/cprt/cprt_SP_800_172A_3_0_0_07-03-2026.json",
+      "format": "cprt_json",
+      "version": "NIST SP 800-172A Revision 3 (CPRT dataset 3.0.0, exported 2026-07-03)",
+      "retrieved": "2026-07-03",
+      "sha256": "f6c26278bb8697cbbfec734ded80e178b7dc7b3371b45c50ff1578a52de543a5",
+      "role": "nist_172a_r3_assessment_procedures",
+      "notes": "172A r3 assessment procedures. Registered artifact; loading is a known follow-up alongside 171A r3."
+    },
+    {
+      "id": "sp800-171r3-cui-overlay",
+      "file": "canonical-sources/source_data/sp800-171r3-cui-overlay.xlsx",
+      "format": "xlsx",
+      "version": "SP 800-171 r3 CUI overlay (NIST workbook, user-provided 2026-07-03)",
+      "retrieved": "2026-07-03",
+      "sha256": "c69914ac7d364b3ec6b661474102389072b5a293bc2dca156433dedd2d1e6da7",
+      "role": "nist_171r3_cui_overlay",
+      "notes": "NIST's 171r3 CUI overlay workbook. Companion to the existing r2-era CUI overlay pins; loader input candidate for the CMMC->171r3 transition phase."
+    },
+    {
+      "id": "sp800-171-r2-to-r3-analysis",
+      "file": "canonical-sources/source_data/sp800-171r2-to-r3-analysis.xlsx",
+      "format": "xlsx",
+      "version": "NIST SP 800-171 r2 -> r3 change analysis (official workbook, user-provided 2026-07-03)",
+      "retrieved": "2026-07-03",
+      "sha256": "ad0908f52945e316dec05a4032cbcaa75958eab2534d2627b3a89f696fb30b84",
+      "role": "nist_171_version_delta",
+      "notes": "NIST's own r2->r3 analysis — the authoritative delta artifact behind the framework_changelog 171 r2->r3 entry and the future CMMC transition."
+    },
+    {
+      "id": "cprt-sp800-66r2-export",
+      "file": "canonical-sources/source_data/cprt/cprt_SP800_66_2_0_0_export_2026-07-03.json",
+      "format": "cprt_json",
+      "version": "NIST SP 800-66r2 (CPRT dataset 2.0.0, fetched 2026-07-03)",
+      "retrieved": "2026-07-03",
+      "sha256": "ff09781b88d75428a319a56f542a44306ffc2d80360b351f52b49cf5be379cef",
+      "role": "hipaa_66r2_structure",
+      "notes": "SP 800-66r2 element inventory: 5 Security Rule sections, 22 standards, 53 implementation specifications, key activities + descriptions + sample questions, and per-standard relevant-publication crosswalk. Element inventory validates the citation namespace for the OLIR graph loader; guidance content is reference-only. NIST publication — public domain."
+    },
+    {
+      "id": "cprt-sp800-66r2-olir-graphs",
+      "file": "canonical-sources/source_data/cprt/cprt_SP800_66_2_0_0_olir_graphs_2026-07-03.json",
+      "format": "cprt_graph_json",
+      "version": "SP 800-66r2 OLIR relationship graphs (CPRT, fetched 2026-07-03)",
+      "retrieved": "2026-07-03",
+      "sha256": "ba91d5459b8cfb014071f0bdcbfcbb529d9d02981e53007b519319c58c6ed025",
+      "role": "hipaa_to_nist53_mapping",
+      "structure": {
+        "path": "graphs.<section>.response",
+        "edge_locator": "any element dict's externalRelationships[] with olirName='SP-800-66-Rev-2-to-SP-800-53-Rev-5.1.1' (element control ids like 'RA-01')",
+        "sections": ["164.308", "164.310", "164.312", "164.314", "164.316"]
+      },
+      "notes": "Per-section CPRT element graphs carrying the NIST OLIR informative reference SP-800-66-Rev-2-to-SP-800-53-Rev-5.1.1 (279 HIPAA-citation -> 800-53 control pairs across 68 citations / 108 controls) — loader load_800_66_projection. The graphs also carry SP-800-66-Rev-2-to-CSF-v1.1 subcategory refs, which are NOT loaded (CSF 1.1 is version-stale vs the repo's CSF 2.0 canonical labels)."
+    },
+    {
+      "id": "cprt-csf2-export",
+      "file": "canonical-sources/source_data/cprt/cprt_CSF_2_0_0_export_2026-07-03.json",
+      "format": "cprt_json",
+      "version": "NIST CSF 2.0 (CPRT dataset, fetched 2026-07-03)",
+      "retrieved": "2026-07-03",
+      "sha256": "28ba53c5ea2f57fd7fcb56d7f512ab8b28c19516af411dffac6c782debc6c7e1",
+      "role": "csf2_structure",
+      "notes": "CSF 2.0 element inventory (functions/categories/subcategories incl. withdrawn 1.1-era ids) — validates the subcategory namespace for the OLIR graph loader."
+    },
+    {
+      "id": "cprt-csf2-olir-graphs",
+      "file": "canonical-sources/source_data/cprt/cprt_CSF_2_0_0_olir_graphs_2026-07-03.json",
+      "format": "cprt_graph_json",
+      "version": "CSF 2.0 OLIR relationship graphs (CPRT, fetched 2026-07-03)",
+      "retrieved": "2026-07-03",
+      "sha256": "e20ba9fb3ec924a5a595c14db0d9ff20f27d5e9e6970e153fcdca06db1ec0c97",
+      "role": "csf2_olir_mappings",
+      "structure": {
+        "path": "graphs.<category>.response",
+        "edge_locator": "externalRelationships[] filtered by olirName",
+        "loaded_olir_sets": {
+          "Cybersecurity-Framework-v2.0-to-SP-800-53-Rev-5-2-0": "746 subcategory->control pairs — the CSF 2.0 spine projection source (NIST-owned, r5.2.0-pinned)",
+          "Payment-Card-Industry-Data-Security-Standards-(PCI-DSS)-4.0.1-to-Cybersecurity-Framework-v2.0": "551 pairs — owner-submitted PCI<->CSF2 master-surface pairs",
+          "ISO/IEC-27001:2022-to-Cybersecurity-Framework-v2.0": "492 rows, category-level with compound dest strings ('Annex A Controls: 8.16') — parsed conservatively, function-level rows dropped",
+          "CSF 2.0 to SP 800-171 Rev 3": "313 pairs — CSF2<->171r3 master-surface pairs"
+        },
+        "unloaded_olir_sets": "CCM/SCF/NICE/OWASP/CRI/etc. remain in the artifact for future phases (SCF+CCM spine projection is deferred)"
+      },
+      "notes": "Per-category CPRT element graphs across all 34 category ids (incl. withdrawn 1.1-era categories, which return near-empty graphs). Loaders: load_csf2_projection + master-surface pair extraction."
+    },
+    {
+      "id": "nist-ai-rmf-crosswalks",
+      "file": "canonical-sources/source_data/reference-crosswalks/",
+      "format": "directory",
+      "version": "NIST AIRC crosswalk documents: AI RMF 1.0 <-> ISO/IEC 42001, 23894, 42005 (+ SP 800-172r3/172Ar3 PDFs, 171r3 FAQ)",
+      "retrieved": "2026-07-03",
+      "role": "reference_only",
+      "notes": "User-provided reference PDFs. AI RMF crosswalks are outside the audit-framework scope of the master surface (candidate future frameworks); the 172r3/172Ar3 publication PDFs and 171r3/171Ar3 FAQ document the CPRT datasets pinned above. Not loader inputs."
+    },
+    {
+      "id": "scf-strm-methodology",
+      "file": "canonical-sources/source_data/scf/scf-set-theory-relationship-mapping.pdf",
+      "format": "pdf",
+      "version": "SCF Set-Theory Relationship Mapping (STRM) methodology",
+      "retrieved": "2026-07-03",
+      "sha256": "50989df32bb1f40b266fdc858a4c48299332c8d41b9adb3bb6c8d7b5efe1ba44",
+      "role": "reference_only",
+      "authority_scope": "scf_only",
+      "notes": "SCF's STRM methodology paper — the relationship vocabulary behind SCF crosswalks. Reference for the deferred SCF spine-projection phase."
     }
   ],
   "er_crosswalk_csvs": {

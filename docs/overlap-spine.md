@@ -40,6 +40,24 @@ control B", but which specific requirement inside a control is shared.
   anchored on the AICPA Trust Services Criteria (2017) — the specific testable criteria a SOC 2
   audit evaluates against. For CMMC 2.0 and 800-171, the engine picks the stronger `cmmc171`
   edge (0.95) over the weaker hub edge (0.65) via `_framework_best_conf`.
+- **HIPAA Security ↔ 800-53 (direct, Phase 19)** — the NIST SP 800-66r2 OLIR informative
+  reference (CPRT element graphs, 279 citation→control pairs): `direct_800_66`, confidence
+  0.85, NIST-stated. The hub path is kept beneath it; both use one canonical bare-citation
+  namespace (`normalize_hipaa_citation`). Three real citation granularities coexist and are
+  never rewritten: section (`164.308`, consensus keys), CPRT standard (`164.312(a)`, the
+  800-66 set), full citation (`164.312(a)(1)`, the hub set).
+- **NIST CSF 2.0 ↔ 800-53 r5.2.0 (direct, Phase 19)** — the official OLIR crosswalk from the
+  CSF 2.0 CPRT graphs (746 subcategory→control pairs, pinned to the exact catalog release on
+  disk): `direct_csf2`, 0.85. The concept-crosswalk xlsx remains in `unified_mappings` as
+  corroboration (the projection covers 100% of its pairs).
+- **NIST SP 800-171 r3 / 800-172 r3 ↔ 800-53 (direct, Phase 19)** — NIST's own mappings from
+  the official CPRT datasets (157 + 107 external references): `direct_cprt_171r3` /
+  `direct_cprt_172r3`, 0.85. 171 r2 stays pinned for CMMC — both revisions coexist as
+  separate frameworks.
+- **PCI DSS v4.0 ↔ 800-53 (bundled, Phase 19)** — the user-provided master crosswalk's PCI
+  column (1,348 requirement→control co-citations incl. Appendix A1/A2/A3 ids):
+  `master_crosswalk`, confidence 0.60, needs_confirmation=1 — honest bundled tier; the
+  Phase 18 consensus tier lifts eligible pairs to 0.85 at query time.
 - **CCIs** — the current DISA CCI List XML (2025-01-23, public download) maps each CCI to a
   NIST 800-53 sub-part using **native Revision 5 references** (3,836 CCIs). CCIs that only
   carry r4 refs are bridged by identity where the id survives into r5, or — for the withdrawn
@@ -100,9 +118,14 @@ as unknown, never guessed.
 
 ## Honest limits
 - The finest basis (CCI ∪ 800-53A objective) now covers every active control; the only
-  controls with no atoms are r5-withdrawn stubs. Commercial pairs still reach the spine
-  through the HITRUST hub, so their confidence stays gated by the hub's 0.65 edge even when
-  the atom denominator is complete.
+  controls with no atoms are r5-withdrawn stubs. SOC 2 / GDPR / CIS pairs still reach the
+  spine through the HITRUST hub (0.65); HIPAA and CSF 2.0 now carry NIST-stated 0.85 paths,
+  and PCI carries a bundled 0.60 path — the tier on each result says which.
+- **SOC 1** has no public control layer (SSAE 22 / AT-C 320 define report standards) — it can
+  never be projected without fabrication; only aggregate `inferred_er` overlap exists.
+- **CMMC L1/L2/L3 level tiering** is still unmodeled — CMMC is practice→control edges only.
+- **PCI's bundled tier** is a single compiler's co-citation: treat 0.60-confidence PCI rows
+  as leads, not statements; consensus corroboration (votes) is the strengthening signal.
 - App J–recovered CCI rows (`basis=appj_absorption`) are control-level only — NIST's
   absorption statements name the receiving control, not a sub-part, and we never guess.
 - Parameter (ODP) comparison is only decidable where two frameworks both pin a value; FedRAMP
@@ -131,20 +154,36 @@ scan.
 - `cross-mapping/tests/test_spine.py`, `cross-mapping/tests/validate_spine.py` — self-test and
   oracle reconciliation.
 
-## Proposed (not yet added): a `mapping_edges` catalog field
-The projection edges live in `grc.db` today. If the projection is later exported into the
-generated catalog JSON, `cross-mapping/schema/enhanced_framework_schema.json` would need a new
-`mapping_edges` array on a control:
+## The master mapping surface (`master_mappings`, Phase 19)
+What the old "proposed `mapping_edges`" section sketched now exists as a build artifact:
+one row per unordered canonical framework pair, unioned from every mapping surface
+(`framework_projection`, `unified_mappings`, `consensus_edges` strong+moderate, the OLIR
+CSF-2.0 pair sets, the AICPA-TSP↔HITRUST matrix, and aggregate ER production evidence),
+assembled deterministically by `cross-mapping/engine/master_surface.py`.
 
-```
-"mapping_edges": [
-  { "framework": "ISO 27001/2 (2022)", "native_id": "A.5.15",
-    "r5_subpart": "AC-2 d.1", "cci_id": "CCI-000015",
-    "relationship": "intersect", "relationship_basis": "derived_cardinality",
-    "provenance": "direct_olir", "confidence": 0.85, "needs_confirmation": false,
-    "source": { "file": "…", "row": 42 } }
-]
-```
+Tier arbitration (strongest wins the primary row; every losing surface's claim is preserved
+verbatim in the `corroboration` JSON column — minority report, dissent never dropped):
 
-This is a deliberate schema-evolution decision and is **not** silently added — the catalog
-schema is unchanged until the export is built.
+| tier | provenance | confidence |
+|---|---|---|
+| `owner_direct` | cmmc171 | 0.95 |
+| `nist_stated` | direct_olir · direct_800_66 · direct_csf2 · direct_cprt_171r3 · direct_cprt_172r3 · olir_csf2_pair | 0.85 |
+| `hub` | hitrust_hub · transitive_unified · aicpa_tsp_hub | 0.65 |
+| `bundled` | master_crosswalk | 0.60 |
+| `consensus` | multi-voter derived (votes reported) | — |
+| `production_aggregate` | co-occurrence counts, public ids only | — |
+
+Rules: one canonical label per framework (`framework_labels` registry — explicit aliases from
+`framework_vocab.json`, identity self-registration for the long tail); provider-proprietary
+ids are refused at assembly and triple-scanned (tests + validate_spine check 8 + health
+audit); SOC 1 has no id-level rows (no public control layer — structured data gap); FedRAMP
+appears as baseline *scope*, not pair rows; single-voter consensus pairs are excluded.
+Query: `dbz_query.py master` (pair / control / audit-scope modes) and the `master-crosswalk`
+atom. Gates: validate_spine check 8 (integrity, leak, label round-trip, HIPAA direct↔hub
+reconciliation ≥50% [observed 73.2%], CSF2 parity ≥95% [observed 100%], PCI on-spine,
+matrix completeness C(14,2)=91).
+
+The catalog-JSON export (`mapping_edges` on a control in
+`cross-mapping/schema/enhanced_framework_schema.json`) remains a deliberate schema-evolution
+decision that is **not** silently added — the catalog schema is unchanged until that export
+is built.

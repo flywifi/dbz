@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.6"   # v3.6: overlap_matrix consensus corroboration counts (v3.5: consensus_edges)
+SCHEMA_VERSION = "3.7"   # v3.7: master_mappings + framework_labels (v3.6: matrix consensus counts)
 
 CHUNK = 500  # executemany batch size
 
@@ -407,6 +407,44 @@ CREATE TABLE IF NOT EXISTS consensus_edges (
 );
 CREATE INDEX IF NOT EXISTS idx_consensus_tier ON consensus_edges(tier);
 CREATE INDEX IF NOT EXISTS idx_consensus_fws  ON consensus_edges(fw_a, fw_b);
+
+-- ── Canonical framework label registry (Phase 19) ──────────────────────────────
+CREATE TABLE IF NOT EXISTS framework_labels (
+    alias      TEXT NOT NULL,   -- label as a surface writes it, or a query shorthand
+    surface    TEXT NOT NULL,   -- canonical | alias | distinct
+    canonical  TEXT NOT NULL,   -- the one canonical label ("PCI DSS v4.0", ...)
+    PRIMARY KEY (alias, surface)
+);
+CREATE INDEX IF NOT EXISTS idx_fl_canonical ON framework_labels(canonical);
+
+-- ── Master mapping surface (Phase 19): the all-in-one union ────────────────────
+-- One row per unordered canonical pair; strongest tier wins the primary row and
+-- every losing surface's claim is preserved in `corroboration` (minority report).
+CREATE TABLE IF NOT EXISTS master_mappings (
+    fw_a               TEXT NOT NULL,   -- canonical labels; (fw_a,native_a) <= (fw_b,native_b)
+    native_a           TEXT NOT NULL,
+    fw_b               TEXT NOT NULL,
+    native_b           TEXT NOT NULL,
+    relationship       TEXT NOT NULL DEFAULT 'unspecified',
+    relationship_basis TEXT NOT NULL,   -- source_stated|derived_cardinality|co_membership|co_citation|multi_source_consensus|production_cooccurrence
+    tier               TEXT NOT NULL,   -- owner_direct|nist_stated|hub|bundled|consensus|production_aggregate
+    provenance         TEXT NOT NULL,
+    confidence         REAL,            -- NULL for consensus / production_aggregate
+    hop_count          INTEGER,
+    needs_confirmation INTEGER NOT NULL DEFAULT 1,
+    uncertainty_id     TEXT,
+    votes              INTEGER,         -- consensus corroboration where present
+    production_support INTEGER NOT NULL DEFAULT 0,   -- aggregate counts only, never ids
+    shared_anchors     TEXT,            -- JSON capped list of r5 anchors under the pair
+    anchor_count       INTEGER,
+    corroboration      TEXT,            -- JSON minority report (non-winning surfaces)
+    source_ref         TEXT NOT NULL,
+    PRIMARY KEY (fw_a, native_a, fw_b, native_b)
+);
+CREATE INDEX IF NOT EXISTS idx_mm_a    ON master_mappings(fw_a, native_a);
+CREATE INDEX IF NOT EXISTS idx_mm_b    ON master_mappings(fw_b, native_b);
+CREATE INDEX IF NOT EXISTS idx_mm_tier ON master_mappings(tier);
+CREATE INDEX IF NOT EXISTS idx_mm_pair ON master_mappings(fw_a, fw_b);
 
 -- ── Universal projection: any framework native control -> spine coordinate ─────
 CREATE TABLE IF NOT EXISTS framework_projection (
@@ -1159,6 +1197,33 @@ def build_db(
              :hop_count, :needs_confirmation, :uncertainty_id, :status, :source_file, :source_sheet, :source_row)
     """, hub_edges, "framework_projection")
 
+    # Phase 19: direct projections — HIPAA (NIST SP 800-66r2 OLIR), CSF 2.0
+    # (official OLIR, r5.2.0-pinned), 171r3 + 172r3 (official CPRT datasets),
+    # PCI (bundled tier from the user-provided master crosswalk). Each is
+    # guarded on artifact existence (offline rebuilds still pass).
+    _P19_INSERT = """
+        INSERT INTO framework_projection
+            (framework, native_id, r5_control, r5_subpart, cci_id, odp_id,
+             relationship, relationship_basis, granularity, provenance, confidence,
+             hop_count, needs_confirmation, uncertainty_id, status, source_file, source_sheet, source_row)
+        VALUES
+            (:framework, :native_id, :r5_control, :r5_subpart, :cci_id, :odp_id,
+             :relationship, :relationship_basis, :granularity, :provenance, :confidence,
+             :hop_count, :needs_confirmation, :uncertainty_id, :status, :source_file, :source_sheet, :source_row)
+    """
+    for _label, _loader in (("800-66 (HIPAA direct)", spine_loader.load_800_66_projection),
+                            ("csf2 (OLIR r5.2.0)", spine_loader.load_csf2_projection),
+                            ("171r3 (CPRT)", spine_loader.load_171r3_projection),
+                            ("172r3 (CPRT)", spine_loader.load_172r3_projection),
+                            ("pci (master crosswalk, bundled)", spine_loader.load_pci_master_projection)):
+        _edges, _pstats = _loader(catalog_ids)
+        if not _edges:
+            print(f"  {_label} projection: skipped ({_pstats.get('skipped', 'no edges')})")
+            continue
+        _unc.apply_confirmations_to_edges(_edges, confirmations)
+        print(f"  {_label} projection: {_pstats}")
+        _executemany_chunked(conn, _P19_INSERT, _edges, "framework_projection")
+
     # Complete the sub-part inventory: union every sub-part referenced by
     # framework_projection or assessment_objectives into nist_subparts, so
     # control-level footprint expansion enumerates the same denominator that
@@ -1415,10 +1480,65 @@ def build_db(
     # consensus_provenance flag state, so builds stay deterministic; the
     # corroboration counts are stored alongside and the query layer applies
     # the flag-gated tier live.
+    # Phase 19: canonical framework label registry + the master mapping surface.
+    import master_surface as _ms  # type: ignore
+    label_rows = _ms.load_label_rows()
+    # Self-register every surface label the DB actually carries that has no
+    # explicit alias: identity rows (surface='surface_observed'), so the
+    # registry is complete and new unified/er labels never break resolution.
+    _known_aliases = {r["alias"] for r in label_rows}
+    _observed = sorted({r[0] for r in conn.execute(
+        "SELECT DISTINCT framework FROM unified_mappings WHERE framework <> 'DISA CCI' "
+        "UNION SELECT DISTINCT framework FROM er_mappings "
+        "UNION SELECT DISTINCT framework FROM framework_projection")})
+    for _lbl in _observed:
+        if _lbl not in _known_aliases:
+            label_rows.append({"alias": _lbl, "surface": "surface_observed", "canonical": _lbl})
+    _executemany_chunked(conn, """
+        INSERT OR REPLACE INTO framework_labels (alias, surface, canonical)
+        VALUES (:alias, :surface, :canonical)
+    """, label_rows, "framework_labels")
+    print(f"  framework_labels: {len(label_rows)} alias rows "
+          f"({sum(1 for r in label_rows if r['surface'] == 'surface_observed')} surface-observed identities)")
+
+    _csf2_pairs, _cp_stats = spine_loader.collect_csf2_olir_pairs()
+    print(f"  csf2 olir pairs: {_cp_stats}")
+    _tsp_pairs, _tsp_stats = spine_loader.load_aicpa_tsp_hub()
+    print(f"  aicpa_tsp pairs: {_tsp_stats}")
+    master_rows, master_stats = _ms.assemble(conn, csf2_pairs=_csf2_pairs, tsp_pairs=_tsp_pairs)
+    _executemany_chunked(conn, """
+        INSERT OR REPLACE INTO master_mappings
+            (fw_a, native_a, fw_b, native_b, relationship, relationship_basis,
+             tier, provenance, confidence, hop_count, needs_confirmation,
+             uncertainty_id, votes, production_support, shared_anchors,
+             anchor_count, corroboration, source_ref)
+        VALUES
+            (:fw_a, :native_a, :fw_b, :native_b, :relationship, :relationship_basis,
+             :tier, :provenance, :confidence, :hop_count, :needs_confirmation,
+             :uncertainty_id, :votes, :production_support, :shared_anchors,
+             :anchor_count, :corroboration, :source_ref)
+    """, master_rows, "master_mappings")
+    conn.commit()
+    print(f"  master_mappings: rows={master_stats['rows']} by_tier={master_stats['by_tier']} "
+          f"(fedramp baseline-annotation natives excluded: {master_stats['skipped_fedramp']}; "
+          f"single-voter consensus pairs excluded: {master_stats['skipped_consensus_single']})")
+
     print("\n[overlap] Precomputing overlap_matrix over spine frameworks")
     import spine_overlap as _so  # type: ignore
     proj_fws = [r[0] for r in conn.execute(
         "SELECT DISTINCT framework FROM framework_projection ORDER BY framework")]
+    # Phase 19: the matrix covers the canonical union — spine frameworks plus
+    # ER-only frameworks (SOC 1, HITRUST CSF), which compute() degrades to
+    # inferred_er / none honestly. Canonicalized, deduped, deterministic.
+    _er_fws = [r[0] for r in conn.execute(
+        "SELECT DISTINCT framework FROM er_mappings ORDER BY framework")]
+    _canon_map = {a: c for a, _s, c in conn.execute(
+        "SELECT alias, surface, canonical FROM framework_labels")}
+    matrix_fws = sorted({f for f in proj_fws} |
+                        {_canon_map.get(f, f) for f in _er_fws})
+    # er labels that canonicalize onto a projection framework keep the
+    # projection label; genuinely new ones (SOC 1, HITRUST CSF) join the matrix.
+    proj_fws = [f for f in matrix_fws]
     om_rows = []
     for i in range(len(proj_fws)):
         for j in range(i + 1, len(proj_fws)):
@@ -1473,9 +1593,21 @@ def build_db(
                 "nvd_cves", "disa_ccis", "eurlex_articles",
                 "nist_800_63b_requirements", "fips_140_validations",
                 "nist_subparts", "cci_bridge", "control_odps", "assessment_objectives",
-                "framework_projection", "hitrust_hub", "odp_values", "overlap_matrix"):
+                "framework_projection", "hitrust_hub", "odp_values", "overlap_matrix",
+                "consensus_edges", "framework_labels", "master_mappings"):
         row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
         counts[tbl] = row[0]
+
+    # Logical content digests — the determinism comparator across rebuilds
+    # (the raw SQLite file hash varies with page layout; these do not).
+    table_digests = {}
+    for tbl in ("framework_projection", "consensus_edges", "overlap_matrix",
+                "master_mappings", "framework_labels", "unified_mappings"):
+        cols = [r[1] for r in conn.execute(f"PRAGMA table_info({tbl})") if r[1] != "rowid"]
+        h = hashlib.sha256()
+        for row in conn.execute(f"SELECT {','.join(cols)} FROM {tbl} ORDER BY {','.join(cols)}"):
+            h.update(repr(row).encode())
+        table_digests[tbl] = h.hexdigest()[:16]
 
     conn.close()
 
@@ -1494,6 +1626,7 @@ def build_db(
         "db_size_bytes": out_db.stat().st_size,
         "elapsed_seconds": round(elapsed, 2),
         "row_counts": counts,
+        "table_digests": table_digests,
         "sources": {
             "catalog": str(catalog_path),
             "er_dir": str(er_dir),

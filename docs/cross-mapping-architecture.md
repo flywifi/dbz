@@ -93,6 +93,29 @@ for an authoritative direct mapping (the no-fabrication rule). Frameworks not in
 HITRUST hub (EU AI Act, NIS2, DORA, UK GDPR, ISO 42001) are monitored as standalone
 feeds for now, bridged through ISO 23894 / NIST AI RMF where applicable.
 
+**Per-surface clarification (Phase 19):** the list above describes `unified_mappings`
+(the catalog side). The *spine projection* (`framework_projection`) carries its own,
+stronger paths where they exist: HIPAA Security via the NIST SP 800-66r2 OLIR
+(`direct_800_66`, 0.85), NIST CSF 2.0 via the official OLIR to 800-53 r5.2.0
+(`direct_csf2`, 0.85), NIST SP 800-171 r3 + 800-172 r3 via their CPRT datasets (0.85),
+and PCI DSS v4.0 via the bundled master-crosswalk column (`master_crosswalk`, 0.60) —
+PCI is hub-bridged **only** on the unified/catalog side.
+
+## The master mapping surface (Phase 19)
+
+`master_mappings` (schema 3.7) is the all-in-one union: one row per unordered canonical
+framework pair, arbitrated across every surface (`framework_projection`,
+`unified_mappings`, strong+moderate `consensus_edges`, the OLIR CSF-2.0 pair sets, the
+AICPA-TSP↔HITRUST matrix, aggregate ER production evidence) with the strongest tier as
+primary and every dissenting surface preserved in a `corroboration` JSON column
+(minority report). Canonical labels come from the `framework_labels` registry
+(`framework_vocab.json → framework_aliases`; unregistered surface labels self-register
+as identities at build). Query: `dbz_query.py master` (pair / control / audit-scope
+modes) and `skills/atoms/master-crosswalk`. Gated by `validate_spine.py` check 8;
+deterministic via `grc_manifest.json → table_digests`. SOC 1 is a structured data gap
+(no public control layer); FedRAMP participates as baseline scope, not pair rows.
+Full tier model + rules: `docs/overlap-spine.md`.
+
 ## The update layer (news feed)
 
 The catalog is only as current as its sources. Four prongs keep it fresh; all

@@ -69,7 +69,22 @@ OLIR STRM mappings; transitive or heuristic mappings must be `"medium"` or `"low
 - Fabricating control IDs, relationship types, or strength values not in the source data
 - Computing overlap % between two frameworks (use overlap-query)
 - Full framework gap analysis (use gap-analysis)
-- Commercial audit frameworks (SOC 2, HIPAA) without ER crosswalk data — direct NIST mapping is absent
+- Pair enumeration between two non-NIST frameworks or audit-scope filtering (use master-crosswalk)
+
+## Master-surface control mode (Phase 19)
+For a single native id in ANY framework — not just a NIST control — the master surface
+answers "what does this map to, across every source, strongest tier first":
+
+```bash
+python3 cross-mapping/engine/dbz_query.py master --framework "SOC 2" --control CC6.1
+```
+
+Rows carry tier (`owner_direct > nist_stated > hub > bundled > consensus >
+production_aggregate`), provenance, confidence, and minority-report `corroboration`.
+Since Phase 19, HIPAA Security and CSF 2.0 have NIST-stated direct paths (SP 800-66r2 OLIR,
+CSF2->53 r5.2.0 OLIR) and PCI DSS v4.0 has a bundled-tier path — "commercial frameworks
+have no direct NIST mapping" is no longer categorically true; the tier tells you which
+kind of mapping you are holding.
 
 ## Pipeline note
 Reads from `unified_mappings` in the enriched catalog JSON (schema_version 1.1.0+).
