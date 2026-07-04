@@ -2062,10 +2062,12 @@
       "urls": {
         "api": "https://cyber.trackr.live/cci",
         "single_cci": "https://cyber.trackr.live/cci/{cci_id}",
-        "landing": "https://cyber.trackr.live"
+        "landing": "https://cyber.trackr.live",
+        "stig_catalog_api": "https://cyber.trackr.live/api/stig",
+        "stig_rule_api": "https://cyber.trackr.live/api/stig/{title}/{version}/{release}/{group_id}"
       },
       "check_strategy": "poll_landing",
-      "notes": "Public REST JSON API (no CAC required) for 3,551 DISA CCIs with 800-53 mappings. Preferred over SAML-gated DISA portal for programmatic access.",
+      "notes": "Public REST JSON API (no CAC required) for 3,551 DISA CCIs with 800-53 mappings. Preferred over SAML-gated DISA portal for programmatic access. Also the STIG catalog/delta API: /api/stig returns the full 1,079-title catalog (version/release/date/severity) in one call — the STIG delta detector — and per-rule detail carries the rule's CCIs. See feed disa-stig-library.",
       "last_checked": null,
       "last_changed": null,
       "announcement_feeds": [],
@@ -5421,6 +5423,62 @@
           "notes": "NIST Cybersecurity Insights blog RSS"
         }
       ]
+    },
+    "disa-stig-library": {
+      "label": "DISA SRG-STIG Library (STIG rule → CCI application layer)",
+      "authority": "primary",
+      "framework_id": "disa-stig-library",
+      "current_version": "U_SRG-STIG_Library_April_2026",
+      "urls": {
+        "landing": "https://public.cyber.mil/stigs/downloads/",
+        "compilation_pattern": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_SRG-STIG_Library_{Month}_{YYYY}.zip",
+        "trackr_catalog": "https://cyber.trackr.live/api/stig"
+      },
+      "check_strategy": "api_poll",
+      "last_checked": null,
+      "last_changed": "2026-04-01",
+      "last_verified": "2026-07-04",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "source_manifest_keys": [
+        "stig-cci-map",
+        "stig-catalog"
+      ],
+      "notes": "Every STIG rule cites DISA CCIs (<ident system=cyber.mil/cci>) — the layer where CCIs are applied. Objective is CCI application evidence, not a STIG registry. The quarterly SRG-STIG Library compilation (~380 current benchmarks) is distilled by tools/stig_harvest.py into the two committed artifacts (rule→CCI map + catalog); the multi-hundred-MB zip is fetched at harvest time and never committed. cyber.mil moved to a JS app, so the compilation URL is discovered at run time (month/year pattern) with the trackr API as fallback. Delta detection: standards_refresh.py --check compares the live trackr catalog (1 call) against the committed catalog and re-harvests only changed titles. auto_fetch is false — the bulk pull is operator-triggered via --fetch. Historical/sunset titles stay catalogued (delta-tracked) but rule-harvested on demand via stig_harvest.py --via-trackr.",
+      "announcement_feeds": [
+        {
+          "url": "https://public.cyber.mil/rss",
+          "type": "rss",
+          "filter_keywords": [
+            "STIG",
+            "SRG",
+            "benchmark",
+            "Library"
+          ],
+          "notes": "DISA Cyber Exchange news — filter for STIG/SRG library releases."
+        }
+      ],
+      "draft_status": "none"
+    },
+    "stig-community-refs": {
+      "label": "STIG community references (watch-only)",
+      "authority": "community",
+      "framework_id": "stig-community-refs",
+      "current_version": null,
+      "urls": {
+        "stigviewer": "https://stigviewer.com/stigs",
+        "control_cci_aggregation": "https://github.com/acasehs/STIG-Control-CCI",
+        "stig_rmf_mapper": "https://github.com/cognis-digital/stigsentry"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "last_verified": "2026-07-04",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "notes": "Watch-only reference tier for announcement monitoring — NEVER loader inputs (precedence: primary DISA compilation > trackr mirror > community aggregations). stigviewer.com is a STIG mirror whose CSV export carries no CCI column (verified). The two GitHub repos aggregate control↔CCI / STIG→RMF and are outside the session's GitHub scope — watched via plain HTTPS landing checks only, never via API.",
+      "announcement_feeds": [],
+      "draft_status": "none"
     }
   },
   "check_schedule": {

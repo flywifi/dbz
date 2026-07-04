@@ -30,6 +30,12 @@ python cross-mapping/engine/build_db.py
 python cross-mapping/engine/dbz_query.py master --framework-a "SOC 2" --framework-b "PCI DSS v4.0"
 python cross-mapping/engine/dbz_query.py master --framework "HIPAA Security" --control "164.312(a)(2)(i)"
 python cross-mapping/engine/dbz_query.py master --framework-a "SOC 2" --scope-fedramp moderate
+
+# STIG application layer (per-product CCI evidence); on-demand product overlap
+python cross-mapping/engine/dbz_query.py stig --list --filter RHEL
+python cross-mapping/engine/dbz_query.py stig --cci CCI-000068
+python cross-mapping/engine/dbz_query.py stig --coverage
+python cross-mapping/engine/dbz_query.py overlap --framework-a "stig:RHEL_9" --framework-b "FedRAMP r5"
 ```
 
 ## Key files

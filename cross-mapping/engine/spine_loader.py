@@ -1777,3 +1777,89 @@ def link_odps_to_subparts(
         )
         updated += cur.rowcount
     return updated
+
+
+# ── STIG application layer (Phase 21) ────────────────────────────────────────
+import gzip as _gzip  # noqa: E402  (local to the STIG loader; stdlib)
+
+STIG_MAP_PATH = REPO_ROOT / "canonical-sources" / "source_data" / "stig" / "stig_cci_map.json.gz"
+_CCI_TOKEN_RE = re.compile(r"^CCI-\d{6}$")
+
+
+def load_stig_rules(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], List[dict], dict]:
+    """
+    Load the distilled STIG artifact (tools/stig_harvest.py output) into
+    (catalog_rows, rule_rows, usage_rows, stats).
+
+    catalog_rows -> stig_catalog, rule_rows -> stig_rules, usage_rows ->
+    stig_cci_usage.  `in_bridge` is computed against the set of CCIs the caller
+    already loaded into cci_bridge (passed as `catalog_ids` is the r5 control set;
+    the bridge CCI set is loaded here directly from the artifact-independent
+    disa list is NOT available, so in_bridge is resolved by the caller after
+    cci_bridge exists — see build_db).  Guarded on artifact existence: absent
+    artifact returns empty lists + {'skipped': ...} so offline rebuilds pass.
+
+    STIG-cited CCIs that are malformed are counted and refused (never guessed).
+    Deterministic: all rows sorted; ccis stored as sorted JSON.
+    """
+    if not STIG_MAP_PATH.exists():
+        return [], [], [], {"skipped": "no stig_cci_map artifact"}
+    with _gzip.open(STIG_MAP_PATH, "rt", encoding="utf-8") as f:
+        data = json.load(f)
+    benchmarks = data.get("benchmarks", {})
+    catalog_rows: List[dict] = []
+    rule_rows: List[dict] = []
+    usage_stig: Dict[str, set] = {}
+    usage_rules: Dict[str, int] = {}
+    stats = {"benchmarks": 0, "rules": 0, "cci_citations": 0,
+             "malformed_cci_citations": 0, "distinct_ccis": 0}
+    for stig_id in sorted(benchmarks):
+        b = benchmarks[stig_id]
+        rules = b.get("rules", [])
+        distinct: set = set()
+        n_citations = 0
+        for r in sorted(rules, key=lambda x: (x.get("group", ""), x.get("rule", ""))):
+            ccis = []
+            for c in r.get("ccis", []):
+                if _CCI_TOKEN_RE.match(c):
+                    ccis.append(c)
+                else:
+                    stats["malformed_cci_citations"] += 1
+            ccis = sorted(set(ccis))
+            n_citations += len(ccis)
+            distinct.update(ccis)
+            for c in ccis:
+                usage_stig.setdefault(c, set()).add(stig_id)
+                usage_rules[c] = usage_rules.get(c, 0) + 1
+            rule_rows.append({
+                "stig_id": stig_id,
+                "group_id": r.get("group", ""),
+                "rule_id": r.get("rule", ""),
+                "version_id": r.get("version_id", ""),
+                "severity": r.get("severity", ""),
+                "title": r.get("title", ""),
+                "ccis": json.dumps(ccis, ensure_ascii=False),
+            })
+        catalog_rows.append({
+            "stig_id": stig_id,
+            "title": b.get("title", ""),
+            "version": str(b.get("version", "")),
+            "release": str(b.get("release", "")),
+            "benchmark_date": b.get("benchmark_date", ""),
+            "type": b.get("type", "stig"),
+            "rule_count": len(rules),
+            "cci_citations": n_citations,
+            "distinct_ccis": len(distinct),
+            "trackr_title": b.get("trackr_title"),
+            "source": b.get("source", ""),
+            "source_zip": b.get("source_zip"),
+        })
+        stats["benchmarks"] += 1
+        stats["rules"] += len(rules)
+        stats["cci_citations"] += n_citations
+    usage_rows = [{"cci_id": c, "n_stigs": len(usage_stig[c]),
+                   "n_rules": usage_rules[c], "in_bridge": 0}
+                  for c in sorted(usage_stig)]
+    stats["distinct_ccis"] = len(usage_rows)
+    stats["library"] = data.get("_meta", {}).get("library")
+    return catalog_rows, rule_rows, usage_rows, stats

@@ -396,4 +396,25 @@ no ingestion loader required.
 | Weekly | `attack_stix_loader.py --check-version` | Cron / manual | mitre/cti GitHub releases |
 | On-demand | `cprt_traverser.py` | Manual | NIST CPRT publications API |
 | On-demand | `pdf_structure_extractor.py` | Manual | Local PDF files |
+| Quarterly | `stig_harvest.py --check/--refresh-stale/--full` | Manual | DISA SRG-STIG Library + cyber.trackr.live |
 | After any loader | `build_db.py` | Manual | All canonical-sources/ |
+
+---
+
+## STIG application layer (Phase 21)
+
+The goal is **CCI application evidence** — which DISA CCIs each STIG rule exercises — not a
+complete STIG catalog. `tools/stig_harvest.py` distills the DISA SRG-STIG Library compilation
+(the ~360MB zip is fetched at harvest time and **never committed**) into two committed
+artifacts under `canonical-sources/source_data/stig/`: `stig_cci_map.json.gz` (rule→CCI) and
+`stig_catalog.json` (the 1,079-title trackr delta ledger + per-benchmark harvest provenance).
+The April-2026 library yields 383 benchmarks / 19,667 rules / 539 distinct CCIs (97.6% resolve
+in `cci_bridge`).
+
+Uploaded research-file dispositions:
+
+| File | Verdict |
+|---|---|
+| Adobe Acrobat STIG CSV (stigviewer export) | **Format note, not a source** — stigviewer's CSV export carries no CCI column (verified); DISA XCCDF / trackr are the CCI-bearing sources. |
+| MS Windows Security Baseline zip (Microsoft SCT) | **Reference-only, not committed** — Microsoft Security Compliance Toolkit baseline, not a DISA CCI source. |
+| `acasehs/STIG-Control-CCI`, `cognis-digital/stigsentry`, stigviewer.com | **Watch-only** (`stig-community-refs` feed) — announcement monitoring only, never loader inputs (precedence: DISA compilation > trackr mirror > community aggregations). |

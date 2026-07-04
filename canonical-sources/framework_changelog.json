@@ -304,6 +304,17 @@
       "controls_removed": [],
       "human_confirmed": true,
       "notes": "Delta detail lives in the pinned NIST analysis workbook — not enumerated here to avoid transcription drift."
+    },
+    {
+      "entry_id": "chg-disa-stig-library-2026-04",
+      "framework_id": "disa-stig-library",
+      "change_type": "initial_ingest",
+      "old_version": null,
+      "new_version": "U_SRG-STIG_Library_April_2026",
+      "changed_at": "2026-04-01",
+      "source_url": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_SRG-STIG_Library_April_2026.zip",
+      "summary": "STIG application layer added (schema 3.8): 383 benchmarks / 19,667 rules / 539 distinct CCIs distilled from the DISA SRG-STIG Library for CCI application evidence. One changelog entry per quarterly library version; per-title deltas surface in the announcements feed.",
+      "human_confirmed": true
     }
   ]
 }

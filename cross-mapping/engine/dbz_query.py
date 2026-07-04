@@ -885,6 +885,140 @@ def cmd_cci(args, conn: sqlite3.Connection) -> int:
     return 0
 
 
+def cmd_stig(args, conn: sqlite3.Connection) -> int:
+    """STIG application-layer queries: catalog, rules, CCI usage, coverage.
+
+    STIGs are the technology/implementation tier — for a STIG's overlap with a
+    framework use `overlap stig:<title> × <framework>` (on-demand spine
+    projection); this subcommand inspects the raw STIG data itself."""
+    import json as _json
+
+    # --coverage: usage stats + unknown-CCI gap report (informational)
+    if getattr(args, "coverage", False):
+        n_stig, n_rules, n_cite = conn.execute(
+            "SELECT COUNT(*), COALESCE(SUM(rule_count),0), COALESCE(SUM(cci_citations),0) "
+            "FROM stig_catalog").fetchone()
+        n_used, n_unknown = conn.execute(
+            "SELECT COUNT(*), COALESCE(SUM(CASE WHEN in_bridge=0 THEN 1 ELSE 0 END),0) "
+            "FROM stig_cci_usage").fetchone()
+        n_bridge = conn.execute("SELECT COUNT(DISTINCT cci_id) FROM cci_bridge").fetchone()[0]
+        n_bridge_exercised = conn.execute(
+            "SELECT COUNT(*) FROM stig_cci_usage WHERE in_bridge=1").fetchone()[0]
+        unknown = [r[0] for r in conn.execute(
+            "SELECT cci_id FROM stig_cci_usage WHERE in_bridge=0 ORDER BY cci_id")]
+        lib = conn.execute(
+            "SELECT value FROM db_metadata WHERE key='schema_version'").fetchone()
+        result = {
+            "tool": "dbz-stig",
+            "stigs": n_stig, "rules": n_rules, "cci_citations": n_cite,
+            "distinct_ccis_exercised": n_used,
+            "cci_bridge_total": n_bridge,
+            "cci_bridge_exercised_by_stig": n_bridge_exercised,
+            "cci_bridge_coverage_pct": round(n_bridge_exercised / n_bridge * 100, 1) if n_bridge else 0.0,
+            "stig_cited_ccis_unresolved_in_bridge": n_unknown,
+            "unresolved_ccis": unknown,
+            "note": "unresolved CCIs are STIG-cited but absent from cci_bridge "
+                    "(DISA list lag or r4-only) — a gap detector, informational; "
+                    "STIG releases can lead CCI-list updates. Never dropped.",
+            "human_review_required": True,
+        }
+        if args.format == "json":
+            print(_json.dumps(result, indent=2, ensure_ascii=False))
+        else:
+            for k in ("stigs", "rules", "cci_citations", "distinct_ccis_exercised",
+                      "cci_bridge_total", "cci_bridge_exercised_by_stig",
+                      "cci_bridge_coverage_pct", "stig_cited_ccis_unresolved_in_bridge"):
+                print(f"{k:<38} {result[k]}")
+            if unknown:
+                print(f"unresolved: {', '.join(unknown[:30])}"
+                      + (" …" if len(unknown) > 30 else ""))
+        return 0
+
+    # --cci CCI-000068: which STIGs/rules exercise a CCI
+    if getattr(args, "cci", None):
+        cci = args.cci.strip().upper()
+        rows = conn.execute(
+            "SELECT stig_id, group_id, rule_id, version_id, severity FROM stig_rules "
+            "WHERE ccis LIKE ? ORDER BY stig_id, group_id",
+            (f'%"{cci}"%',)).fetchall()
+        usage = conn.execute(
+            "SELECT n_stigs, n_rules, in_bridge FROM stig_cci_usage WHERE cci_id=?",
+            (cci,)).fetchone()
+        cols = ["stig_id", "group_id", "rule_id", "version_id", "severity"]
+        if args.format == "json":
+            print(_json.dumps({
+                "cci_id": cci,
+                "n_stigs": usage[0] if usage else 0,
+                "n_rules": usage[1] if usage else 0,
+                "in_cci_bridge": bool(usage[2]) if usage else False,
+                "exercising_rules": [dict(zip(cols, r)) for r in rows][:500],
+                "human_review_required": True,
+            }, indent=2, ensure_ascii=False))
+        else:
+            if usage:
+                print(f"{cci}: exercised by {usage[0]} STIG(s), {usage[1]} rule(s); "
+                      f"in cci_bridge={bool(usage[2])}\n")
+            _output([dict(zip(cols, r)) for r in rows[:200]], args.format, cols)
+        return 0
+
+    # --stig <id>: one STIG's rules + CCIs + resolved controls
+    if getattr(args, "stig", None):
+        st, sv = resolve_stig_id(conn, args.stig)
+        if st != "ok":
+            print(f"[input error] {sv if isinstance(sv, str) else 'ambiguous: ' + ', '.join(sv[:20])}",
+                  file=sys.stderr)
+            return 1
+        cat = conn.execute(
+            "SELECT stig_id, title, version, release, benchmark_date, type, rule_count, "
+            "distinct_ccis, trackr_title, source FROM stig_catalog WHERE stig_id=?",
+            (sv,)).fetchone()
+        catcols = ["stig_id", "title", "version", "release", "benchmark_date", "type",
+                   "rule_count", "distinct_ccis", "trackr_title", "source"]
+        rules = conn.execute(
+            "SELECT group_id, rule_id, version_id, severity, title, ccis FROM stig_rules "
+            "WHERE stig_id=? ORDER BY group_id", (sv,)).fetchall()
+        rulecols = ["group_id", "rule_id", "version_id", "severity", "title", "ccis"]
+        if args.format == "json":
+            print(_json.dumps({
+                "catalog": dict(zip(catcols, cat)),
+                "rules": [{**dict(zip(rulecols, r)),
+                           "ccis": _json.loads(r[5] or "[]")} for r in rules],
+                "human_review_required": True,
+            }, indent=2, ensure_ascii=False))
+        else:
+            print("  ".join(f"{c}={v}" for c, v in zip(catcols, cat)) + "\n")
+            _output([dict(zip(rulecols, r)) for r in rules], args.format, rulecols)
+        return 0
+
+    # --list [--filter]: the catalog (default)
+    flt = getattr(args, "filter", None)
+    if flt:
+        rows = conn.execute(
+            "SELECT stig_id, title, version, release, benchmark_date, rule_count, distinct_ccis "
+            "FROM stig_catalog WHERE stig_id LIKE ? OR title LIKE ? ORDER BY stig_id",
+            (f"%{flt}%", f"%{flt}%")).fetchall()
+    else:
+        rows = conn.execute(
+            "SELECT stig_id, title, version, release, benchmark_date, rule_count, distinct_ccis "
+            "FROM stig_catalog ORDER BY stig_id").fetchall()
+    cols = ["stig_id", "title", "version", "release", "benchmark_date", "rule_count", "distinct_ccis"]
+    _output([dict(zip(cols, r)) for r in rows], args.format, cols)
+    return 0
+
+
+def resolve_stig_id(conn, name: str):
+    """('ok', stig_id) | ('err', msg) | ('err', [candidates]) — a `stig` subcommand
+    thin wrapper over spine_overlap.resolve_stig (accepts bare or stig:-prefixed)."""
+    import spine_overlap  # type: ignore
+    probe = name if name.strip().lower().startswith("stig:") else f"stig:{name}"
+    kind, val = spine_overlap.resolve_stig(conn, probe)
+    if kind == "ok":
+        return ("ok", val)
+    if kind == "ambiguous":
+        return ("err", val)
+    return ("err", f"no STIG matches '{name}'")
+
+
 def cmd_800_63b(args, conn: sqlite3.Connection) -> int:
     """Query NIST SP 800-63B digital identity requirements by section, AAL level, or control."""
     conditions = []
@@ -1145,6 +1279,18 @@ def build_parser() -> argparse.ArgumentParser:
     cci_p.add_argument("--status", metavar="STATUS", help="CCI status (e.g. active)")
     _add_format(cci_p); _add_db(cci_p)
 
+    # stig (application layer)
+    stig_p = subs.add_parser("stig",
+        help="STIG application layer: catalog, rules, CCI usage, coverage "
+             "(for STIG×framework overlap use `overlap stig:<title> × <fw>`)")
+    stig_p.add_argument("--list", action="store_true", help="list the STIG catalog (default)")
+    stig_p.add_argument("--filter", metavar="SUBSTR", help="filter --list by id/title substring")
+    stig_p.add_argument("--stig", metavar="ID", help="one STIG's rules + CCIs (id or title)")
+    stig_p.add_argument("--cci", metavar="CCI-NNNNNN", help="which STIGs/rules exercise a CCI")
+    stig_p.add_argument("--coverage", action="store_true",
+                        help="usage stats + unresolved-CCI gap report")
+    _add_format(stig_p); _add_db(stig_p)
+
     # 800-63b
     b63 = subs.add_parser("800-63b", help="Query NIST SP 800-63B digital identity requirements")
     b63.add_argument("--section", metavar="SEC", help="Section number (e.g. 4.2, 5.1.1)")
@@ -1204,6 +1350,7 @@ def main(argv=None) -> int:
         "edgar": cmd_edgar,
         "nvd": cmd_nvd,
         "cci": cmd_cci,
+        "stig": cmd_stig,
         "eurlex": cmd_eurlex,
         "800-63b": cmd_800_63b,
         "fips": cmd_fips,

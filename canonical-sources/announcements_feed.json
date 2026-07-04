@@ -6,13 +6,20 @@
   "entries": [
     {
       "entry_id": "ann-hitrust-v11.5.0-2025",
-      "framework_ids": ["hitrust"],
+      "framework_ids": [
+        "hitrust"
+      ],
       "title": "HITRUST CSF v11.5.0 Released — Adds CMMC 2.0, EU DORA, ISO 29151, CMS ARS v5.1 Columns",
       "published_at": "2025-06-01T00:00:00Z",
       "url": "https://hitrustalliance.net/hitrust-csf-version-history",
       "source_feed": "manual-seed",
       "change_type": "major_revision",
-      "keywords_matched": ["v11.5.0", "cmmc", "dora", "new framework"],
+      "keywords_matched": [
+        "v11.5.0",
+        "cmmc",
+        "dora",
+        "new framework"
+      ],
       "human_reviewed": true,
       "action_items": [
         "Update source_manifest.json pin from v11.4.0 to v11.5.0",
@@ -23,13 +30,19 @@
     },
     {
       "entry_id": "ann-owasp-asvs-v5.0.0-2025",
-      "framework_ids": ["owasp-asvs"],
+      "framework_ids": [
+        "owasp-asvs"
+      ],
       "title": "OWASP ASVS v5.0.0 Released — Major revision; all requirement IDs renumbered",
       "published_at": "2025-05-01T00:00:00Z",
       "url": "https://github.com/OWASP/ASVS/releases/tag/v5.0.0",
       "source_feed": "manual-seed",
       "change_type": "major_revision",
-      "keywords_matched": ["v5.0.0", "major revision", "asvs"],
+      "keywords_matched": [
+        "v5.0.0",
+        "major revision",
+        "asvs"
+      ],
       "human_reviewed": true,
       "action_items": [
         "Update feed_registry.json current_version from v4.0.3 to v5.0.0",
@@ -40,13 +53,20 @@
     },
     {
       "entry_id": "ann-sox-itgc-pcaob-as2201-2026",
-      "framework_ids": ["sox-itgc"],
+      "framework_ids": [
+        "sox-itgc"
+      ],
       "title": "PCAOB AS 2201 (SOX ITGC Integrated Audit Standard) Updated — Effective December 15, 2026",
       "published_at": "2025-09-01T00:00:00Z",
       "url": "https://pcaobus.org/Oversight/Standards/Auditing-Standards/Details/AS2201",
       "source_feed": "manual-seed",
       "change_type": "major_revision",
-      "keywords_matched": ["as 2201", "effective december 15 2026", "sox", "integrated audit"],
+      "keywords_matched": [
+        "as 2201",
+        "effective december 15 2026",
+        "sox",
+        "integrated audit"
+      ],
       "human_reviewed": true,
       "action_items": [
         "Monitor PCAOB.org for final AS 2201 text effective Dec 15, 2026",
@@ -1078,6 +1098,19 @@
       "keywords_matched": [],
       "human_reviewed": false,
       "action_items": []
+    },
+    {
+      "entry_id": "ann-disa-stig-library-2026-04",
+      "framework_ids": [
+        "disa-stig-library",
+        "disa-cci"
+      ],
+      "title": "DISA SRG-STIG Library (April 2026) ingested — STIG rule→CCI application layer",
+      "published_at": "2026-04-01T00:00:00Z",
+      "url": "https://public.cyber.mil/stigs/downloads/",
+      "source_feed": "disa-stig-library",
+      "summary": "383 STIG benchmarks / 19,667 rules distilled for CCI application evidence (539 distinct CCIs; 97.6% resolve in cci_bridge). Delta-tracked against the cyber.trackr.live catalog; on-demand product overlap via the stig: resolver.",
+      "human_confirmed": true
     }
   ]
 }

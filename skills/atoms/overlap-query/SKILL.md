@@ -6,7 +6,9 @@ description: >
   full/partial/none breakdown with the exact met vs. unmet sub-parts and parameter (ODP) status.
   Never errors on a cross-framework comparison — it degrades gracefully and always returns a number.
   Use this atom for the sales/CS "shared audit work %" deliverable and for "exactly where do A and B
-  overlap" questions. Do NOT use for single-control mapping (use compliance-crosswalk). Do NOT use for
+  overlap" questions. Either side may be a `stig:<title>` technology-tier pseudo-framework (per-product
+  STIG projected onto the spine via its rules' DISA CCIs — advisory implementation evidence).
+  Do NOT use for single-control mapping (use compliance-crosswalk). Do NOT use for
   gap lists (use gap-analysis). Do NOT fabricate overlap numbers — every figure traces to a real
   source row in grc.db.
 ---
@@ -92,6 +94,17 @@ direct projection (0.85). Phase 20 added the meta-frameworks: SCF 2026.1
 CSA-stated relationships, STAR-scope) — so "SCF audit × SOC 2 shared work %" is a
 spine question now. SOC 1 remains `inferred_er`-only — it has no public control
 layer, so no spine path can exist without fabrication.
+
+## STIG technology tier (Phase 21) — the `stig:` prefix
+Prefix either framework with `stig:` to compute a **per-product STIG** overlap on demand:
+`--framework-a "stig:RHEL_9" --framework-b "FedRAMP r5"`. The STIG's footprint is projected
+onto the spine through its rules' DISA CCIs (`cci_bridge`); provenance is `stig_cci`,
+confidence is capped by the weaker side, and `needs_confirmation` is always set — this is
+advisory implementation evidence, not an owner-stated mapping. An unknown or ambiguous STIG
+name returns a structured error listing candidates; use `dbz_query.py stig --list` for titles.
+STIGs are a technology tier and never enter the precomputed matrix or master surface — the
+overlap is always computed live. Inspect the raw STIG/CCI data with the `dbz_query.py stig`
+subcommand (this atom stays framework-overlap-only).
 
 ## Pipeline note
 Delegates to `cross-mapping/engine/spine_overlap.py`, reading `framework_projection`, `cci_bridge`,

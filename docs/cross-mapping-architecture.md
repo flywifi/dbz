@@ -123,6 +123,14 @@ model): **SCF 2026.1** (scf_direct 0.80 from SCF's own 800-53 column, SCF/CAP sc
 mapping-collection, CSA STAR scope) — plus CCM↔CIS 8.1 and CCM/SCF↔CSF 2.0 master pair
 rows. 16 canonical frameworks, 120 matrix pairs.
 
+Phase 21 added a **STIG technology/application tier** below the frameworks (schema 3.8):
+STIG rules carry DISA CCIs, so each STIG is a per-product footprint over the 800-53 spine
+via `cci_bridge`. STIGs are **not** frameworks — they never enter `framework_projection`,
+`overlap_matrix`, or `master_mappings` (the matrix stays 120); overlap is computed on demand
+through a `stig:<title>` resolver. The objective is CCI application evidence, not a STIG
+registry. Tables: `stig_catalog` / `stig_rules` / `stig_cci_usage`. Details:
+`docs/overlap-spine.md` (STIG technology tier).
+
 ## The update layer (news feed)
 
 The catalog is only as current as its sources. Four prongs keep it fresh; all

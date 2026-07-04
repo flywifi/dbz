@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.7"   # v3.7: master_mappings + framework_labels (v3.6: matrix consensus counts)
+SCHEMA_VERSION = "3.8"   # v3.8: STIG application layer (stig_catalog/stig_rules/stig_cci_usage); v3.7: master_mappings + framework_labels
 
 CHUNK = 500  # executemany batch size
 
@@ -537,6 +537,46 @@ CREATE VIEW IF NOT EXISTS projection_overlap_cci AS
     JOIN framework_projection b ON a.r5_subpart = b.r5_subpart AND a.r5_subpart IS NOT NULL
     JOIN cci_bridge cb ON cb.r5_subpart = a.r5_subpart
     WHERE a.framework < b.framework;
+
+-- ── STIG application layer (Phase 21, technology tier) ────────────────────────
+-- STIG benchmarks are a per-product implementation tier, NOT master-surface
+-- frameworks: they never enter framework_projection, overlap_matrix, or
+-- master_mappings. Their footprint over the 800-53 spine is resolved on demand
+-- (spine_overlap `stig:` resolver) via each rule's CCIs through cci_bridge.
+CREATE TABLE IF NOT EXISTS stig_catalog (
+    stig_id        TEXT PRIMARY KEY,   -- XCCDF Benchmark id (e.g. "RHEL_9_STIG")
+    title          TEXT,
+    version        TEXT,
+    release        TEXT,
+    benchmark_date TEXT,               -- ISO date of the benchmark
+    type           TEXT,               -- stig | srg
+    rule_count     INTEGER NOT NULL DEFAULT 0,
+    cci_citations  INTEGER NOT NULL DEFAULT 0,  -- total CCI references (with repetition)
+    distinct_ccis  INTEGER NOT NULL DEFAULT 0,
+    trackr_title   TEXT,               -- cyber.trackr.live catalog key (delta detector), NULL if unmatched
+    source         TEXT,               -- disa_compilation | trackr | …
+    source_zip     TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_stigcat_trackr ON stig_catalog(trackr_title);
+
+CREATE TABLE IF NOT EXISTS stig_rules (
+    stig_id     TEXT NOT NULL REFERENCES stig_catalog(stig_id),
+    group_id    TEXT NOT NULL,         -- V-xxxxxx
+    rule_id     TEXT,                  -- SV-…_rule
+    version_id  TEXT,                  -- STIG rule version id (carries SRG lineage), e.g. AZLX-23-000100
+    severity    TEXT,                  -- high | medium | low
+    title       TEXT,
+    ccis        TEXT,                  -- JSON-sorted list of "CCI-NNNNNN"
+    PRIMARY KEY (stig_id, group_id)
+);
+CREATE INDEX IF NOT EXISTS idx_stigrules_stig ON stig_rules(stig_id);
+
+CREATE TABLE IF NOT EXISTS stig_cci_usage (
+    cci_id     TEXT PRIMARY KEY,       -- "CCI-000068"
+    n_stigs    INTEGER NOT NULL DEFAULT 0,
+    n_rules    INTEGER NOT NULL DEFAULT 0,
+    in_bridge  INTEGER NOT NULL DEFAULT 0   -- 1 if resolvable in cci_bridge, else 0 (gap detector)
+);
 """
 
 
@@ -1248,6 +1288,41 @@ def build_db(
              :extraction_confidence, :needs_confirmation, :source_file, :source_row)
     """, odpval_rows, "odp_values")
 
+    # Phase 21: STIG application layer (technology tier). Guarded on artifact
+    # existence — offline rebuilds without the distilled stig_cci_map still pass.
+    # STIG benchmarks never enter framework_projection / overlap_matrix /
+    # master_mappings; their spine footprint is resolved on demand.
+    stig_cat_rows, stig_rule_rows, stig_usage_rows, stig_stats = spine_loader.load_stig_rules(catalog_ids)
+    if stig_cat_rows:
+        # in_bridge: mark each STIG-cited CCI resolvable in cci_bridge (gap detector)
+        bridge_ccis = {r[0] for r in conn.execute("SELECT DISTINCT cci_id FROM cci_bridge")}
+        for u in stig_usage_rows:
+            u["in_bridge"] = 1 if u["cci_id"] in bridge_ccis else 0
+        _unknown = sum(1 for u in stig_usage_rows if not u["in_bridge"])
+        _executemany_chunked(conn, """
+            INSERT INTO stig_catalog
+                (stig_id, title, version, release, benchmark_date, type, rule_count,
+                 cci_citations, distinct_ccis, trackr_title, source, source_zip)
+            VALUES
+                (:stig_id, :title, :version, :release, :benchmark_date, :type, :rule_count,
+                 :cci_citations, :distinct_ccis, :trackr_title, :source, :source_zip)
+        """, stig_cat_rows, "stig_catalog")
+        _executemany_chunked(conn, """
+            INSERT INTO stig_rules
+                (stig_id, group_id, rule_id, version_id, severity, title, ccis)
+            VALUES
+                (:stig_id, :group_id, :rule_id, :version_id, :severity, :title, :ccis)
+        """, stig_rule_rows, "stig_rules")
+        _executemany_chunked(conn, """
+            INSERT INTO stig_cci_usage (cci_id, n_stigs, n_rules, in_bridge)
+            VALUES (:cci_id, :n_stigs, :n_rules, :in_bridge)
+        """, stig_usage_rows, "stig_cci_usage")
+        print(f"  stig application layer: {stig_stats}")
+        print(f"  stig_cci_usage: {len(stig_usage_rows)} distinct CCIs "
+              f"({_unknown} STIG-cited CCIs unresolved in cci_bridge — gap detector, informational)")
+    else:
+        print(f"  stig application layer: skipped ({stig_stats.get('skipped')})")
+
     conn.commit()
 
     # 2. ER crosswalk data
@@ -1599,7 +1674,8 @@ def build_db(
                 "nist_800_63b_requirements", "fips_140_validations",
                 "nist_subparts", "cci_bridge", "control_odps", "assessment_objectives",
                 "framework_projection", "hitrust_hub", "odp_values", "overlap_matrix",
-                "consensus_edges", "framework_labels", "master_mappings"):
+                "consensus_edges", "framework_labels", "master_mappings",
+                "stig_catalog", "stig_rules", "stig_cci_usage"):
         row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
         counts[tbl] = row[0]
 
@@ -1607,7 +1683,8 @@ def build_db(
     # (the raw SQLite file hash varies with page layout; these do not).
     table_digests = {}
     for tbl in ("framework_projection", "consensus_edges", "overlap_matrix",
-                "master_mappings", "framework_labels", "unified_mappings"):
+                "master_mappings", "framework_labels", "unified_mappings",
+                "stig_catalog", "stig_rules", "stig_cci_usage"):
         cols = [r[1] for r in conn.execute(f"PRAGMA table_info({tbl})") if r[1] != "rowid"]
         h = hashlib.sha256()
         for row in conn.execute(f"SELECT {','.join(cols)} FROM {tbl} ORDER BY {','.join(cols)}"):

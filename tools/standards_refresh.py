@@ -82,10 +82,33 @@ def _run(argv: list[str], timeout: int = 900) -> tuple[int, str]:
         return 1, f"{type(e).__name__}: {e}"
 
 
+def stage_stig_check() -> dict:
+    """Compare the live trackr STIG catalog against the committed artifact.
+    Offline-safe: a fetch failure degrades to check_failed, never crashes."""
+    rc, out = _run([sys.executable, str(ROOT / "tools" / "stig_harvest.py"), "--check", "--json"])
+    try:
+        payload = json.loads(out.strip().splitlines()[-1])
+    except Exception:
+        payload = {"status": "check_failed"}
+    status = payload.get("status", "check_failed")
+    if status == "drift":
+        n = (len(payload.get("new_titles", [])) + len(payload.get("changed_titles", []))
+             + len(payload.get("stale_harvested", [])))
+        print(f"[check] stig: DRIFT — {n} signals "
+              f"({len(payload.get('stale_harvested', []))} harvested benchmarks stale; "
+              "run standards_refresh.py --fetch to re-harvest changed titles)")
+    elif status == "current":
+        print("[check] stig: current — no drift vs the live trackr catalog")
+    else:
+        print("[check] stig: check_failed (trackr unreachable)")
+    return {"stig_status": status}
+
+
 def stage_check() -> dict:
     """Run the monitors, then classify every registry feed."""
     monitor_rc, monitor_out = _run([sys.executable, str(ENGINE / "framework_monitor.py"), "--dry-run"])
     ann_rc, ann_out = _run([sys.executable, str(ENGINE / "announcement_monitor.py"), "--dry-run"])
+    stig_signal = stage_stig_check()
 
     reg = json.loads(REGISTRY.read_text(encoding="utf-8"))
     feeds = reg["feeds"]
@@ -110,6 +133,7 @@ def stage_check() -> dict:
         "generated_at": _now(),
         "monitor_exit": monitor_rc,
         "announcements_exit": ann_rc,
+        "stig_status": stig_signal.get("stig_status"),
         "feeds": rows,
         "summary": {},
     }
@@ -123,10 +147,23 @@ def stage_check() -> dict:
     return report
 
 
+def stage_stig_fetch() -> int:
+    """Re-harvest only the STIG benchmarks that drifted (per-title DISA zip, trackr
+    fallback). The multi-hundred-MB library compilation is NOT pulled here — that
+    is an explicit operator step (stig_harvest.py --full --from-zip); this stage
+    keeps the committed artifact current between quarterly library refreshes."""
+    rc, out = _run([sys.executable, str(ROOT / "tools" / "stig_harvest.py"),
+                    "--refresh-stale", "--max-delta", "40"], timeout=3600)
+    print(f"[fetch] stig refresh-stale rc={rc}")
+    if rc != 0:
+        print(out[-600:])
+    return 1 if rc != 0 else 0
+
+
 def stage_fetch() -> int:
     """Re-fetch auto_fetch feeds via their loaders/urls. Returns failure count."""
     reg = json.loads(REGISTRY.read_text(encoding="utf-8"))
-    failures = 0
+    failures = stage_stig_fetch()
     for fid, e in sorted(reg["feeds"].items()):
         if not (isinstance(e, dict) and e.get("auto_fetch")):
             continue

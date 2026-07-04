@@ -23,6 +23,44 @@ a human does the confirming.
    `cross-mapping/engine/oscal_diff.py --write-changelog`.
 4. **gate** (`--gate`) — rebuild grc.db + the deterministic gate battery; red run = human looks.
 
+## STIG library harvest + delta procedure (Phase 21)
+
+The STIG layer is **CCI application evidence**, not a STIG registry. Keeping it current:
+
+1. **Delta check** — `standards_refresh.py --check` runs `stig_harvest.py --check`, comparing
+   the live cyber.trackr.live catalog (1 API call) against the committed `stig_catalog.json`.
+   Drift = new / removed / changed titles + stale harvested benchmarks.
+2. **Incremental refresh** — `standards_refresh.py --fetch` runs `stig_harvest.py
+   --refresh-stale`: re-harvests only the drifted benchmarks (per-title DISA zip first,
+   trackr per-rule crawl as fallback) and rewrites the two artifacts deterministically.
+3. **Quarterly library refresh** — when DISA posts a new SRG-STIG Library compilation,
+   fetch it and run `stig_harvest.py --full --from-zip U_SRG-STIG_Library_<Month>_<YYYY>.zip`
+   (the multi-hundred-MB zip is NEVER committed). The URL is discovered at run time
+   (`dl.dod.cyber.mil/.../U_SRG-STIG_Library_{Month}_{YYYY}.zip`, months Jan/Apr/Jul/Oct).
+4. **Rebuild** — `--gate` regenerates the DB tables (build artifacts, never hand-patched);
+   validate_spine check 9 + test_spine STIG fixtures must stay green.
+
+Historical/sunset titles stay catalogued (delta-tracked) but rule-harvested on demand
+(`stig_harvest.py --via-trackr --titles ...`) — they add ~0 new CCIs (the CCI vocabulary is
+product-agnostic).
+
+## Source-class completeness checklist (every ingestion + quarterly)
+
+**Root-cause guard.** The CCI *definition* source (DISA CCI List) was ingested in Phase 11,
+but the layer where CCIs are *applied* (STIGs) went unevaluated until Phase 21 — an avoidable
+coverage gap. For **every** source, explicitly evaluate and record a verdict for its adjacent
+layers as candidate feeds:
+
+- **Upstream (what defines it):** the standard/authority the source derives from.
+- **Downstream (what applies/consumes it):** the artifacts that implement or reference it.
+- Record each verdict in `feed_registry.json` (ingest / watch-only / not-applicable) so a
+  skipped layer is a decision on the record, never an oversight.
+
+Worked example (the CCI class): CCI List (definition) → **STIGs** (application, Phase 21) →
+**SRGs** (the requirement templates STIG rule version-ids trace to). SRG-level ingestion is
+**evaluated and queued** as a named follow-up (STIG `version_id`s carry SRG lineage), not
+silently ignored.
+
 ## Licensed-artifact checklist (quarterly, cannot be auto-fetched)
 
 | Artifact | Where to obtain | What to re-pin |
@@ -106,6 +144,9 @@ scope-relative acceptance differences, not errors.
   pinned, and `framework_changelog` entries seeded.
 - 171A r3 / 172A r3 assessment-objective loading (artifacts pinned, 157 objective-level
   refs to 800-53A 5.1.1 available) — assessment-procedure depth for the r3 line.
+- **SRG-level ingestion (queued, Phase 21 source-class checklist):** STIG rule `version_id`s
+  (e.g. `AZLX-23-000100`) carry SRG lineage; ingesting the SRGs themselves would add the
+  requirement-template layer between the CCI list and STIGs. Evaluated, not yet built.
 - 800-66 / CSF2 / 171r3 OLIR sets as **consensus voters** (currently projections/pairs
   only) — would add NIST-ancestry voters, so it needs a re-measured Phase 18 gate first.
 - CSF 2.0 OLIR graph artifacts also carry CCM / SCF / CIS 8.1 / NICE / CRI reference sets —

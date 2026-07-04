@@ -116,3 +116,11 @@ Raw ER CSVs stay untouched on disk (canonical production data); normalization is
 (machine-generated entries carry `human_confirmed: false` until verified). The CPRT completeness
 oracle and the sub-part inventory checks run in `cross-mapping/tests/validate_spine.py` on every
 validation pass.
+
+**Phase 21 (STIG application layer).** `standards_refresh.py --check` now polls the
+cyber.trackr.live STIG catalog (1 API call) and compares it against the committed
+`stig_catalog.json`; `--fetch` runs `stig_harvest.py --refresh-stale` to re-harvest only the
+drifted benchmarks. The quarterly DISA SRG-STIG Library compilation is the operator-triggered
+full refresh (`--full --from-zip`); the multi-hundred-MB zip is never committed. See the STIG
+harvest/delta procedure and the **source-class completeness checklist** in
+`docs/standards-refresh-runbook.md`.

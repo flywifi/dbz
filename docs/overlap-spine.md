@@ -201,3 +201,40 @@ The catalog-JSON export (`mapping_edges` on a control in
 `cross-mapping/schema/enhanced_framework_schema.json`) remains a deliberate schema-evolution
 decision that is **not** silently added — the catalog schema is unchanged until that export
 is built.
+
+## STIG technology tier (Phase 21) — on-demand CCI application overlap
+
+STIGs are DISA's per-product implementation guides; **every STIG rule cites DISA CCIs**
+(`<ident system="http://cyber.mil/cci">`). That makes each STIG a technology-tier footprint
+over the 800-53 spine, reached through the same `cci_bridge` the frameworks use. The
+objective is **CCI application evidence**, not a STIG registry: which CCIs are operationally
+exercised, in what product context, and which STIG-cited CCIs are missing from the CCI list
+(a gap detector).
+
+STIGs are deliberately **not** master-surface frameworks. Fanning ~1,000 STIGs into the
+precomputed matrix would explode it to C(1,000+,2) pairs and flood `master_mappings`.
+Instead:
+
+- **Tables** (schema 3.8): `stig_catalog` (per-benchmark metadata), `stig_rules`
+  (group/rule/version-id/severity/title + sorted-JSON CCIs), `stig_cci_usage`
+  (cci → n_stigs / n_rules / in_bridge).
+- **On-demand projection**: `spine_overlap.resolve_stig` learns a `stig:<title>`
+  pseudo-framework; `stig_footprint_ccis/subparts/controls` project it onto the spine via
+  its rules' CCIs. `overlap stig:RHEL_9 × "FedRAMP r5"` computes live. STIG ids **never**
+  enter `framework_projection`, `overlap_matrix`, or `master_mappings` (validate_spine check
+  9d + test_spine enforce this). The matrix stays 120; the master surface stays 16 canonical
+  frameworks.
+- **Confidence**: `stig_cci` provenance, capped by the weaker side (CCI→sub-part edges are
+  DISA-native ≈0.95, so the framework side governs); `needs_confirmation` always set —
+  advisory implementation evidence, not an owner-stated mapping.
+
+Source: the DISA SRG-STIG Library compilation (authoritative bulk), distilled by
+`tools/stig_harvest.py` into two committed artifacts (the ~360MB zip is never committed). The
+April-2026 library yields **383 benchmarks / 19,667 rules / 539 distinct CCIs** (97.6% resolve
+in `cci_bridge`; 13 unresolved are surfaced, never dropped). The full 1,079-title trackr
+catalog is snapshotted as the delta detector; ~700 titles are historical/sunset and are
+catalogued but rule-harvested on demand — empirically they add ~0 new CCIs (the CCI
+vocabulary is product-agnostic; a sampled Windows 10 / Citrix harvest added 0). Query:
+`dbz_query.py stig` (`--list`/`--stig`/`--cci`/`--coverage`). Gate: validate_spine check 9
+(CCI resolution ≥90%, catalog↔rules consistency, tech-tier isolation) + test_spine STIG
+fixtures.

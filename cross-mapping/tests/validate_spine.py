@@ -368,6 +368,67 @@ def main() -> int:
             else:
                 note(f"SCF cross-source agreement: {agree:.1%} of {len(proj_scf)} projected ids confirmed by the master crosswalk")
 
+    # 9. STIG application layer (Phase 21) — CCI application evidence.
+    #   The STIG layer's purpose is CCI usage evidence, not a complete STIG
+    #   registry. Guarded on the artifact: absent stig tables → skipped (offline).
+    #   (a) STIG-cited CCIs resolve in cci_bridge at >= a pinned rate (measured
+    #       97.6%; pin 90%) — high resolution proves the harvest keys the same CCI
+    #       space as the bridge; the small unresolved remainder is surfaced.
+    #   (b) unresolved (STIG-cited, not in cci_bridge) CCIs are counted + noted —
+    #       informational gap detector (STIG releases can lead the CCI list).
+    #   (c) catalog↔rules consistency: SUM(rule_count) == COUNT(stig_rules) and no
+    #       per-STIG mismatch (build integrity).
+    #   (d) the tech tier did not leak: STIG ids never appear in framework_projection
+    #       / overlap_matrix / master_mappings.
+    have_stig = conn.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='stig_catalog'").fetchone()
+    n_stig = conn.execute("SELECT COUNT(*) FROM stig_catalog").fetchone()[0] if have_stig else 0
+    if not have_stig or n_stig == 0:
+        note("STIG layer: skipped (no stig_catalog artifact)")
+    else:
+        n_rules = conn.execute("SELECT COUNT(*) FROM stig_rules").fetchone()[0]
+        n_used = conn.execute("SELECT COUNT(*) FROM stig_cci_usage").fetchone()[0]
+        n_res = conn.execute("SELECT COUNT(*) FROM stig_cci_usage WHERE in_bridge=1").fetchone()[0]
+        n_unres = n_used - n_res
+        resolve_pct = (n_res / n_used * 100) if n_used else 0.0
+        # (a) resolution rate
+        if resolve_pct < 90.0:
+            fail(f"STIG CCI resolution: only {resolve_pct:.1f}% of STIG-cited CCIs resolve "
+                 f"in cci_bridge (need >=90%)")
+        else:
+            note(f"STIG CCI resolution: {resolve_pct:.1f}% of {n_used} STIG-cited CCIs "
+                 f"resolve in cci_bridge ({n_stig} benchmarks, {n_rules} rules)")
+        # (b) gap detector — informational, never a fail
+        if n_unres:
+            note(f"STIG CCI gap detector: {n_unres} STIG-cited CCIs absent from cci_bridge "
+                 "(DISA list lag or r4-only — informational, never dropped)")
+        # (c) catalog<->rules consistency
+        sum_rc = conn.execute("SELECT COALESCE(SUM(rule_count),0) FROM stig_catalog").fetchone()[0]
+        n_mismatch = conn.execute("""
+            SELECT COUNT(*) FROM stig_catalog c
+            JOIN (SELECT stig_id, COUNT(*) n FROM stig_rules GROUP BY stig_id) r
+              ON c.stig_id=r.stig_id WHERE c.rule_count<>r.n""").fetchone()[0]
+        if sum_rc != n_rules or n_mismatch:
+            fail(f"STIG catalog/rules inconsistency: SUM(rule_count)={sum_rc} vs "
+                 f"COUNT(stig_rules)={n_rules}, {n_mismatch} per-STIG mismatches")
+        else:
+            note(f"STIG catalog/rules consistency: {n_rules} rules reconcile exactly")
+        # (d) tech-tier isolation: STIG ids must never enter the master surface
+        stig_ids = {r[0] for r in conn.execute("SELECT stig_id FROM stig_catalog")}
+        leak = 0
+        for tbl, cols in (("framework_projection", ["framework", "native_id"]),
+                          ("overlap_matrix", ["framework_a", "framework_b"]),
+                          ("master_mappings", ["fw_a", "fw_b"])):
+            for col_ in cols:
+                vals = {r[0] for r in conn.execute(f"SELECT DISTINCT {col_} FROM {tbl}")}
+                leak += len(vals & stig_ids)
+                leak += sum(1 for v in vals if isinstance(v, str) and v.startswith("stig:"))
+        if leak:
+            fail(f"STIG tech-tier leak: {leak} STIG ids found in matrix/projection/master")
+        else:
+            note("STIG tech-tier isolation: no STIG ids in framework_projection / "
+                 "overlap_matrix / master_mappings")
+
     conn.close()
 
     print("SPINE VALIDATION:", "FAIL" if FAILS else "PASS")

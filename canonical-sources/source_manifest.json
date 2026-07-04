@@ -976,6 +976,28 @@
       "role": "reference_only",
       "authority_scope": "scf_only",
       "notes": "SCF's STRM methodology paper — the relationship vocabulary behind SCF crosswalks. Reference for the deferred SCF spine-projection phase."
+    },
+    {
+      "id": "stig-cci-map",
+      "file": "canonical-sources/source_data/stig/stig_cci_map.json.gz",
+      "format": "json.gz",
+      "version": "U_SRG-STIG_Library_April_2026 (distilled; 383 benchmarks, 19,667 rules, 539 distinct CCIs)",
+      "retrieved": "2026-07-04",
+      "source_url": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_SRG-STIG_Library_{Month}_{YYYY}.zip",
+      "sha256_prefix": "95efbb79c75bfec7",
+      "role": "stig_cci_application",
+      "notes": "Distilled by tools/stig_harvest.py from the DISA SRG-STIG Library compilation (the ~360MB zip is fetched at harvest time and NEVER committed). Objective is CCI APPLICATION EVIDENCE: each STIG rule's DISA CCIs (<ident system=cyber.mil/cci>) anchor the STIG onto the 800-53 spine via cci_bridge. Deterministic (sorted; gzip mtime=0). Loaded by spine_loader.load_stig_rules into stig_catalog/stig_rules/stig_cci_usage. STIGs are a technology tier — never in framework_projection/overlap_matrix/master_mappings; overlap is on-demand via the `stig:` resolver."
+    },
+    {
+      "id": "stig-catalog",
+      "file": "canonical-sources/source_data/stig/stig_catalog.json",
+      "format": "json",
+      "version": "trackr catalog snapshot (1,079 titles) + harvested-benchmark ledger",
+      "retrieved": "2026-07-04",
+      "source_url": "https://cyber.trackr.live/api/stig",
+      "sha256_prefix": "af0038f97d254ac1",
+      "role": "stig_delta_ledger",
+      "notes": "The delta detector: the full cyber.trackr.live title catalog (version/release/date/severity) plus per-benchmark harvest provenance (version/release/date/rule_count/sha). standards_refresh.py --check compares the live catalog against this file and re-harvests only changed titles. Historical/sunset titles are catalogued here but rule-harvested on demand (empirically add ~0 new CCIs)."
     }
   ],
   "er_crosswalk_csvs": {

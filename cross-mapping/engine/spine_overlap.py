@@ -39,6 +39,101 @@ def _er_frameworks(conn) -> List[str]:
         "SELECT DISTINCT framework FROM er_mappings ORDER BY framework")]
 
 
+# ── STIG technology tier (Phase 21, on-demand) ──────────────────────────────
+# STIG benchmarks are a per-product implementation tier resolved live — they are
+# NOT in framework_projection and never enter the precomputed matrix or the
+# master surface. A `stig:<title>` pseudo-framework projects onto the 800-53
+# spine via its rules' DISA CCIs through cci_bridge.
+
+STIG_PREFIX = "stig:"
+# CCI -> sub-part edges are DISA-native; the STIG side never limits confidence
+# below the framework side it is compared against.
+STIG_CONF = 0.95
+
+
+def resolve_stig(conn, name: str):
+    """('ok', stig_id) | ('ambiguous', [ids]) | ('none', None) for a stig:-prefixed
+    name; ('notstig', None) when the name carries no stig: prefix."""
+    if not name or not name.strip().lower().startswith(STIG_PREFIX):
+        return ("notstig", None)
+    q = name.strip()[len(STIG_PREFIX):].strip()
+    try:
+        rows = conn.execute("SELECT stig_id, title FROM stig_catalog").fetchall()
+    except sqlite3.OperationalError:
+        return ("none", None)
+    if not q:
+        return ("none", None)
+    ql = q.lower()
+    for sid, _t in rows:                       # exact id (case-insensitive)
+        if sid.lower() == ql:
+            return ("ok", sid)
+    for sid, t in rows:                        # exact title
+        if (t or "").lower() == ql:
+            return ("ok", sid)
+    subs = sorted({sid for sid, t in rows
+                   if ql in sid.lower() or ql in (t or "").lower()})
+    if len(subs) == 1:
+        return ("ok", subs[0])
+    if len(subs) > 1:
+        return ("ambiguous", subs)
+    return ("none", None)
+
+
+def _stig_ccis(conn, stig_id: str) -> Set[str]:
+    """Distinct CCI tokens the STIG's rules cite (ccis stored as sorted JSON)."""
+    import json as _json
+    out: Set[str] = set()
+    for (blob,) in conn.execute("SELECT ccis FROM stig_rules WHERE stig_id=?", (stig_id,)):
+        try:
+            out.update(_json.loads(blob) or [])
+        except (ValueError, TypeError):
+            continue
+    return out
+
+
+def stig_footprint_ccis(conn, stig_id: str) -> Set[str]:
+    """CCI atoms comparable to a framework's footprint_ccis: the STIG's cited CCIs
+    that are anchored on the spine (present in cci_bridge). Unanchored CCIs cannot
+    overlap any spine framework and are reported separately by the gap detector."""
+    ccis = _stig_ccis(conn, stig_id)
+    if not ccis:
+        return set()
+    qs = ",".join("?" * len(ccis))
+    anchored = {r[0] for r in conn.execute(
+        f"SELECT DISTINCT cci_id FROM cci_bridge WHERE cci_id IN ({qs})", tuple(sorted(ccis)))}
+    return anchored
+
+
+def stig_footprint_subparts(conn, stig_id: str) -> Set[str]:
+    """r5 sub-parts (and control-level tokens, expanded) the STIG reaches through
+    its CCIs — the same key space footprint_subparts uses for real frameworks."""
+    ccis = _stig_ccis(conn, stig_id)
+    if not ccis:
+        return set()
+    qs = ",".join("?" * len(ccis))
+    out: Set[str] = set()
+    for r5c, sp in conn.execute(
+            f"SELECT DISTINCT r5_control, r5_subpart FROM cci_bridge WHERE cci_id IN ({qs})",
+            tuple(sorted(ccis))):
+        if sp:
+            out.add(sp)
+        else:
+            out.add(r5c)
+            for (s,) in conn.execute(
+                    "SELECT subpart_id FROM nist_subparts WHERE r5_control=? AND path<>''", (r5c,)):
+                out.add(s)
+    return out
+
+
+def stig_footprint_controls(conn, stig_id: str) -> Set[str]:
+    ccis = _stig_ccis(conn, stig_id)
+    if not ccis:
+        return set()
+    qs = ",".join("?" * len(ccis))
+    return {r[0] for r in conn.execute(
+        f"SELECT DISTINCT r5_control FROM cci_bridge WHERE cci_id IN ({qs})", tuple(sorted(ccis)))}
+
+
 def resolve_framework(conn, name: str) -> Optional[str]:
     """Canonical framework label, or None if unresolvable."""
     if not name:
@@ -314,12 +409,112 @@ def per_control(conn, a: str, b: str, limit: int = 200) -> List[dict]:
 
 # ── the never-error entry point ─────────────────────────────────────────────────
 
+def _stig_error(kind: str, val, raw: str) -> Optional[dict]:
+    """None if this side is a usable STIG; otherwise a structured error dict."""
+    if kind == "ok":
+        return None
+    if kind == "ambiguous":
+        return {"tool": "overlap-query", "overlap_pct": None,
+                "error": f"ambiguous STIG name '{raw}' — {len(val)} matches",
+                "candidates": val[:25], "human_review_required": True}
+    if kind == "none":
+        return {"tool": "overlap-query", "overlap_pct": None,
+                "error": f"no STIG matches '{raw}' (use `stig --list` for titles)",
+                "human_review_required": True}
+    return None  # notstig — caller resolves the framework side normally
+
+
+def _compute_stig(conn, a_in, b_in, a_stig, b_stig, want_per_control: bool) -> dict:
+    """Overlap where at least one side is a `stig:` technology-tier pseudo-framework.
+    Footprints project onto the 800-53 spine via DISA CCIs (cci_bridge). Result is
+    advisory technology-tier evidence; STIGs never enter the matrix or master."""
+    a_kind, a_val = a_stig
+    b_kind, b_val = b_stig
+    for kind, val, raw in ((a_kind, a_val, a_in), (b_kind, b_val, b_in)):
+        if kind != "notstig":
+            err = _stig_error(kind, val, raw)
+            if err:
+                return err
+
+    def _label_and_sets(kind, val, raw):
+        """(label, cci_set, subpart_set, control_set, conf) for one side."""
+        if kind == "ok":
+            title = conn.execute("SELECT title FROM stig_catalog WHERE stig_id=?",
+                                 (val,)).fetchone()
+            lbl = f"stig:{val}"
+            return (lbl, stig_footprint_ccis(conn, val), stig_footprint_subparts(conn, val),
+                    stig_footprint_controls(conn, val), STIG_CONF, title[0] if title else "")
+        fw = resolve_framework(conn, raw)
+        if not fw:
+            return (None, None, None, None, None, None)
+        cf, _hop = _framework_best_conf(conn, fw)
+        return (fw, footprint_ccis(conn, fw), footprint_subparts(conn, fw),
+                footprint_controls(conn, fw), cf, "")
+
+    la, cci_a, sp_a, ct_a, conf_a, title_a = _label_and_sets(a_kind, a_val, a_in)
+    lb, cci_b, sp_b, ct_b, conf_b, title_b = _label_and_sets(b_kind, b_val, b_in)
+    if la is None or lb is None:
+        missing = a_in if la is None else b_in
+        return {"tool": "overlap-query", "overlap_pct": None,
+                "error": f"unknown framework name: {missing}",
+                "known_frameworks": _projection_frameworks(conn) + _er_frameworks(conn),
+                "human_review_required": True}
+
+    ladder = (("cci", cci_a, cci_b), ("subpart", sp_a, sp_b), ("control", ct_a, ct_b))
+    result_basis, metrics = None, None
+    for basis, sa, sb in ladder:
+        if sa and sb:
+            metrics = _jaccard(sa, sb)
+            result_basis = basis
+            break
+    conf = min(conf_a, conf_b)
+    if metrics is None:
+        return {"tool": "overlap-query", "framework_a": la, "framework_b": lb,
+                "overlap_pct": 0.0, "basis": "none",
+                "explanation": "no shared spine coordinates: the STIG's CCIs and the "
+                               "other side reach disjoint 800-53 sub-parts (or one side "
+                               "has no spine footprint)",
+                "provenance": "stig_cci", "human_review_required": True}
+    caveats = ["technology-tier footprint projected via DISA CCIs (stig_cci); "
+               "advisory implementation evidence, not an owner-stated mapping"]
+    if result_basis == "control":
+        caveats.append("sub-part / CCI granularity unavailable for this pair; control-level basis used")
+    out = {
+        "tool": "overlap-query",
+        "framework_a": la, "framework_b": lb,
+        "basis": result_basis,
+        "provenance": "stig_cci",
+        "overlap_pct": metrics["jaccard_pct"],
+        "a_covers_b_pct": metrics["a_covers_b_pct"],
+        "b_covers_a_pct": metrics["b_covers_a_pct"],
+        "shared_count": metrics["shared_count"],
+        "framework_a_count": metrics["a_count"],
+        "framework_b_count": metrics["b_count"],
+        "confidence": confidence_tier(conf),
+        "confidence_score": round(conf, 2),
+        "needs_confirmation": True,
+        "relationship_basis": "stig_technology_tier",
+        "caveats": caveats,
+        "human_review_required": True,
+    }
+    return out
+
+
 def compute(conn, a_in: str, b_in: str, want_per_control: bool = False,
             basis_pref: str = "auto", consensus_tier: Optional[bool] = None) -> dict:
     """`consensus_tier`: None (default) reads the `consensus_provenance` feature
     flag at query time; True/False force the tier on/off — build_db passes False
     so the precomputed overlap_matrix never depends on flag state (deterministic
     builds), and tests pass both values explicitly."""
+    # STIG technology tier (on-demand): if either side is a stig:<title> handle
+    # it here — STIGs are not in framework_projection, so the normal path can't
+    # resolve them, and they must never enter the precomputed matrix / master.
+    sa_kind, sa_val = resolve_stig(conn, a_in)
+    sb_kind, sb_val = resolve_stig(conn, b_in)
+    if sa_kind != "notstig" or sb_kind != "notstig":
+        return _compute_stig(conn, a_in, b_in, (sa_kind, sa_val), (sb_kind, sb_val),
+                             want_per_control)
+
     a = resolve_framework(conn, a_in)
     b = resolve_framework(conn, b_in)
     if not a or not b:

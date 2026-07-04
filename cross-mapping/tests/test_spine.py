@@ -478,6 +478,41 @@ if _DB.exists():
         WHERE framework_a='SOC 1' OR framework_b='SOC 1' LIMIT 1""").fetchone()
     check(_s1 is not None and _s1[0] in ("inferred_er", "none"),
           f"SOC 1 matrix rows stay inferred_er/none (got {_s1})")
+    # ── Phase 21: STIG application layer (technology tier, on-demand) ───────────
+    _has_stig = _c2.execute("SELECT name FROM sqlite_master WHERE type='table' "
+                            "AND name='stig_catalog'").fetchone()
+    if _has_stig:
+        _sc = _c2.execute("SELECT COUNT(*), COALESCE(SUM(rule_count),0) FROM stig_catalog").fetchone()
+        check(_sc[0] >= 380 and _sc[1] >= 19000,
+              f"STIG catalog harvested (>=380 benchmarks, >=19000 rules; got {_sc})")
+        # every stored CCI token is well-formed (never guessed)
+        _badcci = _c2.execute(
+            "SELECT COUNT(*) FROM stig_cci_usage WHERE cci_id NOT GLOB 'CCI-[0-9][0-9][0-9][0-9][0-9][0-9]'"
+        ).fetchone()[0]
+        check(_badcci == 0, f"all STIG CCI tokens match CCI-NNNNNN (bad: {_badcci})")
+        # STIG-cited CCIs resolve in cci_bridge at a high rate (measured 97.6%)
+        _u, _r = _c2.execute("SELECT COUNT(*), COALESCE(SUM(in_bridge),0) FROM stig_cci_usage").fetchone()
+        check(_u > 0 and _r / _u >= 0.90,
+              f"STIG CCIs resolve in cci_bridge >=90% (got {_r}/{_u})")
+        # tech tier never leaks into the matrix / projection / master surface
+        _stig_ids = {x[0] for x in _c2.execute("SELECT stig_id FROM stig_catalog")}
+        _mx_fws = {x[0] for x in _c2.execute("SELECT DISTINCT framework_a FROM overlap_matrix")}
+        _mx_fws |= {x[0] for x in _c2.execute("SELECT DISTINCT framework_b FROM overlap_matrix")}
+        _pj_fws = {x[0] for x in _c2.execute("SELECT DISTINCT framework FROM framework_projection")}
+        check(not (_stig_ids & (_mx_fws | _pj_fws)) and not any(
+              str(f).startswith("stig:") for f in _mx_fws | _pj_fws),
+              "STIG ids never enter overlap_matrix / framework_projection")
+        # on-demand `stig:` resolver round-trips and projects a real footprint
+        _sid = _c2.execute("SELECT stig_id FROM stig_catalog WHERE stig_id LIKE '%RHEL_9%' "
+                           "OR stig_id LIKE '%Windows%' ORDER BY rule_count DESC LIMIT 1").fetchone()
+        if _sid:
+            _kind, _val = SO.resolve_stig(_c2, f"stig:{_sid[0]}")
+            check(_kind == "ok" and _val == _sid[0], f"stig: resolver round-trip ({_sid[0]})")
+            _fp = SO.stig_footprint_ccis(_c2, _sid[0])
+            check(len(_fp) > 0, f"STIG {_sid[0]} projects a non-empty CCI footprint ({len(_fp)})")
+            _ov = SO.compute(_c2, f"stig:{_sid[0]}", "FedRAMP r5")
+            check(_ov.get("provenance") == "stig_cci" and _ov.get("basis") in ("cci", "subpart"),
+                  f"STIG×framework overlap uses the stig_cci tech tier (got {_ov.get('provenance')})")
     # label registry loaded; the in-module dicts must match it exactly
     import master_surface as MSF  # type: ignore
     _reg = {r[0]: r[2] for r in _c2.execute(
