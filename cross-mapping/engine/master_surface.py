@@ -14,8 +14,13 @@ Arbitration (minority-report — dissent never dropped): the strongest tier wins
 the primary row; every losing surface's claim is preserved verbatim in the
 `corroboration` JSON column.  Tier order:
 
-  owner_direct(1) > nist_stated(2) > hub(3) > bundled(4) > consensus(5)
-  > production_aggregate(6)
+  owner_direct(1) > nist_stated(2) > owner_stated(3) > hub(4) > bundled(5)
+  > consensus(6) > production_aggregate(7)
+
+`owner_stated` (Phase 20) = the framework OWNER mapping their own controls to a
+foreign target (CSA's CCM->800-53 OSCAL, SCF's 800-53 column) — authoritative
+within the owner's audit scope (CSA STAR / SCF CAP) per the acceptance-authority
+model, ranked below NIST-reviewed mappings.
 
 Hygiene (CLAUDE.md non-negotiable): provider-proprietary ids (ER-N / REQ-N)
 are refused at assembly time — a surface that ever supplies one raises.
@@ -49,6 +54,10 @@ _PROPRIETARY_RE = re.compile(r"\b(?:ER|REQ)-\d+\b")
 
 NIST_LABEL = "NIST 800-53"
 
+# The single authoritative tier order — dbz_query imports this (never copy it).
+TIER_ORDER = ["owner_direct", "nist_stated", "owner_stated", "hub", "bundled",
+              "consensus", "production_aggregate"]
+
 # provenance -> (tier, rank, expected confidence or None)
 TIER_MAP: Dict[str, Tuple[str, int, Optional[float]]] = {
     "cmmc171":            ("owner_direct", 1, 0.95),
@@ -58,12 +67,14 @@ TIER_MAP: Dict[str, Tuple[str, int, Optional[float]]] = {
     "direct_cprt_171r3":  ("nist_stated", 2, 0.85),
     "direct_cprt_172r3":  ("nist_stated", 2, 0.85),
     "olir_csf2_pair":     ("nist_stated", 2, 0.85),
-    "hitrust_hub":        ("hub", 3, 0.65),
-    "transitive_unified": ("hub", 3, 0.65),
-    "aicpa_tsp_hub":      ("hub", 3, 0.65),
-    "master_crosswalk":   ("bundled", 4, 0.60),
-    "consensus":          ("consensus", 5, None),
-    "production_aggregate": ("production_aggregate", 6, None),
+    "ccm_oscal":          ("owner_stated", 3, 0.85),
+    "scf_direct":         ("owner_stated", 3, 0.80),
+    "hitrust_hub":        ("hub", 4, 0.65),
+    "transitive_unified": ("hub", 4, 0.65),
+    "aicpa_tsp_hub":      ("hub", 4, 0.65),
+    "master_crosswalk":   ("bundled", 5, 0.60),
+    "consensus":          ("consensus", 6, None),
+    "production_aggregate": ("production_aggregate", 7, None),
 }
 
 _CONS_EXTENT_REL = {
@@ -190,9 +201,10 @@ class _Claims:
 
 
 def assemble(conn, csf2_pairs: Optional[List[dict]] = None,
-             tsp_pairs: Optional[List[dict]] = None) -> Tuple[List[dict], dict]:
+             tsp_pairs: Optional[List[dict]] = None,
+             ccm_cis_pairs: Optional[List[dict]] = None) -> Tuple[List[dict], dict]:
     """Build master_mappings rows from the loaded surfaces.  Pure over its
-    inputs — reads grc.db tables + the two pair lists, returns sorted rows."""
+    inputs — reads grc.db tables + the pair lists, returns sorted rows."""
     labels = LabelResolver(load_label_rows())
     col = _Claims()
     stats = {"skipped_fedramp": 0, "skipped_consensus_single": 0,
@@ -286,6 +298,13 @@ def assemble(conn, csf2_pairs: Optional[List[dict]] = None,
                 needs_confirmation=1,
                 source_ref="Mapping-of-2017-AICPA-TSP-to-HITRUST-CSFv11.4.0.xlsx")
         stats["tsp_pair_rows"] += 1
+    # CCM <-> CIS 8.1 from CSA's OSCAL mapping-collection (owner-stated, Phase 20)
+    for p in ccm_cis_pairs or []:
+        col.add("CSA CCM v4", p["ccm_id"], "CIS CSC v8.0", p["cis_id"],
+                provenance="ccm_oscal", relationship=p["relationship"],
+                relationship_basis="source_stated", confidence=0.85, hop_count=1,
+                needs_confirmation=0, source_ref="ccm-oscal-mappings.json")
+        stats["ccm_cis_pair_rows"] = stats.get("ccm_cis_pair_rows", 0) + 1
 
     # 5. ER production aggregates — public-id frameworks only, counts only.
     er_counts: Dict[tuple, int] = {}

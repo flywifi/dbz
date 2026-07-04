@@ -76,6 +76,12 @@ pairs real spine footprints where they previously characterized `no_spine_footpr
 the Phase 18 pinned gates re-measured green without re-pinning (enrichment lift 2.37×,
 ISO coverage 55.9%).
 
+Phase 20 note: SCF and CCM are now ALSO spine frameworks (`SCF 2026.1`, `CSA CCM v4` —
+owner_stated tier). The consensus **voters are unchanged**: the voter role (SCF/CCM rows as
+*pivots* connecting third-party pairs) and the projection role (SCF/CCM controls as
+*endpoints* on the spine) are separate uses of the same artifacts, and consensus keys still
+never include SCF/CCM ids.
+
 ## SOC 2 comparability — controls vary by audit firm
 
 SOC 2 has **no standardized control list**. Per the AICPA, the [2017 Trust Services Criteria

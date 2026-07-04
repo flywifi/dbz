@@ -1215,7 +1215,9 @@ def build_db(
                             ("csf2 (OLIR r5.2.0)", spine_loader.load_csf2_projection),
                             ("171r3 (CPRT)", spine_loader.load_171r3_projection),
                             ("172r3 (CPRT)", spine_loader.load_172r3_projection),
-                            ("pci (master crosswalk, bundled)", spine_loader.load_pci_master_projection)):
+                            ("pci (master crosswalk, bundled)", spine_loader.load_pci_master_projection),
+                            ("scf (owner-stated, SCF/CAP scope)", spine_loader.load_scf_projection),
+                            ("ccm (owner-stated OSCAL, CSA STAR scope)", spine_loader.load_ccm_projection)):
         _edges, _pstats = _loader(catalog_ids)
         if not _edges:
             print(f"  {_label} projection: skipped ({_pstats.get('skipped', 'no edges')})")
@@ -1505,7 +1507,10 @@ def build_db(
     print(f"  csf2 olir pairs: {_cp_stats}")
     _tsp_pairs, _tsp_stats = spine_loader.load_aicpa_tsp_hub()
     print(f"  aicpa_tsp pairs: {_tsp_stats}")
-    master_rows, master_stats = _ms.assemble(conn, csf2_pairs=_csf2_pairs, tsp_pairs=_tsp_pairs)
+    _ccm_cis_pairs, _cc_stats = spine_loader.collect_ccm_cis_pairs()
+    print(f"  ccm_cis pairs: {_cc_stats}")
+    master_rows, master_stats = _ms.assemble(conn, csf2_pairs=_csf2_pairs, tsp_pairs=_tsp_pairs,
+                                             ccm_cis_pairs=_ccm_cis_pairs)
     _executemany_chunked(conn, """
         INSERT OR REPLACE INTO master_mappings
             (fw_a, native_a, fw_b, native_b, relationship, relationship_basis,

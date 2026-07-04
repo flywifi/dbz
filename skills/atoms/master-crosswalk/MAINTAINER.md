@@ -7,10 +7,14 @@ master mapping surface so a future maintainer keeps the intended scope. The atom
 source in isolation.
 
 ## Non-negotiable invariants
-- **Tier arbitration is fixed**: `owner_direct(0.95) > nist_stated(0.85) > hub(0.65) >
-  bundled(0.60) > consensus > production_aggregate`. The strongest tier wins the primary
-  row; every non-winning surface's claim is preserved verbatim in `corroboration` (JSON) —
-  dissent is never dropped (minority-report policy).
+- **Tier arbitration is fixed**: `owner_direct(0.95) > nist_stated(0.85) >
+  owner_stated(ccm_oscal 0.85 / scf_direct 0.80) > hub(0.65) > bundled(0.60) > consensus >
+  production_aggregate`. The order lives in ONE place — `master_surface.TIER_ORDER`
+  (dbz_query imports it). The strongest tier wins the primary row; every non-winning
+  surface's claim is preserved verbatim in `corroboration` (JSON) — dissent is never
+  dropped (minority-report policy). Phase 20 added `owner_stated` (owner-of-source mapping
+  to a foreign target, scope-relative per the acceptance-authority model) — an
+  approval-gated change, approved via the Phase 20 plan.
 - **No fabrication.** Every master row traces to a committed source (`source_ref`); the
   assembly refuses provider-proprietary ids (`ER-N`/`REQ-N`) by raising, and test_spine +
   validate_spine (check 8) + health_audit each independently scan for leaks. Absent pairs

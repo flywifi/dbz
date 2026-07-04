@@ -58,6 +58,15 @@ control B", but which specific requirement inside a control is shared.
   column (1,348 requirement→control co-citations incl. Appendix A1/A2/A3 ids):
   `master_crosswalk`, confidence 0.60, needs_confirmation=1 — honest bundled tier; the
   Phase 18 consensus tier lifts eligible pairs to 0.85 at query time.
+- **SCF 2026.1 ↔ 800-53 (owner-stated, Phase 20)** — SCF's own `NIST 800-53 R5` column
+  (1,117 co-citations over 777 of 1,468 SCF controls; the rest cite no 800-53
+  counterpart): `scf_direct`, confidence 0.80, needs_confirmation=1. SCF/CAP-scope
+  acceptance rule (acceptance-authority model); the xlsx carries no per-mapping STRM
+  strength — SCF's per-framework STRM PDFs are the future relationship-upgrade path.
+- **CSA CCM v4 ↔ 800-53 (owner-stated, Phase 20)** — CSA's OSCAL mapping-collection
+  (1,683 pairs over 195 CCM controls with **source-stated** `equivalent-to`/`superset-of`
+  relationships): `ccm_oscal`, confidence 0.85, needs_confirmation=0. CSA-STAR-scope
+  acceptance rule; ranked below NIST-reviewed mappings in the master surface.
 - **CCIs** — the current DISA CCI List XML (2025-01-23, public download) maps each CCI to a
   NIST 800-53 sub-part using **native Revision 5 references** (3,836 CCIs). CCIs that only
   carry r4 refs are bridged by identity where the id survives into r5, or — for the withdrawn
@@ -168,10 +177,15 @@ verbatim in the `corroboration` JSON column — minority report, dissent never d
 |---|---|---|
 | `owner_direct` | cmmc171 | 0.95 |
 | `nist_stated` | direct_olir · direct_800_66 · direct_csf2 · direct_cprt_171r3 · direct_cprt_172r3 · olir_csf2_pair | 0.85 |
+| `owner_stated` | ccm_oscal (CSA-stated STRM) · scf_direct (SCF co-citation) | 0.85 / 0.80 |
 | `hub` | hitrust_hub · transitive_unified · aicpa_tsp_hub | 0.65 |
 | `bundled` | master_crosswalk | 0.60 |
 | `consensus` | multi-voter derived (votes reported) | — |
 | `production_aggregate` | co-occurrence counts, public ids only | — |
+
+`owner_stated` (Phase 20): the framework owner mapping their own controls to a foreign
+target — authoritative within the owner's audit scope only (CSA STAR, SCF/CAP), below
+NIST-reviewed mappings. The tier order lives in one place (`master_surface.TIER_ORDER`).
 
 Rules: one canonical label per framework (`framework_labels` registry — explicit aliases from
 `framework_vocab.json`, identity self-registration for the long tail); provider-proprietary

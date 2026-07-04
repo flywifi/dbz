@@ -324,8 +324,15 @@ def cmd_consensus(args, conn: sqlite3.Connection) -> int:
     return 0
 
 
-_MASTER_TIER_ORDER = ["owner_direct", "nist_stated", "hub", "bundled",
-                      "consensus", "production_aggregate"]
+# The tier order lives in ONE place (master_surface.TIER_ORDER) so the query
+# surface and the assembler can never drift apart.
+def _master_tier_order() -> list[str]:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from master_surface import TIER_ORDER  # type: ignore
+    return TIER_ORDER
+
+
+_MASTER_TIER_ORDER = _master_tier_order()
 
 
 def _master_canon_fw(conn: sqlite3.Connection, name: str) -> str | None:
@@ -477,8 +484,8 @@ def cmd_master(args, conn: sqlite3.Connection) -> int:
                          indent=2, ensure_ascii=False))
         return 0
     print(header)
-    print("Tier order: owner_direct > nist_stated > hub > bundled > consensus > "
-          "production_aggregate; corroboration preserves every non-winning surface.\n")
+    print(f"Tier order: {' > '.join(_MASTER_TIER_ORDER)}; "
+          "corroboration preserves every non-winning surface.\n")
     for d in results:
         conf = f" conf={d['confidence']}" if d["confidence"] is not None else ""
         votes = f" votes={d['votes']}" if d["votes"] else ""
@@ -1052,8 +1059,7 @@ def build_parser() -> argparse.ArgumentParser:
     mst.add_argument("--cui", action="store_true", help="audit-scope mode: CUI-applicable controls")
     mst.add_argument("--privacy", action="store_true", help="audit-scope mode: privacy baseline")
     mst.add_argument("--family", help="audit-scope mode: NIST family filter (e.g. IA)")
-    mst.add_argument("--min-tier", choices=["owner_direct", "nist_stated", "hub", "bundled",
-                                            "consensus", "production_aggregate"],
+    mst.add_argument("--min-tier", choices=list(_MASTER_TIER_ORDER),
                      help="only tiers at or above this rank")
     mst.add_argument("--limit", type=int, default=100)
     _add_format(mst)

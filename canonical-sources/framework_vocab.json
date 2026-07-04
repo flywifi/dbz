@@ -103,6 +103,14 @@
       },
       "FedRAMP r5": {
         "aliases": ["FedRAMP", "fedramp"]
+      },
+      "SCF 2026.1": {
+        "aliases": ["SCF", "Secure Controls Framework (SCF)", "Secure Controls Framework", "scf"],
+        "note": "Owner meta-framework; scf_direct projection edges are SCF/CAP-scope acceptance rules (acceptance-authority model)."
+      },
+      "CSA CCM v4": {
+        "aliases": ["CCM", "CCM v4", "CSA CCM", "CSA CCM v4.0.13", "CSA CCM v4.1", "ccm"],
+        "note": "ccm_oscal projection edges are CSA-STAR-scope acceptance rules (source-stated equivalent-to/superset-of from the v4.0.12 OSCAL mapping-collection)."
       }
     },
     "deliberately_distinct": {

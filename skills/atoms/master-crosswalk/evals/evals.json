@@ -47,6 +47,22 @@
       "expect_pass": true
     },
     {
+      "id": "owner-01",
+      "label": "CCM control fan-out — owner_stated ccm_oscal rows with CSA-stated relationships",
+      "input": {
+        "framework": "CSA CCM v4",
+        "control": "A&A-01"
+      },
+      "expected_output": {
+        "rows_min": 1,
+        "contains_tier": "owner_stated",
+        "contains_provenance": "ccm_oscal",
+        "relationships_subset_of": ["equal", "superset", "intersect", "unspecified"]
+      },
+      "expect_pass": true,
+      "notes": "Phase 20: CSA's OSCAL mapping states A&A-01 equivalent-to CA-1; the row is CSA-STAR-scope acceptance, ranked below NIST-reviewed tiers."
+    },
+    {
       "id": "gap-01",
       "label": "SOC 1 returns a structured data gap, never id-level rows",
       "input": {

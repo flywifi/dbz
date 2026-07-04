@@ -51,6 +51,16 @@
 > schema 3.7 ships `framework_labels` + `master_mappings` (93.8k tier-arbitrated pairs,
 > minority-report corroboration) with validate_spine check-8 gates and per-table
 > determinism digests. SOC 1 is honestly excluded (no public control layer).
+>
+> **Phase 20 (2026-07-03):** the meta-frameworks join the spine under a new `owner_stated`
+> master-surface tier (owner-of-source mapping to a foreign target, scope-relative per the
+> acceptance-authority model): **SCF 2026.1** via its own 800-53 R5 column (1,117 edges /
+> 777 controls, scf_direct 0.80 co-citation) and **CSA CCM v4** via CSA's OSCAL
+> mapping-collection (1,683 edges / 195 controls, ccm_oscal 0.85 with source-stated
+> equivalent-to/superset-of). Bonus master pairs: CCM↔CIS 8.1 (162, CSA-stated) and
+> CCM↔CSF2 (657) + SCF↔CSF2 (451) from the pinned CSF 2.0 OLIR graphs. Matrix 91→120
+> pairs; the long-standing "SCF + CCM spine projection is a future phase" runbook
+> follow-up is closed.
 
 Every framework version pinned in this repo was checked against the latest published release
 (live sources: csrc.nist.gov, hitrustalliance.net, pcisecuritystandards.org, cisecurity.org,

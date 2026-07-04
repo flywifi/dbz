@@ -116,6 +116,7 @@ def _source_citation(filename: str) -> dict:
     repo_root = Path(__file__).resolve().parent.parent.parent
     for rel in (f"canonical-sources/source_data/{filename}",
                 f"canonical-sources/source_data/cprt/{filename}",
+                f"canonical-sources/source_data/csa-star/CCMv4.0.12-OSCAL-Dataset_Generated-at_2024-06-03/{filename}",
                 f"canonical-sources/{filename}"):
         if (repo_root / rel).exists():
             return {"file": rel, "locator": filename}

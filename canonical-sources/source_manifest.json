@@ -630,9 +630,13 @@
       "source_url": "https://github.com/securecontrolsframework/securecontrolsframework",
       "sha256_prefix": "ef13a69f58e32901",
       "role": "scf_meta_framework",
-      "notes": "Creative-Commons meta-framework: controls + Authoritative Sources crosswalk + Assessment Objectives + Evidence Request List sheets. VERSION ANCHOR for the SCF column in crosswalk_80053_master.json. Errata pinned (scf-errata). Full CAP ecosystem in source_data/scf/. ACCEPTANCE-AUTHORITY MODEL: a framework owner's crosswalk is the acceptance rule for THEIR OWN framework — SCF's mappings state what SCF/CAP assessments accept as satisfying SCF controls. They are not claims about what NIST/ISO/CSA accept, and they never modify other standards' data. SCF's columns describing other frameworks are bundled-crosswalk tier (below source-provided mappings in precedence).",
+      "notes": "Creative-Commons meta-framework: controls + Authoritative Sources crosswalk + Assessment Objectives + Evidence Request List sheets. VERSION ANCHOR for the SCF column in crosswalk_80053_master.json. Errata pinned (scf-errata). Full CAP ecosystem in source_data/scf/. ACCEPTANCE-AUTHORITY MODEL: a framework owner's crosswalk is the acceptance rule for THEIR OWN framework — SCF's mappings state what SCF/CAP assessments accept as satisfying SCF controls. They are not claims about what NIST/ISO/CSA accept, and they never modify other standards' data. SCF's columns describing other frameworks are bundled-crosswalk tier (below source-provided mappings in precedence). Phase 20: SCF is a spine framework ('SCF 2026.1') via its own 800-53 R5 column — 1,117 edges over 777 SCF controls (the rest cite no 800-53 counterpart).",
       "authority_scope": "scf_only",
-      "errata_file": "canonical-sources/source_data/scf/Errata - SCF 2026.1.1.txt"
+      "errata_file": "canonical-sources/source_data/scf/Errata - SCF 2026.1.1.txt",
+      "column_roles": {
+        "SCF #": "scf_id",
+        "NIST 800-53 R5": "nist_53r5_id (newline/semicolon-separated; loader load_scf_projection — scf_direct 0.80, SCF/CAP-scope acceptance)"
+      }
     },
     {
       "id": "microsoft-sspa-dpr-v12",
@@ -700,8 +704,13 @@
       "retrieved": "2026-07-02",
       "role": "csa_ccm_oscal",
       "sha256_prefix": "876714a4412996c9",
-      "notes": "Machine-readable OSCAL rendition of CCM + mappings — candidate loader input for a future CCM spine projection (structured, no xlsx parsing needed). ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
-      "authority_scope": "csa_star_only"
+      "notes": "Machine-readable OSCAL rendition of CCM + mappings — candidate loader input for a future CCM spine projection (structured, no xlsx parsing needed). ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog. Phase 20: CCM is a spine framework ('CSA CCM v4') from this OSCAL mapping-collection.",
+      "authority_scope": "csa_star_only",
+      "structure": {
+        "mapping_collection": "ccm-oscal-mappings.json: 2 mappings — CCM->800-53 r5 (195 maps, 1,684 expanded pairs, source-stated equivalent-to/superset-of) and CCM->CIS 8.1 (94 maps, 165 pairs)",
+        "id_forms": "sources 'A_A-01' (underscore encodes A&A only) -> display 'A&A-01'; 53 targets OSCAL lowercase ('ca-2.1' -> CA-2(1) via oscal_control_id)",
+        "loaders": "spine_loader.load_ccm_projection (ccm_oscal 0.85, CSA-STAR-scope acceptance) + collect_ccm_cis_pairs"
+      }
     },
     {
       "id": "csa-aicm-v1.1",
@@ -823,7 +832,12 @@
       "role": "nist_171r3_catalog_and_53_mapping",
       "structure": {
         "path": "response.elements",
-        "keys": ["documents", "relationship_types", "elements", "relationships"],
+        "keys": [
+          "documents",
+          "relationship_types",
+          "elements",
+          "relationships"
+        ],
         "mapping_relationships": "source_doc SP_800_171_3_0_0 -> dest_doc SP_800_53_5_1_1, relationship_identifier external_reference (157 rows; requirement id '03.15.01' -> control id 'AC-01')"
       },
       "notes": "Official NIST CPRT export (user-provided). The external_reference relationships are NIST's own 171r3 -> 800-53r5 mapping — loader load_171r3_projection. Dest ids are r5.1.1 identifiers; ids are stable into the r5.2.0 catalog (normalize_control_id de-pads 'AC-01' -> 'AC-1')."
@@ -902,7 +916,13 @@
       "structure": {
         "path": "graphs.<section>.response",
         "edge_locator": "any element dict's externalRelationships[] with olirName='SP-800-66-Rev-2-to-SP-800-53-Rev-5.1.1' (element control ids like 'RA-01')",
-        "sections": ["164.308", "164.310", "164.312", "164.314", "164.316"]
+        "sections": [
+          "164.308",
+          "164.310",
+          "164.312",
+          "164.314",
+          "164.316"
+        ]
       },
       "notes": "Per-section CPRT element graphs carrying the NIST OLIR informative reference SP-800-66-Rev-2-to-SP-800-53-Rev-5.1.1 (279 HIPAA-citation -> 800-53 control pairs across 68 citations / 108 controls) — loader load_800_66_projection. The graphs also carry SP-800-66-Rev-2-to-CSF-v1.1 subcategory refs, which are NOT loaded (CSF 1.1 is version-stale vs the repo's CSF 2.0 canonical labels)."
     },

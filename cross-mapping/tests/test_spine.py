@@ -416,8 +416,25 @@ if _DB.exists():
           f"matrix SOC2×ISO row: consensus counts populated, confidence stays flag-off 0.65 (got {_om})")
     # ── Phase 19: master mapping surface ────────────────────────────────────────
     _fws = {r[0] for r in _c2.execute("SELECT DISTINCT framework FROM framework_projection")}
-    check({"PCI DSS v4.0", "NIST CSF 2.0", "NIST SP 800-171 r3", "NIST SP 800-172 r3"} <= _fws
-          and len(_fws) == 12, f"projection has the 12 Phase 19 frameworks (got {len(_fws)})")
+    check({"PCI DSS v4.0", "NIST CSF 2.0", "NIST SP 800-171 r3", "NIST SP 800-172 r3",
+           "SCF 2026.1", "CSA CCM v4"} <= _fws
+          and len(_fws) == 14, f"projection has the 14 frameworks (12 Phase 19 + SCF/CCM Phase 20, got {len(_fws)})")
+    # ── Phase 20: SCF + CCM owner-stated projections ────────────────────────────
+    _scf = _c2.execute("""SELECT COUNT(*), COUNT(DISTINCT native_id), MAX(confidence)
+        FROM framework_projection WHERE framework='SCF 2026.1'""").fetchone()
+    check(_scf[0] >= 1000 and _scf[1] >= 700 and _scf[2] == 0.80,
+          f"SCF projection: >=1000 edges over >=700 controls at 0.80 (got {_scf})")
+    _bad_scf = [r[0] for r in _c2.execute(
+        "SELECT DISTINCT native_id FROM framework_projection WHERE framework='SCF 2026.1'")
+        if not re.match(r"^[A-Z]{2,4}-\d{2}(\.\d{1,2})?$", r[0])]
+    check(not _bad_scf, f"all SCF natives canonical (bad: {_bad_scf[:3]})")
+    _ccm = _c2.execute("""SELECT COUNT(*), COUNT(DISTINCT native_id), MAX(confidence),
+        MAX(needs_confirmation) FROM framework_projection WHERE framework='CSA CCM v4'""").fetchone()
+    check(_ccm[0] >= 1600 and _ccm[1] >= 190 and _ccm[2] == 0.85 and _ccm[3] == 0,
+          f"CCM projection: >=1600 source-stated edges over >=190 controls at 0.85/needs_conf=0 (got {_ccm})")
+    _ccm_rels = {r[0] for r in _c2.execute(
+        "SELECT DISTINCT relationship FROM framework_projection WHERE framework='CSA CCM v4'")}
+    check(_ccm_rels <= {"equal", "superset"}, f"CCM relationships are CSA-stated equal/superset ({_ccm_rels})")
     # HIPAA now reaches the spine directly (800-66, NIST-stated 0.85); hub kept beneath
     _hc = _c2.execute("""SELECT MAX(confidence) FROM framework_projection
         WHERE framework='HIPAA Security'""").fetchone()[0]
@@ -430,8 +447,9 @@ if _DB.exists():
     check(n_para == 0, f"hub HIPAA natives canonicalized (no '§ ' prefix remains, got {n_para})")
     # master_mappings populated with the tier vocabulary, no proprietary ids anywhere
     _tiers = {r[0] for r in _c2.execute("SELECT DISTINCT tier FROM master_mappings")}
-    check(_tiers == {"owner_direct", "nist_stated", "hub", "bundled", "consensus",
-                     "production_aggregate"}, f"master tier vocabulary exact ({_tiers})")
+    check(_tiers == {"owner_direct", "nist_stated", "owner_stated", "hub", "bundled",
+                     "consensus", "production_aggregate"},
+          f"master tier vocabulary exact — 7 tiers incl. owner_stated ({_tiers})")
     n_mleak = _c2.execute("""SELECT COUNT(*) FROM master_mappings
         WHERE native_a GLOB '*REQ-[0-9]*' OR native_b GLOB '*REQ-[0-9]*'
            OR native_a GLOB '*ER-[0-9]*'  OR native_b GLOB '*ER-[0-9]*'
@@ -446,9 +464,16 @@ if _DB.exists():
     n_corr = _c2.execute("""SELECT COUNT(*) FROM master_mappings
         WHERE corroboration IS NOT NULL""").fetchone()[0]
     check(n_corr > 1000, f"master keeps minority-report corroboration on >1000 pairs (got {n_corr})")
-    # matrix covers the canonical union: C(14,2)=91 incl. SOC 1 + HITRUST CSF rows
+    # matrix covers the canonical union: C(16,2)=120 incl. SOC 1 + HITRUST CSF rows
     n_mx = _c2.execute("SELECT COUNT(*) FROM overlap_matrix").fetchone()[0]
-    check(n_mx == 91, f"overlap_matrix covers all 91 canonical framework pairs (got {n_mx})")
+    check(n_mx == 120, f"overlap_matrix covers all 120 canonical framework pairs (got {n_mx})")
+    # SCF and CCM pairs compute on a spine basis
+    for _pa, _pb in (("SCF 2026.1", "SOC 2"), ("CSA CCM v4", "ISO 27001/2 (2022)")):
+        _row = _c2.execute("""SELECT basis, jaccard_pct FROM overlap_matrix
+            WHERE (framework_a=? AND framework_b=?) OR (framework_a=? AND framework_b=?)""",
+            (_pa, _pb, _pb, _pa)).fetchone()
+        check(_row is not None and _row[0] in ("cci", "subpart") and (_row[1] or 0) > 0,
+              f"{_pa} × {_pb} on a spine basis (got {_row})")
     _s1 = _c2.execute("""SELECT basis FROM overlap_matrix
         WHERE framework_a='SOC 1' OR framework_b='SOC 1' LIMIT 1""").fetchone()
     check(_s1 is not None and _s1[0] in ("inferred_er", "none"),

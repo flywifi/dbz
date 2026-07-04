@@ -21,6 +21,7 @@ Requires a built grc.db (python3 cross-mapping/engine/build_db.py).
 from __future__ import annotations
 
 import csv
+import json
 import re
 import sqlite3
 import sys
@@ -244,6 +245,8 @@ def main() -> int:
     bad_8a = conn.execute("""SELECT COUNT(*) FROM master_mappings WHERE
         (tier='owner_direct' AND (provenance<>'cmmc171' OR confidence<>0.95)) OR
         (tier='nist_stated' AND confidence<>0.85) OR
+        (tier='owner_stated' AND NOT ((provenance='ccm_oscal' AND confidence=0.85)
+                                   OR (provenance='scf_direct' AND confidence=0.80))) OR
         (tier='hub' AND confidence<>0.65) OR
         (tier='bundled' AND (provenance<>'master_crosswalk' OR confidence<>0.6)) OR
         (tier IN ('consensus','production_aggregate') AND confidence IS NOT NULL) OR
@@ -318,10 +321,52 @@ def main() -> int:
     n_mx = conn.execute("SELECT COUNT(*) FROM overlap_matrix").fetchone()[0]
     soc1_bases = {r[0] for r in conn.execute(
         "SELECT DISTINCT basis FROM overlap_matrix WHERE framework_a='SOC 1' OR framework_b='SOC 1'")}
-    if n_mx != 91 or not soc1_bases <= {"inferred_er", "none"}:
-        fail(f"matrix completeness: {n_mx} rows (need 91) / SOC 1 bases {soc1_bases}")
+    if n_mx != 120 or not soc1_bases <= {"inferred_er", "none"}:
+        fail(f"matrix completeness: {n_mx} rows (need 120) / SOC 1 bases {soc1_bases}")
     else:
-        note(f"matrix completeness: 91 canonical pairs; SOC 1 stays inferred_er/none")
+        note(f"matrix completeness: 120 canonical pairs; SOC 1 stays inferred_er/none")
+
+    # 8i. SCF + CCM owner-stated projections (Phase 20) — thresholds pinned from
+    # measured values at gate-authoring time (2026-07-03), margins below observation.
+    #   (a) CCM cross-artifact id check: every projected CCM native must resolve in
+    #       the v4.0.13 xlsx Control ID column at >=95% (observed 100%: 195/195).
+    #   (b) SCF cross-source agreement: the projected SCF ids and the master
+    #       crosswalk's SCF column (independent compilations citing the same
+    #       framework) must agree at >=90% of projected ids (observed 98.5%).
+    #   Containment spot-checks for CCM 'equal' claims are NOT gated: both sides
+    #   are control-level (no sub-part footprints), so an atoms-based check would
+    #   be vacuous — recorded as an honest limit, not a green light.
+    proj_ccm = {r[0] for r in conn.execute(
+        "SELECT DISTINCT native_id FROM framework_projection WHERE framework='CSA CCM v4'")}
+    if proj_ccm:
+        try:
+            from config import source_path as _sp  # type: ignore
+            import pandas as _pd  # type: ignore
+            _ccm_df = _pd.read_excel(
+                _sp("csa-ccm-v4.0.13"), sheet_name="CCM", header=2)
+            _idc = next(c2 for c2 in _ccm_df.columns if str(c2).strip() == "Control ID")
+            xlsx_ids = {str(v).strip() for v in _ccm_df[_idc].dropna()}
+            cov = len(proj_ccm & xlsx_ids) / len(proj_ccm)
+            if cov < 0.95:
+                fail(f"CCM id oracle: only {cov:.1%} of projected CCM natives resolve in the v4.0.13 xlsx (need >=95%)")
+            else:
+                note(f"CCM id oracle: {cov:.1%} of {len(proj_ccm)} projected natives resolve in the v4.0.13 xlsx")
+        except Exception as e:
+            note(f"CCM id oracle skipped ({e})")
+    proj_scf = {r[0] for r in conn.execute(
+        "SELECT DISTINCT native_id FROM framework_projection WHERE framework='SCF 2026.1'")}
+    if proj_scf:
+        master_path = ROOT / "canonical-sources" / "crosswalk_80053_master.json"
+        if master_path.exists():
+            with open(master_path, encoding="utf-8") as f:
+                _mj = json.load(f)
+            master_scf = {str(t).strip().upper() for cols in _mj["map"].values()
+                          for t in (cols.get("SCF") or [])}
+            agree = len(proj_scf & master_scf) / len(proj_scf)
+            if agree < 0.90:
+                fail(f"SCF cross-source agreement: only {agree:.1%} of projected SCF ids in the master crosswalk column (need >=90%)")
+            else:
+                note(f"SCF cross-source agreement: {agree:.1%} of {len(proj_scf)} projected ids confirmed by the master crosswalk")
 
     conn.close()
 

@@ -83,12 +83,15 @@ framework **name** returns `overlap_pct: null` with an `error` and `known_framew
 - Pair-by-pair mapping enumeration or audit-scope filtering (use master-crosswalk)
 - Fabricating overlap numbers not computed from the spine or ER data in grc.db
 
-## Framework coverage note (Phase 19)
+## Framework coverage note (Phases 19–20)
 PCI DSS v4.0, NIST CSF 2.0, NIST SP 800-171 r3, and NIST SP 800-172 r3 are spine
 frameworks (PCI at the bundled 0.60 tier from the master crosswalk; the others
 NIST-stated at 0.85), and HIPAA Security's best path is now the NIST SP 800-66r2
-direct projection (0.85). SOC 1 remains `inferred_er`-only — it has no public
-control layer, so no spine path can exist without fabrication.
+direct projection (0.85). Phase 20 added the meta-frameworks: SCF 2026.1
+(scf_direct 0.80, SCF/CAP-scope owner co-citation) and CSA CCM v4 (ccm_oscal 0.85,
+CSA-stated relationships, STAR-scope) — so "SCF audit × SOC 2 shared work %" is a
+spine question now. SOC 1 remains `inferred_er`-only — it has no public control
+layer, so no spine path can exist without fabrication.
 
 ## Pipeline note
 Delegates to `cross-mapping/engine/spine_overlap.py`, reading `framework_projection`, `cci_bridge`,

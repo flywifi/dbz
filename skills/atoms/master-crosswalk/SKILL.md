@@ -31,10 +31,15 @@ CMMC 2.0, CSF 2.0) in one table with one canonical label per framework
 |---|---|---|
 | `owner_direct` | cmmc171 | 0.95 |
 | `nist_stated` | direct_olir, direct_800_66, direct_csf2, direct_cprt_171r3, direct_cprt_172r3, olir_csf2_pair | 0.85 |
+| `owner_stated` | ccm_oscal (CSA-stated STRM, 0.85) · scf_direct (SCF co-citation, 0.80) | 0.80–0.85 |
 | `hub` | hitrust_hub, transitive_unified, aicpa_tsp_hub | 0.65 |
 | `bundled` | master_crosswalk | 0.60 |
 | `consensus` | consensus (strong/moderate; votes reported) | — |
 | `production_aggregate` | production co-occurrence counts (public ids only) | — |
+
+`owner_stated` (Phase 20) = the framework owner mapping their own controls to a foreign
+target — authoritative within the owner's audit scope only (CSA STAR for CCM, SCF/CAP for
+SCF) per the acceptance-authority model, ranked below NIST-reviewed mappings.
 
 The non-winning surfaces for a pair are preserved verbatim in `corroboration` (JSON) —
 the minority-report policy. `needs_confirmation` stays 1 below `nist_stated`.
@@ -72,6 +77,10 @@ is advisory evidence with citations; actual audit scope depends on organization 
 - Firm-local/provider ids never appear anywhere (enforced at assembly, in tests, and by the
   health audit); production evidence contributes counts only.
 - Single-voter consensus pairs are excluded (inspect them via `dbz_query.py consensus --tier all`).
+- **SCF pair rows exist only toward NIST 800-53 and CSF 2.0** (the owner's own 53 column and
+  the OLIR set). SCF's crosswalk columns for other frameworks stay consensus-voter-only by
+  design (acceptance-authority model) — "SCF × SOC 2" is an `overlap` question (spine
+  footprints), not a pair-enumeration question, and pair mode will correctly return 0 rows.
 
 ## Do NOT use this atom for
 - Single-NIST-control fan-out with STRM detail (use compliance-crosswalk)

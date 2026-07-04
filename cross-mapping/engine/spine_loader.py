@@ -512,7 +512,26 @@ _OLIR_PCI_CSF2 = ("Payment-Card-Industry-Data-Security-Standards-(PCI-DSS)"
                   "-4.0.1-to-Cybersecurity-Framework-v2.0")
 _OLIR_ISO_CSF2 = "ISO/IEC-27001:2022-to-Cybersecurity-Framework-v2.0"
 _OLIR_CSF2_171R3 = "CSF 2.0 to SP 800-171 Rev 3"
+_OLIR_CCM_CSF2 = "Cloud-Controls-Matrix-(CCM)-Version-4.0-to-Cybersecurity-Framework-v2.0"
+_OLIR_SCF_CSF2 = "NIST CSF 2.0 To Secure Controls Framework (SCF)"
 _CSF2_SUBCAT_RE = re.compile(r"^[A-Z]{2}\.[A-Z]{2}-\d{2}$")
+
+# SCF control ids: 'GOV-01', 'GOV-01.1', 'MON-01.12' (2-4 letter domain).
+_SCF_ID_RE = re.compile(r"^[A-Z]{2,4}-\d{2}(?:\.\d{1,2})?$")
+# CCM control ids: 'A&A-01', 'AIS-01', 'LOG-03' (OSCAL id-refs write A_A for A&A).
+_CCM_ID_RE = re.compile(r"^[A-Z][A-Za-z&]{1,3}-\d{2}$")
+
+
+def _canon_ccm_id(raw: str) -> Optional[str]:
+    """OSCAL id-ref / OLIR form -> the CCM xlsx display form ('A_A-01' -> 'A&A-01').
+    Only the A&A domain carries the underscore encoding; everything else is as-is."""
+    s = str(raw).strip().replace("A_A-", "A&A-")
+    return s if _CCM_ID_RE.match(s) else None
+
+
+def _canon_scf_id(raw: str) -> Optional[str]:
+    s = str(raw).strip().upper()
+    return s if _SCF_ID_RE.match(s) else None
 
 
 def load_800_66_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
@@ -604,25 +623,28 @@ def collect_csf2_olir_pairs() -> Tuple[List[dict], dict]:
     """Third-party <-> CSF 2.0 pairs from the OLIR sets in the CSF graphs, for the
     master surface (NOT spine projections): PCI DSS 4.0.1 <-> CSF2 (owner-submitted),
     ISO 27001:2022 <-> CSF2 (category-level; compound dest strings parsed
-    conservatively, function-level rows dropped), CSF2 <-> 171r3 (NIST).
+    conservatively, function-level rows dropped), CSF2 <-> 171r3 (NIST), and — since
+    Phase 20 — CCM v4 <-> CSF2 and SCF <-> CSF2 (category-level like the ISO set).
     Returns rows {fw, native, csf2_id, olir_name}."""
     src = "cprt-csf2-olir-graphs"
     if not source_path(src).exists():
         return [], {"skipped": "artifact not on disk"}
     rows: List[dict] = []
     seen: Set[Tuple[str, str, str]] = set()
-    dropped = {"pci": 0, "iso": 0, "171r3": 0, "csf_host": 0}
+    dropped = {"pci": 0, "iso": 0, "171r3": 0, "ccm": 0, "scf": 0, "csf_host": 0}
+    _category_level = (_OLIR_ISO_CSF2, _OLIR_SCF_CSF2)
     for host, ext in _iter_graph_external_rels(_load_graph_artifact(src)):
         name = ext.get("olirName")
-        if name not in (_OLIR_PCI_CSF2, _OLIR_ISO_CSF2, _OLIR_CSF2_171R3):
+        if name not in (_OLIR_PCI_CSF2, _OLIR_ISO_CSF2, _OLIR_CSF2_171R3,
+                        _OLIR_CCM_CSF2, _OLIR_SCF_CSF2):
             continue
         host_s = str(host or "").strip()
-        # host must be a subcategory (or, for the category-level ISO set, a category)
+        # host must be a subcategory (or, for category-level sets, a category)
         if _CSF2_SUBCAT_RE.match(host_s):
             fam, num = host_s.rsplit("-", 1)
             csf_id = f"{fam}-{int(num)}"
-        elif name == _OLIR_ISO_CSF2 and re.match(r"^[A-Z]{2}\.[A-Z]{2}$", host_s):
-            csf_id = host_s  # category-level ISO rows keep the category id
+        elif name in _category_level and re.match(r"^[A-Z]{2}\.[A-Z]{2}$", host_s):
+            csf_id = host_s  # category-level rows keep the category id
         else:
             dropped["csf_host"] += 1
             continue
@@ -639,6 +661,18 @@ def collect_csf2_olir_pairs() -> Tuple[List[dict], dict]:
                 dropped["171r3"] += 1
                 continue
             targets = [("NIST SP 800-171 r3", nat)]
+        elif name == _OLIR_CCM_CSF2:
+            ccm = _canon_ccm_id(dest)
+            if not ccm:
+                dropped["ccm"] += 1
+                continue
+            targets = [("CSA CCM v4", ccm)]
+        elif name == _OLIR_SCF_CSF2:
+            scf = _canon_scf_id(dest)
+            if not scf:
+                dropped["scf"] += 1
+                continue
+            targets = [("SCF 2026.1", scf)]
         else:  # ISO: compound dest like 'Annex A Controls: 5.26' / 'Mandatory Clause: None'
             m = _ISO_ANNEX_DEST_RE.search(dest)
             if not m:
@@ -776,6 +810,165 @@ def load_aicpa_tsp_hub() -> Tuple[List[dict], dict]:
                   "hitrust_rows": len(row_hitrust), "x_markers": markers,
                   "distinct_tsc": len({r["tsc_id"] for r in rows}),
                   "distinct_hitrust": len({r["hitrust_id"] for r in rows})}
+
+
+# ── framework_projection: SCF + CCM meta-frameworks (Phase 20) ──────────────────
+# Acceptance-authority scope: SCF edges are SCF/CAP-scope acceptance rules; CCM
+# edges are CSA-STAR-scope. Owner-of-source mappings to a foreign target sit in
+# the master surface's `owner_stated` tier — below NIST-reviewed, above the hub.
+
+_CCM_OSCAL_JSON = (Path(__file__).resolve().parent.parent.parent / "canonical-sources" /
+                   "source_data" / "csa-star" /
+                   "CCMv4.0.12-OSCAL-Dataset_Generated-at_2024-06-03" /
+                   "ccm-oscal-mappings.json")
+_CCM_REL_MAP = {"equivalent-to": "equal", "superset-of": "superset"}
+
+
+def load_scf_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
+    """SCF controls -> 800-53 r5, from SCF's own 'NIST 800-53 R5' column in the
+    2026.1.1 workbook.  Owner co-citation (the xlsx carries no per-mapping STRM
+    strength — those live in per-framework PDFs not on disk): provenance
+    'scf_direct', confidence 0.80, needs_confirmation=1, relationships filled by
+    fan-out cardinality."""
+    src = "scf-controls"
+    try:
+        path = source_path(src)
+    except Exception:
+        return [], {"skipped": "not registered"}
+    if not path.exists():
+        return [], {"skipped": "artifact not on disk"}
+    df = pd.read_excel(path, sheet_name="SCF 2026.1")
+    cols = list(df.columns)
+    id_col = next((c for c in cols if str(c).strip() == "SCF #"), None)
+    nist_col = None
+    for c in cols:
+        flat = str(c).replace("\n", " ")
+        if "800-53" in flat and "R5" in flat and "53B" not in flat:
+            nist_col = c
+            break
+    if id_col is None or nist_col is None:
+        return [], {"skipped": f"columns not found (id={id_col!r}, nist={nist_col!r})"}
+    edges: List[dict] = []
+    seen: Set[Tuple[str, str]] = set()
+    bad_scf = unresolved = 0
+    fname = path.name
+    for i, row in df.iterrows():
+        scf = _canon_scf_id(str(row.get(id_col) or ""))
+        if not scf:
+            bad_scf += 1
+            continue
+        for tok in re.split(r"[\n;,]+", str(row.get(nist_col) or "")):
+            tok = tok.strip()
+            if not tok or tok.lower() == "nan":
+                continue
+            ctrl = normalize_control_id(tok)
+            if not ctrl or ctrl not in catalog_ids:
+                unresolved += 1
+                continue
+            key = (scf, ctrl)
+            if key in seen:
+                continue
+            seen.add(key)
+            edges.append(_projection_row(
+                framework="SCF 2026.1", native_id=scf, r5_control=ctrl,
+                granularity="control", provenance="scf_direct", confidence=0.80,
+                needs_confirmation=1, source_file=fname,
+                source_sheet="SCF 2026.1", source_row=int(i),
+            ))
+    derive_relationships(edges)
+    edges.sort(key=lambda r: (r["native_id"], r["r5_control"]))
+    return edges, {"edges": len(edges), "rows_without_scf_id": bad_scf,
+                   "unresolved_53_tokens": unresolved,
+                   "distinct_scf": len({e["native_id"] for e in edges})}
+
+
+def _ccm_oscal_maps(target_marker: str) -> Optional[list]:
+    """The maps[] block of the OSCAL mapping whose target href contains marker."""
+    if not _CCM_OSCAL_JSON.exists():
+        return None
+    with open(_CCM_OSCAL_JSON, encoding="utf-8") as f:
+        mc = json.load(f)["mapping-collection"]["mappings"]
+    for m in mc:
+        if target_marker in str(m.get("target-resource", {}).get("href", "")):
+            return m["maps"]
+    return None
+
+
+def load_ccm_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
+    """CCM v4 controls -> 800-53 r5, from CSA's own OSCAL mapping-collection
+    (source-STATED relationships: equivalent-to -> equal, superset-of -> superset).
+    provenance 'ccm_oscal', confidence 0.85, needs_confirmation=0."""
+    maps = _ccm_oscal_maps("usnistgov")
+    if maps is None:
+        return [], {"skipped": "OSCAL mapping artifact not on disk"}
+    edges: List[dict] = []
+    seen: Set[Tuple[str, str]] = set()
+    bad_ccm = bad_rel = unresolved = expanded = 0
+    fname = _CCM_OSCAL_JSON.name
+    for i, m in enumerate(maps):
+        rel_raw = m.get("relationship")
+        rel_type = rel_raw.get("type") if isinstance(rel_raw, dict) else rel_raw
+        rel = _CCM_REL_MAP.get(str(rel_type))
+        if rel is None:
+            bad_rel += 1
+            continue
+        for s in m.get("sources", []):
+            ccm = _canon_ccm_id(s.get("id-ref", ""))
+            if not ccm:
+                bad_ccm += 1
+                continue
+            for t in m.get("targets", []):
+                expanded += 1
+                ctrl = oscal_control_id(str(t.get("id-ref", "")).strip())
+                if not ctrl or ctrl not in catalog_ids:
+                    unresolved += 1
+                    continue
+                key = (ccm, ctrl)
+                if key in seen:
+                    continue
+                seen.add(key)
+                edges.append(_projection_row(
+                    framework="CSA CCM v4", native_id=ccm, r5_control=ctrl,
+                    relationship=rel, relationship_basis="source_stated",
+                    granularity="control", provenance="ccm_oscal", confidence=0.85,
+                    needs_confirmation=0, source_file=fname, source_row=i,
+                ))
+    edges.sort(key=lambda r: (r["native_id"], r["r5_control"]))
+    return edges, {"edges": len(edges), "expanded_pairs": expanded,
+                   "unresolved_53": unresolved, "bad_ccm_ids": bad_ccm,
+                   "unmapped_relationships": bad_rel,
+                   "distinct_ccm": len({e["native_id"] for e in edges})}
+
+
+_CIS_OSCAL_RE = re.compile(r"^cisc-(\d{1,2})\.(\d{1,2})$")
+
+
+def collect_ccm_cis_pairs() -> Tuple[List[dict], dict]:
+    """CCM <-> CIS Controls 8.1 pairs from the same OSCAL mapping-collection
+    (CSA-stated relationships), for the master surface. Returns rows
+    {ccm_id, cis_id, relationship}."""
+    maps = _ccm_oscal_maps("CISecurity")
+    if maps is None:
+        return [], {"skipped": "OSCAL mapping artifact not on disk"}
+    pairs: Set[Tuple[str, str, str]] = set()
+    bad = 0
+    for m in maps:
+        rel_raw = m.get("relationship")
+        rel_type = rel_raw.get("type") if isinstance(rel_raw, dict) else rel_raw
+        rel = _CCM_REL_MAP.get(str(rel_type), "intersect")
+        for s in m.get("sources", []):
+            ccm = _canon_ccm_id(s.get("id-ref", ""))
+            if not ccm:
+                bad += 1
+                continue
+            for t in m.get("targets", []):
+                mm = _CIS_OSCAL_RE.match(str(t.get("id-ref", "")).strip())
+                if not mm:
+                    bad += 1
+                    continue
+                pairs.add((ccm, f"{int(mm.group(1))}.{int(mm.group(2))}", rel))
+    rows = [{"ccm_id": c, "cis_id": k, "relationship": r} for c, k, r in sorted(pairs)]
+    return rows, {"pairs": len(rows), "dropped": bad}
 
 
 # ── framework_projection: HITRUST hub for commercial frameworks (Phase 3) ───────

@@ -112,8 +112,12 @@ scope-relative acceptance differences, not errors.
   raw material for the deferred SCF+CCM spine-projection phase.
 - `olir_crawler.py` endpoint (`csrc.nist.gov/api/olir/finalized`) 404s — re-point to the
   CPRT OLIR catalog.
-- SCF + CCM OSCAL loaded as pinned artifacts only — spine projection is a future phase
-  (both subject to the acceptance-authority model above).
+- ~~SCF + CCM OSCAL loaded as pinned artifacts only — spine projection is a future phase~~
+  **CLOSED (Phase 20)**: both are spine frameworks now — `SCF 2026.1` (scf_direct 0.80,
+  SCF/CAP scope) and `CSA CCM v4` (ccm_oscal 0.85 source-stated, CSA STAR scope) — under
+  the new `owner_stated` master-surface tier. Remaining upgrades: SCF's per-framework STRM
+  PDFs would add relationship semantics to scf_direct; a de-gated CCM v4.1 OSCAL supersedes
+  the v4.0.12 pin on arrival.
 - SCF errata note: the 2026.1 release REMOVED NIST SP 800-63B, OWASP 2021, FedRAMP R4 and
   others from SCF's authoritative sources and added 13 (OWASP 2025, CJIS v6.0, IEC 62443
   set, GovRAMP…) — relevant when SCF projection lands.
