@@ -315,6 +315,17 @@
       "source_url": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_SRG-STIG_Library_April_2026.zip",
       "summary": "STIG application layer added (schema 3.8): 383 benchmarks / 19,667 rules / 539 distinct CCIs distilled from the DISA SRG-STIG Library for CCI application evidence. One changelog entry per quarterly library version; per-title deltas surface in the announcements feed.",
       "human_confirmed": true
+    },
+    {
+      "entry_id": "chg-disa-cci-2025-01-23-dictionary",
+      "framework_id": "disa-cci",
+      "change_type": "coverage_expansion",
+      "old_version": "CCI List 2025-01-23 (partial: 4,550 mapped)",
+      "new_version": "CCI List 2025-01-23 (full dictionary: 5,137)",
+      "changed_at": "2025-01-23",
+      "source_url": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CCI_List.zip",
+      "summary": "Full CCI dictionary loaded (schema 3.9): all 5,137 CCIs with definitions + status (587 previously dropped now retained); legacy Rev-3-only CCIs recovered to base r5 controls; cci_mapping_corroboration cross-witnesses CCI↔800-53 across DISA + acasehs + trackr + STIG usage.",
+      "human_confirmed": true
     }
   ]
 }

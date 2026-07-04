@@ -36,6 +36,11 @@ python cross-mapping/engine/dbz_query.py stig --list --filter RHEL
 python cross-mapping/engine/dbz_query.py stig --cci CCI-000068
 python cross-mapping/engine/dbz_query.py stig --coverage
 python cross-mapping/engine/dbz_query.py overlap --framework-a "stig:RHEL_9" --framework-b "FedRAMP r5"
+
+# CCI dictionary (5,137 definitions) + multi-source mapping corroboration
+python cross-mapping/engine/dbz_query.py cci --coverage
+python cross-mapping/engine/dbz_query.py cci --id CCI-000068 --definition
+python cross-mapping/engine/dbz_query.py cci --corroboration CCI-000068
 ```
 
 ## Key files

@@ -1643,16 +1643,148 @@ def load_appj_absorption_map(catalog_ids: Set[str]) -> Dict[str, List[str]]:
     return {k: sorted(v) for k, v in sorted(absorb.items())}
 
 
+CCI_SEED_DIR = REPO_ROOT / "canonical-sources" / "source_data" / "cci"
+
+
+def _load_acasehs(fname: str) -> Dict[str, Set[str]]:
+    """acasehs rev{4,5}cci.json -> {cci_id: {r5_control, …}} (control-level).
+    Derived republication of the DISA list; normalized via the shared grammar."""
+    path = CCI_SEED_DIR / fname
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    rows = data.get("rows", data) if isinstance(data, dict) else data
+    out: Dict[str, Set[str]] = {}
+    for r in rows:
+        cci = (r.get("CCI Number") or "").strip()
+        ctrl = normalize_control_id((r.get("Control") or "").strip())
+        if cci and ctrl:
+            out.setdefault(cci, set()).add(ctrl)
+    return out
+
+
+def _load_trackr_cci() -> Dict[str, str]:
+    """trackr_cci.json.gz -> {cci_id: r5_control} from the per-CCI `rmf` field
+    (control-level, revision-agnostic). Derived republication."""
+    import gzip as _gz
+    path = CCI_SEED_DIR / "trackr_cci.json.gz"
+    if not path.exists():
+        return {}
+    with _gz.open(path, "rt", encoding="utf-8") as f:
+        data = json.load(f)
+    out: Dict[str, str] = {}
+    for cci, m in (data.get("mappings") or {}).items():
+        rmf = (m.get("rmf") or "").strip()
+        ctrl = normalize_control_id(rmf) if rmf else None
+        if ctrl:
+            out[cci] = ctrl
+    return out
+
+
+def build_cci_corroboration(cci_bridge_rows: List[dict], conn) -> Tuple[List[dict], dict]:
+    """Cross-witness every CCI↔r5-control edge across the DISA bridge (primary),
+    the acasehs r4/r5 republications, the trackr `rmf` republication, and STIG
+    application usage. acasehs+trackr are DERIVED from the same DISA list, so
+    agreement verifies transcription fidelity + surfaces parse-gap candidates —
+    not independent authority; STIG usage is the one independent witness.
+
+    Verdict per edge: confirmed (in our bridge AND >=1 republication) /
+    disa_only (bridge, no republication) / candidate (republication asserts an
+    edge our bridge lacks — a gain to review, never auto-promoted).
+    Deterministic: sorted output. Returns (rows, stats)."""
+    acas_r5 = _load_acasehs("acasehs_rev5.json")
+    acas_r4 = _load_acasehs("acasehs_rev4.json")
+    trackr = _load_trackr_cci()
+    # STIG-exercised CCIs (independent application evidence), if the table exists
+    stig_ccis: Set[str] = set()
+    try:
+        stig_ccis = {r[0] for r in conn.execute("SELECT cci_id FROM stig_cci_usage")}
+    except sqlite3.OperationalError:
+        pass
+
+    disa: Dict[Tuple[str, str], str] = {}
+    for r in cci_bridge_rows:
+        disa.setdefault((r["cci_id"], r["r5_control"]), r["basis"])
+
+    edges: Set[Tuple[str, str]] = set(disa)
+    for cci, ctrls in acas_r5.items():
+        for c in ctrls:
+            edges.add((cci, c))
+    for cci, ctrls in acas_r4.items():
+        for c in ctrls:
+            edges.add((cci, c))
+    for cci, c in trackr.items():
+        edges.add((cci, c))
+
+    rows: List[dict] = []
+    stats = {"edges": 0, "confirmed": 0, "disa_only": 0, "candidate": 0, "stig_exercised": 0}
+    for cci, ctrl in sorted(edges):
+        in_bridge = (cci, ctrl) in disa
+        in_a5 = ctrl in acas_r5.get(cci, ())
+        in_a4 = ctrl in acas_r4.get(cci, ())
+        in_tr = trackr.get(cci) == ctrl
+        external = in_a5 or in_a4 or in_tr
+        if in_bridge and external:
+            verdict = "confirmed"
+        elif in_bridge:
+            verdict = "disa_only"
+        else:
+            verdict = "candidate"
+        stig_ex = 1 if cci in stig_ccis else 0
+        witnesses = sorted(w for w, ok in (
+            ("disa_bridge", in_bridge), ("acasehs_r5", in_a5),
+            ("acasehs_r4", in_a4), ("trackr_rmf", in_tr), ("stig_usage", bool(stig_ex))) if ok)
+        rows.append({
+            "cci_id": cci, "r5_control": ctrl,
+            "in_disa_bridge": 1 if in_bridge else 0,
+            "disa_basis": disa.get((cci, ctrl)),
+            "in_acasehs_r5": 1 if in_a5 else 0,
+            "in_acasehs_r4": 1 if in_a4 else 0,
+            "in_trackr": 1 if in_tr else 0,
+            "stig_exercised": stig_ex,
+            "verdict": verdict,
+            "witnesses": json.dumps(witnesses),
+        })
+        stats["edges"] += 1
+        stats[verdict] += 1
+        stats["stig_exercised"] += stig_ex
+    stats["acasehs_r5_ccis"] = len(acas_r5)
+    stats["acasehs_r4_ccis"] = len(acas_r4)
+    stats["trackr_ccis"] = len(trackr)
+    return rows, stats
+
+
+_LEGACY_CTRL_RE = re.compile(r"^([A-Z]{2})-(\d{1,2})")
+
+
+def _legacy_base_control(idx: str) -> Optional[str]:
+    """Base r5 control id from a legacy Rev-3 index (e.g. 'IA-2 (9)' -> 'IA-2',
+    'SC-7 (4) (c)' -> 'SC-7'). Enhancement/statement granularity is deliberately
+    dropped — Rev-3 enhancement numbering is not stable into r5, so we never carry
+    it forward; only the base control identity is asserted (control-level)."""
+    m = _LEGACY_CTRL_RE.match(idx.strip())
+    if not m:
+        return None
+    return normalize_control_id(f"{m.group(1)}-{m.group(2)}")
+
+
 def load_cci_bridge_xml(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], dict]:
     """
     Parse the current DISA CCI List XML into cci_bridge + disa_ccis rows.
 
-    Precedence per CCI (never fabricated, basis stamped on every row):
-      1. native 800-53 rev 5 references            basis='r5_native'
-      2. rev-4 refs whose id survives into r5       basis='r4_identity'
-      3. rev-4 App J privacy refs -> absorbing r5   basis='appj_absorption'
-         controls from the NIST comparison workbook (control-level only)
-    CCIs resolving to nothing in the r5 catalog are dropped (counted in stats).
+    TWO passes over each cci_item:
+      * dictionary pass — EVERY CCI lands in disa_ccis with its definition, status,
+        type, publishdate, native r4/r5 indices and legacy (Rev-3 / 800-53A) refs.
+        Definitions are never gated on mappability (Phase 22).
+      * bridge pass — resolved CCI -> r5 control/sub-part edges, precedence
+        (never fabricated, basis stamped):
+          1. native 800-53 rev 5 references            basis='r5_native'
+          2. rev-4 refs whose id survives into r5       basis='r4_identity'
+          3. rev-4 App J privacy refs -> absorbing r5   basis='appj_absorption'
+          4. legacy Rev-3-only refs -> base control      basis='legacy_r3_identity'
+             that survives into r5 (control-level only; enhancement/sub-part
+             granularity dropped — Rev-3 numbering is not stable into r5)
+        CCIs that resolve to no r5 control stay definition-only (counted, reported).
     """
     import xml.etree.ElementTree as ET
 
@@ -1673,7 +1805,7 @@ def load_cci_bridge_xml(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], 
     seen_bridge: Set[Tuple[str, str, str]] = set()
     stats = {
         "cci_items": 0, "r5_native": 0, "r4_identity": 0, "appj_absorption": 0,
-        "dropped_unresolvable": 0, "subpart_rows": 0,
+        "legacy_r3_identity": 0, "definition_only": 0, "subpart_rows": 0,
     }
 
     for i, item in enumerate(root.iter(t("cci_item"))):
@@ -1684,9 +1816,12 @@ def load_cci_bridge_xml(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], 
         status = item.findtext(t("status"), default="") or ""
         definition = item.findtext(t("definition"), default="") or ""
         ctype = item.findtext(t("type"), default="") or ""
+        publishdate = item.findtext(t("publishdate"), default="") or ""
 
         r5_refs: List[str] = []
         r4_refs: List[str] = []
+        r3_refs: List[str] = []
+        ap_refs: List[str] = []
         refs_el = item.find(t("references"))
         if refs_el is not None:
             for ref in refs_el:
@@ -1698,6 +1833,10 @@ def load_cci_bridge_xml(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], 
                     r5_refs.append(idx)
                 elif title == "NIST SP 800-53 Revision 4":
                     r4_refs.append(idx)
+                elif title == "NIST SP 800-53":          # legacy Rev-3
+                    r3_refs.append(idx)
+                elif title == "NIST SP 800-53A":          # assessment procedure
+                    ap_refs.append(idx)
 
         resolved: List[Tuple[str, Optional[str], str, str]] = []  # (ctrl, subpart, basis, raw)
         for idx in r5_refs:
@@ -1715,8 +1854,12 @@ def load_cci_bridge_xml(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], 
                             # identify a sub-part — leave it blank, never guess.
                             resolved.append((r5c, None, "appj_absorption", idx))
         if not resolved:
-            stats["dropped_unresolvable"] += 1
-            continue
+            # Phase 22: recover legacy Rev-3-only CCIs at the base-control level
+            # where the control survives into r5 (the 13 STIG-cited CCIs live here).
+            for idx in r3_refs:
+                base = _legacy_base_control(idx)
+                if base and base in catalog_ids:
+                    resolved.append((base, None, "legacy_r3_identity", idx))
 
         r5_controls: Set[str] = set()
         for ctrl, subpart, basis, raw in resolved:
@@ -1738,13 +1881,20 @@ def load_cci_bridge_xml(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], 
                 "source_row": i,
             })
 
+        if not resolved:
+            stats["definition_only"] += 1
+
+        # dictionary pass — EVERY cci_item lands, mapped or not
         disa_rows.append({
             "cci_id": cci,
             "definition": definition,
             "type": ctype,
             "status": status,
+            "publishdate": publishdate,
             "nist_rev4_refs": json.dumps(sorted(set(r4_refs))),
             "nist_rev5_refs": json.dumps(sorted(r5_controls)),
+            "nist_r5_index": json.dumps(sorted(set(r5_refs))),
+            "legacy_refs": json.dumps({"r3": sorted(set(r3_refs)), "ap": sorted(set(ap_refs))}),
             "fetched_at": "",
         })
 
@@ -1753,6 +1903,7 @@ def load_cci_bridge_xml(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], 
     stats["bridge_rows"] = len(bridge_rows)
     stats["distinct_controls"] = len({r["r5_control"] for r in bridge_rows})
     stats["distinct_cci"] = len({r["cci_id"] for r in bridge_rows})
+    stats["dictionary_rows"] = len(disa_rows)
     return bridge_rows, disa_rows, stats
 
 

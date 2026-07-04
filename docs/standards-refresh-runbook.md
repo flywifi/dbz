@@ -44,6 +44,20 @@ Historical/sunset titles stay catalogued (delta-tracked) but rule-harvested on d
 (`stig_harvest.py --via-trackr --titles ...`) — they add ~0 new CCIs (the CCI vocabulary is
 product-agnostic).
 
+## CCI dictionary + corroboration refresh (Phase 22)
+
+The full DISA CCI dictionary (5,137 CCIs + definitions + status) is the authoritative source of
+CCI numbers/definitions and the CCI↔800-53 mapping. Keeping it current:
+
+1. **Delta check** — `standards_refresh.py --check` runs `cci_harvest.py --check` (CCI-list
+   version + live trackr enumeration size vs the committed snapshots).
+2. **CCI-list release** — when DISA posts a new `U_CCI_List.zip`, download + unzip it over
+   `canonical-sources/source_data/U_CCI_List.xml`; the loader ingests the full dictionary on
+   rebuild (definitions never gated on mappability).
+3. **Corroboration refresh** — `standards_refresh.py --fetch` re-snapshots the acasehs
+   republications (`--acasehs`) and the trackr enrichment (`--trackr --enrich --resume`).
+4. **Rebuild** — `--gate`; validate_spine check 10 + test_spine CCI fixtures must stay green.
+
 ## Source-class completeness checklist (every ingestion + quarterly)
 
 **Root-cause guard.** The CCI *definition* source (DISA CCI List) was ingested in Phase 11,
@@ -59,7 +73,10 @@ layers as candidate feeds:
 Worked example (the CCI class): CCI List (definition) → **STIGs** (application, Phase 21) →
 **SRGs** (the requirement templates STIG rule version-ids trace to). SRG-level ingestion is
 **evaluated and queued** as a named follow-up (STIG `version_id`s carry SRG lineage), not
-silently ignored.
+silently ignored. **Phase 22 verdict on the definition/mapping layer:** the CCI-list ingestion
+itself was incomplete (587 CCIs + definitions dropped); now the *full* dictionary loads and a
+`cci_mapping_corroboration` layer cross-witnesses the CCI↔800-53 mappings against the acasehs +
+trackr republications and STIG usage — the "confirm existing / gain additional mappings" downstream.
 
 ## Licensed-artifact checklist (quarterly, cannot be auto-fetched)
 

@@ -1111,6 +1111,18 @@
       "source_feed": "disa-stig-library",
       "summary": "383 STIG benchmarks / 19,667 rules distilled for CCI application evidence (539 distinct CCIs; 97.6% resolve in cci_bridge). Delta-tracked against the cyber.trackr.live catalog; on-demand product overlap via the stig: resolver.",
       "human_confirmed": true
+    },
+    {
+      "entry_id": "ann-disa-cci-dictionary-2026-07",
+      "framework_ids": [
+        "disa-cci"
+      ],
+      "title": "Full DISA CCI dictionary + multi-source mapping corroboration",
+      "published_at": "2026-07-04T00:00:00Z",
+      "url": "https://public.cyber.mil/stigs/cci/",
+      "source_feed": "disa-cci",
+      "summary": "5,137 CCIs with definitions now loaded (up from 4,550); CCI↔800-53 mappings cross-confirmed against acasehs + trackr republications and STIG application usage.",
+      "human_confirmed": true
     }
   ]
 }

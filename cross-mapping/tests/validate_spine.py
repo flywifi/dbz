@@ -429,6 +429,66 @@ def main() -> int:
             note("STIG tech-tier isolation: no STIG ids in framework_projection / "
                  "overlap_matrix / master_mappings")
 
+    # 10. CCI dictionary completeness + mapping corroboration (Phase 22).
+    #   (a) every CCI in the source XML lands in disa_ccis with a definition — no
+    #       silent drops (the pre-Phase-22 loader dropped 587 definitions).
+    #   (b) no fabricated bridge edge: every cci_bridge row carries a known basis and
+    #       traces to the CCI source file; legacy_r3/appj rows are control-level only.
+    #   (c) corroboration verdicts are exhaustive + divergences are enumerated, not hidden.
+    have_cci = conn.execute("SELECT name FROM sqlite_master WHERE type='table' "
+                            "AND name='cci_mapping_corroboration'").fetchone()
+    if not have_cci:
+        note("CCI enrichment: skipped (no corroboration table)")
+    else:
+        sys.path.insert(0, str(ROOT / "cross-mapping" / "engine"))
+        try:
+            import spine_loader as _sl  # type: ignore
+            src_items = None
+            if _sl.CCI_XML_PATH.exists():
+                import xml.etree.ElementTree as _ET
+                _r = _ET.parse(str(_sl.CCI_XML_PATH)).getroot()
+                _ns = _r.tag.split("}")[0].strip("{") if "}" in _r.tag else ""
+                src_items = sum(1 for _ in _r.iter(f"{{{_ns}}}cci_item" if _ns else "cci_item"))
+        except Exception as e:
+            src_items = None
+            note(f"CCI source count unavailable ({e})")
+        n_dict = conn.execute("SELECT COUNT(*) FROM disa_ccis").fetchone()[0]
+        n_nodef = conn.execute("SELECT COUNT(*) FROM disa_ccis WHERE definition IS NULL OR definition=''").fetchone()[0]
+        if src_items is not None and n_dict != src_items:
+            fail(f"CCI dictionary incomplete: {n_dict} loaded vs {src_items} in source XML")
+        elif n_nodef:
+            fail(f"CCI definitions missing: {n_nodef} disa_ccis rows have no definition")
+        else:
+            note(f"CCI dictionary complete: {n_dict} CCIs, every one with a definition"
+                 + (f" (== source {src_items})" if src_items else ""))
+        # (b) no fabricated edges
+        bad_basis = conn.execute(
+            "SELECT COUNT(*) FROM cci_bridge WHERE basis NOT IN "
+            "('r5_native','r4_identity','appj_absorption','legacy_r3_identity','xlsx_legacy')"
+        ).fetchone()[0]
+        ctl_leak = conn.execute(
+            "SELECT COUNT(*) FROM cci_bridge WHERE basis IN ('appj_absorption','legacy_r3_identity') "
+            "AND r5_subpart IS NOT NULL").fetchone()[0]
+        if bad_basis or ctl_leak:
+            fail(f"CCI bridge integrity: {bad_basis} unknown-basis rows, "
+                 f"{ctl_leak} control-level bases with a guessed sub-part")
+        else:
+            note("CCI bridge integrity: all edges carry a known basis; recovered/absorption "
+                 "edges are control-level only (no guessed sub-parts)")
+        # (c) corroboration exhaustive + confirmation summary
+        vd = dict(conn.execute(
+            "SELECT verdict, COUNT(*) FROM cci_mapping_corroboration GROUP BY verdict").fetchall())
+        bad_v = conn.execute(
+            "SELECT COUNT(*) FROM cci_mapping_corroboration WHERE verdict NOT IN "
+            "('confirmed','disa_only','candidate')").fetchone()[0]
+        if bad_v:
+            fail(f"CCI corroboration: {bad_v} rows with an unknown verdict")
+        else:
+            note(f"CCI corroboration: {vd.get('confirmed',0)} confirmed / "
+                 f"{vd.get('disa_only',0)} disa-only / {vd.get('candidate',0)} candidate-gain "
+                 "(acasehs+trackr are derived republications — transcription/gap witnesses, "
+                 "not independent authority)")
+
     conn.close()
 
     print("SPINE VALIDATION:", "FAIL" if FAILS else "PASS")

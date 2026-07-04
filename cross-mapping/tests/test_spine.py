@@ -197,10 +197,20 @@ if SL.CCI_XML_PATH.exists():
     check(xml_stats["distinct_controls"] > 1000, f"cci xml: >1000 controls (got {xml_stats['distinct_controls']})")
     check(xml_stats["r5_native"] > 3000, f"cci xml: >3000 native r5 rows (got {xml_stats['r5_native']})")
     _bases = {b["basis"] for b in xml_bridge}
-    check(_bases == {"r5_native", "r4_identity", "appj_absorption"}, f"cci xml bases (got {_bases})")
-    # App J absorption rows are control-level only (never a guessed sub-part)
-    check(all(b["r5_subpart"] is None for b in xml_bridge if b["basis"] == "appj_absorption"),
-          "appj_absorption rows are control-level only")
+    check(_bases == {"r5_native", "r4_identity", "appj_absorption", "legacy_r3_identity"},
+          f"cci xml bases (got {_bases})")
+    # Phase 22: the FULL CCI dictionary lands (every cci_item, mapped or not); only a
+    # small residue is definition-only (no r5 successor), never dropped silently.
+    check(xml_stats["dictionary_rows"] == xml_stats["cci_items"],
+          f"every cci_item lands in disa_ccis ({xml_stats['dictionary_rows']} == {xml_stats['cci_items']})")
+    check(xml_stats["cci_items"] >= 5000, f"cci dictionary >=5000 items (got {xml_stats['cci_items']})")
+    check(all(d["definition"] for d in xml_disa), "every disa_ccis row carries a definition")
+    check(xml_stats["definition_only"] < 100,
+          f"definition-only residue is small (got {xml_stats['definition_only']})")
+    # legacy_r3_identity + appj_absorption are control-level only (never a guessed sub-part)
+    check(all(b["r5_subpart"] is None for b in xml_bridge
+              if b["basis"] in ("appj_absorption", "legacy_r3_identity")),
+          "appj_absorption + legacy_r3_identity rows are control-level only")
     _pt = {b["r5_control"].split("(")[0] for b in xml_bridge if b["r5_control"].startswith("PT-")}
     check(len(_pt) >= 8, f"cci xml covers all 8 PT controls (got {sorted(_pt)})")
 

@@ -397,7 +397,16 @@ no ingestion loader required.
 | On-demand | `cprt_traverser.py` | Manual | NIST CPRT publications API |
 | On-demand | `pdf_structure_extractor.py` | Manual | Local PDF files |
 | Quarterly | `stig_harvest.py --check/--refresh-stale/--full` | Manual | DISA SRG-STIG Library + cyber.trackr.live |
+| On CCI-list release | `cci_harvest.py --acasehs / --trackr --enrich` | Manual | acasehs republication + cyber.trackr.live/api/cci |
 | After any loader | `build_db.py` | Manual | All canonical-sources/ |
+
+## CCI dictionary + corroboration (Phase 22)
+
+The full DISA CCI dictionary (**5,137** CCIs with definitions + status) loads from the committed
+`U_CCI_List.xml` (v2025-01-23); legacy Rev-3-only CCIs are recovered to base r5 controls, and a
+`cci_mapping_corroboration` layer cross-witnesses every CCI↔800-53 edge across the DISA bridge,
+the acasehs r4/r5 republications, trackr `rmf`, and STIG usage. acasehs/trackr are derived
+republications (enrichment/corroboration only, never primary). Full model: `docs/cci-enrichment.md`.
 
 ---
 

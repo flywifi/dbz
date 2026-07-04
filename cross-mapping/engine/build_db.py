@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.8"   # v3.8: STIG application layer (stig_catalog/stig_rules/stig_cci_usage); v3.7: master_mappings + framework_labels
+SCHEMA_VERSION = "3.9"   # v3.9: full CCI dictionary (5,137) + cci_mapping_corroboration; v3.8: STIG application layer
 
 CHUNK = 500  # executemany batch size
 
@@ -288,11 +288,35 @@ CREATE TABLE IF NOT EXISTS disa_ccis (
     definition     TEXT,
     type           TEXT,
     status         TEXT,
-    nist_rev4_refs TEXT,  -- JSON array of {control_id, ap_acronym}
-    nist_rev5_refs TEXT,  -- JSON array
+    publishdate    TEXT,           -- CCI publish date from the DISA list
+    nist_rev4_refs TEXT,  -- JSON array of raw Rev-4 indices (e.g. "AC-1 a 1")
+    nist_rev5_refs TEXT,  -- JSON array of RESOLVED r5 control ids (control-level)
+    nist_r5_index  TEXT,  -- JSON array of raw Rev-5 indices (e.g. "AC-1 a 1 (a)")
+    legacy_refs    TEXT,  -- JSON {r3:[...legacy Rev-3...], ap:[...800-53A...]}
     fetched_at     TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_disa_ccis_status ON disa_ccis(status);
+
+-- ── CCI↔800-53 mapping corroboration (Phase 22) ───────────────────────────────
+-- One row per (cci, r5_control) edge across witnesses. acasehs + trackr are
+-- DERIVED republications of the DISA CCI list, so agreement verifies transcription
+-- fidelity + surfaces parse-gap candidates — NOT independent semantic authority.
+-- STIG usage is the one genuinely independent (application-evidence) witness.
+CREATE TABLE IF NOT EXISTS cci_mapping_corroboration (
+    cci_id         TEXT NOT NULL,
+    r5_control     TEXT NOT NULL,
+    in_disa_bridge INTEGER NOT NULL DEFAULT 0,  -- our loader resolved this edge
+    disa_basis     TEXT,                         -- r5_native | r4_identity | appj_absorption | legacy_r3_identity
+    in_acasehs_r5  INTEGER NOT NULL DEFAULT 0,
+    in_acasehs_r4  INTEGER NOT NULL DEFAULT 0,
+    in_trackr      INTEGER NOT NULL DEFAULT 0,
+    stig_exercised INTEGER NOT NULL DEFAULT 0,   -- CCI cited by >=1 STIG rule (independent)
+    verdict        TEXT NOT NULL,                -- confirmed | disa_only | candidate
+    witnesses      TEXT,                         -- JSON sorted list
+    PRIMARY KEY (cci_id, r5_control)
+);
+CREATE INDEX IF NOT EXISTS idx_ccicorr_verdict ON cci_mapping_corroboration(verdict);
+CREATE INDEX IF NOT EXISTS idx_ccicorr_cci     ON cci_mapping_corroboration(cci_id);
 
 CREATE TABLE IF NOT EXISTS eurlex_articles (
     article_id     TEXT,
@@ -1146,8 +1170,10 @@ def build_db(
     # will REPLACE/augment these if that source is present).
     _executemany_chunked(conn, """
         INSERT OR REPLACE INTO disa_ccis
-            (cci_id, definition, type, status, nist_rev4_refs, nist_rev5_refs, fetched_at)
-        VALUES (:cci_id, :definition, :type, :status, :nist_rev4_refs, :nist_rev5_refs, :fetched_at)
+            (cci_id, definition, type, status, publishdate, nist_rev4_refs, nist_rev5_refs,
+             nist_r5_index, legacy_refs, fetched_at)
+        VALUES (:cci_id, :definition, :type, :status, :publishdate, :nist_rev4_refs,
+                :nist_rev5_refs, :nist_r5_index, :legacy_refs, :fetched_at)
     """, spine_disa_rows, "disa_ccis")
 
     # 1c. OSCAL structural walk — definitive ODP -> sub-part links + 800-53A
@@ -1323,6 +1349,21 @@ def build_db(
     else:
         print(f"  stig application layer: skipped ({stig_stats.get('skipped')})")
 
+    conn.commit()
+
+    # Phase 22: CCI↔800-53 mapping corroboration (DISA bridge × acasehs × trackr ×
+    # STIG usage). Runs after stig_cci_usage exists so application evidence is joined.
+    cci_corr_rows, cci_corr_stats = spine_loader.build_cci_corroboration(cci_bridge_rows, conn)
+    if cci_corr_rows:
+        _executemany_chunked(conn, """
+            INSERT INTO cci_mapping_corroboration
+                (cci_id, r5_control, in_disa_bridge, disa_basis, in_acasehs_r5,
+                 in_acasehs_r4, in_trackr, stig_exercised, verdict, witnesses)
+            VALUES
+                (:cci_id, :r5_control, :in_disa_bridge, :disa_basis, :in_acasehs_r5,
+                 :in_acasehs_r4, :in_trackr, :stig_exercised, :verdict, :witnesses)
+        """, cci_corr_rows, "cci_mapping_corroboration")
+        print(f"  cci_mapping_corroboration: {cci_corr_stats}")
     conn.commit()
 
     # 2. ER crosswalk data
@@ -1675,7 +1716,8 @@ def build_db(
                 "nist_subparts", "cci_bridge", "control_odps", "assessment_objectives",
                 "framework_projection", "hitrust_hub", "odp_values", "overlap_matrix",
                 "consensus_edges", "framework_labels", "master_mappings",
-                "stig_catalog", "stig_rules", "stig_cci_usage"):
+                "stig_catalog", "stig_rules", "stig_cci_usage",
+                "cci_mapping_corroboration"):
         row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
         counts[tbl] = row[0]
 
@@ -1684,7 +1726,8 @@ def build_db(
     table_digests = {}
     for tbl in ("framework_projection", "consensus_edges", "overlap_matrix",
                 "master_mappings", "framework_labels", "unified_mappings",
-                "stig_catalog", "stig_rules", "stig_cci_usage"):
+                "stig_catalog", "stig_rules", "stig_cci_usage",
+                "disa_ccis", "cci_mapping_corroboration"):
         cols = [r[1] for r in conn.execute(f"PRAGMA table_info({tbl})") if r[1] != "rowid"]
         h = hashlib.sha256()
         for row in conn.execute(f"SELECT {','.join(cols)} FROM {tbl} ORDER BY {','.join(cols)}"):

@@ -861,7 +861,68 @@ def cmd_nvd(args, conn: sqlite3.Connection) -> int:
 
 
 def cmd_cci(args, conn: sqlite3.Connection) -> int:
-    """Query DISA CCI data by CCI ID or mapped NIST control."""
+    """Query DISA CCI data by CCI ID or mapped NIST control; inspect the CCI
+    dictionary (definitions), the mapping corroboration layer, and coverage."""
+    import json as _json
+
+    # --coverage: dictionary completeness + corroboration summary
+    if getattr(args, "coverage", False):
+        n_cci, n_def = conn.execute(
+            "SELECT COUNT(*), SUM(CASE WHEN definition<>'' THEN 1 ELSE 0 END) FROM disa_ccis").fetchone()
+        status = dict(conn.execute("SELECT status, COUNT(*) FROM disa_ccis GROUP BY status").fetchall())
+        n_defonly = conn.execute(
+            "SELECT COUNT(*) FROM disa_ccis d WHERE NOT EXISTS "
+            "(SELECT 1 FROM cci_bridge b WHERE b.cci_id=d.cci_id)").fetchone()[0]
+        basis = dict(conn.execute("SELECT basis, COUNT(*) FROM cci_bridge GROUP BY basis").fetchall())
+        try:
+            verdicts = dict(conn.execute(
+                "SELECT verdict, COUNT(*) FROM cci_mapping_corroboration GROUP BY verdict").fetchall())
+            n_stig = conn.execute(
+                "SELECT COUNT(DISTINCT cci_id) FROM cci_mapping_corroboration WHERE stig_exercised=1").fetchone()[0]
+        except sqlite3.OperationalError:
+            verdicts, n_stig = {}, 0
+        result = {
+            "tool": "dbz-cci", "dictionary_ccis": n_cci, "with_definition": n_def,
+            "status": status, "definition_only_unmapped": n_defonly,
+            "bridge_basis": basis, "corroboration_verdicts": verdicts,
+            "ccis_exercised_by_stig": n_stig,
+            "note": "acasehs/trackr are derived republications of the DISA list — "
+                    "confirmation verifies transcription fidelity + surfaces candidate gaps, "
+                    "not independent authority. STIG usage is the independent application witness.",
+            "human_review_required": True,
+        }
+        if args.format == "json":
+            print(_json.dumps(result, indent=2, ensure_ascii=False))
+        else:
+            for k in ("dictionary_ccis", "with_definition", "definition_only_unmapped",
+                      "ccis_exercised_by_stig"):
+                print(f"{k:<28} {result[k]}")
+            print(f"status                       {status}")
+            print(f"bridge_basis                 {basis}")
+            print(f"corroboration_verdicts       {verdicts}")
+        return 0
+
+    # --corroboration CCI-xxxxxx: witnesses + verdict per edge
+    if getattr(args, "corroboration", None):
+        cci = args.corroboration.strip().upper()
+        rows = conn.execute(
+            "SELECT r5_control, verdict, disa_basis, in_disa_bridge, in_acasehs_r5, "
+            "in_acasehs_r4, in_trackr, stig_exercised, witnesses "
+            "FROM cci_mapping_corroboration WHERE cci_id=? ORDER BY r5_control", (cci,)).fetchall()
+        cols = ["r5_control", "verdict", "disa_basis", "in_disa_bridge", "in_acasehs_r5",
+                "in_acasehs_r4", "in_trackr", "stig_exercised", "witnesses"]
+        if args.format == "json":
+            defn = conn.execute("SELECT definition FROM disa_ccis WHERE cci_id=?", (cci,)).fetchone()
+            print(_json.dumps({
+                "cci_id": cci,
+                "definition": defn[0] if defn else None,
+                "edges": [dict(zip(cols, r)) for r in rows],
+                "human_review_required": True,
+            }, indent=2, ensure_ascii=False))
+        else:
+            _output([dict(zip(cols, r)) for r in rows], args.format, cols)
+        return 0
+
     conditions = []
     params: list = []
 
@@ -878,10 +939,15 @@ def cmd_cci(args, conn: sqlite3.Connection) -> int:
         params.append(args.status)
 
     where = "WHERE " + " AND ".join(conditions) if conditions else ""
-    sql = f"SELECT cci_id, status, type, definition, nist_rev5_refs FROM disa_ccis {where} ORDER BY cci_id LIMIT 100"
+    # --definition widens the projection to the full text + native indices
+    if getattr(args, "definition", False):
+        cols = ["cci_id", "status", "type", "publishdate", "definition",
+                "nist_rev4_refs", "nist_r5_index", "nist_rev5_refs", "legacy_refs"]
+    else:
+        cols = ["cci_id", "status", "type", "definition", "nist_rev5_refs"]
+    sql = f"SELECT {','.join(cols)} FROM disa_ccis {where} ORDER BY cci_id LIMIT 100"
     results = conn.execute(sql, params).fetchall()
-    cols = ["cci_id", "status", "type", "definition", "nist_rev5_refs"]
-    _output(results, args.format, cols)
+    _output([dict(zip(cols, r)) for r in results], args.format, cols)
     return 0
 
 
@@ -1272,11 +1338,17 @@ def build_parser() -> argparse.ArgumentParser:
     _add_format(nvd_p); _add_db(nvd_p)
 
     # cci
-    cci_p = subs.add_parser("cci", help="Query DISA CCI data by ID or NIST control")
+    cci_p = subs.add_parser("cci", help="Query DISA CCI dictionary, definitions, and mapping corroboration")
     cci_p.add_argument("--id", metavar="CCI_ID", help="CCI ID (e.g. CCI-000001)")
     cci_p.add_argument("--control", metavar="CTRL",
                        help="NIST control ID (e.g. AC-2) — shows all CCIs mapping to it")
-    cci_p.add_argument("--status", metavar="STATUS", help="CCI status (e.g. active)")
+    cci_p.add_argument("--status", metavar="STATUS", help="CCI status (e.g. draft, deprecated)")
+    cci_p.add_argument("--definition", action="store_true",
+                       help="show full definition text + native r4/r5 indices + legacy refs")
+    cci_p.add_argument("--corroboration", metavar="CCI_ID",
+                       help="mapping witnesses + verdict for one CCI (DISA/acasehs/trackr/STIG)")
+    cci_p.add_argument("--coverage", action="store_true",
+                       help="dictionary completeness + corroboration verdict summary")
     _add_format(cci_p); _add_db(cci_p)
 
     # stig (application layer)

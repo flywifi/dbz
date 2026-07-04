@@ -562,7 +562,7 @@
       "label": "DISA CCI List (Control Correlation Identifiers)",
       "authority": "primary",
       "framework_id": "disa-cci",
-      "current_version": "Rev 5 (public.cyber.mil)",
+      "current_version": "DISA CCI List 2025-01-23 (XML)",
       "urls": {
         "landing": "https://public.cyber.mil/stigs/cci/",
         "download": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CCI_List.zip",
@@ -570,8 +570,8 @@
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
-      "last_changed": "2022-01-01",
-      "notes": "CCI list maps to NIST 800-53 r4. Bridge via sp800-53r4-to-r5-comparison-workbook.xlsx.",
+      "last_changed": "2025-01-23",
+      "notes": "Authoritative CCI universe: numbers + definitions + status + Rev-4/Rev-5 refs (each with sub-item Index) + 800-53A AP refs. 5,137 CCIs; the full dictionary is loaded (definitions never gated on mappability). Native Rev-5 refs cover 3,838; legacy Rev-3-only CCIs are recovered to base r5 controls where the id survives. check_strategy polls the dl.dod.cyber.mil zip last-modified + the XML <version>.",
       "announcement_feeds": [
         {
           "url": "https://public.cyber.mil/rss",
@@ -588,7 +588,7 @@
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [
-        "disa-cci-list",
+        "disa-cci-list-xml",
         "nist-r4-to-r5-bridge"
       ],
       "crawl_seeds": [
@@ -606,7 +606,7 @@
       "cci_coverage_notes": "Confirmed-Direct: This IS the CCI source. DISA CCI List (U_CCI_List) defines all CCIs with 800-53 Rev 4 control references and implementation statements. CCI numbers, definitions, and Rev 4 control IDs are authoritative. Rev 5 bridge via nist-r4-to-r5-bridge entry produces Implied-Bridge for Rev 5-only controls.",
       "auto_fetch": true,
       "artifact_status": "current",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-04"
     },
     "csa-ccm": {
       "label": "CSA Cloud Controls Matrix v4",
@@ -5477,6 +5477,53 @@
       "auto_fetch": false,
       "artifact_status": "metadata_only",
       "notes": "Watch-only reference tier for announcement monitoring — NEVER loader inputs (precedence: primary DISA compilation > trackr mirror > community aggregations). stigviewer.com is a STIG mirror whose CSV export carries no CCI column (verified). The two GitHub repos aggregate control↔CCI / STIG→RMF and are outside the session's GitHub scope — watched via plain HTTPS landing checks only, never via API.",
+      "announcement_feeds": [],
+      "draft_status": "none"
+    },
+    "acasehs-cci": {
+      "label": "acasehs/STIG-Control-CCI (revision-split control↔CCI, derived)",
+      "authority": "community",
+      "framework_id": "acasehs-cci",
+      "current_version": null,
+      "urls": {
+        "rev4": "https://raw.githubusercontent.com/acasehs/STIG-Control-CCI/main/rev4cci.json",
+        "rev5": "https://raw.githubusercontent.com/acasehs/STIG-Control-CCI/main/rev5cci.json",
+        "landing": "https://github.com/acasehs/STIG-Control-CCI"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "last_verified": "2026-07-04",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "source_manifest_keys": [
+        "acasehs-cci-rev4",
+        "acasehs-cci-rev5"
+      ],
+      "notes": "DERIVED republication of the DISA CCI list, flattened + revision-split (rev4cci.json 2,938 / rev5cci.json 3,814; {Index, Control, CCI Number, Description}). Enrichment/corroboration ONLY — verifies transcription fidelity + surfaces candidate mapping gaps; never a primary authority, never overrides the DISA XML. Outside GitHub MCP scope — plain HTTPS raw fetch (tools/cci_harvest.py --acasehs).",
+      "announcement_feeds": [],
+      "draft_status": "none"
+    },
+    "trackr-cci": {
+      "label": "cyber.trackr.live /api/cci (CCI defs + rmf/ap/family, derived)",
+      "authority": "secondary",
+      "framework_id": "trackr-cci",
+      "current_version": "Rev 5",
+      "urls": {
+        "enumeration": "https://cyber.trackr.live/api/cci",
+        "per_cci": "https://cyber.trackr.live/api/cci/{cci_id}",
+        "landing": "https://cyber.trackr.live"
+      },
+      "check_strategy": "api_poll",
+      "last_checked": null,
+      "last_changed": null,
+      "last_verified": "2026-07-04",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "source_manifest_keys": [
+        "trackr-cci"
+      ],
+      "notes": "DERIVED republication: /api/cci enumerates ~3,551 CCIs (definitions); per-CCI adds a control-level revision-agnostic rmf + ap_acronym + family. Enrichment/corroboration ONLY (no r4/r5 split, no status, control-level only). Refreshed via tools/cci_harvest.py --trackr --enrich; delta-checked via standards_refresh --check.",
       "announcement_feeds": [],
       "draft_status": "none"
     }

@@ -131,6 +131,13 @@ through a `stig:<title>` resolver. The objective is CCI application evidence, no
 registry. Tables: `stig_catalog` / `stig_rules` / `stig_cci_usage`. Details:
 `docs/overlap-spine.md` (STIG technology tier).
 
+Phase 22 completed the **CCI dictionary** (schema 3.9): all 5,137 DISA CCIs load with their
+definitions + status (the prior loader silently dropped 587), legacy Rev-3-only CCIs are
+recovered to base r5 controls, and a `cci_mapping_corroboration` table cross-witnesses every
+CCI↔800-53 edge across the DISA bridge, the acasehs r4/r5 republications, trackr `rmf`, and STIG
+usage (confirmed / disa-only / candidate-gain). acasehs/trackr are derived republications —
+transcription/gap witnesses, not independent authority. Details: `docs/cci-enrichment.md`.
+
 ## The update layer (news feed)
 
 The catalog is only as current as its sources. Four prongs keep it fresh; all

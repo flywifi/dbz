@@ -104,11 +104,32 @@ def stage_stig_check() -> dict:
     return {"stig_status": status}
 
 
+def stage_cci_check() -> dict:
+    """Compare the live CCI-list currency (trackr enum size) against the committed
+    snapshot; the authoritative XML version is reported. Offline-safe."""
+    rc, out = _run([sys.executable, str(ROOT / "tools" / "cci_harvest.py"), "--check", "--json"])
+    try:
+        payload = json.loads(out[out.index("{"):])
+    except Exception:
+        payload = {"status": "check_failed"}
+    st = payload.get("status", "check_failed")
+    if st == "drift":
+        print(f"[check] cci: DRIFT — committed trackr enum {payload.get('committed_trackr_enum')} "
+              f"vs live {payload.get('live_trackr_enum')} (run --fetch to re-snapshot)")
+    elif st == "current":
+        print(f"[check] cci: current — list v{payload.get('committed_cci_list_version')}, "
+              f"trackr enum {payload.get('live_trackr_enum')}")
+    else:
+        print("[check] cci: check_failed (trackr unreachable)")
+    return {"cci_status": st}
+
+
 def stage_check() -> dict:
     """Run the monitors, then classify every registry feed."""
     monitor_rc, monitor_out = _run([sys.executable, str(ENGINE / "framework_monitor.py"), "--dry-run"])
     ann_rc, ann_out = _run([sys.executable, str(ENGINE / "announcement_monitor.py"), "--dry-run"])
     stig_signal = stage_stig_check()
+    cci_signal = stage_cci_check()
 
     reg = json.loads(REGISTRY.read_text(encoding="utf-8"))
     feeds = reg["feeds"]
@@ -134,6 +155,7 @@ def stage_check() -> dict:
         "monitor_exit": monitor_rc,
         "announcements_exit": ann_rc,
         "stig_status": stig_signal.get("stig_status"),
+        "cci_status": cci_signal.get("cci_status"),
         "feeds": rows,
         "summary": {},
     }
@@ -160,10 +182,21 @@ def stage_stig_fetch() -> int:
     return 1 if rc != 0 else 0
 
 
+def stage_cci_fetch() -> int:
+    """Re-snapshot the CCI corroboration artifacts (acasehs republications + trackr
+    enrichment). The authoritative CCI-list XML is refreshed separately (operator
+    downloads U_CCI_List.zip; the loader reads it on rebuild)."""
+    rc1, _ = _run([sys.executable, str(ROOT / "tools" / "cci_harvest.py"), "--acasehs"])
+    rc2, _ = _run([sys.executable, str(ROOT / "tools" / "cci_harvest.py"),
+                   "--trackr", "--enrich", "--resume"], timeout=3600)
+    print(f"[fetch] cci acasehs rc={rc1} trackr rc={rc2}")
+    return (1 if rc1 else 0) + (1 if rc2 else 0)
+
+
 def stage_fetch() -> int:
     """Re-fetch auto_fetch feeds via their loaders/urls. Returns failure count."""
     reg = json.loads(REGISTRY.read_text(encoding="utf-8"))
-    failures = stage_stig_fetch()
+    failures = stage_stig_fetch() + stage_cci_fetch()
     for fid, e in sorted(reg["feeds"].items()):
         if not (isinstance(e, dict) and e.get("auto_fetch")):
             continue
