@@ -7,7 +7,7 @@
       "label": "NIST SP 800-53 Controls Catalog",
       "authority": "primary",
       "framework_id": "nist-800-53",
-      "current_version": "Release 5.2.0 (Aug 2025)",
+      "current_version": "Release 5.2.0",
       "expected_next": "none announced (5.2.0 current; OSCAL content last modified 2026-05-11)",
       "urls": {
         "landing": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final",
@@ -20,7 +20,7 @@
       "check_strategy": "poll_landing",
       "version_signal": "revision history section or document revision date",
       "last_checked": null,
-      "last_changed": "2025-08-27",
+      "last_changed": "2026-05-11",
       "announcement_feeds": [
         {
           "url": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
@@ -74,10 +74,10 @@
       ],
       "next_expected_version": "Rev 5.2 or Rev 6 (not yet announced; monitor csrc.nist.gov)",
       "cci_coverage_notes": "Mixed: Full CCI coverage across all 18 control families. Confirmed-Direct: IA-8 PIV (CCI-001764, CCI-001948 — names PIV/SP800-63 explicitly). Confirmed-Subject: SC-13 (CCI-002450–002453, 'FIPS-validated cryptography'), IA-7 (CCI-000803–000804), SC-8(1) (CCI-002469), SC-28(1) (CCI-001199), SC-12 (CCI-002449, 'key establishment and management'). Implied-Bridge: ~30% of CCIs via r4→r5 bridge for Rev5-new controls. PM family Not-Applicable. See plan §7.10 for full per-control CCI provenance table.",
-      "notes": "Release 5.2.0 (EO 14306): new/updated software-update and patch-integrity controls (incl. SA-24 Design for Cyber Resiliency); OSCAL content bundles 800-53A r5.2.0 assessment procedures. Catalog data in this repo verified 5.2.0-complete 2026-07-02.",
+      "notes": "Release 5.2.0 (EO 14306): new/updated software-update and patch-integrity controls (incl. SA-24 Design for Cyber Resiliency); OSCAL content bundles 800-53A r5.2.0 assessment procedures. Catalog data in this repo verified 5.2.0-complete 2026-07-02. Upstream current = Release 5.2.0 (oscal-content v1.5.0, 2026-05); the 7 controls added in 5.2.0 (IA-13, IA-13(1)-(3), SA-15(13), SA-24, SI-2(7)) are ingested via the committed 5.2.0 OSCAL supplement + CPRT oracle. Primary spreadsheet base remains 5.1.1 with 5.2.0 layered on.",
       "auto_fetch": true,
       "artifact_status": "current",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-06"
     },
     "nist-800-53b": {
       "label": "NIST SP 800-53B Control Baselines",
@@ -438,7 +438,7 @@
       "check_strategy": "poll_landing",
       "last_checked": null,
       "last_changed": "2026-05-08",
-      "notes": "v11.8.0 available 2026-05-08; all new e1/i1 assessment objects must use v11.8 since 2026-05-07 (HAA 2025-006). Interim releases: v11.5.0 2025-04-14, v11.6.0 2025-08-22, v11.7.0 2025-12-18. The licensed cross-reference artifact in this repo remains v11.4.0 (March 2025) — mapping pinned there until a newer authoritative-sources cross-reference is provided.",
+      "notes": "v11.8.0 available 2026-05-08; all new e1/i1 assessment objects must use v11.8 since 2026-05-07 (HAA 2025-006). Interim releases: v11.5.0 2025-04-14, v11.6.0 2025-08-22, v11.7.0 2025-12-18. The licensed cross-reference artifact in this repo remains v11.4.0 (March 2025) — mapping pinned there until a newer authoritative-sources cross-reference is provided. Upstream HITRUST CSF v11.8.0 (2026-05) supersedes the pinned v11.4.0 cross-reference; licensed artifact required — tracked-deferred (existing hold).",
       "announcement_feeds": [
         {
           "url": "https://hitrustalliance.net/feed/",
@@ -486,7 +486,7 @@
       "expected_next": "v11.9 / v12 (HITRUST ~2-release/yr cadence)",
       "auto_fetch": false,
       "artifact_status": "licensed_pinned",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-06"
     },
     "iso-27001": {
       "label": "ISO/IEC 27001:2022",
@@ -501,7 +501,7 @@
       "check_strategy": "poll_landing",
       "last_checked": null,
       "last_changed": "2022-10-25",
-      "notes": "Third edition 2022-10-25; Amd 1:2024 adds climate-action consideration text (no control changes). Transition from 2013 ended 2025-10-31 — 2013 certificates invalid. Next: routine ISO 5-year systematic review (~2027-2028, nothing announced). 2013->2022 restructure recorded in framework_changelog.json (93 controls / 4 themes). NOTE: the unofficial csrc.nist.gov/api/olir/finalized endpoint now 404s — olir_crawler needs re-pointing to the CPRT OLIR catalog page.",
+      "notes": "Third edition 2022-10-25; Amd 1:2024 adds climate-action consideration text (no control changes). Transition from 2013 ended 2025-10-31 — 2013 certificates invalid. Next: routine ISO 5-year systematic review (~2027-2028, nothing announced). 2013->2022 restructure recorded in framework_changelog.json (93 controls / 4 themes). NOTE: the unofficial csrc.nist.gov/api/olir/finalized endpoint now 404s — olir_crawler needs re-pointing to the CPRT OLIR catalog page. ISO/IEC 27001:2022 Amd 1:2024 (climate action) adds two sentences to clauses 4.1/4.2; no Annex A control-set change — low-priority, not ingested.",
       "announcement_feeds": [
         {
           "url": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
@@ -556,7 +556,7 @@
       "cci_coverage_notes": "Implied-Bridge: ISO 27001:2022 → 800-53 Rev 5 via NIST IR 8477 STRM OLIR (3,862 unified_mappings). CCIs apply at the 800-53 control end (two-hop: ISO ctrl → 800-53 Rev 5 → r4 CCI). ISO annex controls not in DISA CCI List.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-06"
     },
     "disa-cci": {
       "label": "DISA CCI List (Control Correlation Identifiers)",
@@ -606,7 +606,7 @@
       "cci_coverage_notes": "Confirmed-Direct: This IS the CCI source. DISA CCI List (U_CCI_List) defines all CCIs with 800-53 Rev 4 control references and implementation statements. CCI numbers, definitions, and Rev 4 control IDs are authoritative. Rev 5 bridge via nist-r4-to-r5-bridge entry produces Implied-Bridge for Rev 5-only controls.",
       "auto_fetch": true,
       "artifact_status": "current",
-      "last_verified": "2026-07-04"
+      "last_verified": "2026-07-06"
     },
     "csa-ccm": {
       "label": "CSA Cloud Controls Matrix v4",
@@ -624,7 +624,7 @@
       "github_repo": "cloudsecurityalliance/cloud-controls-matrix",
       "last_checked": null,
       "last_changed": "2026-01-28",
-      "notes": "CCM v4.1 released 2026-01-28 (207 controls / 17 domains; CAIQ v4.1 283 questions) — registration-gated download; registry tracks it as current release. On disk: CCM v4.0.13 xlsx (last v4.0.x, user-provided 2026-07-02), CCM v4.0.12 OSCAL dataset + mappings JSON, CAIQ v4.0.3, Implementation Guidelines v2.0, Auditing Guidelines. ACCEPTANCE-AUTHORITY: CSA's mappings are CSA STAR's acceptance rules — '800-53 X maps to CCM Y' means CSA accepts X as satisfying Y for STAR audits/certifications. Never a claim about NIST's acceptance; never modifies NIST/ISO data. Phase 20: CCM is a spine framework ('CSA CCM v4', ccm_oscal 0.85 source-stated, CSA-STAR-scope) from the v4.0.12 OSCAL mapping-collection; the v4.0.13 xlsx is the id-oracle (validate_spine 8i). A de-gated v4.1 OSCAL supersedes the pin on arrival via --gate.",
+      "notes": "CCM v4.1 released 2026-01-28 (207 controls / 17 domains; CAIQ v4.1 283 questions) — registration-gated download; registry tracks it as current release. On disk: CCM v4.0.13 xlsx (last v4.0.x, user-provided 2026-07-02), CCM v4.0.12 OSCAL dataset + mappings JSON, CAIQ v4.0.3, Implementation Guidelines v2.0, Auditing Guidelines. ACCEPTANCE-AUTHORITY: CSA's mappings are CSA STAR's acceptance rules — '800-53 X maps to CCM Y' means CSA accepts X as satisfying Y for STAR audits/certifications. Never a claim about NIST's acceptance; never modifies NIST/ISO data. Phase 20: CCM is a spine framework ('CSA CCM v4', ccm_oscal 0.85 source-stated, CSA-STAR-scope) from the v4.0.12 OSCAL mapping-collection; the v4.0.13 xlsx is the id-oracle (validate_spine 8i). A de-gated v4.1 OSCAL supersedes the pin on arrival via --gate. Upstream CCM v4.1 (Jan 2026, 207 controls) supersedes v4.0.13; registration-gated at CSA — tracked-deferred until the artifact is obtained.",
       "announcement_feeds": [
         {
           "url": "https://cloudsecurityalliance.org/feed",
@@ -668,7 +668,7 @@
       "cci_coverage_notes": "Implied-Bridge: CSA CCM v4.1 → 800-53 via CCM control baseline mappings. IAM domain → IA/AC CCIs; DSP domain → MP/SC CCIs; AIS domain → SA/SI CCIs. CCM control IDs not in CCI text; Implied-Bridge.",
       "auto_fetch": false,
       "artifact_status": "current",
-      "last_verified": "2026-07-03",
+      "last_verified": "2026-07-06",
       "authority_scope": "csa_star_only"
     },
     "soc2": {
@@ -1162,7 +1162,7 @@
       "cci_coverage_notes": "Implied-Bridge: PCI DSS v4.0.1 → 800-53 via HITRUST bridge. Req 8 (Auth) → IA CCIs (Confirmed-Subject: 'multifactor authentication'); Req 10 (Logging) → AU CCIs; Req 6 (Patching) → SI-2 CCIs. PCI requirement numbers not in CCI text.",
       "auto_fetch": false,
       "artifact_status": "current",
-      "last_verified": "2026-07-03"
+      "last_verified": "2026-07-06"
     },
     "eu-ai-act-impl": {
       "label": "EU AI Act Implementing Acts & Delegated Regulations",
@@ -2086,7 +2086,7 @@
       "cci_coverage_notes": "Confirmed-Direct: cyber.trackr.live/cci provides the same CCI data (3,551 CCIs) via public REST API, including Rev 4 and Rev 5 control references where DISA published them. Rev 5 fields: Confirmed-Direct where DISA explicitly added Rev 5 mappings; Implied-Bridge where derived from the r4→r5 bridge workbook.",
       "auto_fetch": true,
       "artifact_status": "current",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-06"
     },
     "dod-zig": {
       "label": "DoD Zero Trust Implementation Guidelines",
@@ -3899,8 +3899,14 @@
         "risk management framework"
       ],
       "announcement_feeds": [
-        "https://www.nist.gov/news-events/cybersecurity/rss",
-        "https://csrc.nist.gov/publications/drafts-open-for-comment.xml"
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss"
+        },
+        {
+          "url": "https://csrc.nist.gov/publications/drafts-open-for-comment.xml",
+          "type": "rss"
+        }
       ],
       "draft_status": "none",
       "last_changed": "2018-12-20",
@@ -3926,8 +3932,14 @@
         "digital identity"
       ],
       "announcement_feeds": [
-        "https://www.nist.gov/news-events/cybersecurity/rss",
-        "https://csrc.nist.gov/publications/drafts-open-for-comment.xml"
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss"
+        },
+        {
+          "url": "https://csrc.nist.gov/publications/drafts-open-for-comment.xml",
+          "type": "rss"
+        }
       ],
       "draft_status": "none",
       "last_changed": "2025-08-01",
@@ -3953,8 +3965,14 @@
         "identity proofing"
       ],
       "announcement_feeds": [
-        "https://www.nist.gov/news-events/cybersecurity/rss",
-        "https://csrc.nist.gov/publications/drafts-open-for-comment.xml"
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss"
+        },
+        {
+          "url": "https://csrc.nist.gov/publications/drafts-open-for-comment.xml",
+          "type": "rss"
+        }
       ],
       "draft_status": "none",
       "last_changed": "2025-08-01",
@@ -3981,8 +3999,14 @@
         "aal"
       ],
       "announcement_feeds": [
-        "https://www.nist.gov/news-events/cybersecurity/rss",
-        "https://csrc.nist.gov/publications/drafts-open-for-comment.xml"
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss"
+        },
+        {
+          "url": "https://csrc.nist.gov/publications/drafts-open-for-comment.xml",
+          "type": "rss"
+        }
       ],
       "draft_status": "none",
       "last_changed": "2025-08-01",
@@ -4009,8 +4033,14 @@
         "key establishment"
       ],
       "announcement_feeds": [
-        "https://www.nist.gov/news-events/cybersecurity/rss",
-        "https://www.nist.gov/news-events/events/rss"
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/events/rss",
+          "type": "rss"
+        }
       ],
       "draft_status": "none",
       "last_changed": "2018-04-01",
@@ -4036,8 +4066,14 @@
         "key management"
       ],
       "announcement_feeds": [
-        "https://www.nist.gov/news-events/cybersecurity/rss",
-        "https://www.nist.gov/news-events/events/rss"
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/events/rss",
+          "type": "rss"
+        }
       ],
       "draft_status": "none",
       "last_changed": "2020-05-04",
@@ -4063,8 +4099,14 @@
         "cyber resili"
       ],
       "announcement_feeds": [
-        "https://www.nist.gov/news-events/cybersecurity/rss",
-        "https://csrc.nist.gov/publications/drafts-open-for-comment.xml"
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss"
+        },
+        {
+          "url": "https://csrc.nist.gov/publications/drafts-open-for-comment.xml",
+          "type": "rss"
+        }
       ],
       "draft_status": "none",
       "last_changed": "2021-12-14",
@@ -4091,7 +4133,10 @@
         "derived credentials"
       ],
       "announcement_feeds": [
-        "https://www.nist.gov/news-events/cybersecurity/rss"
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss"
+        }
       ],
       "draft_status": "none",
       "last_changed": "2016-10-01",
@@ -4119,7 +4164,10 @@
         "route origin"
       ],
       "announcement_feeds": [
-        "https://www.nist.gov/news-events/cybersecurity/rss"
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss"
+        }
       ],
       "draft_status": "none",
       "last_changed": "2019-12-01",
@@ -4145,8 +4193,14 @@
         "iot federal profile"
       ],
       "announcement_feeds": [
-        "https://www.nist.gov/news-events/cybersecurity/rss",
-        "https://csrc.nist.gov/publications/drafts-open-for-comment.xml"
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss"
+        },
+        {
+          "url": "https://csrc.nist.gov/publications/drafts-open-for-comment.xml",
+          "type": "rss"
+        }
       ],
       "draft_status": "none",
       "last_changed": "2021-11-01",
@@ -4173,7 +4227,10 @@
         "cryptographic module"
       ],
       "announcement_feeds": [
-        "https://www.nist.gov/news-events/cybersecurity/rss"
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss"
+        }
       ],
       "draft_status": "none",
       "last_changed": "2019-03-22",
@@ -4199,7 +4256,10 @@
         "security categorization"
       ],
       "announcement_feeds": [
-        "https://www.nist.gov/news-events/cybersecurity/rss"
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss"
+        }
       ],
       "draft_status": "none",
       "last_changed": "2004-02-01",
@@ -4225,7 +4285,10 @@
         "minimum security requirements"
       ],
       "announcement_feeds": [
-        "https://www.nist.gov/news-events/cybersecurity/rss"
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss"
+        }
       ],
       "draft_status": "none",
       "last_changed": "2006-03-01",
@@ -4252,7 +4315,10 @@
         "personal identity verification"
       ],
       "announcement_feeds": [
-        "https://www.nist.gov/news-events/cybersecurity/rss"
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss"
+        }
       ],
       "draft_status": "none",
       "last_changed": "2022-01-24",
@@ -4280,8 +4346,14 @@
         "informative reference"
       ],
       "announcement_feeds": [
-        "https://www.nist.gov/news-events/cybersecurity/rss",
-        "https://csrc.nist.gov/publications/drafts-open-for-comment.xml"
+        {
+          "url": "https://www.nist.gov/news-events/cybersecurity/rss",
+          "type": "rss"
+        },
+        {
+          "url": "https://csrc.nist.gov/publications/drafts-open-for-comment.xml",
+          "type": "rss"
+        }
       ],
       "draft_status": "draft",
       "last_changed": "2022-10-01",
@@ -4309,7 +4381,10 @@
         "protection profile"
       ],
       "announcement_feeds": [
-        "https://www.niap-ccevs.org/rss/approvedpp.rss"
+        {
+          "url": "https://www.niap-ccevs.org/rss/approvedpp.rss",
+          "type": "rss"
+        }
       ],
       "draft_status": "none",
       "last_changed": "2017-01-01",
@@ -5067,11 +5142,11 @@
       "check_strategy": "poll_landing",
       "last_checked": null,
       "last_changed": "2022-02-15",
-      "notes": "Details the 93 Annex A controls referenced by ISO/IEC 27001:2022, with attribute tagging. Annex B carries the official 2013<->2022 correspondence tables (authoritative source for any legacy-id bridge; artifact not in repo). Amd 1:2024 climate text only.",
+      "notes": "Details the 93 Annex A controls referenced by ISO/IEC 27001:2022, with attribute tagging. Annex B carries the official 2013<->2022 correspondence tables (authoritative source for any legacy-id bridge; artifact not in repo). Amd 1:2024 climate text only. ISO/IEC 27001:2022 Amd 1:2024 (climate action) adds two sentences to clauses 4.1/4.2; no Annex A control-set change — low-priority, not ingested.",
       "draft_status": "none",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-06"
     },
     "soc1": {
       "label": "SOC 1 (SSAE clarified standards, AT-C 320)",
@@ -5107,7 +5182,7 @@
       "draft_status": "none",
       "auto_fetch": true,
       "artifact_status": "current",
-      "last_verified": "2026-07-03",
+      "last_verified": "2026-07-06",
       "authority_scope": "scf_only",
       "source_manifest_keys": [
         "scf-controls"
@@ -5194,14 +5269,16 @@
         "landing": "https://www.cnss.gov/CNSS/issuances/Instructions.cfm",
         "download_page": "https://www.cnss.gov/CNSS/issuances/Instructions.cfm"
       },
-      "check_strategy": "poll_landing",
+      "check_strategy": "manual",
       "last_checked": null,
       "last_changed": "2022-01-01",
       "notes": "Overlay atop 800-53/CNSSI 1253 for classified systems. Artifact on disk (disa-classified-overlay-pdf). Successor releases arrive via CNSS/DISA issuances.",
       "draft_status": "none",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "www.cnss.gov presents a Federal-PKI certificate chain not verifiable from this environment; artifact is metadata_only and already on disk. Verify manually."
     },
     "nist-sp-800-30": {
       "label": "SP 800-30 Rev 1 — Guide for Conducting Risk Assessments",
@@ -5345,7 +5422,7 @@
       "draft_status": "none",
       "auto_fetch": false,
       "artifact_status": "current",
-      "last_verified": "2026-07-03",
+      "last_verified": "2026-07-06",
       "source_manifest_keys": [
         "cprt-sp800-171a-r3"
       ]
@@ -5387,7 +5464,7 @@
       "draft_status": "none",
       "auto_fetch": false,
       "artifact_status": "current",
-      "last_verified": "2026-07-02",
+      "last_verified": "2026-07-06",
       "authority_scope": "csa_star_only"
     },
     "nist-sp-800-66": {
@@ -5406,7 +5483,7 @@
       "artifact_status": "current",
       "last_checked": "2026-07-03",
       "last_changed": "2024-02-14",
-      "last_verified": "2026-07-03",
+      "last_verified": "2026-07-06",
       "source_manifest_keys": [
         "cprt-sp800-66r2-export",
         "cprt-sp800-66r2-olir-graphs"
@@ -5437,7 +5514,7 @@
       "check_strategy": "api_poll",
       "last_checked": null,
       "last_changed": "2026-04-01",
-      "last_verified": "2026-07-04",
+      "last_verified": "2026-07-06",
       "auto_fetch": false,
       "artifact_status": "current",
       "source_manifest_keys": [
@@ -5468,15 +5545,16 @@
       "urls": {
         "stigviewer": "https://stigviewer.com/stigs",
         "control_cci_aggregation": "https://github.com/acasehs/STIG-Control-CCI",
-        "stig_rmf_mapper": "https://github.com/cognis-digital/stigsentry"
+        "stig_rmf_mapper": "https://github.com/cognis-digital/stigsentry",
+        "landing": "https://stigviewer.com/stigs"
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
       "last_changed": null,
-      "last_verified": "2026-07-04",
+      "last_verified": "2026-07-06",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "notes": "Watch-only reference tier for announcement monitoring — NEVER loader inputs (precedence: primary DISA compilation > trackr mirror > community aggregations). stigviewer.com is a STIG mirror whose CSV export carries no CCI column (verified). The two GitHub repos aggregate control↔CCI / STIG→RMF and are outside the session's GitHub scope — watched via plain HTTPS landing checks only, never via API.",
+      "notes": "Watch-only reference tier for announcement monitoring — NEVER loader inputs (precedence: primary DISA compilation > trackr mirror > community aggregations). stigviewer.com is a STIG mirror whose CSV export carries no CCI column (verified). The two GitHub repos aggregate control↔CCI / STIG→RMF and are outside the session's GitHub scope — watched via plain HTTPS landing checks only, never via API. Reference-only: STIG sources are retained for future users but STIG data/DB tables are not part of the core CCI-focused ecosystem and are not refreshed during currency runs.",
       "announcement_feeds": [],
       "draft_status": "none"
     },
@@ -5488,12 +5566,13 @@
       "urls": {
         "rev4": "https://raw.githubusercontent.com/acasehs/STIG-Control-CCI/main/rev4cci.json",
         "rev5": "https://raw.githubusercontent.com/acasehs/STIG-Control-CCI/main/rev5cci.json",
-        "landing": "https://github.com/acasehs/STIG-Control-CCI"
+        "landing": "https://raw.githubusercontent.com/acasehs/STIG-Control-CCI/main/rev5cci.json",
+        "repo": "https://github.com/acasehs/STIG-Control-CCI"
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
       "last_changed": null,
-      "last_verified": "2026-07-04",
+      "last_verified": "2026-07-06",
       "auto_fetch": false,
       "artifact_status": "current",
       "source_manifest_keys": [
@@ -5517,7 +5596,7 @@
       "check_strategy": "api_poll",
       "last_checked": null,
       "last_changed": null,
-      "last_verified": "2026-07-04",
+      "last_verified": "2026-07-06",
       "auto_fetch": false,
       "artifact_status": "current",
       "source_manifest_keys": [

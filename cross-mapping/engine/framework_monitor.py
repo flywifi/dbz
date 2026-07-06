@@ -243,6 +243,14 @@ def _check_feed_entry(feed_id: str, entry: dict) -> dict:
         "update_notes": "",
     }
 
+    # Feeds explicitly exempt from live polling (artifact already on disk, or the
+    # origin presents a cert chain we cannot verify from this environment) report a
+    # clean note rather than an error, so the run stays green.
+    if strategy == "manual" or entry.get("poll_exempt"):
+        result["version_signal"] = "manual"
+        result["update_notes"] = entry.get("poll_exempt_reason", "poll-exempt (verify manually)")
+        return result
+
     if strategy == "github_release":
         repo = entry.get("github_repo", "")
         if not repo:

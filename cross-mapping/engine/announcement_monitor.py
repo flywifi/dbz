@@ -398,8 +398,13 @@ def run(args: argparse.Namespace) -> int:
         print(f"\n[{fw_id}] {entry.get('label', fw_id)}")
         _log.info("[%s] %s — %d feed URL(s)", fw_id, entry.get("label", fw_id), len(af_list))
         for af in af_list:
+            # tolerate the legacy shape where a feed is a bare URL string rather
+            # than a {"url": …, "type": …} dict — one malformed entry must not
+            # abort the whole scan
+            if isinstance(af, str):
+                af = {"url": af}
             results = process_feed_entry(fw_id, af, args.days, args.dry_run)
-            _log.info("  %s → %d entries matched", af["url"], len(results))
+            _log.info("  %s → %d entries matched", af.get("url", ""), len(results))
             all_new.extend(results)
 
     summary = (

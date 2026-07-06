@@ -19,7 +19,8 @@
         "Discussion": "discussion",
         "Related Controls": "related_controls"
       },
-      "notes": "Enhancements (e.g. AC-2(1)) are their own rows under Control Identifier — do NOT split a packed Enhancements cell. Group rows by base control ID to build the parent/child relationship."
+      "notes": "Enhancements (e.g. AC-2(1)) are their own rows under Control Identifier — do NOT split a packed Enhancements cell. Group rows by base control ID to build the parent/child relationship. Effective catalog = 5.2.0: the 7 controls added in 5.2.0 are supplied by oscal_v5.2.0_full_extract.json + the CPRT 5.2.0 oracle.",
+      "effective_version": "Release 5.2.0 (5.1.1 base + committed oscal-v5.2.0 supplement)"
     },
     {
       "id": "nist-800-53-r5-1-1",
@@ -42,7 +43,8 @@
         "Security Baseline - Moderate": "baseline_moderate",
         "Security Baseline - High": "baseline_high"
       },
-      "notes": "Preferred over r5.0 catalog because it includes baseline flags inline. Same row-per-control model — enhancements are separate rows."
+      "notes": "Preferred over r5.0 catalog because it includes baseline flags inline. Same row-per-control model — enhancements are separate rows. Effective catalog = 5.2.0: the 7 controls added in 5.2.0 are supplied by oscal_v5.2.0_full_extract.json + the CPRT 5.2.0 oracle.",
+      "effective_version": "Release 5.2.0 (5.1.1 base + committed oscal-v5.2.0 supplement)"
     },
     {
       "id": "nist-800-53b-baselines",
@@ -86,7 +88,8 @@
         "Security Baseline - Moderate": "baseline_moderate",
         "Security Baseline - High": "baseline_high"
       },
-      "notes": "Appears to be the same dataset as the r5.1.1 file. Use either; nist-800-53-r5-1-1 is the canonical choice."
+      "notes": "Appears to be the same dataset as the r5.1.1 file. Use either; nist-800-53-r5-1-1 is the canonical choice. Effective catalog = 5.2.0: the 7 controls added in 5.2.0 are supplied by oscal_v5.2.0_full_extract.json + the CPRT 5.2.0 oracle.",
+      "effective_version": "Release 5.2.0 (5.1.1 base + committed oscal-v5.2.0 supplement)"
     },
     {
       "id": "nist-800-53b-baselines-compared",
@@ -354,14 +357,16 @@
         "NIST SP 800-171 r2": "nist_171r2_id"
       },
       "notes": "Actual sheet headers (corrected from earlier approximations). Hub is control-level co-membership; NIST r5 cell holds compressed sub-part refs (AC-2d1).",
-      "total_columns": 64
+      "total_columns": 64,
+      "upstream_available": "HITRUST CSF v11.8.0 (2026-05) — licensed; tracked-deferred"
     },
     {
       "id": "hitrust-csf-cross-reference-old",
       "file": "canonical-sources/source_data/copy - HITRUST CSF v11.4.0 Authoritative Sources Cross-Reference.xlsx",
       "format": "xlsx",
       "role": "deprecated",
-      "notes": "Older copy — use hitrust-csf-cross-reference (March 2025) instead."
+      "notes": "Older copy — use hitrust-csf-cross-reference (March 2025) instead.",
+      "upstream_available": "HITRUST CSF v11.8.0 (2026-05) — licensed; tracked-deferred"
     },
     {
       "id": "hitrust-srm-baseline",
@@ -371,7 +376,8 @@
       "notes": "HITRUST SRM v1.4.3 baseline template. Contains inheritability flags and CVID/BUID control IDs only — NO cross-framework mapping columns. Cross-framework data is in hitrust-csf-cross-reference. Load with openpyxl keep_vba=False, skiprows=6. CVID format: 0001.0 (4-digit decimal).",
       "reference_only": true,
       "sheet": "HITRUST-SRM-V1.4.3_Baseline-Tem",
-      "header_row": 6
+      "header_row": 6,
+      "upstream_available": "HITRUST CSF v11.8.0 (2026-05) — licensed; tracked-deferred"
     },
     {
       "id": "hitrust-srm-aws",
@@ -381,7 +387,8 @@
       "notes": "HITRUST SRM v1.4.3 AWS cloud provider variant. Same structure as baseline SRM; AWS-specific column data only. No cross-framework mappings. Reference-only.",
       "reference_only": true,
       "sheet": "AWS_SRM_2023",
-      "header_row": 7
+      "header_row": 7,
+      "upstream_available": "HITRUST CSF v11.8.0 (2026-05) — licensed; tracked-deferred"
     },
     {
       "id": "hitrust-srm-azure",
@@ -391,7 +398,8 @@
       "notes": "HITRUST SRM v1.4.3 Azure cloud provider variant. Same structure as baseline SRM; Azure-specific column data only. No cross-framework mappings. Reference-only.",
       "reference_only": true,
       "sheet": "MicrosoftAzure_SRM_2023",
-      "header_row": 7
+      "header_row": 7,
+      "upstream_available": "HITRUST CSF v11.8.0 (2026-05) — licensed; tracked-deferred"
     },
     {
       "id": "aicpa-tsp-to-hitrust",
@@ -408,7 +416,8 @@
         "loader": "spine_loader.load_aicpa_tsp_hub (openpyxl merged-range resolution)"
       },
       "notes": "HITRUST CSF v11.4.0 → AICPA 2017 TSP → SOC 2 CC criteria matrix. 487 merged cell ranges, 283 columns, multi-level headers. Loaded since Phase 19 as TSC<->HITRUST master-surface pairs (aicpa_tsp_hub, hub tier) — NOT a spine projection.",
-      "deferred": false
+      "deferred": false,
+      "upstream_available": "HITRUST CSF v11.8.0 (2026-05) — licensed; tracked-deferred"
     },
     {
       "id": "nist-csf2-mapping",
@@ -557,7 +566,8 @@
       "version": "NIST SP 800-53 Rev 5.1.1",
       "retrieved": "2024",
       "role": "nist_catalog_with_baselines",
-      "notes": "See nist-800-53-r5-1-1 — same dataset."
+      "notes": "See nist-800-53-r5-1-1 — same dataset. Effective catalog = 5.2.0: the 7 controls added in 5.2.0 are supplied by oscal_v5.2.0_full_extract.json + the CPRT 5.2.0 oracle.",
+      "effective_version": "Release 5.2.0 (5.1.1 base + committed oscal-v5.2.0 supplement)"
     },
     {
       "id": "nist-r4-appendix-j-privacy",
@@ -607,7 +617,8 @@
         "domains[].controls[].specification": "control_text"
       },
       "notes": "YAML structure: {name, version, url, domains: [{id, title, controls: [{id, title, specification}]}]}. 17 domains. License: CC-BY. JSON equivalent at CCM/primary-dataset.json. NIST 800-53 mapping in CCM/mappings/ (if present) or CAIQ dataset. ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
-      "authority_scope": "csa_star_only"
+      "authority_scope": "csa_star_only",
+      "upstream_available": "CCM v4.1 (2026-01, 207 controls) — registration-gated; tracked-deferred"
     },
     {
       "id": "nist-800-172-r3-oscal",
@@ -694,7 +705,8 @@
       "role": "csa_ccm",
       "sha256_prefix": "15ed274945743019",
       "notes": "User-provided CSA STAR bundle. Supersedes the older CCM v4.0.x file as the freshest CCM artifact on disk; CCM v4.1 (2026-01-28) remains registration-gated — registry tracks it as current. ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
-      "authority_scope": "csa_star_only"
+      "authority_scope": "csa_star_only",
+      "upstream_available": "CCM v4.1 (2026-01, 207 controls) — registration-gated; tracked-deferred"
     },
     {
       "id": "csa-ccm-v4.0.12-oscal",
@@ -710,7 +722,8 @@
         "mapping_collection": "ccm-oscal-mappings.json: 2 mappings — CCM->800-53 r5 (195 maps, 1,684 expanded pairs, source-stated equivalent-to/superset-of) and CCM->CIS 8.1 (94 maps, 165 pairs)",
         "id_forms": "sources 'A_A-01' (underscore encodes A&A only) -> display 'A&A-01'; 53 targets OSCAL lowercase ('ca-2.1' -> CA-2(1) via oscal_control_id)",
         "loaders": "spine_loader.load_ccm_projection (ccm_oscal 0.85, CSA-STAR-scope acceptance) + collect_ccm_cis_pairs"
-      }
+      },
+      "upstream_available": "CCM v4.1 (2026-01, 207 controls) — registration-gated; tracked-deferred"
     },
     {
       "id": "csa-aicm-v1.1",

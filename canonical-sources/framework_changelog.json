@@ -326,6 +326,17 @@
       "source_url": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CCI_List.zip",
       "summary": "Full CCI dictionary loaded (schema 3.9): all 5,137 CCIs with definitions + status (587 previously dropped now retained); legacy Rev-3-only CCIs recovered to base r5 controls; cci_mapping_corroboration cross-witnesses CCI↔800-53 across DISA + acasehs + trackr + STIG usage.",
       "human_confirmed": true
+    },
+    {
+      "entry_id": "chg-nist-800-53-5.2.0-repin",
+      "framework_id": "nist-800-53",
+      "change_type": "version_repin",
+      "old_version": "Release 5.1.1 (label)",
+      "new_version": "Release 5.2.0",
+      "changed_at": "2026-05-11",
+      "source_url": "https://github.com/usnistgov/oscal-content/releases",
+      "summary": "Re-pinned to Release 5.2.0 to match the committed 5.2.0 OSCAL supplement already in the build (7 added controls IA-13/IA-13(1)-(3)/SA-15(13)/SA-24/SI-2(7) present in the DB); label/metadata update, no data reload.",
+      "human_confirmed": true
     }
   ]
 }

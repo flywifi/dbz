@@ -44,6 +44,29 @@ Historical/sunset titles stay catalogued (delta-tracked) but rule-harvested on d
 (`stig_harvest.py --via-trackr --titles ...`) — they add ~0 new CCIs (the CCI vocabulary is
 product-agnostic).
 
+## Currency-run findings (2026-07-06)
+
+A full read-only currency run (both monitors + harvest `--check`) established:
+- **Monitor repairs:** `announcement_monitor.py` was crashing on every run (a `TypeError` from 16
+  feeds whose `announcement_feeds` were bare URL strings) — now coerced + the 16 normalized to dicts.
+  `framework_monitor` `poll_exempt`/`manual` strategy added for feeds whose origin cert cannot be
+  verified here (`disa-classified-overlay` = `www.cnss.gov`, Federal-PKI). `stig-community-refs` and
+  `acasehs-cci` got proper `landing` URLs (the latter points at the raw file, since github.com HEAD
+  403s while raw returns 200).
+- **NIST 800-53 → Release 5.2.0:** upstream current; the 7 added controls are already in the build via
+  the committed 5.2.0 OSCAL supplement + CPRT oracle — a label re-pin (manifest `effective_version` +
+  changelog), no data reload.
+- **Tracked-deferred (newer upstream, gated/licensed):** CSA CCM v4.1 (registration-gated), HITRUST
+  CSF v11.8.0 (licensed) — recorded in `source_manifest` `upstream_available`, held until the artifact
+  is obtained. ISO/IEC 27001:2022 Amd 1:2024 (climate) has no Annex A change — low priority.
+- **Current, no action:** PCI DSS v4.0.1, NIST CSF 2.0, AICPA TSC, 800-171 r3 / 171A r3 / 172 r3 /
+  66r2, SCF 2026.1.1, and the DISA CCI dictionary (2025-01-23).
+- **STIG:** deliberately not refreshed — STIGs were only the vehicle to fill missing CCIs/definitions;
+  the feed *references* stay in the registry for future users, STIG data/DB are out of core currency.
+- **Environmental poll failures are expected:** `framework_monitor`'s live poll returns HTTP 403/404/SSL
+  for many `.gov`/`.mil`/ISO/GitHub-API feeds from this sandboxed environment. The monitor is
+  offline-safe (records the error, continues, exits 0) — these are access restrictions, not repo defects.
+
 ## CCI dictionary + corroboration refresh (Phase 22)
 
 The full DISA CCI dictionary (5,137 CCIs + definitions + status) is the authoritative source of
