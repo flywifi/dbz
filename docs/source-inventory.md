@@ -400,6 +400,22 @@ no ingestion loader required.
 | On CCI-list release | `cci_harvest.py --acasehs / --trackr --enrich` | Manual | acasehs republication + cyber.trackr.live/api/cci |
 | After any loader | `build_db.py` | Manual | All canonical-sources/ |
 
+## CSA CCM v4.1 / AICM v1.1 / CSA repos evaluation (Phase 24)
+
+Exhaustive traversal of the CSA v4.1 bundle set + 5 CSA GitHub repos established that **CCM v4.1
+cross-framework mappings do not exist yet** — CSA's own v4.1 "Scope Applicability (Mappings)" sheet
+reads "This dataset is not available yet" and the OSCAL mappings are empty. The v4.1 catalog/CAIQ is
+published; our committed **v4.0.13** mappings remain the latest that exist (not a gap). Recorded as an
+anticipated update (`au-csa-ccm`) so the mappings are watched-for. Evaluated / not applicable:
+- **AICM v1.1** — 270-control AI Controls Matrix mapping only to EU AI Act / ISO 42001:2023 / BSI AI C4
+  (off the 800-53 spine). Registered watch-only (`csa-aicm-v1.1`); not a projection source.
+- **SecurityControlsCatalog** — CSA's controls-as-STIX-2.1 (the intended future home of CCM/AICM
+  mappings), "early-stage, initial content being prepared." Registered watch-only
+  (`csa-controls-catalog-stix`); becomes the real v4.1 mappings source once populated.
+- **SecID / SecID-Client-SDK** — a security-knowledge *referencing* registry + SDK (not mappings).
+- **cti** — Cloud Threat Intelligence (CAVEaT/STIX) — threat intel, not control mappings.
+- **csa-plugins-official** — Claude Code plugins (tooling).
+
 ## CCI dictionary + corroboration (Phase 22)
 
 The full DISA CCI dictionary (**5,137** CCIs with definitions + status) loads from the committed

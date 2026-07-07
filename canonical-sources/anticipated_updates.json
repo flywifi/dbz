@@ -1,0 +1,1601 @@
+{
+  "_meta": {
+    "schema": "anticipated_updates/1.0",
+    "description": "Horizon-scanning registry: expected/scheduled future revisions to standards the ecosystem tracks, so updates are watched-for and never missed. Read by horizon_monitor.py. Owner role: canonical-truth-updater. Never fabricate a date — use no_fixed_date.",
+    "record_count": 55
+  },
+  "records": [
+    {
+      "id": "au-anthropic-api",
+      "feed_id": "anthropic-api",
+      "authority": "Anthropic PBC",
+      "artifact": "Continuous model releases",
+      "current_version": "Claude claude-opus-4 / claude-sonnet-5 (claude-haiku-4-5 series, 2025)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://docs.anthropic.com/en/api",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://docs.anthropic.com/en/api",
+        "https://docs.anthropic.com/en/api/changelog",
+        "https://www.anthropic.com/model",
+        "https://www.anthropic.com/usage-policy"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Continuous model releases; track docs.anthropic.com/changelog"
+    },
+    {
+      "id": "au-canada-pipeda",
+      "feed_id": "canada-pipeda",
+      "authority": "primary",
+      "artifact": "CPPA via Bill C-27 pending Royal Assent",
+      "current_version": "PIPEDA current; Bill C-27 in progress",
+      "expected_type": "revision",
+      "lifecycle_stage": "ipd",
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/",
+        "https://www.parl.ca/legisinfo/en/bill/44-1/c-27",
+        "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/index.xml"
+      ],
+      "dependent_of": null,
+      "status": "draft_observed",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "CPPA via Bill C-27 pending Royal Assent"
+    },
+    {
+      "id": "au-ccpa-cppa",
+      "feed_id": "ccpa-cppa",
+      "authority": "primary",
+      "artifact": "ccpa-cppa next revision",
+      "current_version": "CCPA (2018) / CPRA (2020) / Active CPPA rulemaking 2024-2025",
+      "expected_type": "revision",
+      "lifecycle_stage": "fpd",
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://cppa.ca.gov/",
+        "method": "rss_feed",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://cppa.ca.gov/",
+        "https://cppa.ca.gov/regulations/",
+        "https://cppa.ca.gov/regulations/consumer_privacy_act.html"
+      ],
+      "dependent_of": null,
+      "status": "draft_observed",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "draft_status=second_draft"
+    },
+    {
+      "id": "au-circia",
+      "feed_id": "circia",
+      "authority": "primary",
+      "artifact": "Final Rule May 2026",
+      "current_version": "NPRM (Mar 2024); Final Rule pending",
+      "expected_type": "major_rev",
+      "lifecycle_stage": "ipd",
+      "expected_window": {
+        "earliest": "2026-05-01",
+        "latest": "2026-05-31",
+        "basis": "Final Rule May 2026"
+      },
+      "confidence": "med",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://uscode.house.gov/view.xhtml?req=granuleid%3AUSC-prelim-title6-section681b",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://uscode.house.gov/view.xhtml?req=granuleid%3AUSC-prelim-title6-section681b",
+        "https://www.cisa.gov/circia",
+        "https://www.federalregister.gov/documents/2024/04/04/2024-06526/cyber-incident-reporting-for-critical-infrastructure-act-of-2022-circia"
+      ],
+      "dependent_of": null,
+      "status": "draft_observed",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Final Rule May 2026"
+    },
+    {
+      "id": "au-cisa-ai-security",
+      "feed_id": "cisa-ai-security",
+      "authority": "CISA (primary); joint with NSA, FBI, NCSC, ACSC, CCCS",
+      "artifact": "Ongoing joint advisories",
+      "current_version": "Deploying AI Systems Securely (Apr 2024); Guidelines for Secure AI System Development (Nov 2023)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://www.cisa.gov/ai",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://www.cisa.gov/ai",
+        "https://www.cisa.gov/sites/default/files/2024-04/deploying-ai-systems-securely.pdf",
+        "https://www.cisa.gov/sites/default/files/2023-11/guidelines-for-secure-ai-system-development_508c.pdf",
+        "https://www.cisa.gov/sites/default/files/2023-11/2023-2024_CISA-AI-Roadmap.pdf"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Ongoing joint advisories; track cisa.gov/ai"
+    },
+    {
+      "id": "au-csa-ccm",
+      "feed_id": "csa-ccm",
+      "authority": "Cloud Security Alliance",
+      "artifact": "CCM v4.1 cross-framework mappings (Scope Applicability)",
+      "current_version": "CCM v4.0.13 mappings (latest that exist)",
+      "expected_type": "mapping_dataset",
+      "lifecycle_stage": "catalog_out_mappings_pending",
+      "expected_window": "no_fixed_date",
+      "confidence": "med",
+      "trigger_signal": "CSA publishes the v4.1 Scope Applicability (Mappings) dataset (the v4.1 xlsx tab currently reads 'This dataset is not available yet')",
+      "detection": {
+        "url": "https://cloudsecurityalliance.org/artifacts/cloud-controls-matrix-v4-1",
+        "method": "poll_landing_and_github_releases",
+        "match": "v4.1 mappings dataset present / oscal_mappings non-empty / SecurityControlsCatalog STIX x-regulatory-reference populated"
+      },
+      "poll_frequency": "monthly",
+      "source_urls": [
+        "https://cloudsecurityalliance.org/artifacts/cloud-controls-matrix-v4-1",
+        "https://github.com/CloudSecurityAlliance/SecurityControlsCatalog",
+        "https://cloudsecurityalliance.org/blog/2026/02/19/ccm-v4-1-transition-timeline"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 180,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "CCM v4.1 catalog/CAIQ published 2026-01; mappings explicitly 'not available yet'. v4.0.x withdrawn Jan 2028 — mappings must land before then. Seeded from the Phase-24 traversal (catalog-first, mappings-later pattern)."
+    },
+    {
+      "id": "au-csa-star-ccm5",
+      "feed_id": "csa-star-ccm5",
+      "authority": "primary",
+      "artifact": "csa-star-ccm5 next revision",
+      "current_version": "CCM v4.1 (current) current; v5 in development",
+      "expected_type": "revision",
+      "lifecycle_stage": "ipd",
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://cloudsecurityalliance.org/star/",
+        "method": "github_release",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://cloudsecurityalliance.org/star/",
+        "https://github.com/cloudsecurityalliance/cloud-controls-matrix",
+        "https://github.com/cloudsecurityalliance/cloud-controls-matrix/releases",
+        "https://cloudsecurityalliance.org/star/registry/"
+      ],
+      "dependent_of": null,
+      "status": "draft_observed",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "draft_status=ipd"
+    },
+    {
+      "id": "au-disa-cci-quarterly",
+      "feed_id": "disa-cci",
+      "authority": "DISA",
+      "artifact": "DISA CCI List quarterly revision (new CCI numbers/definitions)",
+      "current_version": "CCI List 2025-01-23",
+      "expected_type": "quarterly_bundle",
+      "lifecycle_stage": null,
+      "expected_window": {
+        "earliest": "2026-07-31",
+        "latest": "2026-07-31",
+        "basis": "DISA end-of-quarter cadence (Jan/Apr/Jul/Oct); next window end Jul 2026"
+      },
+      "confidence": "med",
+      "trigger_signal": "a new U_CCI_List.zip <version> newer than the committed pin (bundled with the quarterly release)",
+      "detection": {
+        "url": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CCI_List.zip",
+        "method": "poll_versioned_zip",
+        "match": "XML <version> > committed 2025-01-23"
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://public.cyber.mil/stigs/cci/",
+        "https://public.cyber.mil/announcement/"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 30,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "CCI List only (the definition source — core to this ecosystem). STIGs are explicitly out of scope: no STIG anticipation, no STIG data update."
+    },
+    {
+      "id": "au-eu-ai-act",
+      "feed_id": "eu-ai-act",
+      "authority": "primary",
+      "artifact": "GPAI implementing acts Aug 2025",
+      "current_version": "Regulation (EU) 2024/1689 (in force Aug 2024, phased to 2027)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": {
+        "earliest": "2025-08-01",
+        "latest": "2025-08-31",
+        "basis": "GPAI implementing acts Aug 2025; high-risk implementing acts 2026-2027"
+      },
+      "confidence": "med",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://artificialintelligenceact.eu/",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://artificialintelligenceact.eu/",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=OJ:L_202401689",
+        "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "GPAI implementing acts Aug 2025; high-risk implementing acts 2026-2027"
+    },
+    {
+      "id": "au-eu-ai-act-impl",
+      "feed_id": "eu-ai-act-impl",
+      "authority": "primary",
+      "artifact": "eu-ai-act-impl next revision",
+      "current_version": "Multiple; first acts adopted 2025 (GPAI Code of Practice, standardization mandate M/589)",
+      "expected_type": "revision",
+      "lifecycle_stage": "ipd",
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+        "method": "rss_feed",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+        "https://eur-lex.europa.eu/search/results.html?type=quick&lang=en&text=artificial+intelligence+act+implementing",
+        "https://ec.europa.eu/growth/tools-databases/mandates/index.cfm?fuseaction=search.detail&id=610",
+        "https://digital-strategy.ec.europa.eu/en/policies/ai-office"
+      ],
+      "dependent_of": null,
+      "status": "draft_observed",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "draft_status=ipd"
+    },
+    {
+      "id": "au-fedramp",
+      "feed_id": "fedramp",
+      "authority": "primary",
+      "artifact": "FedRAMP 20x Phase 2",
+      "current_version": "Rev 5 baselines + 20x Certification Classes A-D (CR26)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://www.fedramp.gov/",
+        "method": "github_release",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://www.fedramp.gov/",
+        "https://github.com/GSA/fedramp-automation",
+        "https://github.com/GSA/fedramp-automation/releases",
+        "https://www.fedramp.gov/20x/"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "FedRAMP 20x Phase 2 (2026); full 20x automation mandate TBD"
+    },
+    {
+      "id": "au-fedramp-20x",
+      "feed_id": "fedramp-20x",
+      "authority": "primary",
+      "artifact": "fedramp-20x next revision",
+      "current_version": "Certification Classes A-D (NTC-0004, Feb 2026); submissions open Jul 2026",
+      "expected_type": "revision",
+      "lifecycle_stage": "ipd",
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://www.fedramp.gov/20x/",
+        "method": "github_release",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://www.fedramp.gov/20x/",
+        "https://github.com/GSA/fedramp-automation",
+        "https://github.com/GSA/fedramp-automation/tree/master/dist/content/ksi",
+        "https://github.com/GSA/fedramp-automation/releases"
+      ],
+      "dependent_of": null,
+      "status": "draft_observed",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "draft_status=ipd"
+    },
+    {
+      "id": "au-ffiec-cat",
+      "feed_id": "ffiec-cat",
+      "authority": "primary",
+      "artifact": "ffiec-cat next revision",
+      "current_version": "May 2017",
+      "expected_type": "revision",
+      "lifecycle_stage": "superseded",
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://www.ffiec.gov/cyberassessmenttool.htm",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://www.ffiec.gov/cyberassessmenttool.htm"
+      ],
+      "dependent_of": null,
+      "status": "superseded",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "draft_status=retired"
+    },
+    {
+      "id": "au-fips-140-3",
+      "feed_id": "fips-140-3",
+      "authority": "NIST CMVP",
+      "artifact": "Not announced",
+      "current_version": "FIPS 140-3 (2019); FIPS 140-2 transition period ended Sep 2026",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Not announced; post-quantum algorithm updates anticipated"
+    },
+    {
+      "id": "au-fips-199",
+      "feed_id": "fips-199",
+      "authority": "NIST",
+      "artifact": "Not announced",
+      "current_version": "Feb 2004",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Not announced; stable since 2004"
+    },
+    {
+      "id": "au-fips-200",
+      "feed_id": "fips-200",
+      "authority": "NIST",
+      "artifact": "Not announced",
+      "current_version": "Mar 2006",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Not announced; stable since 2006"
+    },
+    {
+      "id": "au-fips-201-3",
+      "feed_id": "fips-201-3",
+      "authority": "NIST",
+      "artifact": "FIPS 201-4",
+      "current_version": "FIPS 201-3 (Jan 2022)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "FIPS 201-4 (not announced)"
+    },
+    {
+      "id": "au-gdpr",
+      "feed_id": "gdpr",
+      "authority": "primary",
+      "artifact": "gdpr next revision",
+      "current_version": "2016/679 (effective May 2018)",
+      "expected_type": "amendment",
+      "lifecycle_stage": "amendment",
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng",
+        "method": "rss_feed",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679",
+        "https://publications.europa.eu/webapi/rdf/sparql"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "draft_status=amendment_proposed"
+    },
+    {
+      "id": "au-google-gemini-api",
+      "feed_id": "google-gemini-api",
+      "authority": "Google LLC",
+      "artifact": "Continuous model and API updates",
+      "current_version": "Gemini 2.0 Flash / 2.5 Pro series (2025)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://ai.google.dev/gemini-api/docs",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://ai.google.dev/gemini-api/docs",
+        "https://ai.google.dev/gemini-api/docs/release-notes",
+        "https://deepmind.google/technologies/gemini/",
+        "https://deepmind.google/discover/blog/"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Continuous model and API updates; track ai.google.dev/gemini-api/docs/release-notes"
+    },
+    {
+      "id": "au-hipaa",
+      "feed_id": "hipaa",
+      "authority": "HHS OCR",
+      "artifact": "HIPAA Security Rule 2026 Final Rule",
+      "current_version": "HIPAA Security Rule (2013 Omnibus)",
+      "expected_type": "major_rev",
+      "lifecycle_stage": "advisory_pending",
+      "expected_window": "no_fixed_date",
+      "confidence": "med",
+      "trigger_signal": "HHS publishes the Final Rule in the Federal Register (NPRM issued Jan 2025; comment period closed Mar 7 2025 — Final Rule date not committed)",
+      "detection": {
+        "url": "https://www.federalregister.gov/agencies/office-for-civil-rights",
+        "method": "poll_landing",
+        "match": "HIPAA Security Rule final rule"
+      },
+      "poll_frequency": "monthly",
+      "source_urls": [
+        "https://www.hhs.gov/hipaa/for-professionals/security/index.html"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "2026 Final Rule anticipated; NPRM Jan 2025, comments closed Mar 7 2025. No committed publication date."
+    },
+    {
+      "id": "au-hitrust",
+      "feed_id": "hitrust",
+      "authority": "primary",
+      "artifact": "v11.6.0",
+      "current_version": "v11.8.0 (May 2026)",
+      "expected_type": "minor_rel",
+      "lifecycle_stage": null,
+      "expected_window": {
+        "earliest": "2026-01-01",
+        "latest": "2026-12-31",
+        "basis": "v11.6.0 (anticipated 2026; adds new framework columns)"
+      },
+      "confidence": "med",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://hitrustalliance.net/csf/",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://hitrustalliance.net/csf/",
+        "https://hitrustalliance.net/csf/csf-suite-updates/",
+        "https://hitrustalliance.net/csf"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "v11.6.0 (anticipated 2026; adds new framework columns)"
+    },
+    {
+      "id": "au-huggingface-hub",
+      "feed_id": "huggingface-hub",
+      "authority": "Hugging Face (hub steward); model cards community standard",
+      "artifact": "Continuous",
+      "current_version": "Model Card spec v0.5 (2024); Hub API v2",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://huggingface.co/docs/hub/model-cards",
+        "method": "github_release",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://huggingface.co/docs/hub/model-cards",
+        "https://huggingface.co/docs/hub/datasets-cards",
+        "https://huggingface.co/docs/hub/security",
+        "https://huggingface.co/docs/hub/api"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Continuous; track huggingface/hub-docs GitHub"
+    },
+    {
+      "id": "au-ieee-ai-standards",
+      "feed_id": "ieee-ai-standards",
+      "authority": "IEEE Standards Association",
+      "artifact": "P3119",
+      "current_version": "IEEE P7001 (Transparency, 2021); P7009 (Fail-Safe, 2021); P7010 (Wellbeing, 2023); P2840 (draft); P3119 (draft)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": {
+        "earliest": "2026-01-01",
+        "latest": "2026-12-31",
+        "basis": "P3119 (Procurement of AI, anticipated 2026); P2840 (Responsible AI, anticipated 2026)"
+      },
+      "confidence": "med",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://standards.ieee.org/industry-connections/autonomous-systems/",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://standards.ieee.org/industry-connections/autonomous-systems/",
+        "https://ieeexplore.ieee.org/browse/standards/subject-area-collections/AI-standards",
+        "https://standards.ieee.org/industry-connections/ec/autonomous-systems/",
+        "https://standards.ieee.org/ieee/IEEE-P7001/7424/"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "P3119 (Procurement of AI, anticipated 2026); P2840 (Responsible AI, anticipated 2026)"
+    },
+    {
+      "id": "au-ietf-oauth",
+      "feed_id": "ietf-oauth",
+      "authority": "IETF OAuth Working Group",
+      "artifact": "OAuth 2.1 finalization complete",
+      "current_version": "OAuth 2.1 (RFC 9700, Dec 2024); RFC 8707, RFC 9396, RFC 9449",
+      "expected_type": "minor_rel",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://oauth.net/2.1/",
+        "method": "rss_feed",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://oauth.net/2.1/",
+        "https://datatracker.ietf.org/wg/oauth/about/",
+        "https://www.rfc-editor.org/rfc/rfc9700",
+        "https://www.rfc-editor.org/rfc/rfc6749"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "OAuth 2.1 finalization complete; subsequent profile RFCs TBD"
+    },
+    {
+      "id": "au-india-dpdp",
+      "feed_id": "india-dpdp",
+      "authority": "primary",
+      "artifact": "india-dpdp next revision",
+      "current_version": "Aug 2023 (implementing rules pending)",
+      "expected_type": "revision",
+      "lifecycle_stage": "ipd",
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://www.meity.gov.in/data-protection-framework",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf",
+        "https://www.meity.gov.in/data-protection-framework"
+      ],
+      "dependent_of": null,
+      "status": "draft_observed",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "draft_status=ipd"
+    },
+    {
+      "id": "au-iso-15408",
+      "feed_id": "iso-15408",
+      "authority": "ISO/IEC; NIAP (US scheme)",
+      "artifact": "Not announced",
+      "current_version": "v3.1 Rev 5 (2017)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Not announced"
+    },
+    {
+      "id": "au-iso-27001",
+      "feed_id": "iso-27001",
+      "authority": "primary",
+      "artifact": "Amendment cycle anticipated 2026-2027",
+      "current_version": "2022 edition (+Amd 1:2024)",
+      "expected_type": "amendment",
+      "lifecycle_stage": null,
+      "expected_window": {
+        "earliest": "2026-01-01",
+        "latest": "2027-12-31",
+        "basis": "Amendment cycle anticipated 2026-2027"
+      },
+      "confidence": "med",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://www.iso.org/standard/27001",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://www.iso.org/standard/27001",
+        "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/sp800-53r5-to-iso-27001-mapping.xlsx",
+        "https://csrc.nist.gov/projects/olir/informative-reference-catalog"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Amendment cycle anticipated 2026-2027"
+    },
+    {
+      "id": "au-iso-jtc1-sc42",
+      "feed_id": "iso-jtc1-sc42",
+      "authority": "ISO/IEC Joint Technical Committee 1, Subcommittee 42",
+      "artifact": "ISO/IEC 42005",
+      "current_version": "ISO/IEC 42001:2023 (AI Management Systems); ISO/IEC 23894:2023 (AI Risk); ISO/IEC 24028:2020 (AI Trustworthiness); ISO/IEC 42006:2024 (AI Audit requirements)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": {
+        "earliest": "2025-01-01",
+        "latest": "2025-12-31",
+        "basis": "ISO/IEC 42005 (AI impact assessment, anticipated 2025); ISO/IEC 42006 extensions; ISO/IEC 42002 (AI system engineering)"
+      },
+      "confidence": "med",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://www.iso.org/committee/6794475.html",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://www.iso.org/committee/6794475.html",
+        "https://www.iso.org/committee/6794475/x/catalogue/",
+        "https://www.iso.org/standard/81230.html",
+        "https://www.iso.org/standard/77304.html"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "ISO/IEC 42005 (AI impact assessment, anticipated 2025); ISO/IEC 42006 extensions; ISO/IEC 42002 (AI system engineering)"
+    },
+    {
+      "id": "au-mcp-spec",
+      "feed_id": "mcp-spec",
+      "authority": "Anthropic (spec steward); open standard via modelcontextprotocol.io",
+      "artifact": "Incremental revisions tracked by schema date",
+      "current_version": "2025-03-26 (schema version date; published Nov 2024)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://modelcontextprotocol.io/introduction",
+        "method": "github_release",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://modelcontextprotocol.io/introduction",
+        "https://spec.modelcontextprotocol.io/",
+        "https://github.com/modelcontextprotocol/modelcontextprotocol",
+        "https://github.com/modelcontextprotocol/python-sdk"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Incremental revisions tracked by schema date"
+    },
+    {
+      "id": "au-mitre-atlas",
+      "feed_id": "mitre-atlas",
+      "authority": "MITRE Corporation",
+      "artifact": "Quarterly cadence",
+      "current_version": "v4.8.0 (2025)",
+      "expected_type": "quarterly_bundle",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://atlas.mitre.org/",
+        "method": "github_release",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://atlas.mitre.org/",
+        "https://atlas.mitre.org/matrices/ATLAS",
+        "https://github.com/mitre-atlas/atlas-data",
+        "https://mitre-atlas.github.io/atlas-navigator/"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Quarterly cadence (v5.0 anticipated)"
+    },
+    {
+      "id": "au-nist-800-171",
+      "feed_id": "nist-800-171",
+      "authority": "primary",
+      "artifact": "Rev 4",
+      "current_version": "Rev 3 (May 2024)",
+      "expected_type": "major_rev",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://csrc.nist.gov/publications/detail/sp/800-171/rev-3/final",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://csrc.nist.gov/publications/detail/sp/800-171/rev-3/final",
+        "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/sp_800_171_3_0_0/element/ALL/structure/default",
+        "https://csrc.nist.gov/CSRC/media/Publications/sp/800-171/rev-3/final/documents/sp800-171r3-security-requirements.xlsx",
+        "https://csrc.nist.gov/pubs/sp/800/171/r3/final"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Rev 4 (not yet announced; monitor csrc.nist.gov post-2027)"
+    },
+    {
+      "id": "au-nist-800-172",
+      "feed_id": "nist-800-172",
+      "authority": "primary",
+      "artifact": "Rev 3",
+      "current_version": "Rev 3 (May 2026)",
+      "expected_type": "major_rev",
+      "lifecycle_stage": "ipd",
+      "expected_window": {
+        "earliest": "2026-05-01",
+        "latest": "2026-05-31",
+        "basis": "Rev 3 (target May 2026; IPD out for comment)"
+      },
+      "confidence": "med",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://csrc.nist.gov/publications/detail/sp/800-172/final",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://csrc.nist.gov/publications/detail/sp/800-172/final",
+        "https://csrc.nist.gov/CSRC/media/Publications/sp/800-172/final/documents/sp800-172-enhanced-security-reqs.xlsx",
+        "https://csrc.nist.gov/pubs/sp/800/172/final"
+      ],
+      "dependent_of": null,
+      "status": "draft_observed",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Rev 3 (target May 2026; IPD out for comment)"
+    },
+    {
+      "id": "au-nist-800-53",
+      "feed_id": "nist-800-53",
+      "authority": "primary",
+      "artifact": "Rev 5.2 or Rev 6",
+      "current_version": "Release 5.2.0",
+      "expected_type": "minor_rel",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final",
+        "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/sp_800_53_5_1_1/element/ALL/structure/default",
+        "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+        "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/sp800-53r5-control-catalog.xlsx"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Rev 5.2 or Rev 6 (not yet announced; monitor csrc.nist.gov)"
+    },
+    {
+      "id": "au-nist-csf",
+      "feed_id": "nist-csf",
+      "authority": "primary",
+      "artifact": "Minor update or new Profiles",
+      "current_version": "2.0 (Feb 26 2024)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://www.nist.gov/cyberframework",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://www.nist.gov/cyberframework",
+        "https://csrc.nist.gov/extensions/nudp/services/json/csf/download?olirids=all",
+        "https://csrc.nist.gov/publications/detail/sp/csf/2-0/final",
+        "https://www.nist.gov/cyberframework/framework"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Minor update or new Profiles (not yet announced)"
+    },
+    {
+      "id": "au-nist-csrc-drafts",
+      "feed_id": "nist-800-53",
+      "authority": "NIST CSRC",
+      "artifact": "NIST SP 800-53 / 800-53A next draft (IPD/FPD)",
+      "current_version": "800-53 Release 5.2.0",
+      "expected_type": "minor_rel",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "800-53 (or 53A) appears on the CSRC drafts-open-for-comment feed, or a new /ipd|/fpd versioned URL, or the 800-53 real-time comment site posts proposed control text",
+      "detection": {
+        "url": "https://csrc.nist.gov/CSRC/media/feeds/pubs/drafts-open-for-comment.json",
+        "method": "poll_feed_json",
+        "match": "pub number in SP 800-53 family"
+      },
+      "poll_frequency": "monthly",
+      "source_urls": [
+        "https://csrc.nist.gov/publications/drafts-open-for-comment",
+        "https://csrc.nist.gov/projects/risk-management"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 365,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "800-53 now ships minor 5.x.y releases (5.2.0 = Aug 2025); an AI-focused update is signaled with no fixed date. The catalog is the ecosystem's spine — highest-priority watch."
+    },
+    {
+      "id": "au-nist-ir-8477",
+      "feed_id": "nist-ir-8477",
+      "authority": "NIST",
+      "artifact": "Final",
+      "current_version": "Initial Public Draft (Oct 2022)",
+      "expected_type": "revision",
+      "lifecycle_stage": "ipd",
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "draft_observed",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Final (not yet released)"
+    },
+    {
+      "id": "au-nist-sp-800-160-2",
+      "feed_id": "nist-sp-800-160-2",
+      "authority": "NIST",
+      "artifact": "Not announced",
+      "current_version": "Rev 1 (Dec 2021)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Not announced"
+    },
+    {
+      "id": "au-nist-sp-800-166",
+      "feed_id": "nist-sp-800-166",
+      "authority": "NIST",
+      "artifact": "Not announced",
+      "current_version": "Final (Oct 2016)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Not announced"
+    },
+    {
+      "id": "au-nist-sp-800-189",
+      "feed_id": "nist-sp-800-189",
+      "authority": "NIST",
+      "artifact": "Not announced",
+      "current_version": "Final (Dec 2019)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Not announced"
+    },
+    {
+      "id": "au-nist-sp-800-213a",
+      "feed_id": "nist-sp-800-213a",
+      "authority": "NIST",
+      "artifact": "Not announced",
+      "current_version": "Final (Nov 2021)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Not announced"
+    },
+    {
+      "id": "au-nist-sp-800-37",
+      "feed_id": "nist-sp-800-37",
+      "authority": "NIST",
+      "artifact": "Rev 3",
+      "current_version": "Rev 2 (Dec 2018)",
+      "expected_type": "major_rev",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Rev 3 (not announced; monitor csrc.nist.gov)"
+    },
+    {
+      "id": "au-nist-sp-800-56a",
+      "feed_id": "nist-sp-800-56a",
+      "authority": "NIST",
+      "artifact": "Not announced",
+      "current_version": "Rev 3 (Apr 2018)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Not announced; monitor for post-quantum updates"
+    },
+    {
+      "id": "au-nist-sp-800-57pt1",
+      "feed_id": "nist-sp-800-57pt1",
+      "authority": "NIST",
+      "artifact": "Rev 6",
+      "current_version": "Rev 5 (May 2020)",
+      "expected_type": "major_rev",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Rev 6 (not announced; post-quantum transition likely trigger)"
+    },
+    {
+      "id": "au-nist-sp-800-63",
+      "feed_id": "nist-sp-800-63",
+      "authority": "NIST",
+      "artifact": "Rev 4",
+      "current_version": "Rev 4 (final, Aug 2025)",
+      "expected_type": "major_rev",
+      "lifecycle_stage": null,
+      "expected_window": {
+        "earliest": "2026-01-01",
+        "latest": "2026-12-31",
+        "basis": "Rev 4 (800-63-4 in development; anticipated 2026)"
+      },
+      "confidence": "med",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Rev 4 (800-63-4 in development; anticipated 2026)"
+    },
+    {
+      "id": "au-nist-sp-800-63a",
+      "feed_id": "nist-sp-800-63a",
+      "authority": "NIST",
+      "artifact": "Rev 4",
+      "current_version": "Rev 4 (final, Aug 2025)",
+      "expected_type": "major_rev",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Rev 4 (companion to 800-63-4)"
+    },
+    {
+      "id": "au-nist-sp-800-63b",
+      "feed_id": "nist-sp-800-63b",
+      "authority": "NIST",
+      "artifact": "Rev 4",
+      "current_version": "Rev 4 (final, Aug 2025)",
+      "expected_type": "major_rev",
+      "lifecycle_stage": null,
+      "expected_window": {
+        "earliest": "2026-01-01",
+        "latest": "2026-12-31",
+        "basis": "Rev 4 (companion to 800-63-4; anticipated 2026)"
+      },
+      "confidence": "med",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Rev 4 (companion to 800-63-4; anticipated 2026)"
+    },
+    {
+      "id": "au-nsm-8",
+      "feed_id": "nsm-8",
+      "authority": "White House / NSC",
+      "artifact": "nsm-8 next revision",
+      "current_version": "NSM-8 (Jul 2021) [RESCINDED Jun 2026]",
+      "expected_type": "revision",
+      "lifecycle_stage": "superseded",
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://www.whitehouse.gov/briefing-room/statements-releases/2021/07/28/national-security-memorandum-on-improving-cybersecurity-for-critical-infrastructure-control-systems/",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://www.whitehouse.gov/briefing-room/statements-releases/2021/07/28/national-security-memorandum-on-improving-cybersecurity-for-critical-infrastructure-control-systems/"
+      ],
+      "dependent_of": null,
+      "status": "superseded",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "draft_status=retired"
+    },
+    {
+      "id": "au-openai-api",
+      "feed_id": "openai-api",
+      "authority": "OpenAI",
+      "artifact": "Continuous model and API updates",
+      "current_version": "GPT-4o, o3 series (2025); API v1",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://platform.openai.com/docs",
+        "method": "github_release",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://platform.openai.com/docs",
+        "https://platform.openai.com/docs/changelog",
+        "https://github.com/openai/openai-openapi",
+        "https://openai.com/policies/usage-policies"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Continuous model and API updates; track platform.openai.com/docs/changelog"
+    },
+    {
+      "id": "au-openapi-spec",
+      "feed_id": "openapi-spec",
+      "authority": "OpenAPI Initiative (Linux Foundation)",
+      "artifact": "OAS 4.0",
+      "current_version": "3.1.1 (Sep 2024); 4.0 (Moonwalk, in development)",
+      "expected_type": "minor_rel",
+      "lifecycle_stage": null,
+      "expected_window": {
+        "earliest": "2026-01-01",
+        "latest": "2026-12-31",
+        "basis": "OAS 4.0 (Moonwalk) — target 2026"
+      },
+      "confidence": "med",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://spec.openapis.org/oas/latest.html",
+        "method": "github_release",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://spec.openapis.org/oas/latest.html",
+        "https://github.com/OAI/OpenAPI-Specification",
+        "https://www.openapis.org/"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "OAS 4.0 (Moonwalk) — target 2026"
+    },
+    {
+      "id": "au-owasp-asvs",
+      "feed_id": "owasp-asvs",
+      "authority": "primary",
+      "artifact": "owasp-asvs next revision",
+      "current_version": "v5.0.0 (May 2025)",
+      "expected_type": "revision",
+      "lifecycle_stage": "fpd",
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://owasp.org/ASVS/",
+        "method": "github_release",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://owasp.org/ASVS/",
+        "https://github.com/OWASP/ASVS",
+        "https://github.com/OWASP/ASVS/releases",
+        "https://github.com/OWASP/ASVS/releases"
+      ],
+      "dependent_of": null,
+      "status": "draft_observed",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "draft_status=second_draft"
+    },
+    {
+      "id": "au-owasp-llm-top10",
+      "feed_id": "owasp-llm-top10",
+      "authority": "OWASP Foundation",
+      "artifact": "v2.1 or annual cadence update",
+      "current_version": "v2.0 (2025)",
+      "expected_type": "quarterly_bundle",
+      "lifecycle_stage": null,
+      "expected_window": {
+        "earliest": "2026-01-01",
+        "latest": "2026-12-31",
+        "basis": "v2.1 or annual cadence update (2026 anticipated)"
+      },
+      "confidence": "med",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+        "method": "github_release",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+        "https://github.com/OWASP/www-project-top-10-for-large-language-model-applications",
+        "https://llmtop10.com/",
+        "https://owasp.org/www-project-top-10-for-large-language-model-applications/assets/PDF/OWASP-Top-10-for-LLMs-2023-v1_1.pdf"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "v2.1 or annual cadence update (2026 anticipated)"
+    },
+    {
+      "id": "au-owasp-top10",
+      "feed_id": "owasp-top10",
+      "authority": "primary",
+      "artifact": "2025 edition",
+      "current_version": "OWASP Top 10:2025 (final Jan 2026)",
+      "expected_type": "major_rev",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://owasp.org/Top10/",
+        "method": "github_release",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://owasp.org/Top10/",
+        "https://github.com/OWASP/Top10",
+        "https://github.com/OWASP/Top10/releases"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "2025 edition (second draft in progress as of mid-2025)"
+    },
+    {
+      "id": "au-pci-dss",
+      "feed_id": "pci-dss",
+      "authority": "primary",
+      "artifact": "v4.1",
+      "current_version": "v4.0.1 (June 2024)",
+      "expected_type": "minor_rel",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://www.pcisecuritystandards.org/standards/",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://www.pcisecuritystandards.org/standards/",
+        "https://www.pcisecuritystandards.org/document_library/"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "v4.1 (not announced; future-dated v4.0.1 reqs active Mar 31 2025)"
+    },
+    {
+      "id": "au-sox-itgc",
+      "feed_id": "sox-itgc",
+      "authority": "primary",
+      "artifact": "PCAOB AS 2201 updated, effective Dec 15 2026",
+      "current_version": "AS 2201 (updated effective Dec 15, 2026)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": {
+        "earliest": "2026-12-15",
+        "latest": "2026-12-15",
+        "basis": "PCAOB AS 2201 updated, effective Dec 15 2026"
+      },
+      "confidence": "high",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://pcaobus.org/standards",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://pcaobus.org/Oversight/Standards/Auditing-Standards/Details/AS2201",
+        "https://pcaobus.org/standards"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "PCAOB AS 2201 updated, effective Dec 15 2026"
+    },
+    {
+      "id": "au-uk-aisi",
+      "feed_id": "uk-aisi",
+      "authority": "UK Department for Science, Innovation and Technology (DSIT); AISI",
+      "artifact": "Annual reports and evaluation framework updates",
+      "current_version": "AISI Evaluation Framework v1.0 (2024); International Scientific Report on Advanced AI Safety (2024)",
+      "expected_type": "revision",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "detection": {
+        "url": "https://www.gov.uk/government/organisations/ai-safety-institute",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://www.gov.uk/government/organisations/ai-safety-institute",
+        "https://www.aisi.gov.uk/",
+        "https://www.gov.uk/government/publications?organisations%5B%5D=ai-safety-institute",
+        "https://www.gov.uk/government/publications/international-scientific-report-on-the-safety-of-advanced-ai"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Annual reports and evaluation framework updates"
+    }
+  ]
+}

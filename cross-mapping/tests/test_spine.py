@@ -601,6 +601,27 @@ if FAILS:
     for f in FAILS:
         print(f"  ✗ {f}")
     sys.exit(1)
+# ── Anticipated-updates horizon monitor (Phase 24) ───────────────────────────
+import importlib as _il
+_hm = _il.import_module("horizon_monitor")
+_recs = _hm.load_records()
+check(len(_recs) >= 20, f"horizon registry loads ({len(_recs)} records)")
+from datetime import date as _d
+_dated = {"id": "t-dated", "expected_window": {"earliest": "2020-01-01", "latest": "2020-01-31", "basis": "x"},
+          "escalate_after_days": 30, "status": "watching", "confidence": "high"}
+_future = {"id": "t-future", "expected_window": {"earliest": "2099-01-01", "latest": "2099-01-31", "basis": "x"},
+           "escalate_after_days": 30, "status": "watching", "confidence": "high"}
+_undated = {"id": "t-undated", "expected_window": "no_fixed_date", "status": "watching",
+            "confidence": "med", "poll_frequency": "monthly", "last_checked": None}
+_mat = {"id": "t-mat", "expected_window": "no_fixed_date", "status": "materialized", "confidence": "low"}
+_today = _d(2026, 7, 7)
+check(_hm.classify(_dated, _today) == "overdue", "horizon: past-window record → overdue")
+check(_hm.classify(_future, _today) == "watching", "horizon: future-window record → watching")
+check(_hm.classify(_undated, _today) == "due_review", "horizon: undated med-confidence → due_review")
+check(_hm.classify(_mat, _today) == "materialized", "horizon: materialized status preserved")
+# the CCM v4.1 flagship must be present and never silently lost
+check(any(r["id"] == "au-csa-ccm" for r in _recs), "horizon: CCM v4.1 mappings flagship present")
+
 print("SPINE SELF-TEST: PASS")
 print(f"  cci_bridge: {cci_stats}")
 print(f"  control_odps: {odp_stats}")

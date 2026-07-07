@@ -124,12 +124,33 @@ def stage_cci_check() -> dict:
     return {"cci_status": st}
 
 
+def stage_horizon() -> dict:
+    """Surface the anticipated-updates horizon: overdue/due-review items that must be
+    re-investigated so an expected update is never missed. Offline-safe (pure registry
+    intelligence, no network)."""
+    rc, out = _run([sys.executable, str(ENGINE / "horizon_monitor.py"), "--summary"])
+    try:
+        counts = json.loads(out[out.index("{"):out.rindex("}") + 1])
+    except Exception:
+        counts = {}
+    overdue = int(counts.get("overdue", 0))
+    due_review = int(counts.get("due_review", 0))
+    draft = int(counts.get("draft_observed", 0))
+    if overdue or due_review:
+        print(f"[check] horizon: {overdue} overdue + {due_review} due-for-review + {draft} "
+              "draft-observed — run `dbz_query.py horizon --overdue` and re-investigate the source")
+    else:
+        print(f"[check] horizon: nothing overdue/due ({draft} draft-observed on the horizon)")
+    return {"horizon_overdue": overdue, "horizon_due_review": due_review}
+
+
 def stage_check() -> dict:
     """Run the monitors, then classify every registry feed."""
     monitor_rc, monitor_out = _run([sys.executable, str(ENGINE / "framework_monitor.py"), "--dry-run"])
     ann_rc, ann_out = _run([sys.executable, str(ENGINE / "announcement_monitor.py"), "--dry-run"])
     stig_signal = stage_stig_check()
     cci_signal = stage_cci_check()
+    horizon_signal = stage_horizon()
 
     reg = json.loads(REGISTRY.read_text(encoding="utf-8"))
     feeds = reg["feeds"]
@@ -156,6 +177,7 @@ def stage_check() -> dict:
         "announcements_exit": ann_rc,
         "stig_status": stig_signal.get("stig_status"),
         "cci_status": cci_signal.get("cci_status"),
+        "horizon_overdue": horizon_signal.get("horizon_overdue"),
         "feeds": rows,
         "summary": {},
     }

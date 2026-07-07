@@ -627,6 +627,45 @@ def cmd_feeds(args, conn: sqlite3.Connection) -> int:
     return 0
 
 
+def cmd_horizon(args, conn: sqlite3.Connection) -> int:
+    """Show the anticipated-updates horizon (expected/scheduled future revisions).
+    Delegates the dynamic overdue/upcoming logic to horizon_monitor for a single
+    source of truth; --list reads the DB table directly."""
+    import importlib, json as _json
+    try:
+        hm = importlib.import_module("horizon_monitor")
+    except Exception:
+        hm = None
+
+    mode = "list"
+    for m in ("overdue", "upcoming", "materialized"):
+        if getattr(args, m, None):
+            mode = m
+            break
+
+    if hm is not None and mode in ("overdue", "upcoming"):
+        argv = ([f"--{mode}"] + ([str(args.upcoming)] if mode == "upcoming" else [])
+                + (["--json"] if args.format == "json" else []))
+        return hm.main(argv)
+
+    # list / materialized: read the DB table
+    where = "WHERE status = 'materialized'" if mode == "materialized" else ""
+    rows = conn.execute(f"""
+        SELECT id, feed_id, authority, artifact, expected_window, confidence, status, lifecycle_stage
+        FROM anticipated_updates {where} ORDER BY status, id""").fetchall()
+    out = []
+    for r in rows:
+        d = dict(r)
+        w = _json.loads(d["expected_window"]) if d.get("expected_window") else None
+        d["window"] = ("no_fixed_date" if not isinstance(w, dict)
+                       else (w["latest"] if w.get("earliest") == w.get("latest") else f'{w["earliest"]}…{w["latest"]}'))
+        del d["expected_window"]
+        out.append(d)
+    cols = ["id", "authority", "artifact", "window", "confidence", "status", "lifecycle_stage"]
+    _output([{k: r.get(k) for k in cols} for r in out], args.format, cols)
+    return 0
+
+
 def cmd_announcements(args, conn: sqlite3.Connection) -> int:
     """Show announcements feed entries."""
     conditions = []
@@ -1293,6 +1332,13 @@ def build_parser() -> argparse.ArgumentParser:
     ann.add_argument("--unreviewed", action="store_true", help="Show only human_reviewed=false")
     _add_format(ann); _add_db(ann)
 
+    # horizon — anticipated (expected/scheduled) future standard revisions
+    hor = subs.add_parser("horizon", help="Anticipated future standard revisions (horizon scanning)")
+    hor.add_argument("--overdue", action="store_true", help="past-window or due-for-review records")
+    hor.add_argument("--upcoming", type=int, metavar="N", help="the N nearest dated expectations")
+    hor.add_argument("--materialized", action="store_true", help="records marked materialized")
+    _add_format(hor); _add_db(hor)
+
     # manifest
     man = subs.add_parser("manifest", help="Show DB build manifest (row counts, sha256)")
     _add_format(man); _add_db(man)
@@ -1415,6 +1461,7 @@ def main(argv=None) -> int:
         "changelog": cmd_changelog,
         "feeds": cmd_feeds,
         "announcements": cmd_announcements,
+        "horizon": cmd_horizon,
         "manifest": cmd_manifest,
         "kev": cmd_kev,
         "cfr": cmd_cfr,

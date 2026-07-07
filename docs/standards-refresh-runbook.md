@@ -44,6 +44,27 @@ Historical/sunset titles stay catalogued (delta-tracked) but rule-harvested on d
 (`stig_harvest.py --via-trackr --titles ...`) — they add ~0 new CCIs (the CCI vocabulary is
 product-agnostic).
 
+## Horizon scanning — anticipated updates (Phase 24)
+
+The pipeline now tracks changes that are *expected* to happen, not only ones that already did, so a
+scheduled/signaled revision is never missed. Registry: `canonical-sources/anticipated_updates.json`;
+watcher: `cross-mapping/engine/horizon_monitor.py`; full model + per-authority signal catalog:
+`docs/horizon-scanning.md`.
+
+- **Read the horizon:** `dbz_query.py horizon --upcoming 10` (nearest expectations) /
+  `horizon_monitor.py --list`. `standards_refresh.py --check` prints a `horizon` line
+  (overdue + due-for-review + draft-observed counts).
+- **Act on overdue:** `horizon_monitor.py --overdue` lists records past their window (re-investigate
+  the source — did it land? then ingest via the normal human-reviewed loader, and set the record's
+  `status` to `materialized`/`superseded`). Materialization is never auto-ingested.
+- **Add an anticipation (crawl-seed procedure):** whenever a source traversal encounters an
+  anticipatable signal — a "not available yet" placeholder, a draft/IPD/FPD status, an ISO DIS ballot,
+  a HITRUST advisory, a transition-timeline date, or a PCI "best practice until `<date>`" clause — add
+  a record to `anticipated_updates.json` (never fabricate a date: use `no_fixed_date`). This is how
+  the CCM v4.1 mappings became `au-csa-ccm`.
+- **DISA scope:** the horizon tracks the **CCI List** quarterly cadence only (new CCI definitions).
+  **STIGs are excluded** — no STIG anticipation, no STIG data/DB update (reference-only per Phases 21/23).
+
 ## Currency-run findings (2026-07-06)
 
 A full read-only currency run (both monitors + harvest `--check`) established:

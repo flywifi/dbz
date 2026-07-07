@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.9"   # v3.9: full CCI dictionary (5,137) + cci_mapping_corroboration; v3.8: STIG application layer
+SCHEMA_VERSION = "3.10"  # v3.10: anticipated_updates (horizon-scanning); v3.9: full CCI dictionary + cci_mapping_corroboration
 
 CHUNK = 500  # executemany batch size
 
@@ -178,6 +178,29 @@ CREATE TABLE IF NOT EXISTS changelog (
     human_confirmed    INTEGER NOT NULL DEFAULT 0,
     notes              TEXT
 );
+
+CREATE TABLE IF NOT EXISTS anticipated_updates (
+    id                TEXT PRIMARY KEY,
+    feed_id           TEXT,
+    authority         TEXT,
+    artifact          TEXT,
+    current_version   TEXT,
+    expected_type     TEXT,
+    lifecycle_stage   TEXT,
+    expected_window   TEXT,   -- JSON {earliest,latest,basis} or the string "no_fixed_date"
+    confidence        TEXT,   -- high | med | low
+    trigger_signal    TEXT,
+    detection         TEXT,   -- JSON {url,method,match}
+    poll_frequency    TEXT,
+    source_urls       TEXT,   -- JSON array
+    dependent_of      TEXT,
+    status            TEXT,   -- watching | draft_observed | materialized | superseded
+    escalate_after_days INTEGER NOT NULL DEFAULT 120,
+    last_checked      TEXT,
+    last_change_detected TEXT,
+    notes             TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_anticipated_status ON anticipated_updates(status);
 
 CREATE TABLE IF NOT EXISTS announcements (
     entry_id       TEXT PRIMARY KEY,
@@ -800,6 +823,39 @@ def load_changelog(path: Path) -> list[dict]:
             "controls_modified": json.dumps(entry.get("controls_modified", [])),
             "human_confirmed": _bool(entry.get("human_confirmed", False)),
             "notes": entry.get("notes", ""),
+        })
+    return rows
+
+
+def load_anticipated_updates(path: Path) -> list[dict]:
+    """Load the horizon registry (anticipated_updates.json) into flat rows.
+    Static content only — the dynamic overdue/materialized state is computed at
+    query time by horizon_monitor.py, so the table stays deterministic."""
+    if not path.exists():
+        return []
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    rows = []
+    for r in doc.get("records", []):
+        rows.append({
+            "id": r.get("id", ""),
+            "feed_id": r.get("feed_id", ""),
+            "authority": r.get("authority", ""),
+            "artifact": r.get("artifact", ""),
+            "current_version": r.get("current_version", ""),
+            "expected_type": r.get("expected_type", ""),
+            "lifecycle_stage": r.get("lifecycle_stage"),
+            "expected_window": json.dumps(r.get("expected_window"), ensure_ascii=False),
+            "confidence": r.get("confidence", ""),
+            "trigger_signal": r.get("trigger_signal", ""),
+            "detection": json.dumps(r.get("detection", {}), ensure_ascii=False),
+            "poll_frequency": r.get("poll_frequency", ""),
+            "source_urls": json.dumps(r.get("source_urls", []), ensure_ascii=False),
+            "dependent_of": r.get("dependent_of"),
+            "status": r.get("status", "watching"),
+            "escalate_after_days": int(r.get("escalate_after_days", 120)),
+            "last_checked": r.get("last_checked"),
+            "last_change_detected": r.get("last_change_detected"),
+            "notes": r.get("notes", ""),
         })
     return rows
 
@@ -1427,6 +1483,23 @@ def build_db(
         print("  announcements: 0 rows (empty)")
     conn.commit()
 
+    # 5b. Anticipated updates (horizon-scanning registry)
+    au_path = REPO_ROOT / "canonical-sources" / "anticipated_updates.json"
+    au_rows = load_anticipated_updates(au_path)
+    if au_rows:
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO anticipated_updates
+                (id, feed_id, authority, artifact, current_version, expected_type, lifecycle_stage,
+                 expected_window, confidence, trigger_signal, detection, poll_frequency, source_urls,
+                 dependent_of, status, escalate_after_days, last_checked, last_change_detected, notes)
+            VALUES
+                (:id, :feed_id, :authority, :artifact, :current_version, :expected_type, :lifecycle_stage,
+                 :expected_window, :confidence, :trigger_signal, :detection, :poll_frequency, :source_urls,
+                 :dependent_of, :status, :escalate_after_days, :last_checked, :last_change_detected, :notes)
+        """, au_rows, "anticipated_updates")
+        print(f"  anticipated_updates: {len(au_rows)} horizon records")
+    conn.commit()
+
     # 6. CISA KEV catalog
     print(f"\n[6/15] Loading CISA KEV: {kev_path.name}")
     kev_rows = load_kev_data(kev_path)
@@ -1717,7 +1790,7 @@ def build_db(
                 "framework_projection", "hitrust_hub", "odp_values", "overlap_matrix",
                 "consensus_edges", "framework_labels", "master_mappings",
                 "stig_catalog", "stig_rules", "stig_cci_usage",
-                "cci_mapping_corroboration"):
+                "cci_mapping_corroboration", "anticipated_updates"):
         row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
         counts[tbl] = row[0]
 
@@ -1727,7 +1800,7 @@ def build_db(
     for tbl in ("framework_projection", "consensus_edges", "overlap_matrix",
                 "master_mappings", "framework_labels", "unified_mappings",
                 "stig_catalog", "stig_rules", "stig_cci_usage",
-                "disa_ccis", "cci_mapping_corroboration"):
+                "disa_ccis", "cci_mapping_corroboration", "anticipated_updates"):
         cols = [r[1] for r in conn.execute(f"PRAGMA table_info({tbl})") if r[1] != "rowid"]
         h = hashlib.sha256()
         for row in conn.execute(f"SELECT {','.join(cols)} FROM {tbl} ORDER BY {','.join(cols)}"):

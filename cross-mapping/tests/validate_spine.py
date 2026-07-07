@@ -489,6 +489,58 @@ def main() -> int:
                  "(acasehs+trackr are derived republications — transcription/gap witnesses, "
                  "not independent authority)")
 
+    # 11. Anticipated-updates horizon registry well-formedness (Phase 24).
+    #   Every record must carry authority/artifact/trigger/detection, a valid status +
+    #   confidence, an expected_window that is EITHER "no_fixed_date" OR a {earliest,latest}
+    #   with real ISO dates (no fabricated dates), and any dependent_of must resolve.
+    have_au = conn.execute("SELECT name FROM sqlite_master WHERE type='table' "
+                           "AND name='anticipated_updates'").fetchone()
+    if not have_au:
+        note("anticipated-updates: skipped (no table)")
+    else:
+        import json as _json
+        from datetime import date as _date
+        rows = conn.execute("SELECT id, authority, artifact, trigger_signal, detection, "
+                            "expected_window, status, confidence, dependent_of FROM anticipated_updates").fetchall()
+        ids = {r[0] for r in rows}
+        bad = []
+        STATUS = {"watching", "draft_observed", "materialized", "superseded"}
+        CONF = {"high", "med", "low"}
+        for rid, auth, art, trig, det, win, status, conf, dep in rows:
+            if not (auth and art and trig):
+                bad.append(f"{rid}: missing authority/artifact/trigger")
+            try:
+                d = _json.loads(det) if det else {}
+                if not d.get("url") and not d.get("method"):
+                    bad.append(f"{rid}: empty detection")
+            except Exception:
+                bad.append(f"{rid}: unparseable detection")
+            if status not in STATUS:
+                bad.append(f"{rid}: bad status {status!r}")
+            if conf not in CONF:
+                bad.append(f"{rid}: bad confidence {conf!r}")
+            try:
+                w = _json.loads(win)
+            except Exception:
+                w = None
+            if w == "no_fixed_date":
+                pass
+            elif isinstance(w, dict) and w.get("earliest") and w.get("latest"):
+                try:  # dates must be real ISO — never fabricated/garbage
+                    _date.fromisoformat(w["earliest"]); _date.fromisoformat(w["latest"])
+                except ValueError:
+                    bad.append(f"{rid}: non-ISO expected_window")
+            else:
+                bad.append(f"{rid}: expected_window neither no_fixed_date nor {{earliest,latest}}")
+            if dep and dep not in ids:
+                bad.append(f"{rid}: dependent_of {dep!r} does not resolve")
+        if bad:
+            fail("anticipated-updates malformed: " + "; ".join(bad[:8]))
+        else:
+            note(f"anticipated-updates horizon: {len(rows)} records well-formed "
+                 "(status/confidence/detection valid; every window is no_fixed_date or real ISO dates; "
+                 "no fabricated dates; dependencies resolve)")
+
     conn.close()
 
     print("SPINE VALIDATION:", "FAIL" if FAILS else "PASS")
