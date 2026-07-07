@@ -348,6 +348,17 @@
       "source_url": "https://cloudsecurityalliance.org/artifacts/cloud-controls-matrix-v4-1",
       "summary": "CCM v4.1 catalog/CAIQ published; cross-framework mappings not yet released ('not available yet'). No ingestion — v4.0.13 mappings remain latest. Recorded as an anticipated update (au-csa-ccm) to watch for the mappings dataset.",
       "human_confirmed": true
+    },
+    {
+      "entry_id": "chg-phase25-source-audit",
+      "framework_id": "multiple",
+      "change_type": "source_audit_and_broadening",
+      "old_version": "136 feeds",
+      "new_version": "156 feeds + olir_hub_edges (schema 3.11)",
+      "changed_at": "2026-07-07",
+      "source_url": "https://csrc.nist.gov/projects/olir/informative-reference-catalog",
+      "summary": "Full source audit: repaired broken feed URLs (mitre STIX -> mitre-attack/attack-stix-data, hitrust/ny-dfs/iso-27001/nist-800-53 CPRT), fixed 26 landing-less poll_landing feeds, added 20 tiered feeds, registered 7 Tier-2 staged catalogues, and composed CIS 8.1 / OWASP LLM Top 10 / SSDF v1.1 -> 800-53 via the CSF 2.0 OLIR hub (contained off the matrix). Corrections: ffiec-cat sunset 2025-08-31, uk-aisi renamed AI Security Institute, ISO 42005:2025 published, india-dpdp Rules 2025.",
+      "human_confirmed": true
     }
   ]
 }

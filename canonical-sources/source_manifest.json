@@ -1046,6 +1046,88 @@
       "notes": "Derived republication: per-CCI control-level rmf + ap_acronym + family for all 3,551 enumerated CCIs. Enrichment/corroboration ONLY (no r4/r5 split, no status). Deterministic (sorted, gzip mtime=0). Refreshed via tools/cci_harvest.py --trackr --enrich --resume."
     }
   ],
+  "staged_reference_sources": {
+    "_description": "Tier-2 authoritative control catalogues registered but not yet ingested (no committed data file / sha — honest staging). mappable=true carries an 800-53 lineage or crosswalk and is a named ingestion follow-up; mappable=false is reference/index-only.",
+    "records": [
+      {
+        "id": "cjis-security-policy-v6",
+        "authority": "FBI CJIS",
+        "artifact": "CJIS Security Policy v6.0",
+        "source_url": "https://le.fbi.gov/informational-tools/cjis",
+        "tier": "reference",
+        "jurisdiction": "us-federal",
+        "mappable": false,
+        "status": "staged_ingestion",
+        "notes": "13 policy areas correspond to 800-53 families; full catalogue parse is a named follow-up. WAF-gated source."
+      },
+      {
+        "id": "irs-pub-1075",
+        "authority": "IRS",
+        "artifact": "Publication 1075 (FTI safeguards)",
+        "source_url": "https://www.irs.gov/pub/irs-pdf/p1075.pdf",
+        "tier": "mappable",
+        "jurisdiction": "us-federal",
+        "mappable": true,
+        "status": "staged_ingestion",
+        "notes": "Control set 800-53-derived; mappable-when-parsed. PDF catalogue, staged."
+      },
+      {
+        "id": "bsi-c5",
+        "authority": "BSI (Germany)",
+        "artifact": "Cloud Computing Compliance Criteria Catalogue (C5:2020)",
+        "source_url": "https://www.bsi.bund.de/dok/c5-en",
+        "tier": "mappable",
+        "jurisdiction": "eu",
+        "mappable": true,
+        "status": "staged_ingestion",
+        "notes": "Ships an official mapping to NIST 800-53; mappable-when-parsed. Staged."
+      },
+      {
+        "id": "cms-ars",
+        "authority": "CMS",
+        "artifact": "Acceptable Risk Safeguards (ARS) + MARS-E/ARC-AMPE",
+        "source_url": "https://security.cms.gov/policy-guidance/cms-acceptable-risk-safeguards-ars",
+        "tier": "mappable",
+        "jurisdiction": "us-federal",
+        "mappable": true,
+        "status": "staged_ingestion",
+        "notes": "800-53-derived; mappable-when-parsed. ARC-AMPE mandatory 2026-03-04. Staged."
+      },
+      {
+        "id": "canada-itsg-33",
+        "authority": "CCCS (Canada)",
+        "artifact": "ITSG-33 Annex 3A Security Control Catalogue",
+        "source_url": "https://www.cyber.gc.ca/en/guidance/annex-3a-security-control-catalogue-itsg-33",
+        "tier": "reference",
+        "jurisdiction": "canada",
+        "mappable": false,
+        "status": "staged_ingestion",
+        "notes": "800-53-derived, but NO official ITSG-33->800-53 crosswalk (third-party only). Reference; staged."
+      },
+      {
+        "id": "japan-ismap",
+        "authority": "ISMAP (Japan)",
+        "artifact": "ISMAP Security Controls",
+        "source_url": "https://www.ismap.go.jp/",
+        "tier": "mappable",
+        "jurisdiction": "japan",
+        "mappable": true,
+        "status": "staged_ingestion",
+        "notes": "Explicit NIST 800-53 r5 lineage; mappable-when-parsed. Staged."
+      },
+      {
+        "id": "saudi-nca-ecc",
+        "authority": "NCA (Saudi Arabia)",
+        "artifact": "Essential Cybersecurity Controls ECC-2:2024",
+        "source_url": "https://nca.gov.sa/en/regulatory-documents/ecc-en/",
+        "tier": "reference",
+        "jurisdiction": "saudi-arabia",
+        "mappable": false,
+        "status": "staged_ingestion",
+        "notes": "National control framework; no official 800-53 crosswalk. Reference; staged."
+      }
+    ]
+  },
   "er_crosswalk_csvs": {
     "_description": "ER/local-control crosswalk CSVs — a production compliance-platform export (provider identifiers proprietary). Each row is one ER control. 'Local Controls (Linked)' and 'Framework (from Local Controls (Linked))' are comma-separated positionally-aligned lists — split both by comma to get per-framework control pairs.",
     "files": [

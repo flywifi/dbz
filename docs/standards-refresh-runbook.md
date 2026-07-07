@@ -226,3 +226,20 @@ scope-relative acceptance differences, not errors.
 - **fetch_blocked** (endpoint fixes needed): NVD (set `NVD_API_KEY`, run
   `nvd_api_loader.py --days 90`), EUR-Lex (rework loader against the Cellar/ELI API),
   FIPS-CMVP (re-point the loader). EDGAR is fetched and stored (85 disclosures).
+
+## Crawl-seed link-graph (Phase 25)
+
+The recursive discovery layer expands seed roots into candidate document/link URLs so a future
+run finds new documents and sub-domains on its own:
+
+1. `python3 tools/crawl_seed.py --list --format json > candidates.json` — deterministic,
+   offline candidate expansion from `canonical-sources/crawl_seeds.json` (OLIR `.rip`
+   detail pages, eCFR Versioner, Federal Register saved queries, EUR-Lex CELEX, GitHub OSCAL).
+2. Where the managed proxy blocks a host, run the live traversal locally:
+   `pwsh -File tools/crawl_seed.ps1 -Candidates candidates.json -Out discovered.json`.
+3. `python3 tools/crawl_seed.py --import discovered.json` — dedupe + review the discovered
+   URLs before adding any to `feed_registry.json`. Nothing auto-ingests; anticipatable signals
+   (a new draft, a transition-timeline date) route to `anticipated_updates.json` (horizon).
+
+`crawl_seed.py --selftest` asserts determinism + registry well-formedness (also in the gate
+battery via `test_spine`).

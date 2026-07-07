@@ -541,6 +541,41 @@ def main() -> int:
                  "(status/confidence/detection valid; every window is no_fixed_date or real ISO dates; "
                  "no fabricated dates; dependencies resolve)")
 
+    # 12. OLIR-hub composed edges (Phase 25) — no fabrication + containment.
+    #   Every third-party -> CSF2 -> 800-53 edge must cite TWO distinct real OLIR
+    #   references, resolve to a real 800-53 control, and the hub frameworks must
+    #   never leak into framework_projection / overlap_matrix (query-surface tier).
+    have_hub = conn.execute("SELECT name FROM sqlite_master WHERE type='table' "
+                            "AND name='olir_hub_edges'").fetchone()
+    if not have_hub:
+        note("olir-hub composed edges: skipped (no table)")
+    else:
+        hub = conn.execute("SELECT framework, native_id, r5_control, basis, "
+                           "source_ref_a, source_ref_b FROM olir_hub_edges").fetchall()
+        cat = {r[0] for r in conn.execute("SELECT nist_id FROM controls")}
+        cat |= {r[0] for r in conn.execute("SELECT id FROM enhancements")}
+        pj = {r[0] for r in conn.execute("SELECT DISTINCT framework FROM framework_projection")}
+        mx = {r[0] for r in conn.execute("SELECT DISTINCT framework_a FROM overlap_matrix")}
+        mx |= {r[0] for r in conn.execute("SELECT DISTINCT framework_b FROM overlap_matrix")}
+        hub_fws = {r[0] for r in hub}
+        hbad = []
+        for fw, nat, ctrl, basis, ra, rb in hub:
+            if not (ra and rb) or ra == rb:
+                hbad.append(f"{fw}:{nat}->{ctrl}: refs not two-distinct")
+            if basis != "olir_hub_composed":
+                hbad.append(f"{fw}:{nat}: basis {basis!r}")
+            if ctrl not in cat:
+                hbad.append(f"{fw}:{nat}: {ctrl} not in catalog")
+        leak = hub_fws & (pj | mx)
+        if hbad:
+            fail("olir-hub edges malformed: " + "; ".join(hbad[:8]))
+        elif leak:
+            fail(f"olir-hub frameworks leaked into projection/matrix: {sorted(leak)}")
+        else:
+            note(f"olir-hub composed edges: {len(hub)} edges across {len(hub_fws)} frameworks "
+                 "(every edge cites two distinct OLIR refs; controls resolve; "
+                 "frameworks stay out of projection/matrix — query-surface tier)")
+
     conn.close()
 
     print("SPINE VALIDATION:", "FAIL" if FAILS else "PASS")

@@ -699,6 +699,74 @@ def collect_csf2_olir_pairs() -> Tuple[List[dict], dict]:
                              for n in sorted({r["olir_name"] for r in rows})}}
 
 
+# OLIR sets already committed in the CPRT CSF 2.0 element graphs that carry a
+# distinct third-party control vocabulary (id space NOT aliasing CSF ids).  Each
+# value is (display framework label, ref-slug).  CRI Profile v2.0 is deliberately
+# excluded — its native ids mirror the CSF structure (degenerate composition).
+_OLIR_HUB_CSF2_53 = "Cybersecurity-Framework-v2.0-to-SP-800-53-Rev-5-2-0"
+_OLIR_HUB_THIRD_PARTY = {
+    "CIS-Controls-8.1-to-Cybersecurity-Framework-v2.0": "CIS Controls 8.1",
+    "OWASP-LLM-Top10-v2.0-to-CSF-v2.0": "OWASP LLM Top 10 v2.0",
+    "SSDF-Version-1.1-to-Cybersecurity-Framework-v2.0": "NIST SSDF v1.1",
+}
+_CSF2_SUBCAT_HOST_RE = re.compile(r"^[A-Z]{2}\.[A-Z]{2}-\d+$")
+
+
+def load_olir_hub_edges(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
+    """Compose third-party -> CSF 2.0 -> 800-53 r5 edges through the CSF 2.0 hub,
+    using ONLY OLIR sets already committed in the CPRT CSF 2.0 element graphs.  Each
+    edge cites two real OLIR references (the third-party->CSF2 set and the
+    CSF2->800-53 set), so nothing is fabricated — every hop is an authority-published
+    informative reference.  Composition is subcategory-level: a third-party control
+    hosted on a CSF2 subcategory reaches every 800-53 control that subcategory maps to.
+
+    These are on-demand / query-surface edges.  They NEVER enter framework_projection,
+    overlap_matrix, or master_mappings (mirrors the STIG technology-tier containment),
+    so the precomputed matrix and the master tiers are unchanged."""
+    src = "cprt-csf2-olir-graphs"
+    if not source_path(src).exists():
+        return [], {"skipped": "artifact not on disk"}
+    g = _load_graph_artifact(src)
+    csf2_to_53: Dict[str, Set[str]] = {}          # csf2 subcat -> {r5 control}
+    tp: Dict[str, Dict[str, Set[str]]] = {n: {} for n in _OLIR_HUB_THIRD_PARTY}
+    for host, ext in _iter_graph_external_rels(g):
+        name = ext.get("olirName")
+        host_s = str(host or "").strip()
+        if not _CSF2_SUBCAT_HOST_RE.match(host_s):
+            continue
+        dest = str(ext.get("elementIdentifier", "")).strip()
+        if name == _OLIR_HUB_CSF2_53:
+            c = oscal_control_id(dest)
+            if c and c in catalog_ids:
+                csf2_to_53.setdefault(host_s, set()).add(c)
+        elif name in _OLIR_HUB_THIRD_PARTY and dest:
+            tp[name].setdefault(host_s, set()).add(dest)
+    edges: List[dict] = []
+    for name, fw_label in _OLIR_HUB_THIRD_PARTY.items():
+        seen: Set[Tuple[str, str, str]] = set()
+        for subcat, natives in tp[name].items():
+            ctrls = csf2_to_53.get(subcat)
+            if not ctrls:
+                continue
+            for nat in natives:
+                for ctrl in ctrls:
+                    key = (nat, subcat, ctrl)
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    edges.append({
+                        "framework": fw_label, "native_id": nat, "csf2_id": subcat,
+                        "r5_control": ctrl, "basis": "olir_hub_composed",
+                        "source_ref_a": name, "source_ref_b": _OLIR_HUB_CSF2_53,
+                        "confidence": 0.6,
+                    })
+    edges.sort(key=lambda e: (e["framework"], e["native_id"], e["csf2_id"], e["r5_control"]))
+    stats = {"edges": len(edges),
+             "by_framework": {fw: sum(1 for e in edges if e["framework"] == fw)
+                              for fw in sorted({e["framework"] for e in edges})}}
+    return edges, stats
+
+
 def load_pci_master_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
     """PCI DSS v4.0 requirements -> 800-53 r5 controls from the user-provided
     master crosswalk's PCI column.  Bundled tier: co-citation by a single

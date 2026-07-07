@@ -18,3 +18,4 @@ cross-mapping/nist-catalog/output/*.json
 # lives at canonical-sources/uncertainty_ledger.jsonl instead
 logs/*.jsonl
 logs/*.log
+cross-mapping/output/grc.db-*

@@ -443,3 +443,18 @@ Uploaded research-file dispositions:
 | Adobe Acrobat STIG CSV (stigviewer export) | **Format note, not a source** — stigviewer's CSV export carries no CCI column (verified); DISA XCCDF / trackr are the CCI-bearing sources. |
 | MS Windows Security Baseline zip (Microsoft SCT) | **Reference-only, not committed** — Microsoft Security Compliance Toolkit baseline, not a DISA CCI source. |
 | `acasehs/STIG-Control-CCI`, `cognis-digital/stigsentry`, stigviewer.com | **Watch-only** (`stig-community-refs` feed) — announcement monitoring only, never loader inputs (precedence: DISA compilation > trackr mirror > community aggregations). |
+
+## Phase 25 — full source audit + two-tier broadening
+
+The canonical-source universe was re-audited end to end (see `docs/source-audit-phase25.md`).
+Feeds now carry `tier` (mappable | reference) + `jurisdiction`; 20 net-new tiered feeds were
+added (NIST corpus, US federal/defense, US Code/CFR/FR APIs, US sector, standards bodies, EU,
+UK/Commonwealth, APAC/MEA/LATAM). Broken feed URLs were repointed; the deprecated `mitre/cti`
+STIX source moved to `mitre-attack/attack-stix-data`; the 26 landing-less `poll_landing` feeds
+were fixed; metadata contradictions reconciled. Seven Tier-2 control catalogues (CJIS, IRS
+1075, BSI C5, CMS ARS, ITSG-33, ISMAP, NCA ECC) are registered under
+`source_manifest.json → staged_reference_sources` (staged, no fabricated file/sha). The
+`olir_hub_edges` table adds CIS 8.1 / OWASP LLM Top 10 / SSDF v1.1 → 800-53 composed through
+the CSF 2.0 hub (two OLIR refs per edge, contained off the matrix). Broken/gated endpoints
+(OLIR bulk API, FedRAMP OSCAL, CPRT nudp REST) are indexed with path-discovery notes, not
+claimed as ingestable.

@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.10"  # v3.10: anticipated_updates (horizon-scanning); v3.9: full CCI dictionary + cci_mapping_corroboration
+SCHEMA_VERSION = "3.11"  # v3.11: olir_hub_edges (third-party->CSF2->800-53 composed via the CSF 2.0 hub); v3.10: anticipated_updates (horizon-scanning); v3.9: full CCI dictionary + cci_mapping_corroboration
 
 CHUNK = 500  # executemany batch size
 
@@ -624,6 +624,24 @@ CREATE TABLE IF NOT EXISTS stig_cci_usage (
     n_rules    INTEGER NOT NULL DEFAULT 0,
     in_bridge  INTEGER NOT NULL DEFAULT 0   -- 1 if resolvable in cci_bridge, else 0 (gap detector)
 );
+
+-- OLIR-hub composed edges (Phase 25): third-party control -> CSF 2.0 -> 800-53 r5,
+-- composed through the CSF 2.0 hub from OLIR sets already committed in the CPRT
+-- element graphs.  Every edge cites two real OLIR references.  These are a
+-- query-surface / on-demand tier: they never enter framework_projection,
+-- overlap_matrix, or master_mappings, so the matrix and master tiers are unchanged.
+CREATE TABLE IF NOT EXISTS olir_hub_edges (
+    framework    TEXT NOT NULL,        -- third-party framework (e.g. "CIS Controls 8.1")
+    native_id    TEXT NOT NULL,        -- native control id in that framework
+    csf2_id      TEXT NOT NULL,        -- CSF 2.0 subcategory the composition bridges through
+    r5_control   TEXT NOT NULL,        -- 800-53 r5 control reached via the hub
+    basis        TEXT NOT NULL,        -- olir_hub_composed
+    source_ref_a TEXT NOT NULL,        -- third-party -> CSF2 OLIR set name (hop 1)
+    source_ref_b TEXT NOT NULL,        -- CSF2 -> 800-53 OLIR set name (hop 2)
+    confidence   REAL NOT NULL DEFAULT 0.6,
+    PRIMARY KEY (framework, native_id, csf2_id, r5_control)
+);
+CREATE INDEX IF NOT EXISTS idx_olirhub_fw ON olir_hub_edges(framework);
 """
 
 
@@ -1405,6 +1423,20 @@ def build_db(
     else:
         print(f"  stig application layer: skipped ({stig_stats.get('skipped')})")
 
+    # Phase 25: OLIR-hub composed edges (third-party -> CSF 2.0 -> 800-53 r5).
+    # Contained tier — never enters framework_projection / overlap_matrix / master_mappings.
+    olir_hub_rows, olir_hub_stats = spine_loader.load_olir_hub_edges(catalog_ids)
+    if olir_hub_rows:
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO olir_hub_edges
+                (framework, native_id, csf2_id, r5_control, basis, source_ref_a, source_ref_b, confidence)
+            VALUES
+                (:framework, :native_id, :csf2_id, :r5_control, :basis, :source_ref_a, :source_ref_b, :confidence)
+        """, olir_hub_rows, "olir_hub_edges")
+        print(f"  olir_hub_edges: {olir_hub_stats}")
+    else:
+        print(f"  olir_hub_edges: skipped ({olir_hub_stats.get('skipped')})")
+
     conn.commit()
 
     # Phase 22: CCI↔800-53 mapping corroboration (DISA bridge × acasehs × trackr ×
@@ -1790,7 +1822,7 @@ def build_db(
                 "framework_projection", "hitrust_hub", "odp_values", "overlap_matrix",
                 "consensus_edges", "framework_labels", "master_mappings",
                 "stig_catalog", "stig_rules", "stig_cci_usage",
-                "cci_mapping_corroboration", "anticipated_updates"):
+                "cci_mapping_corroboration", "anticipated_updates", "olir_hub_edges"):
         row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
         counts[tbl] = row[0]
 
@@ -1800,7 +1832,8 @@ def build_db(
     for tbl in ("framework_projection", "consensus_edges", "overlap_matrix",
                 "master_mappings", "framework_labels", "unified_mappings",
                 "stig_catalog", "stig_rules", "stig_cci_usage",
-                "disa_ccis", "cci_mapping_corroboration", "anticipated_updates"):
+                "disa_ccis", "cci_mapping_corroboration", "anticipated_updates",
+                "olir_hub_edges"):
         cols = [r[1] for r in conn.execute(f"PRAGMA table_info({tbl})") if r[1] != "rowid"]
         h = hashlib.sha256()
         for row in conn.execute(f"SELECT {','.join(cols)} FROM {tbl} ORDER BY {','.join(cols)}"):

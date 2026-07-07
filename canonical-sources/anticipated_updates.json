@@ -2,7 +2,7 @@
   "_meta": {
     "schema": "anticipated_updates/1.0",
     "description": "Horizon-scanning registry: expected/scheduled future revisions to standards the ecosystem tracks, so updates are watched-for and never missed. Read by horizon_monitor.py. Owner role: canonical-truth-updater. Never fabricate a date — use no_fixed_date.",
-    "record_count": 55
+    "record_count": 62
   },
   "records": [
     {
@@ -824,11 +824,11 @@
         "https://www.iso.org/standard/77304.html"
       ],
       "dependent_of": null,
-      "status": "watching",
+      "status": "materialized",
       "escalate_after_days": 120,
       "last_checked": null,
       "last_change_detected": null,
-      "notes": "ISO/IEC 42005 (AI impact assessment, anticipated 2025); ISO/IEC 42006 extensions; ISO/IEC 42002 (AI system engineering)"
+      "notes": "ISO/IEC 42005:2025 (AI system impact assessment) PUBLISHED — materialized. Sibling artifacts (42002 AI system engineering, extensions to 42006) remain anticipated and are tracked here."
     },
     {
       "id": "au-mcp-spec",
@@ -1596,6 +1596,223 @@
       "last_checked": null,
       "last_change_detected": null,
       "notes": "Annual reports and evaluation framework updates"
+    },
+    {
+      "id": "au-canada-itsg-33",
+      "feed_id": "canada-itsg-33",
+      "authority": "CCCS (Canada)",
+      "artifact": "ITSG-33 Rev 5 control catalogue",
+      "current_version": "ITSG-33 (2014)",
+      "expected_type": "major_rev",
+      "lifecycle_stage": "final",
+      "expected_window": {
+        "earliest": "2026-03-01",
+        "latest": "2026-03-31",
+        "basis": "CCCS scheduled ITSG-33 Rev 5 alignment 2026-03-31"
+      },
+      "confidence": "high",
+      "trigger_signal": "new Annex 3A revision published",
+      "detection": {
+        "url": "https://www.cyber.gc.ca/en/guidance/annex-3a-security-control-catalogue-itsg-33",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://www.cyber.gc.ca/en/guidance/annex-3a-security-control-catalogue-itsg-33"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 90,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Rev 5 realigns ITSG-33 to 800-53 r5; watch the CCCS guidance page for the new annex."
+    },
+    {
+      "id": "au-cms-arc-ampe",
+      "feed_id": "cms-ars",
+      "authority": "CMS",
+      "artifact": "ARC-AMPE (ACA exchange) safeguards mandatory",
+      "current_version": "ARS 5.x",
+      "expected_type": "amendment",
+      "lifecycle_stage": "final",
+      "expected_window": {
+        "earliest": "2026-03-04",
+        "latest": "2026-03-04",
+        "basis": "ARC-AMPE mandatory compliance date 2026-03-04"
+      },
+      "confidence": "high",
+      "trigger_signal": "ARC-AMPE effective / superseding MARS-E",
+      "detection": {
+        "url": "https://security.cms.gov/policy-guidance/cms-acceptable-risk-safeguards-ars",
+        "method": "quarterly",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://security.cms.gov/policy-guidance/cms-acceptable-risk-safeguards-ars"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 45,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "ARC-AMPE replaces MARS-E for ACA exchanges; mandatory 2026-03-04."
+    },
+    {
+      "id": "au-nist-privacy-fw-11",
+      "feed_id": "nist-privacy-fw",
+      "authority": "NIST",
+      "artifact": "Privacy Framework 1.1",
+      "current_version": "Privacy Framework 1.0 (2020)",
+      "expected_type": "minor_rel",
+      "lifecycle_stage": "fpd",
+      "expected_window": {
+        "earliest": "2026-01-01",
+        "latest": "2026-12-31",
+        "basis": "NIST Privacy Framework 1.1 final expected 2026 (draft out for comment)"
+      },
+      "confidence": "med",
+      "trigger_signal": "PFW 1.1 final publication",
+      "detection": {
+        "url": "https://www.nist.gov/privacy-framework",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://www.nist.gov/privacy-framework"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "PFW 1.1 realigns to CSF 2.0 structure; final expected 2026."
+    },
+    {
+      "id": "au-swift-cscf-2026",
+      "feed_id": "swift-cscf",
+      "authority": "SWIFT",
+      "artifact": "Customer Security Controls Framework v2026",
+      "current_version": "CSCF v2025",
+      "expected_type": "minor_rel",
+      "lifecycle_stage": null,
+      "expected_window": {
+        "earliest": "2026-07-01",
+        "latest": "2026-07-31",
+        "basis": "SWIFT CSCF annual v-year publication (~July each year)"
+      },
+      "confidence": "med",
+      "trigger_signal": "CSCF v2026 published",
+      "detection": {
+        "url": "https://www.swift.com/myswift/customer-security-programme-csp",
+        "method": "annual",
+        "match": ""
+      },
+      "poll_frequency": "annual",
+      "source_urls": [
+        "https://www.swift.com/myswift/customer-security-programme-csp"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 60,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Annual CSCF refresh; v2026 expected ~Jul 2026 (source proxy-gated, verify manually)."
+    },
+    {
+      "id": "au-apra-cps230",
+      "feed_id": "apra-cps234",
+      "authority": "APRA (Australia)",
+      "artifact": "CPS 230 Operational Risk Management (effective)",
+      "current_version": "CPS 230",
+      "expected_type": "amendment",
+      "lifecycle_stage": "final",
+      "expected_window": {
+        "earliest": "2025-07-01",
+        "latest": "2025-07-01",
+        "basis": "APRA CPS 230 took effect 2025-07-01"
+      },
+      "confidence": "high",
+      "trigger_signal": "CPS 230 in force",
+      "detection": {
+        "url": "https://www.apra.gov.au/news-and-publications",
+        "method": "annual",
+        "match": ""
+      },
+      "poll_frequency": "annual",
+      "source_urls": [
+        "https://www.apra.gov.au/news-and-publications"
+      ],
+      "dependent_of": null,
+      "status": "materialized",
+      "escalate_after_days": 60,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "CPS 230 operational-risk standard took effect 2025-07-01 (materialized); certain SFI transitional arrangements extend into 2026."
+    },
+    {
+      "id": "au-chile-21719",
+      "feed_id": "chile-ley-21719",
+      "authority": "Chile (BCN)",
+      "artifact": "Ley 21.719 enforcement",
+      "current_version": "Law 21.719 (2024)",
+      "expected_type": "amendment",
+      "lifecycle_stage": null,
+      "expected_window": {
+        "earliest": "2026-12-01",
+        "latest": "2026-12-31",
+        "basis": "Chile Ley 21.719 enforcement begins Dec 2026"
+      },
+      "confidence": "med",
+      "trigger_signal": "enforcement / regulations in force",
+      "detection": {
+        "url": "https://www.bcn.cl/leychile/navegar?idNorma=1208650",
+        "method": "quarterly",
+        "match": ""
+      },
+      "poll_frequency": "semiannual",
+      "source_urls": [
+        "https://www.bcn.cl/leychile/navegar?idNorma=1208650"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Chile's data-protection law becomes enforceable ~Dec 2026 (source proxy-gated)."
+    },
+    {
+      "id": "au-eu-cra-reporting",
+      "feed_id": "eu-cra",
+      "authority": "European Union",
+      "artifact": "CRA reporting obligations apply",
+      "current_version": "Reg (EU) 2024/2847",
+      "expected_type": "amendment",
+      "lifecycle_stage": "final",
+      "expected_window": {
+        "earliest": "2026-09-11",
+        "latest": "2026-09-11",
+        "basis": "CRA Article 14 reporting obligations apply from 2026-09-11"
+      },
+      "confidence": "high",
+      "trigger_signal": "reporting obligations in force",
+      "detection": {
+        "url": "https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
+        "method": "quarterly",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://eur-lex.europa.eu/eli/reg/2024/2847/oj"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 45,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Cyber Resilience Act incident/vuln reporting duties apply 2026-09-11; full application 2027-12-11."
     }
   ]
 }

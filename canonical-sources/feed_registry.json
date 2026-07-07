@@ -11,7 +11,7 @@
       "expected_next": "none announced (5.2.0 current; OSCAL content last modified 2026-05-11)",
       "urls": {
         "landing": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final",
-        "cprt_api": "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/sp_800_53_5_1_1/element/ALL/structure/default",
+        "cprt_api": "https://csrc.nist.gov/projects/cprt",
         "oscal_catalog": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
         "excel_catalog": "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/sp800-53r5-control-catalog.xlsx",
         "change_log": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final#revision-history",
@@ -74,7 +74,7 @@
       ],
       "next_expected_version": "Rev 5.2 or Rev 6 (not yet announced; monitor csrc.nist.gov)",
       "cci_coverage_notes": "Mixed: Full CCI coverage across all 18 control families. Confirmed-Direct: IA-8 PIV (CCI-001764, CCI-001948 — names PIV/SP800-63 explicitly). Confirmed-Subject: SC-13 (CCI-002450–002453, 'FIPS-validated cryptography'), IA-7 (CCI-000803–000804), SC-8(1) (CCI-002469), SC-28(1) (CCI-001199), SC-12 (CCI-002449, 'key establishment and management'). Implied-Bridge: ~30% of CCIs via r4→r5 bridge for Rev5-new controls. PM family Not-Applicable. See plan §7.10 for full per-control CCI provenance table.",
-      "notes": "Release 5.2.0 (EO 14306): new/updated software-update and patch-integrity controls (incl. SA-24 Design for Cyber Resiliency); OSCAL content bundles 800-53A r5.2.0 assessment procedures. Catalog data in this repo verified 5.2.0-complete 2026-07-02. Upstream current = Release 5.2.0 (oscal-content v1.5.0, 2026-05); the 7 controls added in 5.2.0 (IA-13, IA-13(1)-(3), SA-15(13), SA-24, SI-2(7)) are ingested via the committed 5.2.0 OSCAL supplement + CPRT oracle. Primary spreadsheet base remains 5.1.1 with 5.2.0 layered on.",
+      "notes": "Release 5.2.0 (EO 14306): new/updated software-update and patch-integrity controls (incl. SA-24 Design for Cyber Resiliency); OSCAL content bundles 800-53A r5.2.0 assessment procedures. Catalog data in this repo verified 5.2.0-complete 2026-07-02. Upstream current = Release 5.2.0 (oscal-content v1.5.0, 2026-05); the 7 controls added in 5.2.0 (IA-13, IA-13(1)-(3), SA-15(13), SA-24, SI-2(7)) are ingested via the committed 5.2.0 OSCAL supplement + CPRT oracle. Primary spreadsheet base remains 5.1.1 with 5.2.0 layered on. CPRT nudp JSON REST endpoint retired upstream (the sp_800_53_5_1_1 path now 404s); version oracle is the committed OSCAL catalog + CPRT project page.",
       "auto_fetch": true,
       "artifact_status": "current",
       "last_verified": "2026-07-06"
@@ -273,7 +273,7 @@
         ".zip"
       ],
       "version_signal": "page_heading_date",
-      "next_expected_version": "Rev 3 (target May 2026; IPD out for comment)",
+      "next_expected_version": "none announced (Rev 3 final May 2026)",
       "cci_coverage_notes": "Implied-Bridge: Enhanced requirements build on 800-171; CCIs apply transitively via 800-53 Rev 5 mapping. No direct DISA CCI List entries for 800-172 enhanced requirements.",
       "notes": "800-172r3 + 800-172Ar3 released May 2026 (17 families / 115 enhanced requirements, aligned to 171r3 numbering). OSCAL artifact fetched 2026-07-02 (nist-800-172-r3-oscal). DUAL PIN: CMMC Level 3 still cites the 2021 edition — old xlsx retained. Phase 19: CPRT 172r3 dataset pinned incl. NIST's 172r3->800-53 r5.2.0 mapping (107 edges, spine framework 'NIST SP 800-172 r3').",
       "auto_fetch": false,
@@ -431,9 +431,9 @@
       "framework_id": "hitrust",
       "current_version": "v11.8.0 (May 2026)",
       "urls": {
-        "landing": "https://hitrustalliance.net/csf/",
-        "updates": "https://hitrustalliance.net/csf/csf-suite-updates/",
-        "download_page": "https://hitrustalliance.net/csf"
+        "landing": "https://hitrustalliance.net/hitrust-csf",
+        "updates": "https://hitrustalliance.net/hitrust-csf",
+        "download_page": "https://hitrustalliance.net/hitrust-csf"
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
@@ -463,7 +463,7 @@
           "notes": "HITRUST news category feed [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
-      "draft_landing_url": "https://hitrustalliance.net/csf/",
+      "draft_landing_url": "https://hitrustalliance.net/hitrust-csf",
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [
@@ -495,13 +495,13 @@
       "current_version": "2022 edition (+Amd 1:2024)",
       "urls": {
         "landing": "https://www.iso.org/standard/27001",
-        "olir_mapping": "https://csrc.nist.gov/CSRC/media/Publications/sp/800-53/rev-5/final/documents/sp800-53r5-to-iso-27001-mapping.xlsx",
+        "olir_mapping": "https://csrc.nist.gov/projects/olir/informative-reference-catalog",
         "download_page": "https://csrc.nist.gov/projects/olir/informative-reference-catalog"
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
       "last_changed": "2022-10-25",
-      "notes": "Third edition 2022-10-25; Amd 1:2024 adds climate-action consideration text (no control changes). Transition from 2013 ended 2025-10-31 — 2013 certificates invalid. Next: routine ISO 5-year systematic review (~2027-2028, nothing announced). 2013->2022 restructure recorded in framework_changelog.json (93 controls / 4 themes). NOTE: the unofficial csrc.nist.gov/api/olir/finalized endpoint now 404s — olir_crawler needs re-pointing to the CPRT OLIR catalog page. ISO/IEC 27001:2022 Amd 1:2024 (climate action) adds two sentences to clauses 4.1/4.2; no Annex A control-set change — low-priority, not ingested.",
+      "notes": "Third edition 2022-10-25; Amd 1:2024 adds climate-action consideration text (no control changes). Transition from 2013 ended 2025-10-31 — 2013 certificates invalid. Next: routine ISO 5-year systematic review (~2027-2028, nothing announced). 2013->2022 restructure recorded in framework_changelog.json (93 controls / 4 themes). NOTE: the unofficial csrc.nist.gov/api/olir/finalized endpoint now 404s — olir_crawler needs re-pointing to the CPRT OLIR catalog page. ISO/IEC 27001:2022 Amd 1:2024 (climate action) adds two sentences to clauses 4.1/4.2; no Annex A control-set change — low-priority, not ingested. Direct sp800-53r5-to-iso-27001-mapping.xlsx path retired (404); resolve via the OLIR informative-reference catalog (ISO/IEC 27001:2022 -> CSF 2.0 refs) — path-discovery-required.",
       "announcement_feeds": [
         {
           "url": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
@@ -1297,7 +1297,7 @@
         ".zip"
       ],
       "version_signal": "github_release_tag",
-      "next_expected_version": "2025 edition (second draft in progress as of mid-2025)",
+      "next_expected_version": "none announced (Top 10:2025 finalized Jan 2026)",
       "cci_coverage_notes": "Implied-Bridge: OWASP Top 10 (2021) → 800-53 via CWE chain. A02 (Crypto Failures) → SC-13 CCIs (Confirmed-Subject: 'FIPS-validated cryptography'); A07 (Authn Failures) → IA CCIs (Confirmed-Subject: 'authentication'); A01 (Broken AC) → AC CCIs. OWASP category names not in CCI text.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
@@ -1342,7 +1342,7 @@
         }
       ],
       "draft_landing_url": "https://github.com/OWASP/ASVS",
-      "draft_status": "second_draft",
+      "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
       "crawl_seeds": [
@@ -1359,7 +1359,8 @@
       "cci_coverage_notes": "Implied-Bridge: OWASP ASVS v5.0.0 → 800-53 via CWE + formal ASVS→NIST mapping. V2 (Auth) → IA CCIs; V4 (AC) → AC CCIs; V9 (Comms) → SC CCIs. ASVS requirement numbers not in CCI text; Implied-Bridge.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "next_expected_version": "none announced (v5.0.0 released May 2025)"
     },
     "cis-controls": {
       "label": "CIS Controls v8",
@@ -1466,7 +1467,10 @@
       "auto_fetch": false,
       "artifact_status": "metadata_only",
       "last_verified": "2026-07-02",
-      "authority_scope": "csa_star_only"
+      "authority_scope": "csa_star_only",
+      "alias_of": "csa-ccm",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Tracks the CCM v5 draft (horizon item); v4.1 currency lives on csa-ccm."
     },
     "nist-ai-rmf": {
       "label": "NIST AI RMF 1.0 + GenAI Profile",
@@ -2067,7 +2071,7 @@
         "stig_rule_api": "https://cyber.trackr.live/api/stig/{title}/{version}/{release}/{group_id}"
       },
       "check_strategy": "poll_landing",
-      "notes": "Public REST JSON API (no CAC required) for 3,551 DISA CCIs with 800-53 mappings. Preferred over SAML-gated DISA portal for programmatic access. Also the STIG catalog/delta API: /api/stig returns the full 1,079-title catalog (version/release/date/severity) in one call — the STIG delta detector — and per-rule detail carries the rule's CCIs. See feed disa-stig-library.",
+      "notes": "Public REST JSON API (no CAC required) for 3,551 DISA CCIs with 800-53 mappings. Preferred over SAML-gated DISA portal for programmatic access. Also the STIG catalog/delta API: /api/stig returns the full 1,079-title catalog (version/release/date/severity) in one call — the STIG delta detector — and per-rule detail carries the rule's CCIs. See feed disa-stig-library. Sibling endpoint of cyber.trackr.live: this feed carries CCI->800-53 mappings; trackr-cci carries CCI definitions (/api/cci). Not a duplicate.",
       "last_checked": null,
       "last_changed": null,
       "announcement_feeds": [],
@@ -2086,7 +2090,10 @@
       "cci_coverage_notes": "Confirmed-Direct: cyber.trackr.live/cci provides the same CCI data (3,551 CCIs) via public REST API, including Rev 4 and Rev 5 control references where DISA published them. Rev 5 fields: Confirmed-Direct where DISA explicitly added Rev 5 mappings; Implied-Bridge where derived from the r4→r5 bridge workbook.",
       "auto_fetch": true,
       "artifact_status": "current",
-      "last_verified": "2026-07-06"
+      "last_verified": "2026-07-06",
+      "related_feeds": [
+        "trackr-cci"
+      ]
     },
     "dod-zig": {
       "label": "DoD Zero Trust Implementation Guidelines",
@@ -2191,8 +2198,8 @@
       "framework_id": "mitre-attack",
       "current_version": "v19.1 (Apr 2026)",
       "urls": {
-        "stix_github": "https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json",
-        "taxii": "https://cti-taxii.mitre.org/taxii/",
+        "stix_github": "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json",
+        "taxii": "https://attack-taxii.mitre.org/api/v21/",
         "landing": "https://attack.mitre.org",
         "nist_mapping": "https://www.nist.gov/system/files/documents/2023/09/12/SP800-53_ATT%26CK_v13_v1.xlsx"
       },
@@ -2201,13 +2208,13 @@
       "last_changed": "2026-04-22",
       "announcement_feeds": [
         {
-          "url": "https://github.com/mitre/cti/releases.atom",
+          "url": "https://github.com/mitre-attack/attack-stix-data/releases.atom",
           "type": "atom",
           "filter_keywords": [
             "ATT&CK",
             "enterprise-attack"
           ],
-          "notes": "MITRE CTI releases atom (mitre/cti — ATT&CK versions)"
+          "notes": "MITRE ATT&CK STIX releases atom (mitre-attack/attack-stix-data; mitre/cti is deprecated)"
         }
       ],
       "draft_status": "none",
@@ -2222,10 +2229,10 @@
         ".json",
         ".xlsx"
       ],
-      "github_repo": "mitre/cti",
+      "github_repo": "mitre-attack/attack-stix-data",
       "version_signal": "github_release_tag",
       "cci_coverage_notes": "Implied-Bridge: ATT&CK → 800-53 via official NIST ATT&CK↔800-53 mapping (SP800-53_ATT&CK_v13_v1.xlsx; 195 techniques mapped). CCIs apply at the 800-53 control end. ATT&CK technique IDs not in CCI text; all Implied-Bridge. AC-2 CCIs (CCI-000004–000014) align with multiple ATT&CK persistence techniques.",
-      "notes": "v19: Defense Evasion split into Stealth + Defense Impairment; ICS sub-techniques; Mobile detection strategies. v18 (Oct 2025) replaced Detections with Detection Strategies/Analytics. Enterprise STIX v19.1 ingested 2026-07-02 (697 techniques + 475 sub-techniques via attack_stix_loader).",
+      "notes": "v19: Defense Evasion split into Stealth + Defense Impairment; ICS sub-techniques; Mobile detection strategies. v18 (Oct 2025) replaced Detections with Detection Strategies/Analytics. Enterprise STIX v19.1 ingested 2026-07-02 (697 techniques + 475 sub-techniques via attack_stix_loader). STIX source moved from the deprecated mitre/cti repo to mitre-attack/attack-stix-data.",
       "auto_fetch": true,
       "artifact_status": "metadata_only",
       "last_verified": "2026-07-02"
@@ -2425,7 +2432,7 @@
       "current_version": "Amended Nov 2023",
       "urls": {
         "landing": "https://www.dfs.ny.gov/industry_guidance/cybersecurity",
-        "regulation": "https://www.dfs.ny.gov/docs/legal/regulations/adoptions/dfsrf500txt.pdf",
+        "regulation": "https://www.dfs.ny.gov/system/files/documents/2023/03/23NYCRR500_0.pdf",
         "checklist": "https://www.dfs.ny.gov/system/files/documents/2024/08/Cyber-WD-Part500-Requirement-Checklist.pdf",
         "ecfr": "https://govt.westlaw.com/nycrr/Browse/Home/NewYork/NewYorkCodesRulesandRegulations?guid=I5be30d2007f811e79d43a037eefd0011"
       },
@@ -2556,12 +2563,12 @@
       "label": "FFIEC Cybersecurity Assessment Tool (SUNSET)",
       "authority": "primary",
       "framework_id": "ffiec-cat",
-      "current_version": "May 2017",
+      "current_version": "May 2017 (retired; FFIEC sunset the CAT effective 2025-08-31)",
       "urls": {
         "landing": "https://www.ffiec.gov/cyberassessmenttool.htm"
       },
       "check_strategy": "poll_landing",
-      "notes": "SUNSET August 31, 2025. Confirmed by Federal Reserve SR Letter 24-7. Replaced by FFIEC IT Examination Handbook. Retained for historical reference only.",
+      "notes": "SUNSET August 31, 2025. Confirmed by Federal Reserve SR Letter 24-7. Replaced by FFIEC IT Examination Handbook. Retained for historical reference only. FFIEC formally sunset the Cybersecurity Assessment Tool effective 2025-08-31; institutions directed to NIST CSF / CRI Profile / CISA CPG. Retained for historical mapping only.",
       "last_checked": null,
       "last_changed": "2017-05-01",
       "announcement_feeds": [],
@@ -2877,7 +2884,8 @@
       "current_version": "current",
       "urls": {
         "advisories": "https://www.fincen.gov/resources/advisories",
-        "aml_examination": "https://www.ffiec.gov/bsa_aml_infobase/pages_manual/MANUAL.htm"
+        "aml_examination": "https://www.ffiec.gov/bsa_aml_infobase/pages_manual/MANUAL.htm",
+        "landing": "https://www.fincen.gov/resources/advisories"
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
@@ -2927,7 +2935,8 @@
       "urls": {
         "uscode": "https://uscode.house.gov/view.xhtml?req=granuleid%3AUSC-prelim-title6-section681b",
         "cisa_landing": "https://www.cisa.gov/circia",
-        "nprm_fr": "https://www.federalregister.gov/documents/2024/04/04/2024-06526/cyber-incident-reporting-for-critical-infrastructure-act-of-2022-circia"
+        "nprm_fr": "https://www.federalregister.gov/documents/2024/04/04/2024-06526/cyber-incident-reporting-for-critical-infrastructure-act-of-2022-circia",
+        "landing": "https://www.cisa.gov/circia"
       },
       "check_strategy": "poll_landing",
       "notes": "Final rule targeted May 2026. Mandates 72-hour incident reports and 24-hour ransomware payment reports for critical infrastructure.",
@@ -3051,7 +3060,8 @@
       "current_version": "current",
       "urls": {
         "uscode": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1030",
-        "govinfo": "https://www.govinfo.gov/link/uscode/18/1030"
+        "govinfo": "https://www.govinfo.gov/link/uscode/18/1030",
+        "landing": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1030"
       },
       "check_strategy": "poll_landing",
       "notes": "Primary federal cybercrime statute. Criminal and civil liability for unauthorized computer access. Amendments tracked via Congress.gov.",
@@ -3081,7 +3091,8 @@
       "current_version": "current",
       "urls": {
         "uscode": "https://uscode.house.gov/view.xhtml?path=%2Fprelim%40title18%2Fpart1%2Fchapter119",
-        "govinfo": "https://www.govinfo.gov/link/uscode/18/2510"
+        "govinfo": "https://www.govinfo.gov/link/uscode/18/2510",
+        "landing": "https://uscode.house.gov/view.xhtml?path=%2Fprelim%40title18%2Fpart1%2Fchapter119"
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
@@ -3109,7 +3120,8 @@
       "framework_id": "dtsa",
       "current_version": "current",
       "urls": {
-        "uscode": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1836"
+        "uscode": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1836",
+        "landing": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1836"
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
@@ -3136,7 +3148,8 @@
       "framework_id": "eea",
       "current_version": "current",
       "urls": {
-        "uscode": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1831"
+        "uscode": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1831",
+        "landing": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1831"
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
@@ -3163,7 +3176,8 @@
       "framework_id": "wire-fraud-cyber",
       "current_version": "current",
       "urls": {
-        "uscode": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1343"
+        "uscode": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1343",
+        "landing": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title18-section1343"
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
@@ -3687,7 +3701,8 @@
       "urls": {
         "pipeda": "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/",
         "bill_c27": "https://www.parl.ca/legisinfo/en/bill/44-1/c-27",
-        "xml": "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/index.xml"
+        "xml": "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/index.xml",
+        "landing": "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/"
       },
       "check_strategy": "poll_landing",
       "notes": "PIPEDA may be superseded by Bill C-27 (Consumer Privacy Protection Act). Monitor both.",
@@ -3727,17 +3742,17 @@
       "label": "India Digital Personal Data Protection Act 2023",
       "authority": "primary",
       "framework_id": "india-dpdp",
-      "current_version": "Aug 2023 (implementing rules pending)",
+      "current_version": "Act Aug 2023; DPDP Rules 2025 notified (phased compliance Nov 2026 / May 2027)",
       "urls": {
         "pdf": "https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf",
         "landing": "https://www.meity.gov.in/data-protection-framework"
       },
       "check_strategy": "poll_landing",
-      "notes": "Implementing rules under development as of 2026. Monitor for rule promulgation.",
+      "notes": "Implementing rules under development as of 2026. Monitor for rule promulgation. DPDP Rules 2025 finalized; core obligations phase in by Nov 2026, DPB/consent-manager provisions by May 2027.",
       "last_checked": null,
       "last_changed": "2023-08-11",
       "announcement_feeds": [],
-      "draft_status": "ipd",
+      "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [],
       "crawl_seeds": [
@@ -3915,7 +3930,9 @@
       "notes": "Foundational RMF document underpinning all 800-53 control selection. OSCAL format may be available from usnistgov/oscal-content.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "nist-sp-800-63": {
       "label": "NIST SP 800-63 Rev 3 — Digital Identity Guidelines",
@@ -3948,7 +3965,9 @@
       "notes": "SP 800-63-4 suite (63/63A/63B/63C) finalized August 2025, superseding Rev 3 (2017). The generated nist-800-63b-requirements.json still derives from 63B r3 — regeneration from 63B-4 is an open follow-up (needs the -4 artifact; do not guess).",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "nist-sp-800-63a": {
       "label": "NIST SP 800-63A Rev 3 — Enrollment and Identity Proofing",
@@ -3981,7 +4000,9 @@
       "notes": "SP 800-63-4 suite (63/63A/63B/63C) finalized August 2025, superseding Rev 3 (2017). The generated nist-800-63b-requirements.json still derives from 63B r3 — regeneration from 63B-4 is an open follow-up (needs the -4 artifact; do not guess).",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "nist-sp-800-63b": {
       "label": "NIST SP 800-63B Rev 3 — Authentication and Lifecycle Management",
@@ -4015,7 +4036,9 @@
       "notes": "SP 800-63-4 suite (63/63A/63B/63C) finalized August 2025, superseding Rev 3 (2017). The generated nist-800-63b-requirements.json still derives from 63B r3 — regeneration from 63B-4 is an open follow-up (needs the -4 artifact; do not guess).",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "nist-sp-800-56a": {
       "label": "NIST SP 800-56A Rev 3 — Recommendation for Pair-Wise Key-Establishment Schemes",
@@ -4049,7 +4072,9 @@
       "notes": "Key agreement schemes; referenced via SP 800-57 Part 1 chain. Relevant to SC-12.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "nist-sp-800-57pt1": {
       "label": "NIST SP 800-57 Part 1 Rev 5 — Recommendation for Key Management",
@@ -4082,7 +4107,9 @@
       "notes": "Primary key management reference. Normative for SC-12. Rev 5 added post-quantum guidance.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "nist-sp-800-160-2": {
       "label": "NIST SP 800-160 Vol 2 Rev 1 — Developing Cyber-Resilient Systems",
@@ -4115,7 +4142,9 @@
       "notes": "Cyber resiliency engineering; cited in PL-8 and SA-17 for DOD/FedRAMP programs.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "nist-sp-800-166": {
       "label": "NIST SP 800-166 — Reference Document for the OMB M-19-17",
@@ -4145,7 +4174,9 @@
       "notes": "Derived PIV credentials for mobile devices; companion to FIPS 201 and SP 800-157.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "nist-sp-800-189": {
       "label": "NIST SP 800-189 — Resilient Interdomain Traffic Exchange",
@@ -4176,7 +4207,9 @@
       "notes": "BGP route origin validation (RPKI); cited in SI-18 for external telecom boundary controls.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "nist-sp-800-213a": {
       "label": "NIST SP 800-213A — IoT Device Cybersecurity Guidance: IoT Federal Profile",
@@ -4209,7 +4242,9 @@
       "notes": "IoT Federal Profile; generates 866 unified_mappings in current DB. Already in source_manifest as nist-800-53-to-sp800-213a.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "fips-140-3": {
       "label": "FIPS 140-3 — Security Requirements for Cryptographic Modules",
@@ -4239,7 +4274,9 @@
       "notes": "FIPS-validated cryptography is normative for SC-13. CMVP validation list: https://csrc.nist.gov/projects/cryptographic-module-validation-program",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "fips-199": {
       "label": "FIPS 199 — Standards for Security Categorization of Federal Information",
@@ -4268,7 +4305,9 @@
       "notes": "Foundational categorization standard (Low/Moderate/High) underpinning all 800-53 baseline selection.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "fips-200": {
       "label": "FIPS 200 — Minimum Security Requirements for Federal Information Systems",
@@ -4297,7 +4336,9 @@
       "notes": "Minimum security requirements for federal systems; governs 800-53B baseline applicability.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "fips-201-3": {
       "label": "FIPS 201-3 — Personal Identity Verification (PIV) of Federal Employees and Contractors",
@@ -4327,7 +4368,9 @@
       "notes": "Highest-confidence confirmed-direct CCI family for any external publication. NIAP product list: https://www.niap-ccevs.org/Product/",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "nist-ir-8477": {
       "label": "NIST IR 8477 — Cybersecurity Framework and Privacy Framework Profiles OLIR Methodology",
@@ -4362,7 +4405,9 @@
       "notes": "STRM methodology for all NIST OLIRs (crosswalks). Used by load_crosswalks.py. Monitor for Final publication — when released, OLIR program expands.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "iso-15408": {
       "label": "ISO/IEC 15408 — Common Criteria for IT Security Evaluation (NIAP/CCEVS)",
@@ -4393,7 +4438,9 @@
       "notes": "Common Criteria evaluation; cited in SA-17 for DoD/NIAP procurement. NIAP product list: https://www.niap-ccevs.org/Product/",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Reference publication already ingested; low-churn. Watched via the NIST drafts-open-for-comment feed rather than a landing poll."
     },
     "mcp-spec": {
       "label": "Model Context Protocol (MCP) Specification",
@@ -4604,7 +4651,8 @@
         "changelog": "https://docs.anthropic.com/en/api/changelog",
         "model_cards": "https://www.anthropic.com/model",
         "usage_policy": "https://www.anthropic.com/usage-policy",
-        "responsible_scaling": "https://www.anthropic.com/responsible-scaling-policy"
+        "responsible_scaling": "https://www.anthropic.com/responsible-scaling-policy",
+        "landing": "https://docs.anthropic.com/en/api"
       },
       "draft_status": "none",
       "last_changed": "2025-07-01",
@@ -4731,7 +4779,8 @@
         "release_notes": "https://ai.google.dev/gemini-api/docs/release-notes",
         "model_cards": "https://deepmind.google/technologies/gemini/",
         "safety_reports": "https://deepmind.google/discover/blog/",
-        "terms": "https://ai.google.dev/gemini-api/terms"
+        "terms": "https://ai.google.dev/gemini-api/terms",
+        "landing": "https://ai.google.dev/gemini-api/docs"
       },
       "draft_status": "none",
       "last_changed": "2025-07-01",
@@ -4847,7 +4896,7 @@
       "last_verified": "2026-07-02"
     },
     "uk-aisi": {
-      "label": "UK AI Safety Institute (AISI) / DSIT AI Safety Publications",
+      "label": "AI Security Institute (formerly UK AI Safety Institute) / DSIT AI Safety Publications",
       "authority": "UK Department for Science, Innovation and Technology (DSIT); AISI",
       "framework_id": "uk-aisi",
       "current_version": "AISI Evaluation Framework v1.0 (2024); International Scientific Report on Advanced AI Safety (2024)",
@@ -4902,7 +4951,7 @@
       "version_signal": "latest_item_guid",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Implied-Heuristic: AISI evaluations cover dangerous capabilities (CBRN, cyberoffense, persuasion). Maps to PM-28 (AI risk management), RA-3 (risk assessment), SI-3 (malicious code) via AI capability evaluation heuristic. No DISA CCI definitions reference AISI or frontier AI evaluation.",
-      "notes": "UK government body responsible for evaluating and testing frontier AI models. Publishes: (1) AI model evaluation reports (dangerous capabilities, uplift assessments); (2) AI safety research; (3) International AI safety coordination (Seoul Declaration, Bletchley Process). Published inaugural report on risks of frontier AI models (Nov 2023). Key for: organizations assessing AI governance compliance with emerging UK AI regulation (AI Safety Bill anticipated) and international AI safety commitments.",
+      "notes": "UK government body responsible for evaluating and testing frontier AI models. Publishes: (1) AI model evaluation reports (dangerous capabilities, uplift assessments); (2) AI safety research; (3) International AI safety coordination (Seoul Declaration, Bletchley Process). Published inaugural report on risks of frontier AI models (Nov 2023). Key for: organizations assessing AI governance compliance with emerging UK AI regulation (AI Safety Bill anticipated) and international AI safety commitments. Renamed from 'AI Safety Institute' to 'AI Security Institute' in Feb 2025.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
       "last_verified": "2026-07-02"
@@ -5186,7 +5235,8 @@
       "authority_scope": "scf_only",
       "source_manifest_keys": [
         "scf-controls"
-      ]
+      ],
+      "github_repo": "securecontrolsframework/securecontrolsframework"
     },
     "microsoft-sspa": {
       "label": "Microsoft SSPA / Supplier Data Protection Requirements (DPR)",
@@ -5604,7 +5654,10 @@
       ],
       "notes": "DERIVED republication: /api/cci enumerates ~3,551 CCIs (definitions); per-CCI adds a control-level revision-agnostic rmf + ap_acronym + family. Enrichment/corroboration ONLY (no r4/r5 split, no status, control-level only). Refreshed via tools/cci_harvest.py --trackr --enrich; delta-checked via standards_refresh --check.",
       "announcement_feeds": [],
-      "draft_status": "none"
+      "draft_status": "none",
+      "related_feeds": [
+        "disa-cci-trackr"
+      ]
     },
     "csa-aicm-v1.1": {
       "label": "CSA AICM v1.1 (AI Controls Matrix)",
@@ -5621,7 +5674,10 @@
       "source_manifest_keys": [],
       "notes": "270-control AI Controls Matrix with mappings to EU AI Act / ISO/IEC 42001:2023 / BSI AI C4 — OFF the 800-53-anchored spine (no 800-53 path), so NOT a projection/mapping source for the core cross-mapping. Reference-only; AI-governance-adjacent to nist-ai-rmf/iso-42001/eu-ai-act.",
       "draft_status": "none",
-      "next_expected_version": "AICM v1.x (built on CCM v4.1; syncs with CCM releases)"
+      "next_expected_version": "AICM v1.x (built on CCM v4.1; syncs with CCM releases)",
+      "alias_of": "csa-aicm",
+      "poll_exempt": true,
+      "poll_exempt_reason": "Alias of csa-aicm (same AICM v1.1.0 artifact); tracked there."
     },
     "csa-controls-catalog-stix": {
       "label": "CSA Security Controls Catalog (STIX 2.1)",
@@ -5640,6 +5696,640 @@
       "notes": "CSA's machine-readable controls-as-STIX-2.1 catalog (x-control + x-regulatory-reference -> ISO 27001/GDPR/NIST 800-53); the intended future home of CCM/AICM cross-framework mappings. Currently 'early-stage/research-grade, initial content being prepared' — no ingestable mapping data yet. WATCH: when populated it becomes the real CCM v4.1 mappings source (tracked via au-csa-ccm detection). api.github.com is MCP-scoped -> HTTPS/raw only.",
       "draft_status": "research",
       "next_expected_version": "Initial populated STIX bundles (no fixed date)"
+    },
+    "nist-sp-800-53a-r5": {
+      "label": "NIST SP 800-53A Rev 5 Assessment Procedures",
+      "authority": "primary",
+      "framework_id": "nist-sp-800-53a-r5",
+      "tier": "mappable",
+      "jurisdiction": "us-federal",
+      "current_version": "Rev 5 assessment procedures",
+      "urls": {
+        "landing": "https://csrc.nist.gov/pubs/sp/800/53/a/r5/final"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://csrc.nist.gov/pubs/sp/800/53/a/r5/final"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "Assessment-objective backbone for 800-53 r5; 5.2.0 supplement bundled in the OSCAL content. Machine-readable XLSX at the pubs docs path.",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07"
+    },
+    "nist-sp-800-61r3": {
+      "label": "NIST SP 800-61 Rev 3 Incident Response",
+      "authority": "secondary",
+      "framework_id": "nist-sp-800-61r3",
+      "tier": "reference",
+      "jurisdiction": "us-federal",
+      "current_version": "Rev 3 (Apr 2025)",
+      "urls": {
+        "landing": "https://csrc.nist.gov/pubs/sp/800/61/r3/final"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://csrc.nist.gov/pubs/sp/800/61/r3/final"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "CSF 2.0-aligned incident-response recommendations; reference guidance (no control catalogue).",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07"
+    },
+    "nist-sp-800-207": {
+      "label": "NIST SP 800-207 Zero Trust Architecture",
+      "authority": "secondary",
+      "framework_id": "nist-sp-800-207",
+      "tier": "reference",
+      "jurisdiction": "us-federal",
+      "current_version": "2020 (207A supplement 2023)",
+      "urls": {
+        "landing": "https://csrc.nist.gov/pubs/sp/800/207/final"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://csrc.nist.gov/pubs/sp/800/207/final"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "Foundational ZTA guidance; reference (informs 800-53 tailoring, not a separate control set).",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07"
+    },
+    "cjis-security-policy": {
+      "label": "FBI CJIS Security Policy v6.0",
+      "authority": "primary",
+      "framework_id": "cjis-security-policy",
+      "tier": "reference",
+      "jurisdiction": "us-federal",
+      "current_version": "v6.0 (2024)",
+      "urls": {
+        "landing": "https://le.fbi.gov/informational-tools/cjis"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://le.fbi.gov/informational-tools/cjis"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "Criminal Justice Information Services security policy; le.fbi.gov is WAF-gated (HTTP 403 to non-browser clients). Tier-2 staged catalog (13 policy areas map to 800-53 families).",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-07",
+      "poll_exempt": true,
+      "poll_exempt_reason": "le.fbi.gov WAF-gated (403 to non-browser clients); verify manually."
+    },
+    "irs-pub-1075": {
+      "label": "IRS Publication 1075 (FTI Safeguards)",
+      "authority": "primary",
+      "framework_id": "irs-pub-1075",
+      "tier": "mappable",
+      "jurisdiction": "us-federal",
+      "current_version": "Rev 2021 (Nov 2021)",
+      "urls": {
+        "landing": "https://www.irs.gov/pub/irs-pdf/p1075.pdf"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.irs.gov/pub/irs-pdf/p1075.pdf"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "Federal Tax Information safeguards; control set derived from 800-53 (mappable). Tier-2 staged: full PDF-catalogue parse is a named follow-up.",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07"
+    },
+    "cisa-ztmm": {
+      "label": "CISA Zero Trust Maturity Model v2.0",
+      "authority": "secondary",
+      "framework_id": "cisa-ztmm",
+      "tier": "reference",
+      "jurisdiction": "us-federal",
+      "current_version": "v2.0 (Apr 2023)",
+      "urls": {
+        "landing": "https://www.cisa.gov/zero-trust-maturity-model"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.cisa.gov/zero-trust-maturity-model"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "Five-pillar ZT maturity model; cisa.gov bot-blocks non-browser clients (403). Reference guidance.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-07",
+      "poll_exempt": true,
+      "poll_exempt_reason": "cisa.gov bot-blocks non-browser clients (403); verify manually."
+    },
+    "ecfr-api": {
+      "label": "eCFR Versioner API (Code of Federal Regulations)",
+      "authority": "primary",
+      "framework_id": "ecfr-api",
+      "tier": "reference",
+      "jurisdiction": "us-federal",
+      "current_version": "live API",
+      "urls": {
+        "landing": "https://www.ecfr.gov/api/versioner/v1/titles.json"
+      },
+      "check_strategy": "api_poll",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.ecfr.gov/api/versioner/v1/titles.json"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "Machine-readable CFR access (Title 45 HIPAA, Title 48 FAR/DFARS, etc.); crawl-seed root for the recursive link-graph (structure + point-in-time versions).",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07"
+    },
+    "federal-register-api": {
+      "label": "Federal Register API v1",
+      "authority": "primary",
+      "framework_id": "federal-register-api",
+      "tier": "reference",
+      "jurisdiction": "us-federal",
+      "current_version": "live API",
+      "urls": {
+        "landing": "https://www.federalregister.gov/api/v1/agencies.json"
+      },
+      "check_strategy": "api_poll",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.federalregister.gov/api/v1/agencies.json"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "Rule/notice/proposed-rule JSON API; saved-query feeds detect NPRMs and final rules per agency. Crawl-seed root.",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07"
+    },
+    "cms-ars": {
+      "label": "CMS Acceptable Risk Safeguards (ARS) + MARS-E/ARC-AMPE",
+      "authority": "primary",
+      "framework_id": "cms-ars",
+      "tier": "mappable",
+      "jurisdiction": "us-federal",
+      "current_version": "ARS 5.x; ARC-AMPE",
+      "urls": {
+        "landing": "https://security.cms.gov/policy-guidance/cms-acceptable-risk-safeguards-ars"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://security.cms.gov/policy-guidance/cms-acceptable-risk-safeguards-ars"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "CMS control catalogue is 800-53-derived (mappable). ARC-AMPE (ACA exchange) mandatory 2026-03-04. Tier-2 staged.",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07"
+    },
+    "swift-cscf": {
+      "label": "SWIFT Customer Security Controls Framework (CSCF)",
+      "authority": "primary",
+      "framework_id": "swift-cscf",
+      "tier": "mappable",
+      "jurisdiction": "international",
+      "current_version": "CSCF v2025",
+      "urls": {
+        "landing": "https://www.swift.com/myswift/customer-security-programme-csp"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.swift.com/myswift/customer-security-programme-csp"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "SWIFT CSP mandatory + advisory controls; swift.com is proxy-inaccessible from this environment (connection timeout). Annual v-year cadence; maps to 800-53/ISO. Tier-2 staged.",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-07",
+      "poll_exempt": true,
+      "poll_exempt_reason": "swift.com unreachable via the outbound proxy (timeout); verify manually."
+    },
+    "first-cvss": {
+      "label": "FIRST CVSS (Common Vulnerability Scoring System)",
+      "authority": "secondary",
+      "framework_id": "first-cvss",
+      "tier": "reference",
+      "jurisdiction": "international",
+      "current_version": "v4.0 (2023)",
+      "urls": {
+        "landing": "https://www.first.org/cvss/"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.first.org/cvss/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "Vulnerability-severity scoring; reference (feeds risk prioritisation, not a control set). EPSS lives at first.org/epss.",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07"
+    },
+    "mitre-emb3d": {
+      "label": "MITRE EMB3D Threat Model",
+      "authority": "secondary",
+      "framework_id": "mitre-emb3d",
+      "tier": "reference",
+      "jurisdiction": "us-nonprofit",
+      "current_version": "2024 release",
+      "urls": {
+        "landing": "https://emb3d.mitre.org/"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://emb3d.mitre.org/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "Embedded-device threat model (ATT&CK-style); reference for OT/IoT threat coverage.",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07"
+    },
+    "bsi-c5": {
+      "label": "BSI Cloud Computing Compliance Criteria Catalogue (C5)",
+      "authority": "primary",
+      "framework_id": "bsi-c5",
+      "tier": "mappable",
+      "jurisdiction": "eu",
+      "current_version": "C5:2020",
+      "urls": {
+        "landing": "https://www.bsi.bund.de/dok/c5-en"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.bsi.bund.de/dok/c5-en"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "German federal cloud criteria; ships an official mapping to NIST 800-53 (mappable-when-parsed). Tier-2 staged.",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07",
+      "poll_exempt": true,
+      "poll_exempt_reason": "BSI dok/ shortlink rejects HEAD (400); landing is GET-200. Verify manually."
+    },
+    "eu-cra": {
+      "label": "EU Cyber Resilience Act (Regulation 2024/2847)",
+      "authority": "primary",
+      "framework_id": "eu-cra",
+      "tier": "reference",
+      "jurisdiction": "eu",
+      "current_version": "Reg (EU) 2024/2847",
+      "urls": {
+        "landing": "https://eur-lex.europa.eu/eli/reg/2024/2847/oj"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://eur-lex.europa.eu/eli/reg/2024/2847/oj"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "Horizontal product-cybersecurity regulation; reporting obligations apply 2026-09-11, full application 2027-12-11. Statute (reference); resolve amendments via EUR-Lex ELI/CELEX.",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07"
+    },
+    "acsc-ism": {
+      "label": "ACSC Information Security Manual (ISM) — OSCAL",
+      "authority": "primary",
+      "framework_id": "acsc-ism",
+      "tier": "reference",
+      "jurisdiction": "australia",
+      "current_version": "monthly release",
+      "urls": {
+        "landing": "https://github.com/AustralianCyberSecurityCentre/ism-oscal",
+        "oscal_raw": "https://raw.githubusercontent.com/AustralianCyberSecurityCentre/ism-oscal/main/README.md"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://github.com/AustralianCyberSecurityCentre/ism-oscal"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "Australian ISM published natively in OSCAL (raw.githubusercontent.com/AustralianCyberSecurityCentre/ism-oscal). NO official ISM->800-53 crosswalk exists (third-party only) — reference tier, not fabricated mappings.",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07",
+      "poll_exempt": true,
+      "poll_exempt_reason": "github.com landing 403s via proxy; source via raw OSCAL, verify releases manually.",
+      "github_repo": "AustralianCyberSecurityCentre/ism-oscal"
+    },
+    "canada-itsg-33": {
+      "label": "Canada ITSG-33 Annex 3A Security Control Catalogue",
+      "authority": "primary",
+      "framework_id": "canada-itsg-33",
+      "tier": "reference",
+      "jurisdiction": "canada",
+      "current_version": "2014 (Rev 5 due 2026-03-31)",
+      "urls": {
+        "landing": "https://www.cyber.gc.ca/en/guidance/annex-3a-security-control-catalogue-itsg-33"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.cyber.gc.ca/en/guidance/annex-3a-security-control-catalogue-itsg-33"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "CCCS control catalogue, 800-53-derived. No official ITSG-33->800-53 crosswalk (third-party only) — reference tier. Rev 5 alignment scheduled 2026-03-31.",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07"
+    },
+    "nzism": {
+      "label": "New Zealand Information Security Manual (NZISM)",
+      "authority": "primary",
+      "framework_id": "nzism",
+      "tier": "reference",
+      "jurisdiction": "new-zealand",
+      "current_version": "v3.8 (2024)",
+      "urls": {
+        "landing": "https://nzism.gcsb.govt.nz/"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://nzism.gcsb.govt.nz/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "GCSB NZISM; published as CSV + XML. Reference tier (no official NZISM->800-53 crosswalk).",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07"
+    },
+    "japan-ismap": {
+      "label": "Japan ISMAP Security Controls",
+      "authority": "primary",
+      "framework_id": "japan-ismap",
+      "tier": "mappable",
+      "jurisdiction": "japan",
+      "current_version": "2024 standards",
+      "urls": {
+        "landing": "https://www.ismap.go.jp/"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.ismap.go.jp/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "Japan's government cloud assessment programme; control set has explicit NIST 800-53 r5 lineage (mappable-when-parsed). Tier-2 staged.",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07"
+    },
+    "saudi-nca-ecc": {
+      "label": "Saudi NCA Essential Cybersecurity Controls (ECC)",
+      "authority": "primary",
+      "framework_id": "saudi-nca-ecc",
+      "tier": "reference",
+      "jurisdiction": "saudi-arabia",
+      "current_version": "ECC-2:2024",
+      "urls": {
+        "landing": "https://nca.gov.sa/en/regulatory-documents/ecc-en/"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://nca.gov.sa/en/regulatory-documents/ecc-en/"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "Saudi National Cybersecurity Authority ECC-2:2024; reference tier (national control framework, no official 800-53 crosswalk).",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "last_verified": "2026-07-07"
+    },
+    "chile-ley-21719": {
+      "label": "Chile Ley 21.719 (Personal Data Protection)",
+      "authority": "secondary",
+      "framework_id": "chile-ley-21719",
+      "tier": "reference",
+      "jurisdiction": "chile",
+      "current_version": "Law 21.719 (2024)",
+      "urls": {
+        "landing": "https://www.bcn.cl/leychile/navegar?idNorma=1208650"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": null,
+      "last_changed": null,
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://www.bcn.cl/leychile/navegar?idNorma=1208650"
+      ],
+      "doc_patterns": [
+        ".pdf",
+        ".xlsx",
+        ".json",
+        ".xml",
+        ".zip"
+      ],
+      "notes": "Chile's data-protection law; enforcement from Dec 2026. bcn.cl leychile endpoint is proxy-gated (401). Statute (reference).",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-07-07",
+      "poll_exempt": true,
+      "poll_exempt_reason": "bcn.cl leychile endpoint proxy-gated (401); verify manually."
     }
   },
   "check_schedule": {

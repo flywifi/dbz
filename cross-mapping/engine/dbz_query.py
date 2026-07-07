@@ -1124,6 +1124,74 @@ def resolve_stig_id(conn, name: str):
     return ("err", f"no STIG matches '{name}'")
 
 
+def cmd_olir_hub(args, conn: sqlite3.Connection) -> int:
+    """OLIR-hub composed edges: third-party control -> CSF 2.0 -> 800-53 r5.
+
+    A query-surface / on-demand tier — these edges are composed through the CSF 2.0
+    hub from OLIR sets NIST publishes in the CPRT element graphs, and each cites two
+    real informative references. They never enter the precomputed matrix / master."""
+    have = conn.execute("SELECT name FROM sqlite_master WHERE type='table' "
+                        "AND name='olir_hub_edges'").fetchone()
+    if not have:
+        print("[ERROR] olir_hub_edges table absent (rebuild grc.db)", file=sys.stderr)
+        return 1
+    # --coverage: per-framework tallies
+    if getattr(args, "coverage", False):
+        rows = conn.execute(
+            "SELECT framework, COUNT(*), COUNT(DISTINCT native_id), COUNT(DISTINCT r5_control) "
+            "FROM olir_hub_edges GROUP BY framework ORDER BY framework").fetchall()
+        result = {
+            "tool": "dbz-olir-hub",
+            "note": "third-party -> CSF 2.0 -> 800-53 r5 edges composed via the CSF 2.0 hub; "
+                    "each edge cites two OLIR references (hop1 third-party->CSF2, hop2 CSF2->800-53). "
+                    "Query-surface tier: never in framework_projection / overlap_matrix / master_mappings.",
+            "by_framework": [{"framework": r[0], "edges": r[1], "distinct_natives": r[2],
+                              "distinct_controls": r[3]} for r in rows],
+            "total_edges": conn.execute("SELECT COUNT(*) FROM olir_hub_edges").fetchone()[0],
+            "human_review_required": True,
+        }
+        if args.format == "json":
+            print(json.dumps(result, indent=2))
+        else:
+            print(f"OLIR-hub composed edges — total {result['total_edges']}")
+            for r in result["by_framework"]:
+                print(f"  {r['framework']:24} {r['edges']:5} edges  "
+                      f"{r['distinct_natives']:4} natives -> {r['distinct_controls']:4} controls")
+        return 0
+    # --native <id>: which 800-53 controls a specific third-party control reaches
+    if getattr(args, "native", None):
+        rows = conn.execute(
+            "SELECT framework, native_id, csf2_id, r5_control, source_ref_a, source_ref_b "
+            "FROM olir_hub_edges WHERE native_id=? ORDER BY framework, csf2_id, r5_control",
+            (args.native,)).fetchall()
+        cols = ["framework", "native_id", "csf2_id", "r5_control", "source_ref_a", "source_ref_b"]
+        out = [dict(zip(cols, r)) for r in rows]
+        if args.format == "json":
+            print(json.dumps({"tool": "dbz-olir-hub", "native": args.native, "edges": out,
+                              "human_review_required": True}, indent=2))
+        else:
+            for r in out:
+                print(f"  {r['native_id']} [{r['framework']}] via {r['csf2_id']} -> {r['r5_control']}")
+        return 0
+    # default / --framework: reach for a framework (control -> {controls})
+    fw = getattr(args, "framework", None)
+    q = "SELECT framework, native_id, r5_control FROM olir_hub_edges"
+    params: tuple = ()
+    if fw:
+        q += " WHERE framework=?"
+        params = (fw,)
+    q += " ORDER BY framework, native_id, r5_control"
+    rows = conn.execute(q, params).fetchall()
+    if args.format == "json":
+        print(json.dumps({"tool": "dbz-olir-hub", "framework": fw,
+                          "edges": [{"framework": r[0], "native_id": r[1], "r5_control": r[2]} for r in rows],
+                          "human_review_required": True}, indent=2))
+    else:
+        for r in rows:
+            print(f"  {r[0]:24} {r[1]:10} -> {r[2]}")
+    return 0
+
+
 def cmd_800_63b(args, conn: sqlite3.Connection) -> int:
     """Query NIST SP 800-63B digital identity requirements by section, AAL level, or control."""
     conditions = []
@@ -1409,6 +1477,15 @@ def build_parser() -> argparse.ArgumentParser:
                         help="usage stats + unresolved-CCI gap report")
     _add_format(stig_p); _add_db(stig_p)
 
+    # olir-hub (composed third-party -> CSF2 -> 800-53 edges)
+    oh = subs.add_parser("olir-hub",
+        help="OLIR-hub composed edges: third-party control -> CSF 2.0 -> 800-53 r5 "
+             "(query-surface tier; two OLIR refs per edge)")
+    oh.add_argument("--framework", metavar="FW", help="filter by framework (e.g. 'CIS Controls 8.1')")
+    oh.add_argument("--native", metavar="ID", help="which 800-53 controls a third-party control id reaches")
+    oh.add_argument("--coverage", action="store_true", help="per-framework edge/native/control tallies")
+    _add_format(oh); _add_db(oh)
+
     # 800-63b
     b63 = subs.add_parser("800-63b", help="Query NIST SP 800-63B digital identity requirements")
     b63.add_argument("--section", metavar="SEC", help="Section number (e.g. 4.2, 5.1.1)")
@@ -1470,6 +1547,7 @@ def main(argv=None) -> int:
         "nvd": cmd_nvd,
         "cci": cmd_cci,
         "stig": cmd_stig,
+        "olir-hub": cmd_olir_hub,
         "eurlex": cmd_eurlex,
         "800-63b": cmd_800_63b,
         "fips": cmd_fips,

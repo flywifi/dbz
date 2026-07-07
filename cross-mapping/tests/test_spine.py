@@ -523,6 +523,33 @@ if _DB.exists():
             _ov = SO.compute(_c2, f"stig:{_sid[0]}", "FedRAMP r5")
             check(_ov.get("provenance") == "stig_cci" and _ov.get("basis") in ("cci", "subpart"),
                   f"STIG×framework overlap uses the stig_cci tech tier (got {_ov.get('provenance')})")
+    # ── Phase 25: OLIR-hub composed edges (query-surface tier, contained) ───────
+    _has_hub = _c2.execute("SELECT name FROM sqlite_master WHERE type='table' "
+                           "AND name='olir_hub_edges'").fetchone()
+    if _has_hub:
+        _hc = _c2.execute("SELECT COUNT(*) FROM olir_hub_edges").fetchone()[0]
+        check(_hc >= 1400, f"olir_hub_edges composed (>=1400 edges; got {_hc})")
+        _hfws = {x[0] for x in _c2.execute("SELECT DISTINCT framework FROM olir_hub_edges")}
+        check(_hfws == {"CIS Controls 8.1", "OWASP LLM Top 10 v2.0", "NIST SSDF v1.1"},
+              f"olir_hub_edges cover the 3 net-new hub frameworks ({_hfws})")
+        # every composed edge cites two DISTINCT non-empty OLIR references (no fabrication)
+        _badref = _c2.execute(
+            "SELECT COUNT(*) FROM olir_hub_edges WHERE source_ref_a='' OR source_ref_b='' "
+            "OR source_ref_a=source_ref_b OR basis<>'olir_hub_composed'").fetchone()[0]
+        check(_badref == 0, f"every olir_hub edge cites two distinct refs + olir_hub_composed basis (bad: {_badref})")
+        # every reached control resolves to a real 800-53 control/enhancement
+        _catset = {r[0] for r in _c2.execute("SELECT nist_id FROM controls")}
+        _catset |= {r[0] for r in _c2.execute("SELECT id FROM enhancements")}
+        _badctrl = sum(1 for (c,) in _c2.execute("SELECT DISTINCT r5_control FROM olir_hub_edges")
+                       if c not in _catset)
+        check(_badctrl == 0, f"every olir_hub r5_control resolves in the 800-53 catalog (bad: {_badctrl})")
+        # containment: hub frameworks never leak into projection / matrix / master
+        _pj_fws2 = {x[0] for x in _c2.execute("SELECT DISTINCT framework FROM framework_projection")}
+        _mx_fws2 = {x[0] for x in _c2.execute("SELECT DISTINCT framework_a FROM overlap_matrix")}
+        _mx_fws2 |= {x[0] for x in _c2.execute("SELECT DISTINCT framework_b FROM overlap_matrix")}
+        check(not (_hfws & (_pj_fws2 | _mx_fws2)),
+              "olir_hub frameworks never enter framework_projection / overlap_matrix")
+
     # label registry loaded; the in-module dicts must match it exactly
     import master_surface as MSF  # type: ignore
     _reg = {r[0]: r[2] for r in _c2.execute(
@@ -594,6 +621,18 @@ check(any(f["severity"] == "blocking" and "unknown uncertainty_id" in f["issue"]
 if (ROOT / "canonical-sources" / "uncertainty_ledger.jsonl").exists():
     real = HA.check_uncertainty_ledger()
     check(not any(f["severity"] == "blocking" for f in real), "committed uncertainty_ledger.jsonl is clean")
+
+# ── Phase 25: crawl-seed link-graph determinism + well-formedness ───────────────
+if (ROOT / "canonical-sources" / "crawl_seeds.json").exists():
+    sys.path.insert(0, str(ROOT / "tools"))
+    import crawl_seed as CS  # type: ignore
+    _reg = CS.load_registry()
+    _a = CS.expand_seeds(_reg)
+    _b = CS.expand_seeds(_reg)
+    check(_a == _b and len(_a) > 0, f"crawl-seed expansion deterministic + non-empty ({len(_a)} candidates)")
+    check(len({s["id"] for s in _reg["seeds"]}) == len(_reg["seeds"]), "crawl-seed ids unique")
+    check(all(s.get("authority") and s.get("root") and s.get("resolver") for s in _reg["seeds"]),
+          "every crawl-seed carries authority/root/resolver")
 
 # ── report ─────────────────────────────────────────────────────────────────────
 if FAILS:
