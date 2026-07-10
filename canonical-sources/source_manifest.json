@@ -1054,11 +1054,11 @@
         "authority": "FBI CJIS",
         "artifact": "CJIS Security Policy v6.0",
         "source_url": "https://le.fbi.gov/informational-tools/cjis",
-        "tier": "reference",
+        "tier": "mappable",
         "jurisdiction": "us-federal",
-        "mappable": false,
+        "mappable": true,
         "status": "staged_ingestion",
-        "notes": "13 policy areas correspond to 800-53 families; full catalogue parse is a named follow-up. WAF-gated source."
+        "notes": "v6.0 (Dec 2024) maps the entire policy to the NIST 800-53 r5 MODERATE baseline (replacing the former custom policy-area structure); mappable-when-parsed. Priority tiers P1-P4, full P2-P4 compliance due 2027-09-30. WAF-gated source."
       },
       {
         "id": "irs-pub-1075",
@@ -1076,11 +1076,11 @@
         "authority": "BSI (Germany)",
         "artifact": "Cloud Computing Compliance Criteria Catalogue (C5:2020)",
         "source_url": "https://www.bsi.bund.de/dok/c5-en",
-        "tier": "mappable",
+        "tier": "reference",
         "jurisdiction": "eu",
-        "mappable": true,
+        "mappable": false,
         "status": "staged_ingestion",
-        "notes": "Ships an official mapping to NIST 800-53; mappable-when-parsed. Staged."
+        "notes": "Official C5:2020 reference tables map to ISO 27001/27017/27018, CSA CCM, AICPA TSC, TCDP, and IT-Grundschutz — NO official NIST 800-53 mapping exists; 800-53 is reachable only transitively (e.g. via the CCM crosswalk). Reference tier; staged."
       },
       {
         "id": "cms-ars",

@@ -359,6 +359,17 @@
       "source_url": "https://csrc.nist.gov/projects/olir/informative-reference-catalog",
       "summary": "Full source audit: repaired broken feed URLs (mitre STIX -> mitre-attack/attack-stix-data, hitrust/ny-dfs/iso-27001/nist-800-53 CPRT), fixed 26 landing-less poll_landing feeds, added 20 tiered feeds, registered 7 Tier-2 staged catalogues, and composed CIS 8.1 / OWASP LLM Top 10 / SSDF v1.1 -> 800-53 via the CSF 2.0 OLIR hub (contained off the matrix). Corrections: ffiec-cat sunset 2025-08-31, uk-aisi renamed AI Security Institute, ISO 42005:2025 published, india-dpdp Rules 2025.",
       "human_confirmed": true
+    },
+    {
+      "entry_id": "chg-phase25-verification-corrections",
+      "framework_id": "multiple",
+      "change_type": "verification_corrections",
+      "old_version": "Phase 25 initial",
+      "new_version": "Phase 25 verified",
+      "changed_at": "2026-07-10",
+      "source_url": "https://le.fbi.gov/informational-tools/cjis",
+      "summary": "Adversarial verification corrections: CJIS v6.0 reclassified mappable (entire policy maps to 800-53 r5 moderate baseline); BSI C5 reclassified reference (official tables map to ISO/CCM/TSC, no 800-53 mapping); NZISM version brought current to v3.9; broken/bot-blocked landings (fincen, circia, US-code statutes) repointed or marked poll-exempt; horizon detection methods normalized.",
+      "human_confirmed": true
     }
   ]
 }

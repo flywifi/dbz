@@ -1645,7 +1645,7 @@
       "trigger_signal": "ARC-AMPE effective / superseding MARS-E",
       "detection": {
         "url": "https://security.cms.gov/policy-guidance/cms-acceptable-risk-safeguards-ars",
-        "method": "quarterly",
+        "method": "poll_landing",
         "match": ""
       },
       "poll_frequency": "quarterly",
@@ -1707,7 +1707,7 @@
       "trigger_signal": "CSCF v2026 published",
       "detection": {
         "url": "https://www.swift.com/myswift/customer-security-programme-csp",
-        "method": "annual",
+        "method": "poll_landing",
         "match": ""
       },
       "poll_frequency": "annual",
@@ -1738,7 +1738,7 @@
       "trigger_signal": "CPS 230 in force",
       "detection": {
         "url": "https://www.apra.gov.au/news-and-publications",
-        "method": "annual",
+        "method": "poll_landing",
         "match": ""
       },
       "poll_frequency": "annual",
@@ -1769,7 +1769,7 @@
       "trigger_signal": "enforcement / regulations in force",
       "detection": {
         "url": "https://www.bcn.cl/leychile/navegar?idNorma=1208650",
-        "method": "quarterly",
+        "method": "poll_landing",
         "match": ""
       },
       "poll_frequency": "semiannual",
@@ -1800,7 +1800,7 @@
       "trigger_signal": "reporting obligations in force",
       "detection": {
         "url": "https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
-        "method": "quarterly",
+        "method": "poll_landing",
         "match": ""
       },
       "poll_frequency": "quarterly",

@@ -90,8 +90,11 @@ india-dpdp Rules 2025).
 
 CJIS v6.0, IRS Pub 1075, BSI C5, CMS ARS, Canada ITSG-33, Japan ISMAP, Saudi NCA ECC —
 registered with a `staged_ingestion` status and no fabricated file/sha. `mappable=true`
-(IRS 1075, BSI C5, CMS ARS, ISMAP) carries an 800-53 lineage/crosswalk and is a named
-ingestion follow-up; `mappable=false` is reference/index-only.
+(CJIS v6.0, IRS 1075, CMS ARS, ISMAP) carries an 800-53 lineage/crosswalk and is a named
+ingestion follow-up — CJIS v6.0 maps the entire policy to the 800-53 r5 moderate baseline.
+`mappable=false` is reference/index-only — including BSI C5, whose official reference tables
+map to ISO 27001/27017/27018, CSA CCM, AICPA TSC, TCDP, and IT-Grundschutz but carry no
+official 800-53 mapping (800-53 is reachable only transitively via CCM).
 
 ## Horizon items added
 
