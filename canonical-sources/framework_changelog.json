@@ -370,6 +370,17 @@
       "source_url": "https://le.fbi.gov/informational-tools/cjis",
       "summary": "Adversarial verification corrections: CJIS v6.0 reclassified mappable (entire policy maps to 800-53 r5 moderate baseline); BSI C5 reclassified reference (official tables map to ISO/CCM/TSC, no 800-53 mapping); NZISM version brought current to v3.9; broken/bot-blocked landings (fincen, circia, US-code statutes) repointed or marked poll-exempt; horizon detection methods normalized.",
       "human_confirmed": true
+    },
+    {
+      "entry_id": "chg-fedramp-cr26-transition",
+      "framework_id": "fedramp",
+      "change_type": "audit_framework_revision",
+      "old_version": "Rev5 program (authorizations; legacy ConMon deliverables)",
+      "new_version": "Consolidated Rules for 2026 (certification Classes A-D; CCM + KSI validations)",
+      "changed_at": "2026-07-04",
+      "source_url": "https://www.fedramp.gov/2026/timeline/",
+      "summary": "FedRAMP revised its assessment methodology on top of the unchanged 800-53 r5 control substance (the ISO 27001 2013->2022 pattern): authorizations become certification Classes A-D; legacy ConMon becomes Collaborative Continuous Monitoring with KSI validations and 11 machine-readable reporting schemas. Coexistence window: optional adoption 2026-07-04, mandatory 2027-01-01, new Rev5 certifications end 2027-06-11 (existing ones persist). Carry-over map = the 373 FedRAMP-published KSI->800-53 edges (fedramp_ksi_controls). FedRAMP r5 baselines remain a first-class matrix framework.",
+      "human_confirmed": true
     }
   ]
 }

@@ -67,8 +67,8 @@ Describe the change and reference the affected component (ingestion loader, over
 
 ## Publication hygiene (non-negotiable)
 - Commits, trailers, and repo files carry **no chat/session links, no internal notes, and no
-  personal information** (no personal emails, no session identifiers). `Co-Authored-By: Claude
-  <noreply@anthropic.com>` attribution is the only trailer.
+  personal information** (no personal emails, no session identifiers). Commit messages carry
+  **no trailers at all** — plain 1–2 sentence descriptions only.
 - If a human author identity is ever required, use the account's GitHub noreply routing address
   (`<id>+<login>@users.noreply.github.com`) — never a real email.
 - Provider-proprietary identifiers from production data exports (evidence-request / requirement

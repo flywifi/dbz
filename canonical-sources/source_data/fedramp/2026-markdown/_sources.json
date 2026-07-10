@@ -1,0 +1,13 @@
+{
+  "site": {
+    "repo": "fedramp/2026",
+    "ref": "main",
+    "sha": "026840c2f79cc75774a454589c0a29a75723d79b"
+  },
+  "rules": {
+    "repo": "fedramp/rules",
+    "ref": "main",
+    "sha": "7227d7f54397213799c1ad8255301b4ca1f88e1d"
+  },
+  "generated_at": "2026-07-06T13:32:37Z"
+}

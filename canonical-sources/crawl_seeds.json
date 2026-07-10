@@ -10,7 +10,10 @@
       "root": "https://csrc.nist.gov/projects/olir/informative-reference-catalog",
       "resolver": "id_range",
       "child_template": "https://csrc.nist.rip/projects/olir/informative-reference-catalog/details/{id}",
-      "id_range": [10018, 10030],
+      "id_range": [
+        10018,
+        10030
+      ],
       "notes": "The OLIR bulk JSON API + csf/download?olirids=all are broken (404/500). Per-reference download URLs resolve from the server-rendered .rip detail pages instead. The CPRT CSF 2.0 element graphs already carry the finalized set we ingest; this seed re-discovers newly finalized references."
     },
     {
@@ -20,7 +23,11 @@
       "root": "https://www.ecfr.gov/api/versioner/v1/titles.json",
       "resolver": "cfr_titles",
       "child_template": "https://www.ecfr.gov/api/versioner/v1/structure/current/title-{title}.json",
-      "titles": [17, 45, 48],
+      "titles": [
+        17,
+        45,
+        48
+      ],
       "notes": "Machine-readable CFR. Title 45 (HIPAA), Title 48 (FAR/DFARS), Title 17 (SEC). Point-in-time structure JSON per title."
     },
     {
@@ -30,7 +37,11 @@
       "root": "https://www.federalregister.gov/api/v1/agencies.json",
       "resolver": "fr_saved_query",
       "child_template": "https://www.federalregister.gov/api/v1/documents.json?conditions[agencies][]={agency}&conditions[type][]=RULE&per_page=20",
-      "agencies": ["health-and-human-services-department", "securities-and-exchange-commission", "homeland-security-department"],
+      "agencies": [
+        "health-and-human-services-department",
+        "securities-and-exchange-commission",
+        "homeland-security-department"
+      ],
       "notes": "Saved-query JSON feeds detect final rules / NPRMs per agency."
     },
     {
@@ -40,7 +51,13 @@
       "root": "https://eur-lex.europa.eu",
       "resolver": "celex",
       "child_template": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:{celex}",
-      "celex": ["32024R2847", "32024R1183", "32023R2854", "32025R0038", "32024R0482"],
+      "celex": [
+        "32024R2847",
+        "32024R1183",
+        "32023R2854",
+        "32025R0038",
+        "32024R0482"
+      ],
       "notes": "CELEX resolver for CRA (2024/2847), eIDAS2 (2024/1183), Data Act (2023/2854), Cyber Solidarity Act (2025/0038), EUCC (2024/0482). ELI RDF + SPARQL/Cellar available for machine-readable pulls."
     },
     {
@@ -51,11 +68,83 @@
       "resolver": "github_raw",
       "child_template": "https://raw.githubusercontent.com/{repo}/{ref}/README.md",
       "repos": [
-        {"repo": "AustralianCyberSecurityCentre/ism-oscal", "ref": "main", "tier": "reference", "status": "verified"},
-        {"repo": "usnistgov/oscal-content", "ref": "main", "tier": "mappable", "status": "verified"},
-        {"repo": "GSA/fedramp-automation", "ref": "master", "tier": "reference", "status": "path-discovery-required"}
+        {
+          "repo": "AustralianCyberSecurityCentre/ism-oscal",
+          "ref": "main",
+          "tier": "reference",
+          "status": "verified"
+        },
+        {
+          "repo": "usnistgov/oscal-content",
+          "ref": "main",
+          "tier": "mappable",
+          "status": "verified"
+        },
+        {
+          "repo": "GSA/fedramp-automation",
+          "ref": "master",
+          "tier": "reference",
+          "status": "path-discovery-required"
+        }
       ],
       "notes": "ACSC ISM + NIST OSCAL content verified reachable via raw. FedRAMP OSCAL baseline paths 404 and api.github.com 403s via the proxy (GSA repo is outside the session's GitHub-MCP scope) — path-discovery-required, indexed not claimed."
+    },
+    {
+      "id": "fedramp-rules",
+      "authority": "FedRAMP",
+      "tier": "mappable",
+      "root": "https://github.com/FedRAMP",
+      "resolver": "github_raw",
+      "child_template": "https://raw.githubusercontent.com/{repo}/{ref}/README.md",
+      "repos": [
+        {
+          "repo": "FedRAMP/rules",
+          "ref": "main",
+          "tier": "mappable",
+          "status": "verified"
+        },
+        {
+          "repo": "FedRAMP/2026-markdown",
+          "ref": "main",
+          "tier": "reference",
+          "status": "verified"
+        },
+        {
+          "repo": "FedRAMP/2026",
+          "ref": "main",
+          "tier": "reference",
+          "status": "verified"
+        },
+        {
+          "repo": "FedRAMP/community",
+          "ref": "main",
+          "tier": "reference",
+          "status": "verified"
+        }
+      ],
+      "notes": "The living FedRAMP org. FedRAMP/docs is legacy ('not a source of truth'); GSA/fedramp-automation archived 2025-07-01. Canonical data: FedRAMP/rules fedramp-consolidated-rules.json."
+    },
+    {
+      "id": "fedramp-2026-site",
+      "authority": "FedRAMP",
+      "tier": "reference",
+      "root": "https://www.fedramp.gov/2026/",
+      "resolver": "path_list",
+      "child_template": "https://www.fedramp.gov/2026/{path}/",
+      "paths": [
+        "rules",
+        "definitions",
+        "timeline",
+        "sources",
+        "changelog",
+        "reference",
+        "responsibilities",
+        "providers",
+        "agencies",
+        "assessors",
+        "advisors"
+      ],
+      "notes": "Discovery only — FedRAMP's sources page instructs automation to consume the FedRAMP/rules JSON, never to parse this HTML. Schemas index at fedramp.gov/schemas/ (date-versioned filenames)."
     }
   ]
 }

@@ -1044,6 +1044,160 @@
       "sha256_prefix": "2d507ee7c597b386",
       "role": "cci_mapping_corroboration",
       "notes": "Derived republication: per-CCI control-level rmf + ap_acronym + family for all 3,551 enumerated CCIs. Enrichment/corroboration ONLY (no r4/r5 split, no status). Deterministic (sorted, gzip mtime=0). Refreshed via tools/cci_harvest.py --trackr --enrich --resume."
+    },
+    {
+      "id": "fedramp-consolidated-rules",
+      "file": "canonical-sources/source_data/fedramp/fedramp-consolidated-rules.json",
+      "format": "json",
+      "version": "2026.07.06.01 (Consolidated Rules for 2026; KSI 10 families/46 indicators/373 control refs; FRR 17 families/56 rules; FRD 75; CTL 79 ODP-pinned controls)",
+      "retrieved": "2026-07-10",
+      "source_url": "https://raw.githubusercontent.com/FedRAMP/rules/main/fedramp-consolidated-rules.json",
+      "sha256_prefix": "6e97f7913d1b9a62",
+      "role": "fedramp_rules_canonical",
+      "notes": "Complete verbatim canonical dataset (FedRAMP/rules). FedRAMP's stated machine-readable source of truth for the Consolidated Rules for 2026. KSI indicators carry official 800-53 r5 control arrays (the KSI->800-53 crosswalk). Poll info.version/info.last_updated for currency."
+    },
+    {
+      "id": "fedramp-consolidated-rules-schema",
+      "file": "canonical-sources/source_data/fedramp/fedramp-consolidated-rules.schema.json",
+      "format": "json",
+      "version": "2026 Public Preview",
+      "retrieved": "2026-07-10",
+      "source_url": "https://raw.githubusercontent.com/FedRAMP/rules/main/schemas/fedramp-consolidated-rules.schema.json",
+      "sha256_prefix": "d2262a7bc5932170",
+      "role": "fedramp_rules_canonical",
+      "notes": "Complete JSON Schema for the consolidated-rules dataset."
+    },
+    {
+      "id": "fedramp-schema-accepted-vulnerability-info",
+      "file": "canonical-sources/source_data/fedramp/schemas/fedramp-accepted-vulnerability-info-schema-2026-06-24.json",
+      "format": "json",
+      "version": "2026-06-24",
+      "retrieved": "2026-07-10",
+      "source_url": "https://www.fedramp.gov/schemas/fedramp-accepted-vulnerability-info-schema-2026-06-24.json",
+      "sha256_prefix": "f3dcb0211ddb1d19",
+      "role": "fedramp_reporting_schema",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+    },
+    {
+      "id": "fedramp-schema-advisor-information",
+      "file": "canonical-sources/source_data/fedramp/schemas/fedramp-advisor-information-schema-2026-06-24.json",
+      "format": "json",
+      "version": "2026-06-24",
+      "retrieved": "2026-07-10",
+      "source_url": "https://www.fedramp.gov/schemas/fedramp-advisor-information-schema-2026-06-24.json",
+      "sha256_prefix": "014ad6fed67d5371",
+      "role": "fedramp_reporting_schema",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+    },
+    {
+      "id": "fedramp-schema-assessor-information",
+      "file": "canonical-sources/source_data/fedramp/schemas/fedramp-assessor-information-schema-2026-06-24.json",
+      "format": "json",
+      "version": "2026-06-24",
+      "retrieved": "2026-07-10",
+      "source_url": "https://www.fedramp.gov/schemas/fedramp-assessor-information-schema-2026-06-24.json",
+      "sha256_prefix": "00adeff8fd76f235",
+      "role": "fedramp_reporting_schema",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+    },
+    {
+      "id": "fedramp-schema-certification-package-overview",
+      "file": "canonical-sources/source_data/fedramp/schemas/fedramp-certification-package-overview-schema-2026-06-24.json",
+      "format": "json",
+      "version": "2026-06-24",
+      "retrieved": "2026-07-10",
+      "source_url": "https://www.fedramp.gov/schemas/fedramp-certification-package-overview-schema-2026-06-24.json",
+      "sha256_prefix": "14a7afcec4c9d638",
+      "role": "fedramp_reporting_schema",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+    },
+    {
+      "id": "fedramp-schema-common-definitions",
+      "file": "canonical-sources/source_data/fedramp/schemas/fedramp-common-definitions-schema-2026-06-24.json",
+      "format": "json",
+      "version": "2026-06-24",
+      "retrieved": "2026-07-10",
+      "source_url": "https://www.fedramp.gov/schemas/fedramp-common-definitions-schema-2026-06-24.json",
+      "sha256_prefix": "07d70d4dabf8010d",
+      "role": "fedramp_reporting_schema",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+    },
+    {
+      "id": "fedramp-schema-historical-ver-activity",
+      "file": "canonical-sources/source_data/fedramp/schemas/fedramp-historical-ver-activity-schema-2026-06-24.json",
+      "format": "json",
+      "version": "2026-06-24",
+      "retrieved": "2026-07-10",
+      "source_url": "https://www.fedramp.gov/schemas/fedramp-historical-ver-activity-schema-2026-06-24.json",
+      "sha256_prefix": "497e2358cf72ccd8",
+      "role": "fedramp_reporting_schema",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+    },
+    {
+      "id": "fedramp-schema-incident-report",
+      "file": "canonical-sources/source_data/fedramp/schemas/fedramp-incident-report-schema-2026-06-24.json",
+      "format": "json",
+      "version": "2026-06-24",
+      "retrieved": "2026-07-10",
+      "source_url": "https://www.fedramp.gov/schemas/fedramp-incident-report-schema-2026-06-24.json",
+      "sha256_prefix": "cad5b306179142d3",
+      "role": "fedramp_reporting_schema",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+    },
+    {
+      "id": "fedramp-schema-ongoing-certification-report",
+      "file": "canonical-sources/source_data/fedramp/schemas/fedramp-ongoing-certification-report-schema-2026-06-24.json",
+      "format": "json",
+      "version": "2026-06-24",
+      "retrieved": "2026-07-10",
+      "source_url": "https://www.fedramp.gov/schemas/fedramp-ongoing-certification-report-schema-2026-06-24.json",
+      "sha256_prefix": "67fc27322930ccd7",
+      "role": "fedramp_reporting_schema",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+    },
+    {
+      "id": "fedramp-schema-security-decision-record",
+      "file": "canonical-sources/source_data/fedramp/schemas/fedramp-security-decision-record-schema-2026-06-24.json",
+      "format": "json",
+      "version": "2026-06-24",
+      "retrieved": "2026-07-10",
+      "source_url": "https://www.fedramp.gov/schemas/fedramp-security-decision-record-schema-2026-06-24.json",
+      "sha256_prefix": "361f3322a4da2fd8",
+      "role": "fedramp_reporting_schema",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+    },
+    {
+      "id": "fedramp-schema-significant-change-notifications",
+      "file": "canonical-sources/source_data/fedramp/schemas/fedramp-significant-change-notifications-schema-2026-06-24.json",
+      "format": "json",
+      "version": "2026-06-24",
+      "retrieved": "2026-07-10",
+      "source_url": "https://www.fedramp.gov/schemas/fedramp-significant-change-notifications-schema-2026-06-24.json",
+      "sha256_prefix": "af492199332d608a",
+      "role": "fedramp_reporting_schema",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+    },
+    {
+      "id": "fedramp-schema-vulnerability-detail-report",
+      "file": "canonical-sources/source_data/fedramp/schemas/fedramp-vulnerability-detail-report-schema-2026-06-24.json",
+      "format": "json",
+      "version": "2026-06-24",
+      "retrieved": "2026-07-10",
+      "source_url": "https://www.fedramp.gov/schemas/fedramp-vulnerability-detail-report-schema-2026-06-24.json",
+      "sha256_prefix": "70d53c3c8a2d63cc",
+      "role": "fedramp_reporting_schema",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+    },
+    {
+      "id": "fedramp-2026-markdown-corpus",
+      "file": "canonical-sources/source_data/fedramp/2026-markdown/",
+      "format": "markdown_dir",
+      "version": "generated 2026-07-06T13:32:37Z from fedramp/rules@7227d7f5 + fedramp/2026@026840c2 (see _sources.json)",
+      "retrieved": "2026-07-10",
+      "source_url": "https://github.com/FedRAMP/2026-markdown",
+      "sha256_prefix": "035f9c0b0a27b4f3",
+      "role": "fedramp_rules_narrative",
+      "notes": "Complete 291-file narrative corpus (per-audience rule text + guidance), mirrored whole — FedRAMP publishes it specifically for machine consumption. Drift signal: _sources.json (sha256 pinned here)."
     }
   ],
   "staged_reference_sources": {

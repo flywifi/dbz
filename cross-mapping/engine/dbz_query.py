@@ -1192,6 +1192,109 @@ def cmd_olir_hub(args, conn: sqlite3.Connection) -> int:
     return 0
 
 
+def cmd_fedramp(args, conn: sqlite3.Connection) -> int:
+    """FedRAMP Consolidated Rules 2026: KSIs, the official KSI->800-53 crosswalk,
+    program rules (MAS/SCN/VDR/...), FedRAMP ODP pins, and CTL guidance.
+
+    Contained query-surface tier (2026 Public Preview) — FedRAMP r5 remains a
+    first-class matrix framework; use `overlap` / `master` for baseline overlap."""
+    have = conn.execute("SELECT name FROM sqlite_master WHERE type='table' "
+                        "AND name='fedramp_ksi'").fetchone()
+    if not have:
+        print("[ERROR] fedramp tables absent (rebuild grc.db)", file=sys.stderr)
+        return 1
+    if getattr(args, "coverage", False):
+        fams = conn.execute(
+            "SELECT k.family, k.family_name, COUNT(DISTINCT k.indicator_id), COUNT(e.r5_control) "
+            "FROM fedramp_ksi k LEFT JOIN fedramp_ksi_controls e USING (indicator_id) "
+            "GROUP BY k.family ORDER BY k.family").fetchall()
+        n_rules = conn.execute("SELECT COUNT(*) FROM fedramp_rules").fetchone()[0]
+        n_odp = conn.execute("SELECT COUNT(*) FROM fedramp_odp_pins").fetchone()[0]
+        n_guid = conn.execute("SELECT COUNT(*) FROM fedramp_ctl_guidance").fetchone()[0]
+        result = {"tool": "dbz-fedramp",
+                  "lifecycle": "2026_public_preview",
+                  "families": [{"family": f, "name": n, "indicators": i, "control_edges": c}
+                               for f, n, i, c in fams],
+                  "rules": n_rules, "odp_pins": n_odp, "ctl_guidance": n_guid,
+                  "note": "KSI->800-53 edges are FedRAMP's own published mapping "
+                          "(basis=fedramp_stated). FedRAMP r5 baselines remain the matrix "
+                          "framework; this is the new confirmation/monitoring layer.",
+                  "human_review_required": True}
+        if args.format == "json":
+            print(json.dumps(result, indent=2))
+        else:
+            for f in result["families"]:
+                print(f"  {f['family']:8} {f['name']:38} {f['indicators']:3} indicators  {f['control_edges']:4} edges")
+            print(f"  rules={n_rules} odp_pins={n_odp} ctl_guidance={n_guid}  [{result['lifecycle']}]")
+        return 0
+    if getattr(args, "indicator", None):
+        row = conn.execute("SELECT indicator_id, family_name, name, statement, status "
+                           "FROM fedramp_ksi WHERE indicator_id=?", (args.indicator,)).fetchone()
+        if not row:
+            print(f"[ERROR] unknown indicator {args.indicator}", file=sys.stderr)
+            return 1
+        ctrls = [r[0] for r in conn.execute(
+            "SELECT r5_control FROM fedramp_ksi_controls WHERE indicator_id=? ORDER BY r5_control",
+            (args.indicator,))]
+        out = {"tool": "dbz-fedramp", "indicator": row[0], "family": row[1], "name": row[2],
+               "statement": row[3], "status": row[4], "controls": ctrls,
+               "human_review_required": True}
+        print(json.dumps(out, indent=2) if args.format == "json"
+              else f"{row[0]} [{row[1]}] {row[2]}\n  {row[3]}\n  controls: {', '.join(ctrls)}")
+        return 0
+    if getattr(args, "control", None):
+        rows = conn.execute(
+            "SELECT e.indicator_id, k.name FROM fedramp_ksi_controls e "
+            "JOIN fedramp_ksi k USING (indicator_id) WHERE e.r5_control=? ORDER BY e.indicator_id",
+            (args.control.upper(),)).fetchall()
+        out = {"tool": "dbz-fedramp", "control": args.control.upper(),
+               "indicators": [{"indicator_id": r[0], "name": r[1]} for r in rows],
+               "human_review_required": True}
+        if args.format == "json":
+            print(json.dumps(out, indent=2))
+        else:
+            for r in rows:
+                print(f"  {r[0]:16} {r[1]}")
+        return 0
+    if getattr(args, "rules", None) is not None:
+        q = ("SELECT rule_id, family, pipeline, subgroup, force, name, statement "
+             "FROM fedramp_rules")
+        params: tuple = ()
+        if args.rules:
+            q += " WHERE family=?"
+            params = (args.rules.upper(),)
+        q += " ORDER BY rule_id, pipeline, subgroup"
+        rows = conn.execute(q, params).fetchall()
+        cols = ["rule_id", "family", "pipeline", "subgroup", "force", "name", "statement"]
+        out = [dict(zip(cols, r)) for r in rows]
+        if args.format == "json":
+            print(json.dumps({"tool": "dbz-fedramp", "rules": out,
+                              "human_review_required": True}, indent=2))
+        else:
+            for r in out:
+                print(f"  {r['rule_id']:16} [{r['pipeline']:4}] {r['force']:6} {r['name']}")
+        return 0
+    if getattr(args, "ksi", None) is not None:
+        q = "SELECT indicator_id, family, name, status FROM fedramp_ksi"
+        params = ()
+        if args.ksi:
+            q += " WHERE family=? OR family='KSI-'||?"
+            params = (args.ksi.upper(), args.ksi.upper())
+        q += " ORDER BY indicator_id"
+        rows = conn.execute(q, params).fetchall()
+        if args.format == "json":
+            print(json.dumps({"tool": "dbz-fedramp",
+                              "ksi": [{"indicator_id": r[0], "family": r[1], "name": r[2],
+                                       "status": r[3]} for r in rows],
+                              "human_review_required": True}, indent=2))
+        else:
+            for r in rows:
+                print(f"  {r[0]:16} [{r[1]}] {r[2]} ({r[3]})")
+        return 0
+    print("[ERROR] pass --coverage, --ksi, --indicator, --control, or --rules", file=sys.stderr)
+    return 1
+
+
 def cmd_800_63b(args, conn: sqlite3.Connection) -> int:
     """Query NIST SP 800-63B digital identity requirements by section, AAL level, or control."""
     conditions = []
@@ -1486,6 +1589,17 @@ def build_parser() -> argparse.ArgumentParser:
     oh.add_argument("--coverage", action="store_true", help="per-framework edge/native/control tallies")
     _add_format(oh); _add_db(oh)
 
+    # fedramp (Consolidated Rules 2026)
+    fr = subs.add_parser("fedramp",
+        help="FedRAMP Consolidated Rules 2026: KSIs, official KSI->800-53 edges, "
+             "program rules, ODP pins (2026 Public Preview layer)")
+    fr.add_argument("--coverage", action="store_true", help="per-family KSI/edge tallies + totals")
+    fr.add_argument("--ksi", nargs="?", const="", metavar="FAM", help="list indicators (optionally one family, e.g. IAM)")
+    fr.add_argument("--indicator", metavar="ID", help="one indicator's statement + 800-53 controls")
+    fr.add_argument("--control", metavar="CTRL", help="reverse: which KSIs confirm an 800-53 control")
+    fr.add_argument("--rules", nargs="?", const="", metavar="FAM", help="program rules (optionally one family, e.g. MAS, SCN)")
+    _add_format(fr); _add_db(fr)
+
     # 800-63b
     b63 = subs.add_parser("800-63b", help="Query NIST SP 800-63B digital identity requirements")
     b63.add_argument("--section", metavar="SEC", help="Section number (e.g. 4.2, 5.1.1)")
@@ -1548,6 +1662,7 @@ def main(argv=None) -> int:
         "cci": cmd_cci,
         "stig": cmd_stig,
         "olir-hub": cmd_olir_hub,
+        "fedramp": cmd_fedramp,
         "eurlex": cmd_eurlex,
         "800-63b": cmd_800_63b,
         "fips": cmd_fips,

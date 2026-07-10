@@ -576,6 +576,56 @@ def main() -> int:
                  "(every edge cites two distinct OLIR refs; controls resolve; "
                  "frameworks stay out of projection/matrix — query-surface tier)")
 
+    # 13. FedRAMP Consolidated Rules 2026 (Phase 26) — source-tracing + containment.
+    #   Every KSI edge must carry basis='fedramp_stated' (FedRAMP's own published mapping),
+    #   a well-formed indicator id that exists in fedramp_ksi, and a catalog-resolving
+    #   control; statuses/lifecycle in enum; ODP pins well-formed; FedRAMP r5 keeps its
+    #   matrix seat while the KSI layer stays out of projection/matrix.
+    have_fr = conn.execute("SELECT name FROM sqlite_master WHERE type='table' "
+                           "AND name='fedramp_ksi'").fetchone()
+    if not have_fr:
+        note("fedramp consolidated rules: skipped (no table)")
+    else:
+        import re as _re
+        _KSI_RE = _re.compile(r"^KSI-[A-Z]{3}-[A-Z0-9]{2,4}$")
+        cat13 = {r[0] for r in conn.execute("SELECT nist_id FROM controls")}
+        cat13 |= {r[0] for r in conn.execute("SELECT id FROM enhancements")}
+        ksis = {r[0]: (r[1], r[2]) for r in conn.execute(
+            "SELECT indicator_id, status, lifecycle FROM fedramp_ksi")}
+        fbad = []
+        for iid, (st, lc) in ksis.items():
+            if not _KSI_RE.match(iid):
+                fbad.append(f"malformed indicator id {iid}")
+            if st not in ("stable", "placeholder"):
+                fbad.append(f"{iid}: status {st!r} outside enum")
+            if lc != "2026_public_preview":
+                fbad.append(f"{iid}: lifecycle {lc!r}")
+        for iid, ctrl, basis in conn.execute(
+                "SELECT indicator_id, r5_control, basis FROM fedramp_ksi_controls"):
+            if iid not in ksis:
+                fbad.append(f"edge {iid}->{ctrl}: orphan indicator")
+            if ctrl not in cat13:
+                fbad.append(f"edge {iid}->{ctrl}: control not in catalog")
+            if basis != "fedramp_stated":
+                fbad.append(f"edge {iid}->{ctrl}: basis {basis!r}")
+        for pid, src in conn.execute("SELECT parameter_id, source FROM fedramp_odp_pins"):
+            if "_odp" not in pid or src != "fedramp_ctl_2026":
+                fbad.append(f"odp pin {pid}/{src} malformed")
+        mx13 = {r[0] for r in conn.execute("SELECT DISTINCT framework_a FROM overlap_matrix")}
+        mx13 |= {r[0] for r in conn.execute("SELECT DISTINCT framework_b FROM overlap_matrix")}
+        pj13 = {r[0] for r in conn.execute("SELECT DISTINCT framework FROM framework_projection")}
+        if "FedRAMP r5" not in mx13:
+            fbad.append("FedRAMP r5 lost its matrix seat")
+        if any(str(fw).startswith("KSI") or "20x" in str(fw) for fw in mx13 | pj13):
+            fbad.append("KSI/20x layer leaked into projection/matrix")
+        if fbad:
+            fail("fedramp consolidated rules malformed: " + "; ".join(fbad[:8]))
+        else:
+            n_e = conn.execute("SELECT COUNT(*) FROM fedramp_ksi_controls").fetchone()[0]
+            note(f"fedramp consolidated rules: {len(ksis)} KSIs / {n_e} fedramp_stated edges "
+                 "(all controls resolve; statuses+lifecycle in enum; ODP pins well-formed; "
+                 "FedRAMP r5 keeps its matrix seat; KSI layer contained)")
+
     conn.close()
 
     print("SPINE VALIDATION:", "FAIL" if FAILS else "PASS")

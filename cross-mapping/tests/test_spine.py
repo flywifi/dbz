@@ -550,6 +550,45 @@ if _DB.exists():
         check(not (_hfws & (_pj_fws2 | _mx_fws2)),
               "olir_hub frameworks never enter framework_projection / overlap_matrix")
 
+    # ── Phase 26: FedRAMP Consolidated Rules 2026 (contained confirmation layer) ─
+    _has_fr = _c2.execute("SELECT name FROM sqlite_master WHERE type='table' "
+                          "AND name='fedramp_ksi'").fetchone()
+    if _has_fr:
+        _nk, _nf = _c2.execute(
+            "SELECT COUNT(*), COUNT(DISTINCT family) FROM fedramp_ksi").fetchone()
+        check(_nk == 46 and _nf == 10, f"fedramp KSI: 46 indicators / 10 families (got {_nk}/{_nf})")
+        _ne = _c2.execute("SELECT COUNT(*) FROM fedramp_ksi_controls").fetchone()[0]
+        check(_ne >= 370, f"fedramp KSI->800-53 edges >=370 (got {_ne})")
+        _catset2 = {r[0] for r in _c2.execute("SELECT nist_id FROM controls")}
+        _catset2 |= {r[0] for r in _c2.execute("SELECT id FROM enhancements")}
+        _badc = sum(1 for (x,) in _c2.execute(
+            "SELECT DISTINCT r5_control FROM fedramp_ksi_controls") if x not in _catset2)
+        check(_badc == 0, f"every fedramp KSI r5_control resolves in the catalog (bad: {_badc})")
+        # rules: pipeline vocabulary is exactly the transition dimension
+        _pipes = {r[0] for r in _c2.execute("SELECT DISTINCT pipeline FROM fedramp_rules")}
+        check(_pipes == {"all", "20x", "rev5"}, f"fedramp rule pipelines exact ({_pipes})")
+        _nr = _c2.execute("SELECT COUNT(*) FROM fedramp_rules").fetchone()[0]
+        check(_nr >= 240, f"fedramp rules >=240 leaf rules (got {_nr})")
+        _no, _ng = _c2.execute("SELECT (SELECT COUNT(*) FROM fedramp_odp_pins), "
+                               "(SELECT COUNT(*) FROM fedramp_ctl_guidance)").fetchone()
+        check(_no == 16 and _ng == 65, f"fedramp CTL captured completely: 16 ODP pins + 65 guidance rows (got {_no}/{_ng})")
+        # carry-over vs the FedRAMP r5 Moderate baseline — measured 95.2%, pinned >=90%
+        _tot = _c2.execute("SELECT COUNT(DISTINCT r5_control) FROM fedramp_ksi_controls").fetchone()[0]
+        _inm = _c2.execute("""
+            SELECT COUNT(DISTINCT e.r5_control) FROM fedramp_ksi_controls e
+            WHERE EXISTS (SELECT 1 FROM controls c WHERE c.nist_id=e.r5_control AND c.baseline_moderate=1)
+               OR EXISTS (SELECT 1 FROM enhancements h WHERE h.id=e.r5_control AND h.baseline_moderate=1)
+        """).fetchone()[0]
+        check(_tot > 0 and _inm / _tot >= 0.90,
+              f"KSI carry-over: >=90% of KSI-cited controls sit in the Moderate baseline (got {_inm}/{_tot})")
+        # containment: the KSI layer never leaks; FedRAMP r5 KEEPS its matrix seat
+        _mx3 = {x[0] for x in _c2.execute("SELECT DISTINCT framework_a FROM overlap_matrix")}
+        _mx3 |= {x[0] for x in _c2.execute("SELECT DISTINCT framework_b FROM overlap_matrix")}
+        check("FedRAMP r5" in _mx3, "FedRAMP r5 keeps its first-class matrix seat")
+        _pj3 = {x[0] for x in _c2.execute("SELECT DISTINCT framework FROM framework_projection")}
+        check(not any(str(fw).startswith("KSI") or "20x" in str(fw) for fw in _mx3 | _pj3),
+              "KSI/20x layer never enters overlap_matrix / framework_projection")
+
     # label registry loaded; the in-module dicts must match it exactly
     import master_surface as MSF  # type: ignore
     _reg = {r[0]: r[2] for r in _c2.execute(

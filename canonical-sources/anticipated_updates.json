@@ -2,7 +2,7 @@
   "_meta": {
     "schema": "anticipated_updates/1.0",
     "description": "Horizon-scanning registry: expected/scheduled future revisions to standards the ecosystem tracks, so updates are watched-for and never missed. Read by horizon_monitor.py. Owner role: canonical-truth-updater. Never fabricate a date — use no_fixed_date.",
-    "record_count": 62
+    "record_count": 70
   },
   "records": [
     {
@@ -338,7 +338,7 @@
       "escalate_after_days": 120,
       "last_checked": null,
       "last_change_detected": null,
-      "notes": "FedRAMP 20x Phase 2 (2026); full 20x automation mandate TBD"
+      "notes": "Superseded context: the Consolidated Rules 2026 timeline is now tracked by the au-fedramp-* records (Class pipelines, mandatory adoption 2027-01-01, end of new Rev5 certs 2027-06-11)."
     },
     {
       "id": "au-fedramp-20x",
@@ -368,7 +368,7 @@
       "escalate_after_days": 120,
       "last_checked": null,
       "last_change_detected": null,
-      "notes": "draft_status=ipd"
+      "notes": "Superseded context: canonical dataset now ingested (fedramp-consolidated-rules 2026.07.06.01); revisions tracked by au-fedramp-rules-revision."
     },
     {
       "id": "au-ffiec-cat",
@@ -1813,6 +1813,246 @@
       "last_checked": null,
       "last_change_detected": null,
       "notes": "Cyber Resilience Act incident/vuln reporting duties apply 2026-09-11; full application 2027-12-11."
+    },
+    {
+      "id": "au-fedramp-ready-sunset",
+      "feed_id": "fedramp",
+      "authority": "FedRAMP (GSA)",
+      "artifact": "FedRAMP Ready goes legacy",
+      "current_version": "FedRAMP Ready active",
+      "expected_type": "amendment",
+      "lifecycle_stage": "final",
+      "expected_window": {
+        "earliest": "2026-07-28",
+        "latest": "2026-07-28",
+        "basis": "fedramp.gov/2026/timeline/"
+      },
+      "confidence": "high",
+      "trigger_signal": "no new FedRAMP Ready submissions accepted",
+      "detection": {
+        "url": "https://www.fedramp.gov/2026/timeline/",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "monthly",
+      "source_urls": [
+        "https://www.fedramp.gov/2026/timeline/"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 30,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Providers directed to 20x Class A certification instead."
+    },
+    {
+      "id": "au-fedramp-class-a",
+      "feed_id": "fedramp-20x",
+      "authority": "FedRAMP (GSA)",
+      "artifact": "20x Class A certification pipeline opens",
+      "current_version": "pre-pipeline",
+      "expected_type": "amendment",
+      "lifecycle_stage": "final",
+      "expected_window": {
+        "earliest": "2026-08-03",
+        "latest": "2026-08-03",
+        "basis": "fedramp.gov/2026/timeline/"
+      },
+      "confidence": "high",
+      "trigger_signal": "Class A applications accepted",
+      "detection": {
+        "url": "https://www.fedramp.gov/2026/timeline/",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "monthly",
+      "source_urls": [
+        "https://www.fedramp.gov/2026/timeline/"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 30,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "First 20x certification class pipeline."
+    },
+    {
+      "id": "au-fedramp-rev5-bc-temp",
+      "feed_id": "fedramp",
+      "authority": "FedRAMP (GSA)",
+      "artifact": "Temporary Rev5 Class B/C pipelines open",
+      "current_version": "n/a",
+      "expected_type": "amendment",
+      "lifecycle_stage": "final",
+      "expected_window": {
+        "earliest": "2026-08-10",
+        "latest": "2026-08-10",
+        "basis": "fedramp.gov/2026/timeline/"
+      },
+      "confidence": "high",
+      "trigger_signal": "Ready Conversion + Lost Sponsor pipelines open (Rev5 B/C without agency sponsor)",
+      "detection": {
+        "url": "https://www.fedramp.gov/2026/timeline/",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "monthly",
+      "source_urls": [
+        "https://www.fedramp.gov/2026/timeline/"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 30,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Transition-window mechanism for existing Rev5 providers."
+    },
+    {
+      "id": "au-fedramp-class-bc",
+      "feed_id": "fedramp-20x",
+      "authority": "FedRAMP (GSA)",
+      "artifact": "20x Class B & C pipelines open",
+      "current_version": "pre-pipeline",
+      "expected_type": "amendment",
+      "lifecycle_stage": "final",
+      "expected_window": {
+        "earliest": "2026-08-31",
+        "latest": "2026-08-31",
+        "basis": "fedramp.gov/2026/timeline/"
+      },
+      "confidence": "high",
+      "trigger_signal": "Class B/C applications accepted",
+      "detection": {
+        "url": "https://www.fedramp.gov/2026/timeline/",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "monthly",
+      "source_urls": [
+        "https://www.fedramp.gov/2026/timeline/"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 30,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": ""
+    },
+    {
+      "id": "au-fedramp-mandatory-adoption",
+      "feed_id": "fedramp-20x",
+      "authority": "FedRAMP (GSA)",
+      "artifact": "Consolidated Rules 2026 mandatory adoption",
+      "current_version": "optional early adoption since 2026-07-04",
+      "expected_type": "major_rev",
+      "lifecycle_stage": "final",
+      "expected_window": {
+        "earliest": "2027-01-01",
+        "latest": "2027-01-01",
+        "basis": "fedramp.gov/2026/timeline/"
+      },
+      "confidence": "high",
+      "trigger_signal": "rules mandatory for all stakeholders",
+      "detection": {
+        "url": "https://www.fedramp.gov/2026/timeline/",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://www.fedramp.gov/2026/timeline/"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 45,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "The audit-framework revision takes mandatory effect (ISO-2013->2022-style transition of the same 800-53-derived framework)."
+    },
+    {
+      "id": "au-fedramp-rev5-cert-end",
+      "feed_id": "fedramp",
+      "authority": "FedRAMP (GSA)",
+      "artifact": "End of NEW Rev5 certifications",
+      "current_version": "Rev5 certifications open",
+      "expected_type": "amendment",
+      "lifecycle_stage": "final",
+      "expected_window": {
+        "earliest": "2027-06-11",
+        "latest": "2027-06-11",
+        "basis": "fedramp.gov/2026/timeline/"
+      },
+      "confidence": "high",
+      "trigger_signal": "no new Rev5 certification applications",
+      "detection": {
+        "url": "https://www.fedramp.gov/2026/timeline/",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "quarterly",
+      "source_urls": [
+        "https://www.fedramp.gov/2026/timeline/"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 45,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "EXISTING Rev5 certifications persist; 800-53 r5 remains the master mapping spine."
+    },
+    {
+      "id": "au-fedramp-rules-revision",
+      "feed_id": "fedramp-20x",
+      "authority": "FedRAMP (GSA)",
+      "artifact": "Consolidated Rules dataset revision",
+      "current_version": "2026.07.06.01",
+      "expected_type": "minor_rel",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "med",
+      "trigger_signal": "info.last_updated changes in the rules JSON",
+      "detection": {
+        "url": "https://raw.githubusercontent.com/FedRAMP/rules/main/fedramp-consolidated-rules.json",
+        "method": "api_poll",
+        "match": ""
+      },
+      "poll_frequency": "monthly",
+      "source_urls": [
+        "https://raw.githubusercontent.com/FedRAMP/rules/main/fedramp-consolidated-rules.json"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 90,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": "Continuous-revision dataset; re-harvest + re-pin on change."
+    },
+    {
+      "id": "au-fedramp-schemas-set",
+      "feed_id": "fedramp-schemas",
+      "authority": "FedRAMP (GSA)",
+      "artifact": "Reporting-schema set revision",
+      "current_version": "2026-06-24 set (11 schemas)",
+      "expected_type": "minor_rel",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "med",
+      "trigger_signal": "a schema filename dated after 2026-06-24 appears at fedramp.gov/schemas/",
+      "detection": {
+        "url": "https://www.fedramp.gov/schemas/",
+        "method": "poll_landing",
+        "match": ""
+      },
+      "poll_frequency": "monthly",
+      "source_urls": [
+        "https://www.fedramp.gov/schemas/"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": null,
+      "last_change_detected": null,
+      "notes": ""
     }
   ]
 }

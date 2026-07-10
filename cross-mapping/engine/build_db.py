@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.11"  # v3.11: olir_hub_edges (third-party->CSF2->800-53 composed via the CSF 2.0 hub); v3.10: anticipated_updates (horizon-scanning); v3.9: full CCI dictionary + cci_mapping_corroboration
+SCHEMA_VERSION = "3.12"  # v3.12: FedRAMP Consolidated Rules 2026 (fedramp_ksi, fedramp_ksi_controls, fedramp_rules, fedramp_odp_pins); v3.11: olir_hub_edges; v3.10: anticipated_updates
 
 CHUNK = 500  # executemany batch size
 
@@ -642,6 +642,54 @@ CREATE TABLE IF NOT EXISTS olir_hub_edges (
     PRIMARY KEY (framework, native_id, csf2_id, r5_control)
 );
 CREATE INDEX IF NOT EXISTS idx_olirhub_fw ON olir_hub_edges(framework);
+
+-- FedRAMP Consolidated Rules 2026 (Phase 26): the machine-readable audit-framework
+-- revision (confirmation/monitoring machinery). KSI edges are FedRAMP's OWN published
+-- 800-53 mapping. Contained query-surface tier — never enters framework_projection /
+-- overlap_matrix / master_mappings; FedRAMP r5 keeps its matrix seat unchanged.
+CREATE TABLE IF NOT EXISTS fedramp_ksi (
+    indicator_id TEXT PRIMARY KEY,     -- e.g. "KSI-IAM-AAM"
+    family       TEXT NOT NULL,        -- e.g. "KSI-IAM"
+    family_name  TEXT,
+    name         TEXT,
+    statement    TEXT,
+    status       TEXT,                 -- dataset-published status (stable | placeholder | ...)
+    lifecycle    TEXT NOT NULL         -- 2026_public_preview
+);
+CREATE TABLE IF NOT EXISTS fedramp_ksi_controls (
+    indicator_id TEXT NOT NULL REFERENCES fedramp_ksi(indicator_id),
+    r5_control   TEXT NOT NULL,        -- resolved 800-53 r5 id
+    basis        TEXT NOT NULL,        -- fedramp_stated (authority-published self-mapping)
+    confidence   REAL NOT NULL DEFAULT 0.9,
+    PRIMARY KEY (indicator_id, r5_control)
+);
+CREATE INDEX IF NOT EXISTS idx_frksi_ctrl ON fedramp_ksi_controls(r5_control);
+CREATE TABLE IF NOT EXISTS fedramp_rules (
+    rule_id        TEXT NOT NULL,      -- e.g. "AFC-FRP-VRE"
+    family         TEXT NOT NULL,      -- e.g. "AFC"
+    family_name    TEXT,
+    pipeline       TEXT NOT NULL,      -- all | 20x | rev5 (the version-transition dimension)
+    subgroup       TEXT NOT NULL,
+    name           TEXT,
+    statement      TEXT,
+    force          TEXT,               -- MUST | SHOULD | ...
+    status         TEXT,               -- family status (stable | placeholder)
+    effective_json TEXT,
+    PRIMARY KEY (rule_id, pipeline, subgroup)
+);
+CREATE TABLE IF NOT EXISTS fedramp_odp_pins (
+    parameter_id TEXT NOT NULL,        -- e.g. "ac-06.01_odp.02"
+    r5_control   TEXT,
+    value        TEXT,
+    source       TEXT NOT NULL,        -- fedramp_ctl_2026
+    PRIMARY KEY (parameter_id, source)
+);
+CREATE TABLE IF NOT EXISTS fedramp_ctl_guidance (
+    ctl_key              TEXT PRIMARY KEY,  -- dataset key, e.g. "AC-20"
+    r5_control           TEXT,
+    guidance_json        TEXT,              -- FedRAMP implementation guidance (JSON list)
+    varies_by_class_json TEXT               -- per-certification-class guidance where it differs
+);
 """
 
 
@@ -1437,6 +1485,38 @@ def build_db(
     else:
         print(f"  olir_hub_edges: skipped ({olir_hub_stats.get('skipped')})")
 
+    # Phase 26: FedRAMP Consolidated Rules 2026 (KSIs + rules + ODP pins).
+    # Contained tier — never enters framework_projection / overlap_matrix / master_mappings.
+    fr_ksi, fr_edges, fr_rules, fr_odp, fr_guid, fr_stats = spine_loader.load_fedramp_rules(catalog_ids)
+    if fr_ksi:
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO fedramp_ksi
+                (indicator_id, family, family_name, name, statement, status, lifecycle)
+            VALUES (:indicator_id, :family, :family_name, :name, :statement, :status, :lifecycle)
+        """, fr_ksi, "fedramp_ksi")
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO fedramp_ksi_controls
+                (indicator_id, r5_control, basis, confidence)
+            VALUES (:indicator_id, :r5_control, :basis, :confidence)
+        """, fr_edges, "fedramp_ksi_controls")
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO fedramp_rules
+                (rule_id, family, family_name, pipeline, subgroup, name, statement, force, status, effective_json)
+            VALUES (:rule_id, :family, :family_name, :pipeline, :subgroup, :name, :statement, :force, :status, :effective_json)
+        """, fr_rules, "fedramp_rules")
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO fedramp_odp_pins (parameter_id, r5_control, value, source)
+            VALUES (:parameter_id, :r5_control, :value, :source)
+        """, fr_odp, "fedramp_odp_pins")
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO fedramp_ctl_guidance
+                (ctl_key, r5_control, guidance_json, varies_by_class_json)
+            VALUES (:ctl_key, :r5_control, :guidance_json, :varies_by_class_json)
+        """, fr_guid, "fedramp_ctl_guidance")
+        print(f"  fedramp consolidated rules: {fr_stats}")
+    else:
+        print(f"  fedramp consolidated rules: skipped ({fr_stats.get('skipped')})")
+
     conn.commit()
 
     # Phase 22: CCI↔800-53 mapping corroboration (DISA bridge × acasehs × trackr ×
@@ -1822,7 +1902,9 @@ def build_db(
                 "framework_projection", "hitrust_hub", "odp_values", "overlap_matrix",
                 "consensus_edges", "framework_labels", "master_mappings",
                 "stig_catalog", "stig_rules", "stig_cci_usage",
-                "cci_mapping_corroboration", "anticipated_updates", "olir_hub_edges"):
+                "cci_mapping_corroboration", "anticipated_updates", "olir_hub_edges",
+                "fedramp_ksi", "fedramp_ksi_controls", "fedramp_rules", "fedramp_odp_pins",
+                "fedramp_ctl_guidance"):
         row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
         counts[tbl] = row[0]
 
@@ -1833,7 +1915,8 @@ def build_db(
                 "master_mappings", "framework_labels", "unified_mappings",
                 "stig_catalog", "stig_rules", "stig_cci_usage",
                 "disa_ccis", "cci_mapping_corroboration", "anticipated_updates",
-                "olir_hub_edges"):
+                "olir_hub_edges", "fedramp_ksi", "fedramp_ksi_controls",
+                "fedramp_rules", "fedramp_odp_pins", "fedramp_ctl_guidance"):
         cols = [r[1] for r in conn.execute(f"PRAGMA table_info({tbl})") if r[1] != "rowid"]
         h = hashlib.sha256()
         for row in conn.execute(f"SELECT {','.join(cols)} FROM {tbl} ORDER BY {','.join(cols)}"):

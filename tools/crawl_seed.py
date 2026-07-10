@@ -53,6 +53,9 @@ def _expand_seed(seed: Dict[str, Any]) -> List[Dict[str, str]]:
             out.append({"seed": sid, "kind": "github_raw",
                         "url": tmpl.format(repo=r["repo"], ref=r.get("ref", "main")),
                         "status": r.get("status", "")})
+    elif resolver == "path_list":
+        for p in seed.get("paths", []):
+            out.append({"seed": sid, "kind": "site_path", "url": tmpl.format(path=p)})
     # deterministic order
     out.sort(key=lambda r: (r["seed"], r["kind"], r["url"]))
     return out

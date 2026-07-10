@@ -243,3 +243,17 @@ run finds new documents and sub-domains on its own:
 
 `crawl_seed.py --selftest` asserts determinism + registry well-formedness (also in the gate
 battery via `test_spine`).
+
+## FedRAMP Consolidated Rules currency (Phase 26)
+
+The canonical dataset is continuously revised. Currency checks:
+1. Poll `info.version` / `info.last_updated` in
+   `raw.githubusercontent.com/FedRAMP/rules/main/fedramp-consolidated-rules.json` against the
+   `fedramp-consolidated-rules` manifest pin (feed `fedramp-20x`, api_poll). On drift: re-fetch the
+   complete file, re-pin sha + version, rebuild, and re-run the Phase 26 gates (KSI counts and the
+   carry-over ratio are measure-then-pin — re-measure on refresh).
+2. Watch `fedramp.gov/schemas/` for a schema filename dated after 2026-06-24 (feed
+   `fedramp-schemas`); on a new set, mirror the complete files and update manifest pins.
+3. Watch `/rfcs/` for RFC numbers above the last observed (feed `fedramp-rfcs`) and the
+   2026-markdown `_sources.json` sha (feed `fedramp-2026-docs`); route dated announcements to
+   `anticipated_updates.json` (the `au-fedramp-*` records track the published transition timeline).

@@ -458,3 +458,15 @@ were fixed; metadata contradictions reconciled. Seven Tier-2 control catalogues 
 the CSF 2.0 hub (two OLIR refs per edge, contained off the matrix). Broken/gated endpoints
 (OLIR bulk API, FedRAMP OSCAL, CPRT nudp REST) are indexed with path-discovery notes, not
 claimed as ingestable.
+
+## Phase 26 — FedRAMP Consolidated Rules 2026 (the modernized program)
+
+The complete canonical dataset (`FedRAMP/rules` → `fedramp-consolidated-rules.json`,
+v2026.07.06.01), its JSON schema, all 11 certification-data reporting schemas (2026-06-24 set),
+and the whole `FedRAMP/2026-markdown` narrative corpus (291 files) are committed verbatim under
+`canonical-sources/source_data/fedramp/` — see `docs/fedramp-modernization.md` for the model.
+This is an audit-framework revision on top of the unchanged 800-53 r5 spine (the ISO 2013→2022
+pattern): FedRAMP r5 keeps its matrix seat; the KSI confirmation layer (46 indicators, 373
+FedRAMP-published KSI→800-53 edges, 95.2% inside the Moderate baseline) is a contained
+query-surface tier. GSA/fedramp-automation is archived (2025-07-01); FedRAMP/docs is legacy;
+the living sources are FedRAMP/rules + fedramp.gov/2026/ + fedramp.gov/schemas/.

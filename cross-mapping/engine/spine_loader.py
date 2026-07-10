@@ -767,6 +767,122 @@ def load_olir_hub_edges(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
     return edges, stats
 
 
+# ── FedRAMP Consolidated Rules 2026: KSIs, rules, ODP pins (Phase 26) ───────────
+# The canonical machine-readable dataset (FedRAMP/rules). KSI indicators carry
+# FedRAMP's OWN 800-53 r5 control arrays — the official KSI->800-53 crosswalk.
+# Contained query-surface tier: never enters framework_projection / overlap_matrix /
+# master_mappings. FedRAMP r5 keeps its first-class matrix seat unchanged — this is
+# an audit-framework revision (confirmation/monitoring machinery), not a spine change.
+
+_FEDRAMP_LIFECYCLE = "2026_public_preview"
+
+
+def _ctl_key_to_control(key: str) -> Optional[str]:
+    """CTL section key ('AC-06-01', 'AC-20') -> canonical control id ('AC-6(1)', 'AC-20')."""
+    parts = str(key).strip().upper().split("-")
+    if len(parts) < 2 or not parts[1].isdigit():
+        return None
+    base = f"{parts[0]}-{int(parts[1])}"
+    if len(parts) >= 3 and parts[2].isdigit():
+        return normalize_control_id(f"{base}({int(parts[2])})")
+    return normalize_control_id(base)
+
+
+def load_fedramp_rules(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], List[dict], List[dict], dict]:
+    """Parse the committed complete FedRAMP consolidated-rules dataset into
+    (ksi_rows, ksi_control_rows, rule_rows, odp_rows, stats).  Every KSI control
+    reference is resolved against the 800-53 catalog via oscal_control_id;
+    unresolvable ids are counted and reported, never guessed."""
+    src = "fedramp-consolidated-rules"
+    path = source_path(src)
+    if not path.exists():
+        return [], [], [], [], {"skipped": "artifact not on disk"}
+    d = json.loads(path.read_text(encoding="utf-8"))
+    info = d.get("info", {})
+
+    ksi_rows: List[dict] = []
+    edge_rows: List[dict] = []
+    unresolved: List[str] = []
+    for fam_key, fam in sorted(d.get("KSI", {}).items()):
+        for ind_id, ind in sorted(fam.get("indicators", {}).items()):
+            ksi_rows.append({
+                "indicator_id": ind_id, "family": fam.get("id", f"KSI-{fam_key}"),
+                "family_name": fam.get("name", ""), "name": ind.get("name", ""),
+                "statement": ind.get("statement", ""),
+                "status": fam.get("status", ""), "lifecycle": _FEDRAMP_LIFECYCLE,
+            })
+            for ref in ind.get("controls", []):
+                ctrl = oscal_control_id(str(ref).strip())
+                if not ctrl or ctrl not in catalog_ids:
+                    unresolved.append(f"{ind_id}:{ref}")
+                    continue
+                edge_rows.append({
+                    "indicator_id": ind_id, "r5_control": ctrl,
+                    "basis": "fedramp_stated", "confidence": 0.9,
+                })
+    # dedupe edges deterministically (an indicator may cite a control once only, but guard)
+    seen: Set[Tuple[str, str]] = set()
+    edge_rows = [e for e in edge_rows
+                 if (k := (e["indicator_id"], e["r5_control"])) not in seen and not seen.add(k)]
+
+    rule_rows: List[dict] = []
+    for fam_key, fam in sorted(d.get("FRR", {}).items()):
+        fi = fam.get("info", {})
+        for pipeline, subgroups in sorted(fam.get("data", {}).items()):
+            if not isinstance(subgroups, dict):
+                continue
+            for sub_key, rules in sorted(subgroups.items()):
+                if not isinstance(rules, dict):
+                    continue
+                for rule_id, rule in sorted(rules.items()):
+                    if not isinstance(rule, dict):
+                        continue
+                    rule_rows.append({
+                        "rule_id": rule_id, "family": fam_key,
+                        "family_name": fi.get("name", ""),
+                        "pipeline": pipeline, "subgroup": sub_key,
+                        "name": rule.get("name", ""),
+                        "statement": rule.get("statement", ""),
+                        "force": rule.get("force", ""),
+                        "status": fi.get("status", ""),
+                        "effective_json": json.dumps(fi.get("effective"), sort_keys=True)
+                                          if fi.get("effective") else None,
+                    })
+
+    odp_rows: List[dict] = []
+    guidance_rows: List[dict] = []
+    for fam_key, ctrls in sorted(d.get("CTL", {}).items()):
+        for ctl_key, entry in sorted(ctrls.items()):
+            ctrl = _ctl_key_to_control(ctl_key)
+            for p in entry.get("parameters", []):
+                odp_rows.append({
+                    "parameter_id": str(p.get("parameterId", "")).strip(),
+                    "r5_control": ctrl or "",
+                    "value": str(p.get("value", "")).strip(),
+                    "source": "fedramp_ctl_2026",
+                })
+            if entry.get("guidance") or entry.get("varies_by_class"):
+                guidance_rows.append({
+                    "ctl_key": ctl_key, "r5_control": ctrl or "",
+                    "guidance_json": json.dumps(entry.get("guidance"), sort_keys=True)
+                                     if entry.get("guidance") else None,
+                    "varies_by_class_json": json.dumps(entry.get("varies_by_class"), sort_keys=True)
+                                            if entry.get("varies_by_class") else None,
+                })
+    odp_rows.sort(key=lambda r: (r["parameter_id"], r["r5_control"]))
+    guidance_rows.sort(key=lambda r: r["ctl_key"])
+    ksi_rows.sort(key=lambda r: r["indicator_id"])
+    edge_rows.sort(key=lambda r: (r["indicator_id"], r["r5_control"]))
+    rule_rows.sort(key=lambda r: (r["rule_id"], r["pipeline"], r["subgroup"]))
+
+    stats = {"dataset_version": info.get("version"), "ksi": len(ksi_rows),
+             "ksi_edges": len(edge_rows), "rules": len(rule_rows),
+             "odp_pins": len(odp_rows), "ctl_guidance": len(guidance_rows),
+             "unresolved_controls": len(unresolved),
+             "unresolved_sample": unresolved[:8]}
+    return ksi_rows, edge_rows, rule_rows, odp_rows, guidance_rows, stats
+
+
 def load_pci_master_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
     """PCI DSS v4.0 requirements -> 800-53 r5 controls from the user-provided
     master crosswalk's PCI column.  Bundled tier: co-citation by a single
