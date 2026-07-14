@@ -99,6 +99,14 @@ def composite_skill_dirs() -> List[Path]:
 # ── reference-integrity helpers ──────────────────────────────────────────────
 _BACKTICK = re.compile(r"`([^`\n]+)`")
 
+# Gitignored generated-output directories (see .gitignore). Backtick references to
+# files under these are documented build artifacts, not source files — they never
+# exist in a clean checkout, so the reference checker must not flag them.
+_BUILD_OUTPUT_PREFIXES = (
+    "cross-mapping/output/",
+    "cross-mapping/nist-catalog/output/",
+)
+
 
 def _looks_like_path(tok: str) -> bool:
     tok = tok.strip()
@@ -121,6 +129,11 @@ def _resolve(tok: str, skill_dir: Path, md_dir: Path) -> bool:
     tok = re.sub(r":\d+$", "", tok)                 # strip ':NN' line reference
     tok = re.sub(r":[A-Za-z_]\w*(\(\))?$", "", tok)  # strip ':func()' / ':symbol' suffix
     if not tok:
+        return True
+    # Generated build artifacts (gitignored output dirs) are legitimately absent in a
+    # fresh checkout — a SKILL documenting a side-output it *writes* is not a dangling
+    # reference. Same principle as the uncertainty ledger ("its absence is fine").
+    if any(tok.startswith(p) for p in _BUILD_OUTPUT_PREFIXES):
         return True
     if "*" in tok:  # glob — resolve the directory portion instead
         parent = tok.rsplit("/", 1)[0] if "/" in tok else ""
