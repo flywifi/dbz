@@ -3,7 +3,12 @@
 How the GRC cross-mapping backend turns raw framework spreadsheets into a
 validated, multi-scenario handoff contract — and how it stays current.
 
-## Two cores + an update layer + a query DB
+## Two ingestion inputs → one 800-53 spine → one unified surface → a query DB
+
+The NIST-catalog side and the commercial-audit side are **two ingestion inputs, not two
+products**. Both are normalized onto a single **NIST 800-53 r5 spine**, and from that spine a
+single `master_mappings` surface + precomputed `overlap_matrix` answer any-framework ↔
+any-framework. (Before Phase 19 these were two separate crosswalks; they are now one graph.)
 
 ```
                     ┌─────────────────────────────────────────────────────┐
@@ -12,35 +17,45 @@ validated, multi-scenario handoff contract — and how it stays current.
                     │  oscal_diff.py           (control-level diff)         │
                     │  framework_monitor.py    (version signals)            │
                     │  announcement_monitor.py (RSS/Atom announcement feeds)│
-                    │      ▲ feed_registry.json (31 sources)                │
-                    │      → announcements_feed.json (structured entries)   │
-                    │      → framework_changelog.json (confirmed diffs)     │
+                    │  horizon_monitor.py      (anticipated future revs)    │
+                    │      ▲ feed_registry.json (160 sources)               │
+                    │      → announcements_feed.json / framework_changelog  │
+                    │      → anticipated_updates.json (horizon, 70 records) │
                     └──────┼──────────────────────────────────────────────┘
                            │ flags "re-pin source X"
         ┌──────────────────┴───────────────────┐
         │            source_manifest.json        │  ← every sheet/column/version pin
         └──────────────────┬───────────────────┘
-            ┌──────────────┴──────────────┐
+            ┌──────────────┴──────────────┐        (two INPUTS, not two products)
             ▼                             ▼
 ┌───────────────────────┐   ┌───────────────────────────┐
-│  NIST 800-53 core     │   │   ER / commercial-audit core │
-│  (federal/FedRAMP/CUI)│   │   (SOC/ISO/HIPAA/HITRUST)    │
-│  generate_controls.py │   │   er_overlap.py              │
-└───────────┬───────────┘   └─────────────┬───────────────┘
-            ▼                              ▼
-   handoff contract v1.1.0          ER overlap matrix
-   (324 ctrls + 872 enh)            (shared audit work %)
-            │                              │
+│  NIST 800-53 input    │   │   commercial-audit input   │
+│  (federal/FedRAMP/CUI)│   │   (SOC/ISO/HIPAA/HITRUST…) │
+│  generate_controls.py │   │   er_overlap.py            │
+└───────────┬───────────┘   └─────────────┬─────────────┘
             └──────────────┬───────────────┘
                            ▼
+              NIST 800-53 r5 PROJECTION SPINE
+              (framework_projection — every framework normalized onto 324
+               controls + 872 enhancements; the single common yardstick)
+                           │
+                           ▼
+              ONE UNIFIED SURFACE
+              master_mappings (23 frameworks, 7 provenance tiers)
+              + overlap_matrix (120 precomputed pairs = shared-work %)
+              + depth layers: cci_bridge / disa_ccis (5,137) · stig_* ·
+                olir_hub_edges · fedramp_ksi_* (FedRAMP 2026 KSIs)
+                           │
+                           ▼
                      build_db.py
-              ┌─────────────────────┐
-              │   grc.db (SQLite)   │  ← query layer; rebuilt after every catalog run
-              │  15–20 MB, indexed  │
-              └────────┬────────────┘
+              ┌──────────────────────────────┐
+              │   grc.db (SQLite, ~40 tables) │  ← query layer; deterministic rebuild
+              │   schema 3.12, indexed        │
+              └────────┬─────────────────────┘
                        ▼
-                 dbz_query.py  (CLI: reverse, forward, scope, overlap,
-                                search, changelog, feeds, announcements)
+                 dbz_query.py  (CLI: master, overlap, reverse, forward, scope,
+                                consensus, cci, stig, fedramp, olir-hub, horizon,
+                                feeds, changelog, search, … — `-h` for the full set)
 ```
 
 ## The handoff contract (schema v1.1.0)
