@@ -39,6 +39,13 @@ repos:
         pass_filenames: false
         always_run: true
 
+      - id: output-validate-selftest
+        name: output validator self-test (fabrication / unsourced / leak fixtures)
+        entry: python3 tools/output_validate.py --selftest
+        language: system
+        pass_filenames: false
+        always_run: true
+
       - id: spine-self-test
         name: overlap spine self-test (normalizers + loaders + overlap + ledger)
         entry: python3 cross-mapping/tests/test_spine.py

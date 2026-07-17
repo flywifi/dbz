@@ -90,6 +90,11 @@ Unless the user requests a different deliverable, produce:
 3. **Summary** with counts by framework and native domain or criterion order
 4. **Optional posture analysis** only when the user asks for interpretation
 
+Recommended post-step (advisory): run `python3 tools/output_validate.py <output-file>` on the
+finished deliverable before handing it off — it mechanically checks every cited control/CCI id
+against the catalog, flags unsourced figures and overconfident tier language, and re-runs the
+publication-hygiene leak patterns. Any HIGH finding means human review before release.
+
 ## Example Requests
 
 - “Analyze this SOC 2 Type 2 report and produce Control Review, Exception Focus, and Summary.”

@@ -58,6 +58,9 @@ envelope; the discipline (schema-forced return, human_review_required) still app
 4. **Consolidate** — `findings-consolidate` merges the wave (dedup by key, conflicts
    preserved, confidence floored, coverage honest). It emits `pending_verification` — the
    high-materiality keys (conflicts, low/uncertain confidence) that must be skeptic-checked.
+   Recommended post-step (advisory) for GRC deliverables: run
+   `python3 tools/output_validate.py` on the consolidated output — mechanical id-reality,
+   unsourced-number, tier-alignment, and leak checks; any HIGH finding needs human review.
 5. **Adversarially verify** — for each `pending_verification` key, run `finding-verify`:
    independent skeptics prompted to *refute*, tallied deterministically. Refuted findings
    leave the trusted set and land in `minority_report.failed_to_merge`; unverifiable ones
