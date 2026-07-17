@@ -23,7 +23,7 @@ overlapping controls listed. It's **one unified map**, not a shelf of separate c
 | Layer | What it gives you |
 |---|---|
 | **800-53 r5 spine** | The common yardstick — 324 controls + 872 enhancements every framework maps onto |
-| **Master mapping surface** | 23 frameworks, any-to-any comparisons, each edge tagged by how it was established |
+| **Master mapping surface** | 35 frameworks, any-to-any comparisons, each edge tagged by how it was established |
 | **Overlap matrix** | 120 precomputed framework pairs (the 16 canonical frameworks) with shared-work % |
 | **CCI dictionary** | 5,137 DISA control-correlation identifiers with definitions + multi-source corroboration |
 | **STIG evidence** | 383 hardening benchmarks / 19,667 rules for per-product implementation proof |

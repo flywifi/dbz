@@ -519,6 +519,31 @@ def check_publication_hygiene() -> List[Dict[str, Any]]:
     return findings
 
 
+def check_count_truth() -> List[Dict[str, Any]]:
+    """Doc-number truth (blocking) + URL provenance (warning), via tools/count_truth.py.
+    Claims that need build artifacts are skipped there on a fresh checkout — this
+    check degrades honestly in CI, exactly like the build-output reference rule."""
+    findings: List[Dict[str, Any]] = []
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import count_truth
+    except Exception as e:  # never let an import problem mask the rest of the audit
+        return [_f("warning", "count_truth", f"count_truth unavailable ({e})",
+                   "fix tools/count_truth.py", False, "tools/count_truth.py")]
+    drift, _skips = count_truth.check_doc_claims()
+    for rel, cid, msg in drift:
+        findings.append(_f("blocking", "count_truth",
+                           f"doc claim '{cid}' drifted: {rel} {msg}",
+                           f"update the number in {rel} (or re-register the claim in "
+                           "canonical-sources/doc_claims.json)", False, rel))
+    for rel, url in count_truth.check_url_provenance():
+        findings.append(_f("warning", "url_provenance",
+                           f"undeclared URL host: {url}",
+                           f"declare the source in a canonical registry or add the host to "
+                           "tools/url-allowlist.json with a reason", False, rel))
+    return findings
+
+
 def run_audit(full: bool = False, data_target: Path | None = None) -> Dict[str, Any]:
     reg = json.loads(REGISTRY.read_text(encoding="utf-8")) if REGISTRY.exists() else {"atoms": []}
     reg_ids = {a["id"] for a in reg.get("atoms", [])}
@@ -529,6 +554,7 @@ def run_audit(full: bool = False, data_target: Path | None = None) -> Dict[str, 
     findings += check_uncertainty_ledger()
     findings += check_feed_staleness()
     findings += check_publication_hygiene()
+    findings += check_count_truth()
     if data_target is not None:
         findings += check_vocab_file(data_target)
     elif full:

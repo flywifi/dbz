@@ -1,0 +1,13 @@
+{
+  "_schema_version": "1.0",
+  "_purpose": "Hosts a code URL literal may target without being declared in a canonical registry (feed_registry / crawl_seeds / source_manifest / anticipated_updates). Every entry carries a reason. Checked by tools/count_truth.py check_url_provenance (via health_audit).",
+  "allowed_hosts": {
+    "purl.org": "XML namespace identifier inside feed parsers - never fetched",
+    "www.w3.org": "XML namespace identifier inside feed parsers - never fetched",
+    "api.github.com": "GitHub API polling used by release monitors; individual repos are declared per-feed",
+    "raw.githubusercontent.com": "raw artifact fetch for feeds pinned in feed_registry/source_manifest",
+    "github.com": "release-tag URL construction for feeds pinned in feed_registry",
+    "archive.org": "Wayback availability API - labeled-fallback fetching only (fetchkit)",
+    "cyber.mil": "CCI-list origin cited in DISA XML metadata; the artifact itself is fetched from dl.dod.cyber.mil (registry-declared)"
+  }
+}
