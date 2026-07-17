@@ -27,6 +27,22 @@ a human does the confirming.
    measured numbers + regression policy in `docs/BENCHMARK.md`). CI runs it in the
    `standards-watch` workflow after a fresh build.
 
+## Shared fetch layer (`cross-mapping/engine/fetchkit.py`)
+
+All live fetching in the monitors routes through fetchkit: per-host pacing (min interval +
+jitter + robots Crawl-delay), Retry-After / RateLimit-Reset respect, a circuit breaker
+(4 consecutive 403/429/503 → 15-minute cooldown), a per-run request budget, and an
+ETag/Last-Modified + sha256 conditional-GET cache. Learned limits and cache state persist in
+`.fetch-cache/` (gitignored). Repeat refresh runs are therefore mostly 304 header exchanges.
+
+**Wayback labeling rule (non-negotiable):** `fetchkit.resilient_get` can fall back to a
+Wayback snapshot on hard failure, and the result is ALWAYS labeled (`source="wayback"` +
+`snapshot_ts`). An archive copy is never live currency: any consumer must record the label in
+its notes, must never update a feed's currency fields from it, and HEAD-based currency polls
+set `allow_wayback=False`. Canonical-artifact fetches in `standards_refresh.py` are live-only.
+Escape hatch for manual verification: delete `.fetch-cache/fetch_state.json` to force full
+re-downloads. Offline unit tests: `cross-mapping/tests/test_fetchkit.py`.
+
 ## STIG library harvest + delta procedure (Phase 21)
 
 The STIG layer is **CCI application evidence**, not a STIG registry. Keeping it current:

@@ -19,3 +19,4 @@ cross-mapping/nist-catalog/output/*.json
 logs/*.jsonl
 logs/*.log
 cross-mapping/output/grc.db-*
+.fetch-cache/

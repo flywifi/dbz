@@ -71,18 +71,23 @@ USER_AGENT = (
 
 TIMEOUT = 15
 
+# Shared politeness layer: per-host pacing + circuit breaker + learned limits.
+# Currency checks are LIVE-only by design — fetchkit's wayback prong is never
+# used here (an archive snapshot must not masquerade as source currency).
+import fetchkit  # sibling module (engine dir already on sys.path)
+
 
 # ── HTTP helpers ───────────────────────────────────────────────────────────────
 
 def _http_head(url: str) -> dict:
     """
-    Send HEAD request to url. Returns metadata dict:
+    Send HEAD request to url (paced via fetchkit). Returns metadata dict:
       {status, etag, last_modified, content_length, error}
     """
     try:
         req = urllib.request.Request(url, method="HEAD",
                                      headers={"User-Agent": USER_AGENT})
-        with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
+        with fetchkit.polite_urlopen(req, timeout=TIMEOUT) as resp:
             return {
                 "status": resp.status,
                 "etag": resp.headers.get("ETag", ""),
@@ -100,7 +105,7 @@ def _http_get_text(url: str, max_bytes: int = 32768) -> Optional[str]:
     """Fetch up to max_bytes of text from url. Returns None on error."""
     try:
         req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-        with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
+        with fetchkit.polite_urlopen(req, timeout=TIMEOUT) as resp:
             return resp.read(max_bytes).decode("utf-8", errors="replace")
     except Exception:
         return None
@@ -135,7 +140,7 @@ def _github_latest_release(repo: str) -> dict:
                 **_github_auth_header(),  # opt-in via 'github_authenticated' flag
             },
         )
-        with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
+        with fetchkit.polite_urlopen(req, timeout=TIMEOUT) as resp:
             data = json.loads(resp.read())
             return {
                 "tag_name": data.get("tag_name", ""),
@@ -164,7 +169,7 @@ def _github_latest_tag(repo: str) -> dict:
             headers={"User-Agent": USER_AGENT, "Accept": "application/vnd.github+json",
                      **_github_auth_header()},
         )
-        with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
+        with fetchkit.polite_urlopen(req, timeout=TIMEOUT) as resp:
             tags = json.loads(resp.read())
             if tags:
                 return {
@@ -485,12 +490,15 @@ def main():
     )
     args = parser.parse_args()
 
-    run_monitor(
-        registry_path=Path(args.registry),
-        out_path=Path(args.out),
-        dry_run=args.dry_run,
-        feed_ids=args.feed,
-    )
+    try:
+        run_monitor(
+            registry_path=Path(args.registry),
+            out_path=Path(args.out),
+            dry_run=args.dry_run,
+            feed_ids=args.feed,
+        )
+    finally:
+        fetchkit.save_state()  # persist learned host limits / breakers across runs
 
 
 if __name__ == "__main__":

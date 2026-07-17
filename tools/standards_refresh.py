@@ -233,14 +233,23 @@ def stage_fetch() -> int:
                 failures += 1
                 print(out[-500:])
         elif "url" in recipe:
+            # fetchkit: per-host pacing + conditional-GET cache. Canonical artifacts
+            # must be live — the wayback prong is explicitly disabled here.
             dest = ROOT / recipe["dest"]
-            rc, out = _run(["curl", "-sSL", "--max-time", "300", "-o", str(dest), recipe["url"]])
-            if rc == 0 and dest.exists():
-                digest = hashlib.sha256(dest.read_bytes()).hexdigest()[:16]
-                print(f"[fetch] {fid}: {dest.name} sha256={digest}")
+            sys.path.insert(0, str(ENGINE))
+            import fetchkit
+            status, body, meta = fetchkit.resilient_get(
+                recipe["url"], allow_wayback=False, timeout=300)
+            if meta.get("cache") == "unchanged" and dest.exists():
+                print(f"[fetch] {fid}: unchanged (304/sha cache hit)")
+            elif status == 200 and body is not None:
+                dest.write_bytes(body)
+                digest = hashlib.sha256(body).hexdigest()[:16]
+                print(f"[fetch] {fid}: {dest.name} sha256={digest} ({meta['source']})")
             else:
                 failures += 1
-                print(f"[fetch] {fid}: FAILED rc={rc}")
+                print(f"[fetch] {fid}: FAILED status={status} trail={meta.get('trail')}")
+            fetchkit.save_state()
         if recipe.get("note"):
             print(f"[fetch] {fid}: NOTE — {recipe['note']}")
     return failures
