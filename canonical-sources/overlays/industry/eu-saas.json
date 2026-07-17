@@ -1,0 +1,10 @@
+{
+  "id": "eu-saas",
+  "scope": "industry",
+  "description": "EU-focused SaaS context: GDPR, ISO 27001/2 (2022), and SOC 2 lead the conversation; the universe is unchanged (no suppression).",
+  "match": {"industry": "SaaS with EU customers or establishments"},
+  "sets": {},
+  "adds": {"emphasized_frameworks": ["GDPR", "ISO 27001/2 (2022)", "SOC 2"]},
+  "overrides": {},
+  "precedence_rank": 10
+}

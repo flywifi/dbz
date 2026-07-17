@@ -673,6 +673,36 @@ if (ROOT / "canonical-sources" / "crawl_seeds.json").exists():
     check(all(s.get("authority") and s.get("root") and s.get("resolver") for s in _reg["seeds"]),
           "every crawl-seed carries authority/root/resolver")
 
+# ── Context overlays (Phase 29-1) — presentation layer, touches NO tables ────
+import overlay_resolver as _ov
+_ov_avail = _ov.available()
+check(len(_ov_avail) >= 3, f"overlays: at least 3 shipped ({len(_ov_avail)})")
+# every referenced framework must canonicalize through framework_labels (when a DB is built)
+_ovc = sqlite3.connect(str(_DB)) if _DB.exists() else None
+_lbl = set()
+if _ovc:
+    _lbl = {r[0].lower() for r in _ovc.execute("SELECT alias FROM framework_labels")}
+    _lbl |= {r[0].lower() for r in _ovc.execute("SELECT canonical FROM framework_labels")}
+for _name in _ov_avail:
+    _o = _ov.load(_name)
+    check("id" in _o and "scope" in _o, f"overlay {_name}: well-formed")
+    if _c:
+        for _fw in (_o.get("adds") or {}).get("emphasized_frameworks", []):
+            check(_fw.lower() in _lbl, f"overlay {_name}: '{_fw}' canonicalizes")
+        for _fw in (_o.get("overrides") or {}).get("framework_universe", []):
+            check(_fw.lower() in _lbl, f"overlay {_name}: universe '{_fw}' canonicalizes")
+# resolver determinism (order-independent)
+_p1 = _ov.resolve(["industry/healthcare", "industry/eu-saas"])
+_p2 = _ov.resolve(["industry/eu-saas", "industry/healthcare"])
+check(_p1 == _p2, "overlays: resolve() is order-independent (deterministic)")
+# suppression is counted, spine always allowed
+_prof = {"names": ["t"], "sets": {}, "emphasized_frameworks": ["SOC 2"],
+         "framework_universe": ["SOC 2", "HITRUST CSF"]}
+_rows = [{"fw_a": "SOC 2", "fw_b": "HITRUST CSF"}, {"fw_a": "SOC 2", "fw_b": "PCI DSS v4.0"},
+         {"fw_a": "NIST 800-53", "fw_b": "SOC 2"}]
+_kept, _sup = _ov.apply_to_rows(_prof, _rows)
+check(_sup == 1 and len(_kept) == 2, "overlays: out-of-universe row suppressed + counted, spine kept")
+
 # ── report ─────────────────────────────────────────────────────────────────────
 if FAILS:
     print("SPINE SELF-TEST: FAIL")

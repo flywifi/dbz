@@ -67,7 +67,9 @@ python cross-mapping/engine/dbz_query.py horizon --upcoming 10          # antici
 ```
 
 `dbz_query.py` also exposes `reverse`, `forward`, `scope`, `consensus`, `olir-hub`, `feeds`,
-`changelog`, and more — run `dbz_query.py -h` for the full surface.
+`changelog`, and more — run `dbz_query.py -h` for the full surface. Add `--overlay` (on `master`,
+`overlap`, `scope`, `search`) to tailor any answer to an industry / jurisdiction / client context
+— a presentation filter that always discloses what it suppressed. See [`docs/overlays.md`](docs/overlays.md).
 
 ## Staying current
 

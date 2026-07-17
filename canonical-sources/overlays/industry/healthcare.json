@@ -1,0 +1,10 @@
+{
+  "id": "healthcare",
+  "scope": "industry",
+  "description": "Healthcare / health-tech context: HIPAA Security, HITRUST CSF, and SOC 2 lead the conversation; the universe is unchanged (no suppression).",
+  "match": {"industry": "healthcare, health-tech, digital health"},
+  "sets": {},
+  "adds": {"emphasized_frameworks": ["HIPAA Security", "HITRUST CSF", "SOC 2"]},
+  "overrides": {},
+  "precedence_rank": 10
+}

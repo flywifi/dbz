@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "dbz-overlay.schema.json",
+  "title": "dbz context overlay",
+  "description": "A presentation-layer profile that tailors query output to an industry, jurisdiction, or client-template context. Overlays NEVER alter mappings, tiers, or tables - they filter and reorder presentation, and every suppression is disclosed via suppressed_count. Precedence when combined: jurisdiction (regulatory) > industry > client-template; ties break on precedence_rank then id. Shipped client templates are placeholders only - no real client names or data, ever.",
+  "type": "object",
+  "required": ["id", "scope", "description", "precedence_rank"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "scope": {"type": "string", "enum": ["industry", "jurisdiction", "client-template"]},
+    "description": {"type": "string"},
+    "match": {
+      "type": "object",
+      "description": "Free-form hints about when this overlay applies (informational).",
+      "additionalProperties": {"type": "string"}
+    },
+    "sets": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default_min_tier": {
+          "type": "string",
+          "enum": ["owner_direct", "nist_stated", "owner_stated", "hub", "bundled", "consensus", "production_aggregate"],
+          "description": "Applied to master queries only when the user did not pass --min-tier."
+        },
+        "default_scope_fedramp": {
+          "type": "string", "enum": ["low", "moderate", "high"],
+          "description": "Applied to scope queries only when the user did not pass a level."
+        }
+      }
+    },
+    "adds": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "emphasized_frameworks": {
+          "type": "array", "items": {"type": "string"}, "uniqueItems": true,
+          "description": "Framework names (must canonicalize via framework_labels) shown first in framework-keyed results."
+        }
+      }
+    },
+    "overrides": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "framework_universe": {
+          "type": "array", "items": {"type": "string"}, "uniqueItems": true,
+          "description": "When present, framework-keyed rows outside this set (plus NIST 800-53, the spine) are suppressed - and counted in suppressed_count, never silently dropped."
+        }
+      }
+    },
+    "precedence_rank": {"type": "integer", "minimum": 0}
+  }
+}

@@ -116,6 +116,29 @@ def _resolve_fw(alias: str, conn: sqlite3.Connection) -> list[str]:
     return [r[0] for r in rows]
 
 
+# ── Context overlays (presentation filter — never touches tables) ──────────────
+
+def _overlay_profile(args):
+    """Resolve --overlay NAME[,NAME] into an effective profile, or None."""
+    names = getattr(args, "overlay", None)
+    if not names:
+        return None
+    import overlay_resolver  # sibling module
+    return overlay_resolver.resolve([n.strip() for n in names.split(",") if n.strip()])
+
+
+def _overlay_note(profile, suppressed=0, extra=""):
+    print(f"overlay: {','.join(profile['names'])} — suppressed {suppressed} row(s); "
+          f"emphasized: {', '.join(profile['emphasized_frameworks']) or 'none'}"
+          f"{'; ' + extra if extra else ''} (omit --overlay for the unfiltered view)")
+
+
+def _add_overlay(p):
+    p.add_argument("--overlay", metavar="NAME[,NAME]",
+                   help="apply context overlay(s) (canonical-sources/overlays/) — a "
+                        "presentation filter; suppressed rows are always counted, never silent")
+
+
 # ── Output formatters ──────────────────────────────────────────────────────────
 
 def _output(rows: list[dict], fmt: str, columns: list[str]) -> None:
@@ -212,6 +235,9 @@ def cmd_scope(args, conn: sqlite3.Connection) -> int:
     params: list = []
 
     fedramp_level = getattr(args, "fedramp", None)
+    _sp = _overlay_profile(args)
+    if not fedramp_level and _sp:  # overlay default applies only when the flag is absent
+        fedramp_level = _sp["sets"].get("default_scope_fedramp")
     if fedramp_level:
         lv = fedramp_level.lower()
         if lv in ("low", "l"):
@@ -249,6 +275,11 @@ def cmd_overlap(args, conn: sqlite3.Connection) -> int:
     result = spine_overlap.compute(conn, args.framework_a, args.framework_b,
                                    want_per_control=want_pc, basis_pref=basis_pref)
 
+    profile = _overlay_profile(args)
+    if profile and result.get("overlap_pct") is not None:
+        result["overlay"] = {"names": profile["names"],
+                             "emphasized": profile["emphasized_frameworks"],
+                             "suppressed_count": 0}  # overlap is a single pair — nothing to suppress
     if args.format == "json":
         print(json.dumps(result, indent=2, ensure_ascii=False))
         return 0 if result.get("overlap_pct") is not None else 1
@@ -380,6 +411,10 @@ def cmd_master(args, conn: sqlite3.Connection) -> int:
     with minority-report corroboration. Pair, control, and audit-scope modes."""
     limit = getattr(args, "limit", 100) or 100
     min_tier = getattr(args, "min_tier", None)
+    if min_tier is None:  # overlay may supply a default; an explicit flag always wins
+        _p = _overlay_profile(args)
+        if _p:
+            min_tier = _p["sets"].get("default_min_tier")
     max_rank = (_MASTER_TIER_ORDER.index(min_tier) + 1) if min_tier else len(_MASTER_TIER_ORDER)
     tier_case = " ".join(f"WHEN '{t}' THEN {i + 1}" for i, t in enumerate(_MASTER_TIER_ORDER))
 
@@ -478,12 +513,22 @@ def cmd_master(args, conn: sqlite3.Connection) -> int:
         return 1
 
     results = [dict(r) for r in rows]
+    overlay_block = None
+    profile = _overlay_profile(args)
+    if profile:
+        import overlay_resolver
+        results, suppressed = overlay_resolver.apply_to_rows(profile, results)
+        overlay_block = overlay_resolver.stamp(profile, suppressed)
     if args.format == "json":
-        print(json.dumps({"tool": "master-crosswalk", "summary": header,
-                          "rows": results, "human_review_required": True},
-                         indent=2, ensure_ascii=False))
+        payload = {"tool": "master-crosswalk", "summary": header,
+                   "rows": results, "human_review_required": True}
+        if overlay_block:
+            payload["overlay"] = overlay_block
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
         return 0
     print(header)
+    if profile:
+        _overlay_note(profile, overlay_block["suppressed_count"])
     print(f"Tier order: {' > '.join(_MASTER_TIER_ORDER)}; "
           "corroboration preserves every non-winning surface.\n")
     for d in results:
@@ -515,6 +560,10 @@ def cmd_search(args, conn: sqlite3.Connection) -> int:
     scope_conditions = []
 
     fedramp_scope = getattr(args, "scope", None)
+    if not fedramp_scope:  # overlay default when the flag is absent (control-text search
+        _sp = _overlay_profile(args)  # is not framework-keyed, so only the scope default applies)
+        if _sp:
+            fedramp_scope = _sp["sets"].get("default_scope_fedramp")
     if fedramp_scope:
         lv = fedramp_scope.lower()
         col_map = {"low": "baseline_low", "moderate": "baseline_moderate", "high": "baseline_high"}
@@ -1431,7 +1480,7 @@ def build_parser() -> argparse.ArgumentParser:
     scope.add_argument("--family", metavar="FAM", help="Control family (e.g. IA, AC)")
     scope.add_argument("--cui", action="store_true", help="Filter CUI-applicable controls")
     scope.add_argument("--privacy", action="store_true", help="Filter privacy baseline controls")
-    _add_format(scope); _add_db(scope)
+    _add_overlay(scope); _add_format(scope); _add_db(scope)
 
     # overlap
     ov = subs.add_parser("overlap", help="CCI / sub-part-anchored overlap between two frameworks")
@@ -1443,7 +1492,7 @@ def build_parser() -> argparse.ArgumentParser:
                     help="Spine basis (default: auto = finest available)")
     ov.add_argument("--per-control", action="store_true",
                     help="Include per-control full/partial/none breakdown")
-    _add_format(ov); _add_db(ov)
+    _add_overlay(ov); _add_format(ov); _add_db(ov)
 
     # consensus
     cons = subs.add_parser("consensus",
@@ -1472,7 +1521,7 @@ def build_parser() -> argparse.ArgumentParser:
     mst.add_argument("--min-tier", choices=list(_MASTER_TIER_ORDER),
                      help="only tiers at or above this rank")
     mst.add_argument("--limit", type=int, default=100)
-    _add_format(mst)
+    _add_overlay(mst); _add_format(mst)
     _add_db(mst)
 
     srch = subs.add_parser("search", help="Full-text search across control text")
@@ -1480,7 +1529,7 @@ def build_parser() -> argparse.ArgumentParser:
     srch.add_argument("--scope", metavar="LEVEL",
                       help="Limit to FedRAMP level: low | moderate | high")
     srch.add_argument("--family", metavar="FAM", help="Limit to control family")
-    _add_format(srch); _add_db(srch)
+    _add_overlay(srch); _add_format(srch); _add_db(srch)
 
     # changelog
     cl = subs.add_parser("changelog", help="Show framework changelog")

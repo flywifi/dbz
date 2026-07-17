@@ -1,0 +1,10 @@
+{
+  "id": "us-federal-contractor",
+  "scope": "jurisdiction",
+  "description": "US federal contractor context: FedRAMP r5, CMMC 2.0, and the 800-171/172 CUI family lead; scope queries default to the FedRAMP Moderate baseline.",
+  "match": {"jurisdiction": "US federal contracting, CUI handling"},
+  "sets": {"default_scope_fedramp": "moderate"},
+  "adds": {"emphasized_frameworks": ["FedRAMP r5", "CMMC 2.0", "NIST SP 800-171 r2", "NIST SP 800-172 r3"]},
+  "overrides": {},
+  "precedence_rank": 5
+}
