@@ -12,7 +12,7 @@
     },
     "schema_version": {
       "value_from": "schema_version",
-      "cited_in": ["README.md", "docs/cross-mapping-architecture.md", "docs/fedramp-modernization.md"]
+      "cited_in": ["README.md", "docs/cross-mapping-architecture.md", "docs/fedramp-modernization.md", "STATE.md"]
     },
     "controls_count": {
       "value_from": "manifest:controls",

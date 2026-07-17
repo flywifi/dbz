@@ -1,0 +1,17 @@
+{
+  "_schema_version": "1.0",
+  "_purpose": "Known-good rollback anchors, one per shipped phase. known_good=true means the full gate battery was green at that sha. Procedure: changes/CHANGE_MANAGEMENT.md.",
+  "snapshots": [
+    {"phase": "19", "name": "Master mapping database", "sha": "d8c0d15", "date": "2026-07-03", "known_good": true},
+    {"phase": "20", "name": "SCF + CCM spine projection", "sha": "eabfc21", "date": "2026-07-04", "known_good": true},
+    {"phase": "21", "name": "STIG application layer", "sha": "e6449ab", "date": "2026-07-04", "known_good": true},
+    {"phase": "22", "name": "Full CCI dictionary", "sha": "98eea12", "date": "2026-07-04", "known_good": true},
+    {"phase": "23", "name": "Standards-currency refresh", "sha": "6aeac84", "date": "2026-07-06", "known_good": true},
+    {"phase": "24", "name": "Horizon scanning", "sha": "005b745", "date": "2026-07-07", "known_good": true},
+    {"phase": "25", "name": "Source audit + broadening", "sha": "651ad4c", "date": "2026-07-10", "known_good": true},
+    {"phase": "26", "name": "FedRAMP Consolidated Rules 2026", "sha": "f27f088", "date": "2026-07-10", "known_good": true},
+    {"phase": "27", "name": "Unified README + CI fix", "sha": "8e06bb8", "date": "2026-07-14", "known_good": true},
+    {"phase": "28-1", "name": "Oracle accuracy benchmark", "sha": "4c81aa8", "date": "2026-07-17", "known_good": true},
+    {"phase": "28-2", "name": "Count-truth + URL provenance", "sha": "2be8088", "date": "2026-07-17", "known_good": true}
+  ]
+}

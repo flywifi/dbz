@@ -1,0 +1,52 @@
+# STATE — live status of the GRC cross-mapping engine
+
+## What this repo is
+A GRC compliance cross-mapping engine: every framework projected onto the NIST 800-53 r5 spine,
+queried through one unified surface. Full picture: [README.md](README.md) and
+[docs/cross-mapping-architecture.md](docs/cross-mapping-architecture.md).
+
+## Live status
+- **DB schema:** 3.12 (`grc.db`, deterministic build, double-build digest check)
+- **Gate battery:** rebuild ×2 identical digests · `test_spine.py` · `validate_spine.py` ·
+  `health_audit.py --scan/--full` 100/100 (including the artifacts-hidden CI condition) ·
+  `sync_check.py` · golden self-test · `benchmark_oracles.py --check` — all green as of
+  2026-07-17.
+- **CI:** `health` workflow green on every push; `standards-watch` (monthly) runs the drift
+  check + a fresh-build oracle benchmark regression check.
+- **Accuracy record:** see [docs/BENCHMARK.md](docs/BENCHMARK.md) (measured, pinned).
+- **Doc numbers:** machine-checked against the data by `tools/count_truth.py`
+  (registry: `canonical-sources/doc_claims.json`); drift blocks the health audit.
+
+## Phase ledger
+| # | Phase | Commit | Date | Outcome |
+|---|---|---|---|---|
+| 19 | Master mapping database | `d8c0d15` | 2026-07-03 | Private-sector audits merged into one any-to-any surface |
+| 20 | SCF + CCM spine projection | `eabfc21` | 2026-07-04 | Meta-frameworks join via owner_stated tier |
+| 21 | STIG application layer | `e6449ab` | 2026-07-04 | 383 benchmarks / 19,667 rules as CCI application evidence |
+| 22 | Full CCI dictionary | `98eea12` | 2026-07-04 | All 5,137 DISA CCIs + multi-source corroboration |
+| 23 | Standards-currency refresh | `6aeac84` | 2026-07-06 | Monitor repair + 800-53 r5.2.0 re-pin |
+| 24 | Horizon scanning | `005b745` | 2026-07-07 | Anticipated-updates tracker (future revisions, no fabricated dates) |
+| 25 | Source audit + broadening | `4f9fff1`, `651ad4c` | 2026-07-07/10 | Source universe tiered + OLIR-hub composed edges; verification corrections |
+| 26 | FedRAMP Consolidated Rules 2026 | `f27f088` | 2026-07-10 | KSI confirmation layer, complete canonical dataset, version-transition framing |
+| 27 | Unified README + CI fix | `1007fd8`, `8e06bb8` | 2026-07-14 | Docs rewritten around the unified graph; build-artifact reference exemption clears CI |
+| 28-1 | Oracle accuracy benchmark | `4c81aa8` | 2026-07-17 | Measured P/R vs production oracles, pinned regression thresholds, BENCHMARK.md |
+| 28-2 | Count-truth + URL provenance | `2be8088` | 2026-07-17 | Doc numbers machine-checked (caught stale framework count); URL hosts registry-declared |
+
+Phases 1–18 built the foundations (catalog ingestion, ER engine, spine normalization, CCI/ODP
+bridge, consensus detection, publication hygiene, health auditor); their commits precede
+`d8c0d15` in `git log` and their outcomes are documented throughout `docs/`.
+
+## Next planned work
+- STATE/changelog/rollback machinery (this file) — then: shared fetch layer for the monitors
+  (rate governor + conditional-GET cache + labeled archive fallback), a deterministic
+  output/fabrication validator, context overlays for the query surface, multi-platform function
+  schema export, a formalized protocol layer + deterministic quality scorer, and an
+  evidence-state ladder on the master surface (schema 3.13).
+
+## Recovery package (fresh clone → working state)
+1. Read `CLAUDE.md` (conventions) + this file (state) + `changes/CHANGELOG.md` (history).
+2. `pip install -r requirements.txt`, then `python3 cross-mapping/engine/build_db.py`.
+3. Run the gate battery (see Live status above; commands in
+   `docs/standards-refresh-runbook.md`).
+4. Rollback anchors: `ledger/snapshots.json` (known-good shas per phase); procedure in
+   `changes/CHANGE_MANAGEMENT.md`.
