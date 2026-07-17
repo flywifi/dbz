@@ -34,6 +34,11 @@ jobs:
       - name: Standards drift check
         run: python3 tools/standards_refresh.py --check
 
+      - name: Oracle accuracy benchmark (build db, then regression check)
+        run: |
+          python3 cross-mapping/engine/build_db.py
+          python3 cross-mapping/tests/benchmark_oracles.py --check
+
       - name: Optional artifact fetch (manual dispatch only)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.fetch == 'true' }}
         run: python3 tools/standards_refresh.py --fetch

@@ -22,6 +22,10 @@ a human does the confirming.
    `human_confirmed: false` stubs; OSCAL sources can be diffed control-level with
    `cross-mapping/engine/oscal_diff.py --write-changelog`.
 4. **gate** (`--gate`) — rebuild grc.db + the deterministic gate battery; red run = human looks.
+   The full local battery also includes the oracle accuracy benchmark
+   (`python3 cross-mapping/tests/benchmark_oracles.py --check`, needs a built grc.db;
+   measured numbers + regression policy in `docs/BENCHMARK.md`). CI runs it in the
+   `standards-watch` workflow after a fresh build.
 
 ## STIG library harvest + delta procedure (Phase 21)
 
