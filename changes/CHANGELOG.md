@@ -13,7 +13,14 @@ Format follows Keep a Changelog conventions; one entry per shipped phase. Versio
   (`cross-mapping/tests/benchmark_oracles.py`, `docs/BENCHMARK.md`): ER-level P/R/F1 plus
   spine-level oracle coverage / corroboration rate, measure-then-pin regression thresholds,
   and a fresh-build CI check in the standards-watch workflow.
-- **28-3** — This changelog, `STATE.md` (live status + phase ledger + recovery package),
+- **28-5** (`650aa66`) — Deterministic output validator (`tools/output_validate.py`):
+  id-reality vs the catalog, unsourced-number and overconfident-tier checks, reused leak
+  patterns; fixture selftest in pre-commit; advisory post-step notes in the analyzer and
+  orchestrator skills.
+- **28-4** (`70e807e`) — `fetchkit` shared fetch layer (per-host rate governing, circuit
+  breaker, conditional-GET + sha cache, always-labeled Wayback fallback) adopted by the
+  framework monitor and the standards-refresh fetch stage; offline unit tests.
+- **28-3** (`b6a9f84`) — This changelog, `STATE.md` (live status + phase ledger + recovery package),
   `changes/CHANGE_MANAGEMENT.md` (versioning + merge bar + rollback), and
   `ledger/snapshots.json` (known-good rollback anchors). `VERSION` 0.1.0 → 0.2.0.
 

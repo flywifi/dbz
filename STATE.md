@@ -31,6 +31,9 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 | 27 | Unified README + CI fix | `1007fd8`, `8e06bb8` | 2026-07-14 | Docs rewritten around the unified graph; build-artifact reference exemption clears CI |
 | 28-1 | Oracle accuracy benchmark | `4c81aa8` | 2026-07-17 | Measured P/R vs production oracles, pinned regression thresholds, BENCHMARK.md |
 | 28-2 | Count-truth + URL provenance | `2be8088` | 2026-07-17 | Doc numbers machine-checked (caught stale framework count); URL hosts registry-declared |
+| 28-3 | Durable state + rollback | `b6a9f84` | 2026-07-17 | STATE/CHANGELOG/CHANGE_MANAGEMENT + known-good snapshot anchors; VERSION 0.2.0 |
+| 28-4 | fetchkit shared fetch layer | `70e807e` | 2026-07-17 | Rate governor + conditional-GET cache + labeled Wayback fallback; monitors adopted |
+| 28-5 | Output validator | `650aa66` | 2026-07-17 | Mechanical fabrication/unsourced/tier/leak gate for analysis deliverables |
 
 Phases 1–18 built the foundations (catalog ingestion, ER engine, spine normalization, CCI/ODP
 bridge, consensus detection, publication hygiene, health auditor); their commits precede
