@@ -22,7 +22,12 @@
         "nist",
         "er",
         "mapping"
-      ]
+      ],
+      "export": {
+        "name": "compliance_crosswalk",
+        "description": "Cross-map a set of normalized controls onto a target framework, returning matched pairs plus the gaps with no mapping.",
+        "invocation": "overlap_calculator.py (normalized_controls, target_framework)"
+      }
     },
     {
       "id": "gap-analysis",
@@ -45,7 +50,12 @@
         "coverage",
         "nist",
         "audit"
-      ]
+      ],
+      "export": {
+        "name": "gap_analysis",
+        "description": "Given a crosswalk, report the uncovered controls and the coverage percentage against a target framework.",
+        "invocation": "overlap_calculator.py gap mode (crosswalked, framework_id)"
+      }
     },
     {
       "id": "overlap-query",
@@ -68,7 +78,12 @@
         "jaccard",
         "er",
         "shared-audit-work"
-      ]
+      ],
+      "export": {
+        "name": "framework_overlap",
+        "description": "Compute the shared-audit-work overlap (Jaccard + directional coverage) between two compliance frameworks on the 800-53 spine.",
+        "invocation": "dbz_query.py overlap --framework-a {framework_a} --framework-b {framework_b}"
+      }
     },
     {
       "id": "framework-update-check",
@@ -114,7 +129,12 @@
         "nist",
         "controls",
         "query"
-      ]
+      ],
+      "export": {
+        "name": "control_search",
+        "description": "Full-text search across the 800-53 control catalog, optionally scoped to a NIST family.",
+        "invocation": "dbz_query.py search --keyword {query} [--family {family}]"
+      }
     },
     {
       "id": "control-scope",
@@ -184,7 +204,12 @@
         "glba",
         "regulatory",
         "query"
-      ]
+      ],
+      "export": {
+        "name": "cfr_lookup",
+        "description": "Look up a CFR part or section with its text and mapped NIST families.",
+        "invocation": "dbz_query.py cfr --part {part} [--section {section}]"
+      }
     },
     {
       "id": "attack-mapper",
@@ -548,7 +573,12 @@
         "tier-arbitration",
         "minority-report",
         "audit-scope"
-      ]
+      ],
+      "export": {
+        "name": "master_crosswalk",
+        "description": "Query the unified master mapping surface for any framework-to-any-framework relationships, tier-arbitrated with corroboration; supports pair, control, and audit-scope modes.",
+        "invocation": "dbz_query.py master --framework-a {framework_a} --framework-b {framework_b} (or --framework/--control, or --scope-fedramp)"
+      }
     }
   ]
 }

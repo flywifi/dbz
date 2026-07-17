@@ -1,0 +1,28 @@
+{
+  "description": "Cross-map a set of normalized controls onto a target framework, returning matched pairs plus the gaps with no mapping.",
+  "name": "compliance_crosswalk",
+  "parameters": {
+    "additionalProperties": false,
+    "properties": {
+      "normalized_controls": {
+        "description": "list of {control_id, title, framework} objects",
+        "type": "array"
+      },
+      "target_framework": {
+        "description": "framework_id to cross-map to (e.g. 'nist-800-53')",
+        "type": "string"
+      }
+    },
+    "required": [
+      "normalized_controls",
+      "target_framework"
+    ],
+    "type": "object"
+  },
+  "x-dbz": {
+    "atom_id": "compliance-crosswalk",
+    "invocation": "overlap_calculator.py (normalized_controls, target_framework)",
+    "note": "GENERATED from skills/atoms/atoms.json — edit the atom, not this file.",
+    "script": "cross-mapping/engine/overlap_calculator.py"
+  }
+}

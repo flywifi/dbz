@@ -1,0 +1,28 @@
+{
+  "description": "Given a crosswalk, report the uncovered controls and the coverage percentage against a target framework.",
+  "name": "gap_analysis",
+  "parameters": {
+    "additionalProperties": false,
+    "properties": {
+      "crosswalked": {
+        "description": "output of compliance-crosswalk atom",
+        "type": "object"
+      },
+      "framework_id": {
+        "description": "target framework to check coverage against",
+        "type": "string"
+      }
+    },
+    "required": [
+      "crosswalked",
+      "framework_id"
+    ],
+    "type": "object"
+  },
+  "x-dbz": {
+    "atom_id": "gap-analysis",
+    "invocation": "overlap_calculator.py gap mode (crosswalked, framework_id)",
+    "note": "GENERATED from skills/atoms/atoms.json — edit the atom, not this file.",
+    "script": "cross-mapping/engine/overlap_calculator.py"
+  }
+}

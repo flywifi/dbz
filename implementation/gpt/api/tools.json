@@ -1,0 +1,197 @@
+{
+  "_generated_by": "tools/export_openai.py",
+  "_note": "OpenAI-function schemas generated from the atom registry. Operator hosts dbz_query.py behind their own endpoint; these are the tool contracts only.",
+  "functions": [
+    {
+      "description": "Compute the shared-audit-work overlap (Jaccard + directional coverage) between two compliance frameworks on the 800-53 spine.",
+      "name": "framework_overlap",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "framework_a": {
+            "description": "first framework_id (e.g. 'soc-2')",
+            "type": "string"
+          },
+          "framework_b": {
+            "description": "second framework_id (e.g. 'iso-27001')",
+            "type": "string"
+          }
+        },
+        "required": [
+          "framework_a",
+          "framework_b"
+        ],
+        "type": "object"
+      },
+      "x-dbz": {
+        "atom_id": "overlap-query",
+        "invocation": "dbz_query.py overlap --framework-a {framework_a} --framework-b {framework_b}",
+        "note": "GENERATED from skills/atoms/atoms.json — edit the atom, not this file.",
+        "script": "cross-mapping/engine/er_overlap.py"
+      }
+    },
+    {
+      "description": "Query the unified master mapping surface for any framework-to-any-framework relationships, tier-arbitrated with corroboration; supports pair, control, and audit-scope modes.",
+      "name": "master_crosswalk",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "control": {
+            "description": "one native id (control mode, e.g. 'CC6.1', '164.312(a)(1)')",
+            "type": "string"
+          },
+          "framework": {
+            "description": "framework of --control (control mode)",
+            "type": "string"
+          },
+          "framework_a": {
+            "description": "first framework (pair/scope modes; alias ok, e.g. 'SOC 2')",
+            "type": "string"
+          },
+          "framework_b": {
+            "description": "second framework (pair mode)",
+            "type": "string"
+          },
+          "min_tier": {
+            "description": "owner_direct|nist_stated|hub|bundled|consensus|production_aggregate",
+            "type": "string"
+          },
+          "scope_fedramp": {
+            "description": "low|moderate|high (audit-scope mode)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "control",
+          "framework",
+          "framework_a",
+          "framework_b",
+          "min_tier",
+          "scope_fedramp"
+        ],
+        "type": "object"
+      },
+      "x-dbz": {
+        "atom_id": "master-crosswalk",
+        "invocation": "dbz_query.py master --framework-a {framework_a} --framework-b {framework_b} (or --framework/--control, or --scope-fedramp)",
+        "note": "GENERATED from skills/atoms/atoms.json — edit the atom, not this file.",
+        "script": "cross-mapping/engine/master_surface.py"
+      }
+    },
+    {
+      "description": "Cross-map a set of normalized controls onto a target framework, returning matched pairs plus the gaps with no mapping.",
+      "name": "compliance_crosswalk",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "normalized_controls": {
+            "description": "list of {control_id, title, framework} objects",
+            "type": "array"
+          },
+          "target_framework": {
+            "description": "framework_id to cross-map to (e.g. 'nist-800-53')",
+            "type": "string"
+          }
+        },
+        "required": [
+          "normalized_controls",
+          "target_framework"
+        ],
+        "type": "object"
+      },
+      "x-dbz": {
+        "atom_id": "compliance-crosswalk",
+        "invocation": "overlap_calculator.py (normalized_controls, target_framework)",
+        "note": "GENERATED from skills/atoms/atoms.json — edit the atom, not this file.",
+        "script": "cross-mapping/engine/overlap_calculator.py"
+      }
+    },
+    {
+      "description": "Given a crosswalk, report the uncovered controls and the coverage percentage against a target framework.",
+      "name": "gap_analysis",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "crosswalked": {
+            "description": "output of compliance-crosswalk atom",
+            "type": "object"
+          },
+          "framework_id": {
+            "description": "target framework to check coverage against",
+            "type": "string"
+          }
+        },
+        "required": [
+          "crosswalked",
+          "framework_id"
+        ],
+        "type": "object"
+      },
+      "x-dbz": {
+        "atom_id": "gap-analysis",
+        "invocation": "overlap_calculator.py gap mode (crosswalked, framework_id)",
+        "note": "GENERATED from skills/atoms/atoms.json — edit the atom, not this file.",
+        "script": "cross-mapping/engine/overlap_calculator.py"
+      }
+    },
+    {
+      "description": "Full-text search across the 800-53 control catalog, optionally scoped to a NIST family.",
+      "name": "control_search",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "family": {
+            "description": "optional NIST family filter (e.g. 'AC', 'SC')",
+            "type": "string"
+          },
+          "max_results": {
+            "description": "default 20",
+            "type": "integer"
+          },
+          "query": {
+            "description": "keyword or phrase to search",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      },
+      "x-dbz": {
+        "atom_id": "control-search",
+        "invocation": "dbz_query.py search --keyword {query} [--family {family}]",
+        "note": "GENERATED from skills/atoms/atoms.json — edit the atom, not this file.",
+        "script": "cross-mapping/engine/dbz_query.py"
+      }
+    },
+    {
+      "description": "Look up a CFR part or section with its text and mapped NIST families.",
+      "name": "cfr_lookup",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "part": {
+            "description": "CFR part in '45-CFR-164' format",
+            "type": "string"
+          },
+          "section": {
+            "description": "optional section number (e.g. '164.308')",
+            "type": "string"
+          }
+        },
+        "required": [
+          "part"
+        ],
+        "type": "object"
+      },
+      "x-dbz": {
+        "atom_id": "cfr-lookup",
+        "invocation": "dbz_query.py cfr --part {part} [--section {section}]",
+        "note": "GENERATED from skills/atoms/atoms.json — edit the atom, not this file.",
+        "script": "cross-mapping/engine/dbz_query.py"
+      }
+    }
+  ],
+  "schema_version": "1.0"
+}

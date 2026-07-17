@@ -1,0 +1,27 @@
+{
+  "description": "Look up a CFR part or section with its text and mapped NIST families.",
+  "name": "cfr_lookup",
+  "parameters": {
+    "additionalProperties": false,
+    "properties": {
+      "part": {
+        "description": "CFR part in '45-CFR-164' format",
+        "type": "string"
+      },
+      "section": {
+        "description": "optional section number (e.g. '164.308')",
+        "type": "string"
+      }
+    },
+    "required": [
+      "part"
+    ],
+    "type": "object"
+  },
+  "x-dbz": {
+    "atom_id": "cfr-lookup",
+    "invocation": "dbz_query.py cfr --part {part} [--section {section}]",
+    "note": "GENERATED from skills/atoms/atoms.json — edit the atom, not this file.",
+    "script": "cross-mapping/engine/dbz_query.py"
+  }
+}

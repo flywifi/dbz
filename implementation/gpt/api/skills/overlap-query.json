@@ -1,0 +1,28 @@
+{
+  "description": "Compute the shared-audit-work overlap (Jaccard + directional coverage) between two compliance frameworks on the 800-53 spine.",
+  "name": "framework_overlap",
+  "parameters": {
+    "additionalProperties": false,
+    "properties": {
+      "framework_a": {
+        "description": "first framework_id (e.g. 'soc-2')",
+        "type": "string"
+      },
+      "framework_b": {
+        "description": "second framework_id (e.g. 'iso-27001')",
+        "type": "string"
+      }
+    },
+    "required": [
+      "framework_a",
+      "framework_b"
+    ],
+    "type": "object"
+  },
+  "x-dbz": {
+    "atom_id": "overlap-query",
+    "invocation": "dbz_query.py overlap --framework-a {framework_a} --framework-b {framework_b}",
+    "note": "GENERATED from skills/atoms/atoms.json — edit the atom, not this file.",
+    "script": "cross-mapping/engine/er_overlap.py"
+  }
+}

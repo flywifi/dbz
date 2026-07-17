@@ -1,0 +1,31 @@
+{
+  "description": "Full-text search across the 800-53 control catalog, optionally scoped to a NIST family.",
+  "name": "control_search",
+  "parameters": {
+    "additionalProperties": false,
+    "properties": {
+      "family": {
+        "description": "optional NIST family filter (e.g. 'AC', 'SC')",
+        "type": "string"
+      },
+      "max_results": {
+        "description": "default 20",
+        "type": "integer"
+      },
+      "query": {
+        "description": "keyword or phrase to search",
+        "type": "string"
+      }
+    },
+    "required": [
+      "query"
+    ],
+    "type": "object"
+  },
+  "x-dbz": {
+    "atom_id": "control-search",
+    "invocation": "dbz_query.py search --keyword {query} [--family {family}]",
+    "note": "GENERATED from skills/atoms/atoms.json — edit the atom, not this file.",
+    "script": "cross-mapping/engine/dbz_query.py"
+  }
+}
