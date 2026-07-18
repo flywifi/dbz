@@ -34,17 +34,20 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 | 28-3 | Durable state + rollback | `b6a9f84` | 2026-07-17 | STATE/CHANGELOG/CHANGE_MANAGEMENT + known-good snapshot anchors; VERSION 0.2.0 |
 | 28-4 | fetchkit shared fetch layer | `70e807e` | 2026-07-17 | Rate governor + conditional-GET cache + labeled Wayback fallback; monitors adopted |
 | 28-5 | Output validator | `650aa66` | 2026-07-17 | Mechanical fabrication/unsourced/tier/leak gate for analysis deliverables |
+| 29-1 | Context overlays | `ae0f772` | 2026-07-18 | Industry/jurisdiction/client presentation profiles + --overlay with disclosed suppression |
+| 29-2 | Multi-platform export | `ea917cd` | 2026-07-18 | Generated OpenAI-function schemas for the 6 core operations, drift-guarded (sync invariant 12) |
+| 29-3 | Protocol layer + scorer | `d5200d9` | 2026-07-18 | Four authority protocols (cited to existing rules) + hard-fail-first deterministic verdicts |
+| 29-4 | Evidence-state ladder | `8ef71f2` | 2026-07-18 | Schema 3.13: derived corroboration state on every master edge + --evidence-state filter + check 14 |
 
 Phases 1–18 built the foundations (catalog ingestion, ER engine, spine normalization, CCI/ODP
 bridge, consensus detection, publication hygiene, health auditor); their commits precede
 `d8c0d15` in `git log` and their outcomes are documented throughout `docs/`.
 
 ## Next planned work
-- STATE/changelog/rollback machinery (this file) — then: shared fetch layer for the monitors
-  (rate governor + conditional-GET cache + labeled archive fallback), a deterministic
-  output/fabrication validator, context overlays for the query surface, multi-platform function
-  schema export, a formalized protocol layer + deterministic quality scorer, and an
-  evidence-state ladder on the master surface (schema 3.13).
+- Hardening pass: a regenerable metrics scoreboard, a pinned end-to-end scenario battery,
+  single-writer registry IO with content-sha currency baselines, a citation-graph upgrade for
+  crawl-seed discovery, and hygiene extras (staged-diff secret scan, data-at-rest placement
+  invariants, URL-provenance promotion to blocking, a three-persona output audit).
 
 ## Recovery package (fresh clone → working state)
 1. Read `CLAUDE.md` (conventions) + this file (state) + `changes/CHANGELOG.md` (history).

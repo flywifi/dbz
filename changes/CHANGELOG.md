@@ -3,6 +3,22 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.3.0] — 2026-07-18 (phase 29)
+### Added
+- **29-4** (`8ef71f2`) — Evidence-state ladder on `master_mappings` (schema **3.13**): derived
+  corroboration state per edge (`oracle_confirmed` / `cross_validated` / `columns_aligned` /
+  `asserted_by_source`), `--evidence-state` filter, validate_spine check 14. MINOR (additive
+  schema bump); containment invariants unchanged.
+- **29-3** (`d5200d9`) — `protocol-layer/` (evidence standards, conflict protocol, quality
+  gates, failure recovery — each rule cited to where it already lived) +
+  `cross-mapping/engine/score_output.py` deterministic hard-fail-first verdicts; scorer weights
+  machine-cross-checked between doc and code.
+- **29-2** (`ea917cd`) — `implementation/gpt/api/` generated OpenAI-function schemas for the six
+  core operations + `tools/export_openai.py`; drift-guarded (sync_check invariant 12); scope
+  recorded as contracts-not-hosted-service.
+- **29-1** (`ae0f772`) — Context overlays (`canonical-sources/overlays/` + resolver +
+  `--overlay` on master/overlap/scope/search) with always-disclosed suppression counts.
+
 ## [0.2.0] — 2026-07-17
 ### Added
 - **28-2** (`2be8088`) — Machine-checked doc numbers (`tools/count_truth.py` +

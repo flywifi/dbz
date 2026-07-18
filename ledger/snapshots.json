@@ -99,6 +99,34 @@
       "sha": "650aa66",
       "date": "2026-07-17",
       "known_good": true
+    },
+    {
+      "phase": "29-1",
+      "name": "Context overlays",
+      "sha": "ae0f772",
+      "date": "2026-07-18",
+      "known_good": true
+    },
+    {
+      "phase": "29-2",
+      "name": "Multi-platform export",
+      "sha": "ea917cd",
+      "date": "2026-07-18",
+      "known_good": true
+    },
+    {
+      "phase": "29-3",
+      "name": "Protocol layer + scorer",
+      "sha": "d5200d9",
+      "date": "2026-07-18",
+      "known_good": true
+    },
+    {
+      "phase": "29-4",
+      "name": "Evidence-state ladder (schema 3.13)",
+      "sha": "8ef71f2",
+      "date": "2026-07-18",
+      "known_good": true
     }
   ]
 }
