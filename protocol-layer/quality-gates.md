@@ -8,7 +8,11 @@ result always beats a fuller, unverifiable one.
 
 Every commit passes, in order:
 
-1. Rebuild grc.db **twice, sequentially** → identical `table_digests` (determinism).
+1. Rebuild grc.db **twice, sequentially** → identical `table_digests` (determinism). Digest
+   coverage is derived from `sqlite_master` at build time — every content table is digested
+   automatically; the only exclusions, each with a reason in `build_db.py`, are SQLite
+   internals, FTS5 shadow tables (their source table is digested), and `db_metadata`
+   (carries a build timestamp).
 2. `cross-mapping/tests/test_spine.py` — unit + containment invariants.
 3. `cross-mapping/tests/validate_spine.py` — oracle reconciliation + tier gates.
 4. `tools/health_audit.py --scan` and `--full` at 100/100 — run **with build artifacts hidden**

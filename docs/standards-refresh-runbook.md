@@ -22,6 +22,8 @@ a human does the confirming.
    `human_confirmed: false` stubs; OSCAL sources can be diffed control-level with
    `cross-mapping/engine/oscal_diff.py --write-changelog`.
 4. **gate** (`--gate`) — rebuild grc.db + the deterministic gate battery; red run = human looks.
+   The double-build digest comparison covers every content table by derivation (exclusions,
+   each reasoned in `build_db.py`: SQLite internals, FTS5 shadow tables, `db_metadata`).
    The full local battery (authority list: `protocol-layer/quality-gates.md`) adds, on a built
    grc.db: the oracle accuracy benchmark (`cross-mapping/tests/benchmark_oracles.py --check`;
    policy in `docs/BENCHMARK.md`), the ten-scenario end-to-end battery

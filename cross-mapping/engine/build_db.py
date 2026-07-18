@@ -1912,13 +1912,28 @@ def build_db(
 
     # Logical content digests — the determinism comparator across rebuilds
     # (the raw SQLite file hash varies with page layout; these do not).
+    # Coverage is DERIVED from sqlite_master so a new table is digested the day it
+    # is created — a hand-kept list is how coverage gaps arise. Exclusions only,
+    # each with a reason; a stale exclusion (naming a table that no longer exists)
+    # is itself drift and warns.
+    _DIGEST_EXCLUDE = {
+        "sqlite_sequence": "SQLite AUTOINCREMENT bookkeeping — not content",
+        "sqlite_stat1": "SQLite ANALYZE statistics — not content",
+        "controls_fts": "FTS5 virtual table — derived from controls, which is digested",
+        "controls_fts_config": "FTS5 shadow table (see controls_fts)",
+        "controls_fts_data": "FTS5 shadow table (see controls_fts)",
+        "controls_fts_docsize": "FTS5 shadow table (see controls_fts)",
+        "controls_fts_idx": "FTS5 shadow table (see controls_fts)",
+        "db_metadata": "carries built_at, a wall-clock timestamp — nondeterministic by design",
+    }
+    all_tables = [r[0] for r in conn.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")]
+    for stale in sorted(set(_DIGEST_EXCLUDE) - set(all_tables)):
+        print(f"  [warn] digest exclusion names a missing table: {stale} — prune the exclusion")
     table_digests = {}
-    for tbl in ("framework_projection", "consensus_edges", "overlap_matrix",
-                "master_mappings", "framework_labels", "unified_mappings",
-                "stig_catalog", "stig_rules", "stig_cci_usage",
-                "disa_ccis", "cci_mapping_corroboration", "anticipated_updates",
-                "olir_hub_edges", "fedramp_ksi", "fedramp_ksi_controls",
-                "fedramp_rules", "fedramp_odp_pins", "fedramp_ctl_guidance"):
+    for tbl in all_tables:
+        if tbl in _DIGEST_EXCLUDE:
+            continue
         cols = [r[1] for r in conn.execute(f"PRAGMA table_info({tbl})") if r[1] != "rowid"]
         h = hashlib.sha256()
         for row in conn.execute(f"SELECT {','.join(cols)} FROM {tbl} ORDER BY {','.join(cols)}"):
