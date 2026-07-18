@@ -4,55 +4,103 @@
   "claims": {
     "feeds_count": {
       "value_from": "feeds_count",
-      "cited_in": ["README.md", "docs/cross-mapping-architecture.md"]
+      "cited_in": [
+        "README.md",
+        "docs/cross-mapping-architecture.md"
+      ]
     },
     "horizon_count": {
       "value_from": "horizon_count",
-      "cited_in": ["README.md"]
+      "cited_in": [
+        "README.md"
+      ]
     },
     "schema_version": {
       "value_from": "schema_version",
-      "cited_in": ["README.md", "docs/cross-mapping-architecture.md", "docs/fedramp-modernization.md", "STATE.md"]
+      "cited_in": [
+        "README.md",
+        "docs/cross-mapping-architecture.md",
+        "docs/fedramp-modernization.md",
+        "STATE.md"
+      ]
     },
     "controls_count": {
       "value_from": "manifest:controls",
-      "cited_in": ["README.md", "docs/cross-mapping-architecture.md"]
+      "cited_in": [
+        "README.md",
+        "docs/cross-mapping-architecture.md"
+      ]
     },
     "enhancements_count": {
       "value_from": "manifest:enhancements",
-      "cited_in": ["README.md", "docs/cross-mapping-architecture.md"]
+      "cited_in": [
+        "README.md",
+        "docs/cross-mapping-architecture.md"
+      ]
     },
     "cci_count": {
       "value_from": "manifest:disa_ccis",
-      "cited_in": ["README.md", "docs/cci-enrichment.md", "docs/cross-mapping-architecture.md", "docs/source-inventory.md", "docs/standards-refresh-runbook.md"]
+      "cited_in": [
+        "README.md",
+        "docs/cci-enrichment.md",
+        "docs/cross-mapping-architecture.md",
+        "docs/source-inventory.md",
+        "docs/standards-refresh-runbook.md"
+      ]
     },
     "ksi_count": {
       "value_from": "manifest:fedramp_ksi",
-      "cited_in": ["README.md", "docs/fedramp-modernization.md", "docs/source-inventory.md"]
+      "cited_in": [
+        "README.md",
+        "docs/fedramp-modernization.md",
+        "docs/source-inventory.md"
+      ]
     },
     "ksi_edges_count": {
       "value_from": "manifest:fedramp_ksi_controls",
-      "cited_in": ["README.md", "docs/fedramp-modernization.md", "docs/source-inventory.md"]
+      "cited_in": [
+        "README.md",
+        "docs/fedramp-modernization.md",
+        "docs/source-inventory.md"
+      ]
     },
     "matrix_pairs": {
       "value_from": "manifest:overlap_matrix",
-      "cited_in": ["README.md", "docs/cross-mapping-architecture.md", "docs/fedramp-modernization.md", "docs/source-audit-phase25.md"]
+      "cited_in": [
+        "README.md",
+        "docs/cross-mapping-architecture.md",
+        "docs/fedramp-modernization.md",
+        "docs/source-audit-phase25.md"
+      ]
     },
     "master_frameworks": {
       "value_from": "db:master_frameworks",
-      "cited_in": ["README.md", "docs/cross-mapping-architecture.md"]
+      "cited_in": [
+        "README.md",
+        "docs/cross-mapping-architecture.md"
+      ]
     },
     "stig_benchmarks": {
       "value_from": "manifest:stig_catalog",
-      "cited_in": ["README.md", "docs/overlap-spine.md", "docs/source-inventory.md"]
+      "cited_in": [
+        "README.md",
+        "docs/overlap-spine.md",
+        "docs/source-inventory.md"
+      ]
     },
     "scorer_weights": {
       "value_from": "scorer:weights",
-      "cited_in": ["protocol-layer/quality-gates.md"]
+      "cited_in": [
+        "protocol-layer/quality-gates.md"
+      ]
     },
     "stig_rules": {
       "value_from": "manifest:stig_rules",
-      "cited_in": ["README.md", "docs/overlap-spine.md", "docs/source-inventory.md"]
+      "cited_in": [
+        "README.md",
+        "docs/overlap-spine.md",
+        "docs/source-inventory.md"
+      ]
     }
   }
 }

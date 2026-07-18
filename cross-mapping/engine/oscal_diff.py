@@ -316,10 +316,16 @@ def write_changelog_entry(
         return changelog_id
 
     existing.setdefault("entries", []).append(entry)
-    changelog_path.write_text(
-        json.dumps(existing, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
+    if changelog_path == DEFAULT_CHANGELOG:
+        # canonical registry — route through the single writer (tools/registry_io.py)
+        sys.path.insert(0, str(_REPO_ROOT / "tools"))
+        import registry_io
+        registry_io.save("framework_changelog", existing)
+    else:  # explicit non-canonical target (tests/scratch) keeps the same convention
+        changelog_path.write_text(
+            json.dumps(existing, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
     print(f"[changelog] Wrote entry {changelog_id} → {changelog_path}")
     print(f"           controls_added={len(entry['controls_added'])}, "
           f"controls_withdrawn={len(entry['controls_withdrawn'])}, "

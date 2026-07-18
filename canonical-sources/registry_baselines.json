@@ -1,0 +1,11 @@
+{
+  "_purpose": "sha256 baselines per canonical registry; drift is an advisory naming the re-verification authority (tools/registry_currency.py).",
+  "baselines": {
+    "anticipated_updates": "be17282c8152539375a4d81d09ce6d61776d6600f775c9edfa9103a19cf33099",
+    "crawl_seeds": "6f050ad9211eb800076661e9587c606301c8fcea70c7559a4921c0d8dbfa5aae",
+    "doc_claims": "94e290c05b6199ee9be0d60d7798d2eb569a9bd594e39a93dca25567d0a68cab",
+    "feed_registry": "9652d041923623c714a7d30734af83a0ec3e6e6631310b6af82ee8e5e5aa6601",
+    "framework_changelog": "912b187d1950271199ae8d5937f684d01a56d2d19beadf373894a9b3f0867f70",
+    "source_manifest": "fe5c6bceba0ab75bc8710b3526ee8557637f92e98c107d20891a79e8d62dd4d3"
+  }
+}

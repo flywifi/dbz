@@ -217,6 +217,53 @@ def main() -> int:
     else:
         failures.append("  ✗ Invariant 12 — tools/export_openai.py not found")
 
+    # Invariant 13: docs/METRICS.md matches regeneration (generated scoreboard).
+    metrics_tool = ROOT / "tools" / "metrics.py"
+    if metrics_tool.exists() and (ROOT / "docs" / "METRICS.md").exists():
+        try:
+            import importlib.util as _ilu
+            _spec = _ilu.spec_from_file_location("_metrics", metrics_tool)
+            _mod = _ilu.module_from_spec(_spec)
+            _spec.loader.exec_module(_mod)
+            if _mod.main(["--check"]) != 0:
+                failures.append("  \u2717 Invariant 13 \u2014 docs/METRICS.md is stale "
+                                "(run tools/metrics.py)")
+        except Exception as e:
+            failures.append(f"  \u2717 Invariant 13 \u2014 metrics check failed to run ({e})")
+
+    # Invariant 14: single-writer discipline for the canonical registries.
+    # A .py file (outside the allowlist) that both names a canonical registry and
+    # contains a write primitive is a suspected ad-hoc registry writer.
+    _REG_NAMES = ("feed_registry.json", "anticipated_updates.json", "crawl_seeds.json",
+                  "source_manifest.json", "framework_changelog.json", "doc_claims.json")
+    _WRITE_TOKENS = (".write_text(", "json.dump(")
+    _WRITER_ALLOW = {
+        "tools/registry_io.py",        # THE writer
+        "tools/registry_currency.py",  # writes baselines file only
+        "tools/standards_refresh.py",  # writes the drift REPORT, not registries
+        "cross-mapping/engine/oscal_diff.py",  # changelog routed via registry_io; cache/report writes only
+        "tools/crawl_seed.py",         # reads seeds; writes candidates/report only
+        "tools/sync_check.py",         # this file: the invariant's own pattern literals
+    }
+    for scan_dir in (ROOT / "tools", ROOT / "cross-mapping" / "engine"):
+        for py in sorted(scan_dir.glob("*.py")):
+            rel = str(py.relative_to(ROOT)).replace("\\", "/")
+            if rel in _WRITER_ALLOW:
+                continue
+            lines = py.read_text(encoding="utf-8", errors="replace").splitlines()
+            # a write primitive within 2 lines of a canonical-registry filename is
+            # a suspected direct registry write (whole-file co-occurrence is too
+            # coarse: most files read a registry and write something unrelated)
+            for i, line in enumerate(lines):
+                if not any(w in line for w in _WRITE_TOKENS):
+                    continue
+                window = "\n".join(lines[max(0, i - 2):i + 3])
+                if any(n in window for n in _REG_NAMES):
+                    failures.append(f"  \u2717 Invariant 14 \u2014 suspected ad-hoc canonical-"
+                                    f"registry writer: {rel}:{i + 1} (route writes through "
+                                    "tools/registry_io.py or allowlist with a reason)")
+                    break
+
     print(f"GRC drift check — {len(atom_dirs)} atom(s) + orchestration bucket + health auditor\n")
     if failures:
         print("DRIFT DETECTED:\n")
@@ -224,7 +271,7 @@ def main() -> int:
         print(f"\n{len(failures)} invariant(s) failed.")
         return 1
 
-    print(f"OK — all 12 invariants pass across {len(atom_dirs)} atom(s) + the orchestration "
+    print(f"OK — all 14 invariants pass across {len(atom_dirs)} atom(s) + the orchestration "
           f"bucket + the health auditor + the platform export.")
     return 0
 
