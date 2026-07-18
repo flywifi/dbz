@@ -46,6 +46,10 @@
       "value_from": "manifest:stig_catalog",
       "cited_in": ["README.md", "docs/overlap-spine.md", "docs/source-inventory.md"]
     },
+    "scorer_weights": {
+      "value_from": "scorer:weights",
+      "cited_in": ["protocol-layer/quality-gates.md"]
+    },
     "stig_rules": {
       "value_from": "manifest:stig_rules",
       "cited_in": ["README.md", "docs/overlap-spine.md", "docs/source-inventory.md"]

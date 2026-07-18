@@ -63,6 +63,15 @@ def _resolve_value(key: str):
         rc = _load(MANIFEST_PATH).get("row_counts", {})
         name = key.split(":", 1)[1]
         return (rc[name], None) if name in rc else (None, f"row_counts has no '{name}'")
+    if key == "scorer:weights":
+        # dict-valued claim: every (dimension, weight) in the scorer code must appear
+        # as a table row in the cited protocol doc — code and doc cannot drift apart.
+        import importlib.util
+        sp = ROOT / "cross-mapping" / "engine" / "score_output.py"
+        spec = importlib.util.spec_from_file_location("_score_output", sp)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod.WEIGHTS, None
     if key == "db:master_frameworks":
         if not DB_PATH.exists():
             return None, "grc.db not built (fresh checkout)"
@@ -98,13 +107,20 @@ def check_doc_claims():
         if skip:
             skips.append((cid, skip))
             continue
-        pats = _patterns_for(value)
         for rel in spec["cited_in"]:
             path = ROOT / rel
             if not path.exists():
                 findings.append((rel, cid, f"cited file missing (current value: {value})"))
                 continue
             text = path.read_text(encoding="utf-8", errors="replace")
+            if isinstance(value, dict):
+                # dict-valued claim: every key/value pair must appear as a doc table row
+                for k, v in sorted(value.items()):
+                    row = re.compile(re.escape(k) + r"\s*\|\s*" + re.escape(f"{v:.2f}"))
+                    if not row.search(text):
+                        findings.append((rel, cid, f"missing/mismatched row for {k} = {v:.2f}"))
+                continue
+            pats = _patterns_for(value)
             if not any(p.search(text) for p in pats):
                 findings.append((rel, cid, f"does not state current value {value}"))
     return findings, skips

@@ -1,0 +1,56 @@
+# Quality gates
+
+The release gates every change must pass, and the deterministic scoring model for GRC analysis
+output. Precedence statement: **integrity > completeness > convenience** — a smaller, honest
+result always beats a fuller, unverifiable one.
+
+## Release gates (source: `changes/CHANGE_MANAGEMENT.md` merge bar; `docs/standards-refresh-runbook.md`)
+
+Every commit passes, in order:
+
+1. Rebuild grc.db **twice, sequentially** → identical `table_digests` (determinism).
+2. `cross-mapping/tests/test_spine.py` — unit + containment invariants.
+3. `cross-mapping/tests/validate_spine.py` — oracle reconciliation + tier gates.
+4. `tools/health_audit.py --scan` and `--full` at 100/100 — run **with build artifacts hidden**
+   (the CI condition; a local-only pass is not a pass).
+5. `tools/sync_check.py` — all drift invariants.
+6. `skills/health-auditor/tests/run_golden.py` — golden self-test.
+7. `cross-mapping/tests/benchmark_oracles.py --check` when engine or mapping data changed.
+8. `tools/output_validate.py --selftest` (pre-commit).
+
+CI (`health` workflow) must be green on the pushed sha before a phase is declared done.
+
+## Critical non-overridables
+
+- **A fabricated id is a critical failure.** No composite score, reviewer preference, or
+  deadline overrides it (source: `CLAUDE.md` non-negotiables; `tools/output_validate.py` HIGH).
+- A publication-hygiene leak (session link, personal email, provider-proprietary id) is equally
+  non-overridable (source: `CLAUDE.md` publication hygiene; `tools/health_audit.py`).
+
+## Deterministic output scoring (`cross-mapping/engine/score_output.py`)
+
+Verdicts over analysis output are computed, not vibed. The scorer consumes
+`tools/output_validate.py` findings plus optional judge sub-scores (0–5 per dimension).
+
+**Hard-fail first:** any HIGH fabrication or leak finding → verdict **REJECTED** before any
+composite arithmetic.
+
+**Dimensions and weights** (must match the scorer header — machine-cross-checked by
+`tools/count_truth.py` claim `scorer_weights`):
+
+| Dimension | Weight |
+|---|---|
+| citation_integrity | 0.30 |
+| mapping_accuracy | 0.25 |
+| coverage | 0.15 |
+| source_currency | 0.10 |
+| scope_correctness | 0.10 |
+| honesty_about_gaps | 0.10 |
+
+**Named thresholds** (all booleans reported in the output):
+`no_dimension_below_2` · `citation_integrity_at_least_4` · `composite_at_least_3_5`
+
+**Verdict bands:** all three true → **APPROVED**; composite ≥ 3.5 with one other threshold
+false → **CONDITIONAL** (human review required); otherwise → **REJECTED**.
+
+Weights and bands change only via a scored PATCH entry in `changes/CHANGELOG.md`.

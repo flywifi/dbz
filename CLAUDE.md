@@ -56,6 +56,12 @@ Skills in `skills/` follow the `SKILL.md` + `references/` + `scripts/` conventio
 - Shared `plan_access_mode.py` (access mode hierarchy: `direct_integration > runtime_native > local_artifact > planning_only`).
 - No external dependencies beyond stdlib + pandas/openpyxl (available via `requirements.txt`).
 
+## Protocol layer
+The formal authority for evidence, conflict, quality, and recovery rules lives in
+`protocol-layer/` (`evidence-standards.md`, `conflict-protocol.md`, `quality-gates.md`,
+`failure-recovery.md`). Those files formalize the rules below and elsewhere — cite them rather
+than restating policy.
+
 ## Non-negotiables
 - Never fabricate framework control IDs, citations, or crosswalk relationships. Leave uncertain fields blank.
 - Source precedence: explicit report text > source-provided mappings > bundled crosswalks > blank.
