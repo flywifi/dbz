@@ -18,9 +18,11 @@ build artifacts hidden** (the CI condition), `sync_check.py` (14 invariants, inc
 export/scoreboard/registry-writer drift checks), the golden self-test, the pre-commit selftests
 (`output_validate.py --selftest`, `score_output.py --selftest`, staged-diff `secret_scan.py`),
 and — when the engine or mapping data changed — `benchmark_oracles.py --check` plus the
-ten-scenario battery (`cross-mapping/tests/run_scenarios.py`). The authoritative release-gate
-list lives in `protocol-layer/quality-gates.md`. CI (`health` workflow) must be green on the
-pushed sha before a phase is declared done.
+ten-scenario battery (`cross-mapping/tests/run_scenarios.py`). Before every push, rehearse the
+CI condition with `python3 tools/ci_rehearsal.py` (mirrors health.yml with build artifacts
+hidden; guaranteed restoration). The authoritative release-gate list lives in
+`protocol-layer/quality-gates.md`. CI (`health` workflow) must be green on the pushed sha
+before a phase is declared done.
 
 ## Secret-scan policy boundary
 `policy_boundary_sha: c3192c8` — the CI secret-scan backstop

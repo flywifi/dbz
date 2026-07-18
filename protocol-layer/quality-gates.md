@@ -16,7 +16,8 @@ Every commit passes, in order:
 2. `cross-mapping/tests/test_spine.py` — unit + containment invariants.
 3. `cross-mapping/tests/validate_spine.py` — oracle reconciliation + tier gates.
 4. `tools/health_audit.py --scan` and `--full` at 100/100 — run **with build artifacts hidden**
-   (the CI condition; a local-only pass is not a pass).
+   (the CI condition; a local-only pass is not a pass). The sanctioned way to run this
+   condition — and the whole CI step set — is `python3 tools/ci_rehearsal.py` (pre-push).
 5. `tools/sync_check.py` — all drift invariants.
 6. `skills/health-auditor/tests/run_golden.py` — golden self-test.
 7. `cross-mapping/tests/benchmark_oracles.py --check` when engine or mapping data changed.

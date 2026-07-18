@@ -35,6 +35,15 @@ a human does the confirming.
    Registry edits additionally surface as advisories via `tools/registry_currency.py --check`
    (writes go through the single writer, `tools/registry_io.py`).
 
+## Rehearse CI before pushing (`tools/ci_rehearsal.py`)
+
+Run `python3 tools/ci_rehearsal.py` before every push. It stashes the gitignored build
+outputs so the tree matches CI's fresh checkout, runs every step of
+`.github/workflows/health.yml` verbatim (a drift check warns if the workflow and the harness
+ever diverge), restores the artifacts unconditionally — even after an interrupted run — and
+prints a per-step PASS/FAIL table. This closes the recurring failure class where a check
+passes on a built workspace but fails on CI. Never run it concurrently with `build_db.py`.
+
 ## Shared fetch layer (`cross-mapping/engine/fetchkit.py`)
 
 All live fetching in the monitors routes through fetchkit: per-host pacing (min interval +
