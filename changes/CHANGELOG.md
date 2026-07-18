@@ -4,6 +4,11 @@ Format follows Keep a Changelog conventions; one entry per shipped phase. Versio
 `CHANGE_MANAGEMENT.md`.
 
 ## [0.4.0] — 2026-07-18 (phase 30 — hardening)
+### Fixed
+- **docs-sync sweep** (`861bb09`) — internal documentation brought fully in sync with the
+  phase 28–30 additions: README doc table, runbook/quality-gates/STATE/merge-bar gate-battery
+  descriptions, sync_check docstring (14 invariants), skill MAINTAINER post-step notes, and
+  atom input schemas for the new evidence-state/overlay flags (export regenerated).
 ### Added
 - **30-5** (`d2a5a99`) — Staged-diff secret scan + CI backstop with a recorded policy boundary;
   fail-closed data-at-rest placement rules; URL provenance promoted to blocking;
