@@ -3,6 +3,19 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.4.1] — 2026-07-18 (phase 31 — 48-hour-audit remediation)
+### Fixed
+- **31-3** (`d8ac868`) — `tools/ci_rehearsal.py`: one-command local reproduction of the CI
+  condition (artifact stash + verbatim health-workflow steps + guaranteed restoration +
+  workflow drift warning); named in the merge bar as the mandated pre-push step. Closes the
+  audit's FINDING-3 failure class (fresh-checkout divergence).
+- **31-2** (`9764f7c`) — Determinism-digest coverage derived from `sqlite_master` (40 content
+  tables, 22 newly covered, all verified deterministic; reasoned exclusions only; legacy
+  digests byte-identical). Closes FINDING-2 and eliminates its hand-kept-list mechanism.
+- **31-1** (`54141d5`) — Prefix-scoped, reasoned secret-scan allowlist for the
+  output-validator fixture directory; selftest proves the allowlist is path-scoped, never
+  pattern-weakening. Closes FINDING-1 (full-range scans now clean).
+
 ## [0.4.0] — 2026-07-18 (phase 30 — hardening)
 ### Fixed
 - **docs-sync sweep** (`861bb09`) — internal documentation brought fully in sync with the

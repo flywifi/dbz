@@ -148,6 +148,27 @@
       "sha": "d2a5a99",
       "date": "2026-07-18",
       "known_good": true
+    },
+    {
+      "phase": "31-1",
+      "name": "Secret-scan fixture allowlist",
+      "sha": "54141d5",
+      "date": "2026-07-18",
+      "known_good": true
+    },
+    {
+      "phase": "31-2",
+      "name": "Digest coverage by derivation",
+      "sha": "9764f7c",
+      "date": "2026-07-18",
+      "known_good": true
+    },
+    {
+      "phase": "31-3",
+      "name": "CI rehearsal harness",
+      "sha": "d8ac868",
+      "date": "2026-07-18",
+      "known_good": true
     }
   ]
 }

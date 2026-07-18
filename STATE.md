@@ -11,7 +11,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
   `health_audit.py --scan/--full` 100/100 (including the artifacts-hidden CI condition) ·
   `sync_check.py` (14 invariants) · golden self-test · `benchmark_oracles.py --check` ·
   ten-scenario battery (`run_scenarios.py`) · pre-commit selftests (output validator, scorer,
-  secret scan) — all green as of 2026-07-18. Authority list: `protocol-layer/quality-gates.md`.
+  secret scan) — all green as of 2026-07-18 (incl. phase-31 remediation; rehearse CI pre-push with tools/ci_rehearsal.py). Authority list: `protocol-layer/quality-gates.md`.
 - **CI:** `health` workflow green on every push; `standards-watch` (monthly) runs the drift
   check + a fresh-build oracle benchmark regression check.
 - **Accuracy record:** see [docs/BENCHMARK.md](docs/BENCHMARK.md) (measured, pinned).
@@ -42,6 +42,9 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 | 30-1/2/3 | Metrics + scenarios + registry IO | `5eaa48f` | 2026-07-18 | Generated scoreboard; ten pinned e2e scenarios in CI; single-writer registries + sha baselines |
 | 30-4 | Crawl citation graph | `c3192c8` | 2026-07-18 | Candidate provenance, --accept review stubs, blocked-is-not-gone pruning |
 | 30-5 | Hygiene extras | `d2a5a99` | 2026-07-18 | Secret scan + CI backstop, data-at-rest rules, URL provenance blocking, persona audit |
+| 31-1 | Secret-scan fixture allowlist | `54141d5` | 2026-07-18 | Full-range scans clean; allowlist path-scoped and selftest-proven |
+| 31-2 | Digest coverage by derivation | `9764f7c` | 2026-07-18 | All 40 content tables in the determinism gate, exclusions reasoned |
+| 31-3 | CI rehearsal harness | `d8ac868` | 2026-07-18 | One command mirrors CI locally with guaranteed artifact restoration |
 
 Phases 1–18 built the foundations (catalog ingestion, ER engine, spine normalization, CCI/ODP
 bridge, consensus detection, publication hygiene, health auditor); their commits precede
