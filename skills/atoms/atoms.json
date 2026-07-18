@@ -65,7 +65,8 @@
       "script": "cross-mapping/engine/er_overlap.py",
       "input_schema": {
         "framework_a": "string — first framework_id (e.g. 'soc-2')",
-        "framework_b": "string — second framework_id (e.g. 'iso-27001')"
+        "framework_b": "string — second framework_id (e.g. 'iso-27001')",
+        "overlay": "string? — optional context overlay name(s) (stamps the result; single-pair queries suppress nothing)"
       },
       "output_schema": {
         "jaccard": "number — |A∩B|/|A∪B| overlap coefficient",
@@ -560,7 +561,9 @@
         "framework": "string — framework of --control (control mode)",
         "control": "string — one native id (control mode, e.g. 'CC6.1', '164.312(a)(1)')",
         "scope_fedramp": "string — low|moderate|high (audit-scope mode)",
-        "min_tier": "string — owner_direct|nist_stated|hub|bundled|consensus|production_aggregate"
+        "min_tier": "string — owner_direct|nist_stated|hub|bundled|consensus|production_aggregate",
+        "evidence_state": "string? — optional filter: oracle_confirmed|cross_validated|columns_aligned|asserted_by_source (corroboration ladder)",
+        "overlay": "string? — optional context overlay name(s), comma-separated (presentation filter; suppression always disclosed)"
       },
       "output_schema": {
         "rows": "array — master_mappings rows: fw/native pair, relationship, tier, provenance, confidence, votes, production_support, shared_anchors, corroboration (minority report), source_ref",

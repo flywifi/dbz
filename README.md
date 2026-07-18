@@ -104,8 +104,13 @@ docs/            architecture and subsystem documentation (below)
 | Doc | Covers |
 |---|---|
 | [`cross-mapping-architecture.md`](docs/cross-mapping-architecture.md) | how sources become the unified database, end to end |
+| [`BENCHMARK.md`](docs/BENCHMARK.md) | measured accuracy vs the production oracle crosswalks (pinned) |
+| [`METRICS.md`](docs/METRICS.md) | the regenerable scoreboard (contents, tiers, evidence states, honesty ledger) |
+| [`overlays.md`](docs/overlays.md) | context overlays: industry/jurisdiction/client presentation profiles |
+| [`deployment-surfaces.md`](docs/deployment-surfaces.md) | the three ways to consume dbz + the shared hygiene boundary |
+| [`persona-audit.md`](docs/persona-audit.md) | dated three-persona review of query output (UX backlog feed) |
 | [`overlap-spine.md`](docs/overlap-spine.md) | the 800-53 projection spine + the overlap engine |
-| [`consensus-detection.md`](docs/consensus-detection.md) | the provenance tiers and cross-source agreement model |
+| [`consensus-detection.md`](docs/consensus-detection.md) | the provenance tiers and cross-source agreement model (evidence-state ladder: `protocol-layer/evidence-standards.md`) |
 | [`cci-enrichment.md`](docs/cci-enrichment.md) | the CCI dictionary, bridge, and corroboration layer |
 | [`fedramp-modernization.md`](docs/fedramp-modernization.md) | FedRAMP Consolidated Rules 2026 + the KSI layer |
 | [`source-audit-phase25.md`](docs/source-audit-phase25.md) | the source universe, tiering, and OLIR-hub composition |

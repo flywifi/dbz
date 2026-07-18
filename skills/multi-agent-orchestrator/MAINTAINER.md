@@ -57,6 +57,11 @@ See `evals/evals.json`:
 - pass-01: a read-fanout run over agreeing envelopes yields a complete, merged result
 - fail-01: an invalid envelope is blocked from consolidation, not merged
 - edge-01: a mutate-mode plan carries depth_cap 1 and worktree isolation
+
+Maintenance note: SKILL.md's consolidation step recommends an advisory post-step for GRC
+deliverables (`tools/output_validate.py` on the consolidated output). When the validator's
+checks change, keep that sentence in sync — it is advisory only and must never imply a hard
+gate on consolidation.
 ## Confirmation-sync & durable logging
 Uncertainties this skill emits (conflicts, partials, inferred edges, ODP clashes, agent
 dissent) carry a deterministic `uncertainty_id`, log the competing citations plus

@@ -22,10 +22,16 @@ a human does the confirming.
    `human_confirmed: false` stubs; OSCAL sources can be diffed control-level with
    `cross-mapping/engine/oscal_diff.py --write-changelog`.
 4. **gate** (`--gate`) — rebuild grc.db + the deterministic gate battery; red run = human looks.
-   The full local battery also includes the oracle accuracy benchmark
-   (`python3 cross-mapping/tests/benchmark_oracles.py --check`, needs a built grc.db;
-   measured numbers + regression policy in `docs/BENCHMARK.md`). CI runs it in the
-   `standards-watch` workflow after a fresh build.
+   The full local battery (authority list: `protocol-layer/quality-gates.md`) adds, on a built
+   grc.db: the oracle accuracy benchmark (`cross-mapping/tests/benchmark_oracles.py --check`;
+   policy in `docs/BENCHMARK.md`), the ten-scenario end-to-end battery
+   (`cross-mapping/tests/run_scenarios.py`), and the scoreboard drift check
+   (`tools/metrics.py --check`, also sync_check invariant 13). Build-independent gates run in
+   pre-commit: `tools/output_validate.py --selftest`, `score_output.py --selftest`, and the
+   staged-diff `tools/secret_scan.py`. CI runs the build-dependent set in `standards-watch`
+   after its fresh build; `health.yml` runs the build-independent set on every push.
+   Registry edits additionally surface as advisories via `tools/registry_currency.py --check`
+   (writes go through the single writer, `tools/registry_io.py`).
 
 ## Shared fetch layer (`cross-mapping/engine/fetchkit.py`)
 

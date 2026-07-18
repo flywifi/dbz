@@ -11,6 +11,10 @@
       "framework_b": {
         "description": "second framework_id (e.g. 'iso-27001')",
         "type": "string"
+      },
+      "overlay": {
+        "description": "optional context overlay name(s) (stamps the result; single-pair queries suppress nothing)",
+        "type": "string"
       }
     },
     "required": [

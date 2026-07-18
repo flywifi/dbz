@@ -48,6 +48,9 @@ See canonical policy: `skills/shared/minority-report.md`.
 - [ ] Confirm supported framework list in SKILL.md matches the source precedence rules.
 - [ ] Confirm `human_review_required: true` still present in all output paths.
 - [ ] Check that no fabricated IDs appear in smoke-test output.
+- [ ] Confirm SKILL.md still documents the advisory post-step (`tools/output_validate.py` on
+      the finished deliverable) and that its check list matches the validator's current
+      behavior (id reality, unsourced numbers, tier alignment, leak scan).
 ## Confirmation-sync & durable logging
 Uncertainties this skill emits (conflicts, partials, inferred edges, ODP clashes, agent
 dissent) carry a deterministic `uncertainty_id`, log the competing citations plus

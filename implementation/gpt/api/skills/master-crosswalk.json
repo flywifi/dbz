@@ -8,6 +8,10 @@
         "description": "one native id (control mode, e.g. 'CC6.1', '164.312(a)(1)')",
         "type": "string"
       },
+      "evidence_state": {
+        "description": "optional filter: oracle_confirmed|cross_validated|columns_aligned|asserted_by_source (corroboration ladder)",
+        "type": "string"
+      },
       "framework": {
         "description": "framework of --control (control mode)",
         "type": "string"
@@ -22,6 +26,10 @@
       },
       "min_tier": {
         "description": "owner_direct|nist_stated|hub|bundled|consensus|production_aggregate",
+        "type": "string"
+      },
+      "overlay": {
+        "description": "optional context overlay name(s), comma-separated (presentation filter; suppression always disclosed)",
         "type": "string"
       },
       "scope_fedramp": {

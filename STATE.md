@@ -9,8 +9,9 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 - **DB schema:** 3.13 (adds the derived `evidence_state` ladder on `master_mappings`) (`grc.db`, deterministic build, double-build digest check)
 - **Gate battery:** rebuild ×2 identical digests · `test_spine.py` · `validate_spine.py` ·
   `health_audit.py --scan/--full` 100/100 (including the artifacts-hidden CI condition) ·
-  `sync_check.py` · golden self-test · `benchmark_oracles.py --check` — all green as of
-  2026-07-17.
+  `sync_check.py` (14 invariants) · golden self-test · `benchmark_oracles.py --check` ·
+  ten-scenario battery (`run_scenarios.py`) · pre-commit selftests (output validator, scorer,
+  secret scan) — all green as of 2026-07-18. Authority list: `protocol-layer/quality-gates.md`.
 - **CI:** `health` workflow green on every push; `standards-watch` (monthly) runs the drift
   check + a fresh-build oracle benchmark regression check.
 - **Accuracy record:** see [docs/BENCHMARK.md](docs/BENCHMARK.md) (measured, pinned).

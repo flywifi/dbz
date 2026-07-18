@@ -26,6 +26,15 @@ Plus 1 health-auditor invariant:
      MAINTAINER.md, workflow.json, evals/evals.json (>=3 cases), scripts/instruction_blocks.py,
      tests/run_golden.py, and tests/golden/oracle.json.
 
+Plus the ledger, export, scoreboard, and registry invariants:
+ 11. Uncertainty/confirmation ledger contract intact (+ every MAINTAINER declares it).
+ 12. implementation/gpt/api export matches regeneration from the atom registry
+     (tools/export_openai.py --check).
+ 13. docs/METRICS.md matches regeneration (tools/metrics.py --check; skips honestly on a
+     fresh checkout without build artifacts).
+ 14. Single-writer discipline for the canonical registries — registry writes route through
+     tools/registry_io.py (undeclared writers are flagged).
+
 Run:   python3 tools/sync_check.py
 Exit:  0 if every invariant holds, 1 (with a report) otherwise.
 """

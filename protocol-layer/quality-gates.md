@@ -16,9 +16,15 @@ Every commit passes, in order:
 5. `tools/sync_check.py` — all drift invariants.
 6. `skills/health-auditor/tests/run_golden.py` — golden self-test.
 7. `cross-mapping/tests/benchmark_oracles.py --check` when engine or mapping data changed.
-8. `tools/output_validate.py --selftest` (pre-commit).
+8. `cross-mapping/tests/run_scenarios.py` — ten pinned end-to-end scenarios (built grc.db).
+9. `tools/output_validate.py --selftest` + `cross-mapping/engine/score_output.py --selftest`
+   (pre-commit).
+10. `tools/secret_scan.py` on the staged diff (pre-commit) — the CI backstop scans commits
+    since the policy boundary sha (`changes/CHANGE_MANAGEMENT.md`).
 
-CI (`health` workflow) must be green on the pushed sha before a phase is declared done.
+The generated-artifact drift checks (metrics scoreboard, platform export) run inside
+`sync_check` (invariants 12–14). CI (`health` workflow) must be green on the pushed sha before
+a phase is declared done.
 
 ## Critical non-overridables
 

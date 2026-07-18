@@ -14,9 +14,13 @@ CCI, horizon, OLIR-hub, FedRAMP KSI layers) plus the phase-28 verification tooli
 ## Merge bar
 Every commit passes the full gate battery: double build with identical table digests,
 `test_spine.py`, `validate_spine.py`, `health_audit.py --scan` and `--full` at 100/100 **with
-build artifacts hidden** (the CI condition), `sync_check.py`, the golden self-test, and
-`benchmark_oracles.py --check` when the engine or mapping data changed. CI (`health` workflow)
-must be green on the pushed sha before a phase is declared done.
+build artifacts hidden** (the CI condition), `sync_check.py` (14 invariants, including the
+export/scoreboard/registry-writer drift checks), the golden self-test, the pre-commit selftests
+(`output_validate.py --selftest`, `score_output.py --selftest`, staged-diff `secret_scan.py`),
+and — when the engine or mapping data changed — `benchmark_oracles.py --check` plus the
+ten-scenario battery (`cross-mapping/tests/run_scenarios.py`). The authoritative release-gate
+list lives in `protocol-layer/quality-gates.md`. CI (`health` workflow) must be green on the
+pushed sha before a phase is declared done.
 
 ## Secret-scan policy boundary
 `policy_boundary_sha: c3192c8` — the CI secret-scan backstop
