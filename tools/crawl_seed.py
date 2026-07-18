@@ -23,6 +23,9 @@ from typing import Any, Dict, List
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SEEDS_PATH = REPO_ROOT / "canonical-sources" / "crawl_seeds.json"
+# Review-stub queue for accepted candidates (NOT feed_registry — feeds stay
+# human-authored; acceptance here creates a stub with provenance for review).
+CANDIDATES_PATH = REPO_ROOT / "canonical-sources" / "crawl_candidates.json"
 
 
 def load_registry(path: Path = SEEDS_PATH) -> Dict[str, Any]:
@@ -56,6 +59,9 @@ def _expand_seed(seed: Dict[str, Any]) -> List[Dict[str, str]]:
     elif resolver == "path_list":
         for p in seed.get("paths", []):
             out.append({"seed": sid, "kind": "site_path", "url": tmpl.format(path=p)})
+    # citation graph: every candidate records WHO vouched for it
+    for r in out:
+        r["parent_source_id"] = sid
     # deterministic order
     out.sort(key=lambda r: (r["seed"], r["kind"], r["url"]))
     return out
@@ -91,6 +97,13 @@ def _selftest() -> int:
         problems.append("expand_seeds not deterministic")
     if not a:
         problems.append("expand_seeds produced no candidates")
+    if a and any("parent_source_id" not in c for c in a):
+        problems.append("candidate missing parent_source_id (citation graph broken)")
+    # prune-report protection logic: a blocked stub must never be flagged
+    _blocked = {"url": "https://example.invalid/x", "status": "blocked_by_proxy",
+                "parent_source_id": "gone-seed", "last_checked": "2020-01-01"}
+    if str(_blocked.get("status", "")).startswith("blocked") is not True:
+        problems.append("blocked-protection predicate broken")
     if problems:
         print("CRAWL-SEED SELFTEST: FAIL")
         for p in problems:
@@ -138,17 +151,104 @@ def cmd_import(args) -> int:
     return 0
 
 
+def _load_candidates() -> Dict[str, Any]:
+    if CANDIDATES_PATH.exists():
+        return json.loads(CANDIDATES_PATH.read_text(encoding="utf-8"))
+    return {"_purpose": "Review-stub queue for accepted crawl candidates. Acceptance here is "
+                        "NOT ingestion: feeds stay human-authored in feed_registry.json; each "
+                        "stub carries its citation-graph provenance for the review step.",
+            "candidates": []}
+
+
+def _save_candidates(doc: Dict[str, Any]) -> None:
+    CANDIDATES_PATH.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n",
+                               encoding="utf-8")
+
+
+def cmd_accept(args) -> int:
+    """Upsert a review stub for one expanded candidate URL (citation graph kept)."""
+    from datetime import datetime, timezone
+    reg = load_registry()
+    cands = {c["url"]: c for c in expand_seeds(reg)}
+    target = cands.get(args.accept)
+    if target is None:
+        print(f"[accept] not an expanded candidate URL: {args.accept}", file=sys.stderr)
+        print("         run --list to see the candidate set", file=sys.stderr)
+        return 1
+    doc = _load_candidates()
+    by_url = {c["url"]: c for c in doc["candidates"]}
+    stub = by_url.get(args.accept, {})
+    stub.update({
+        "url": target["url"], "kind": target["kind"],
+        "parent_source_id": target["parent_source_id"],
+        "status": stub.get("status", "pending_review"),
+        "accepted_at": stub.get("accepted_at",
+                                datetime.now(timezone.utc).strftime("%Y-%m-%d")),
+        "last_checked": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+    })
+    by_url[args.accept] = stub
+    doc["candidates"] = [by_url[u] for u in sorted(by_url)]
+    _save_candidates(doc)
+    print(f"[accept] review stub upserted (parent: {stub['parent_source_id']}) -> "
+          f"{CANDIDATES_PATH.relative_to(REPO_ROOT)}")
+    print("         next: human review; promotion to feed_registry stays manual.")
+    return 0
+
+
+def cmd_prune_report(args) -> int:
+    """Advisory report: stale stubs (>180 days unchecked) and stubs whose parent
+    seed vanished — but fetch-BLOCKED stubs are protected: blocked != gone
+    (several .gov hosts refuse this environment's egress while remaining
+    authoritative). Report only; never deletes."""
+    from datetime import datetime, timezone
+    doc = _load_candidates()
+    reg_ids = {s["id"] for s in load_registry().get("seeds", [])}
+    today = datetime.now(timezone.utc).date()
+    flagged = 0
+    for c in doc["candidates"]:
+        notes = []
+        if str(c.get("status", "")).startswith("blocked"):
+            print(f"  [protected] {c['url']} — fetch-blocked; blocked != gone")
+            continue
+        if c.get("parent_source_id") not in reg_ids:
+            notes.append(f"parent seed '{c.get('parent_source_id')}' no longer registered")
+        lc = c.get("last_checked")
+        if lc:
+            try:
+                age = (today - datetime.strptime(lc, "%Y-%m-%d").date()).days
+                if age > 180:
+                    notes.append(f"unchecked for {age} days (>180)")
+            except ValueError:
+                notes.append(f"unparseable last_checked {lc!r}")
+        else:
+            notes.append("never checked")
+        if notes:
+            flagged += 1
+            print(f"  [prune-candidate] {c['url']} — {'; '.join(notes)}")
+    print(f"\n{flagged} prune candidate(s) of {len(doc['candidates'])} stub(s) "
+          "(advisory — removal is a human decision)")
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Recursive crawl-seed / link-graph resolver")
     ap.add_argument("--list", action="store_true", help="deterministic candidate expansion (offline)")
     ap.add_argument("--seed", metavar="ID", help="limit --list to one seed id")
     ap.add_argument("--import", dest="import_file", metavar="FILE",
                     help="merge a crawl_seed.ps1 live-crawl JSON result")
+    ap.add_argument("--accept", metavar="URL",
+                    help="upsert a review stub for one expanded candidate (never auto-ingests)")
+    ap.add_argument("--prune-report", action="store_true",
+                    help="advisory staleness report over the stub queue (blocked != gone)")
     ap.add_argument("--selftest", action="store_true", help="determinism + well-formedness check")
     ap.add_argument("--format", choices=["json", "table"], default="table")
     args = ap.parse_args(argv)
     if args.selftest:
         return _selftest()
+    if args.accept:
+        return cmd_accept(args)
+    if args.prune_report:
+        return cmd_prune_report(args)
     if args.import_file:
         return cmd_import(args)
     # default is --list

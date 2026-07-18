@@ -1,0 +1,13 @@
+{
+  "_purpose": "Review-stub queue for accepted crawl candidates. Acceptance here is NOT ingestion: feeds stay human-authored in feed_registry.json; each stub carries its citation-graph provenance for the review step.",
+  "candidates": [
+    {
+      "url": "https://www.ecfr.gov/api/versioner/v1/structure/current/title-17.json",
+      "kind": "cfr_title",
+      "parent_source_id": "ecfr-versioner",
+      "status": "pending_review",
+      "accepted_at": "2026-07-18",
+      "last_checked": "2026-07-18"
+    }
+  ]
+}

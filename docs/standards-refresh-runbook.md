@@ -260,6 +260,12 @@ run finds new documents and sub-domains on its own:
 3. `python3 tools/crawl_seed.py --import discovered.json` — dedupe + review the discovered
    URLs before adding any to `feed_registry.json`. Nothing auto-ingests; anticipatable signals
    (a new draft, a transition-timeline date) route to `anticipated_updates.json` (horizon).
+4. `--accept <candidate-url>` upserts a **review stub** into
+   `canonical-sources/crawl_candidates.json` with its citation-graph provenance
+   (`parent_source_id` — who vouched for it). Promotion to `feed_registry.json` stays a manual
+   human step. `--prune-report` flags stubs unchecked >180 days or with a vanished parent —
+   but fetch-**blocked** stubs are protected (**blocked ≠ gone**: several .gov hosts refuse
+   this environment's egress while remaining authoritative); removal is always a human decision.
 
 `crawl_seed.py --selftest` asserts determinism + registry well-formedness (also in the gate
 battery via `test_spine`).
