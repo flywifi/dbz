@@ -673,6 +673,27 @@ if (ROOT / "canonical-sources" / "crawl_seeds.json").exists():
     check(all(s.get("authority") and s.get("root") and s.get("resolver") for s in _reg["seeds"]),
           "every crawl-seed carries authority/root/resolver")
 
+# ── Evidence-state ladder (Phase 29-4, schema 3.13) ──────────────────────────
+if _DB.exists():
+    _ec = sqlite3.connect(str(_DB))
+    _states = dict(_ec.execute(
+        "SELECT evidence_state, COUNT(*) FROM master_mappings GROUP BY 1"))
+    check(set(_states) == {"oracle_confirmed", "cross_validated",
+                           "columns_aligned", "asserted_by_source"},
+          f"evidence-state vocabulary exact (got {sorted(_states)})")
+    check(_ec.execute("SELECT COUNT(*) FROM master_mappings WHERE evidence_state IS NULL "
+                      "OR evidence_state=''").fetchone()[0] == 0,
+          "every master row carries an evidence_state")
+    check(_ec.execute("SELECT COUNT(*) FROM master_mappings WHERE tier='owner_direct' "
+                      "AND evidence_state='asserted_by_source'").fetchone()[0] == 0,
+          "monotonic: owner_direct never asserted_by_source")
+    # containment untouched: matrix stays 120, tier vocabulary stays 7
+    check(_ec.execute("SELECT COUNT(*) FROM overlap_matrix").fetchone()[0] == 120,
+          "matrix stays 120 pairs after the 3.13 bump")
+    check(_ec.execute("SELECT COUNT(DISTINCT tier) FROM master_mappings").fetchone()[0] == 7,
+          "master tier vocabulary stays 7 after the 3.13 bump")
+    _ec.close()
+
 # ── Context overlays (Phase 29-1) — presentation layer, touches NO tables ────
 import overlay_resolver as _ov
 _ov_avail = _ov.available()

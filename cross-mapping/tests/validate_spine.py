@@ -626,6 +626,50 @@ def main() -> int:
                  "(all controls resolve; statuses+lifecycle in enum; ODP pins well-formed; "
                  "FedRAMP r5 keeps its matrix seat; KSI layer contained)")
 
+    # 14. Evidence-state ladder (Phase 29) — derivation consistent + vocabulary exact.
+    ev_counts = dict(conn.execute(
+        "SELECT evidence_state, COUNT(*) FROM master_mappings GROUP BY 1"))
+    ebad = []
+    valid_states = {"oracle_confirmed", "cross_validated", "columns_aligned",
+                    "asserted_by_source"}
+    if set(ev_counts) - valid_states:
+        ebad.append(f"unknown states {sorted(set(ev_counts) - valid_states)}")
+    n_null = conn.execute("SELECT COUNT(*) FROM master_mappings "
+                          "WHERE evidence_state IS NULL OR evidence_state=''").fetchone()[0]
+    if n_null:
+        ebad.append(f"{n_null} rows without a state")
+    # monotonic sanity: a directly-stated tier is never asserted_by_source
+    n_mono = conn.execute(
+        "SELECT COUNT(*) FROM master_mappings WHERE tier IN "
+        "('owner_direct','nist_stated','owner_stated','hub') "
+        "AND evidence_state='asserted_by_source'").fetchone()[0]
+    if n_mono:
+        ebad.append(f"{n_mono} directly-stated edges downgraded to asserted_by_source")
+    # independent recomputation over a deterministic sample (first 500 rows by PK)
+    n_mismatch = 0
+    for (tier, votes, prod, corr, state) in conn.execute(
+            "SELECT tier, votes, production_support, corroboration, evidence_state "
+            "FROM master_mappings ORDER BY fw_a, native_a, fw_b, native_b LIMIT 500"):
+        n_corr = len(json.loads(corr)) if corr else 0
+        if (prod or 0) >= 1 or tier == "production_aggregate":
+            want = "oracle_confirmed"
+        elif n_corr >= 1 or (votes or 0) >= 2:
+            want = "cross_validated"
+        elif tier in ("owner_direct", "nist_stated", "owner_stated", "hub"):
+            want = "columns_aligned"
+        else:
+            want = "asserted_by_source"
+        if want != state:
+            n_mismatch += 1
+    if n_mismatch:
+        ebad.append(f"{n_mismatch}/500 sampled rows disagree with the independent derivation")
+    if ebad:
+        fail("evidence-state ladder malformed: " + "; ".join(ebad[:6]))
+    else:
+        note(f"evidence-state ladder: {sum(ev_counts.values())} rows across "
+             f"{len(ev_counts)} states {dict(sorted(ev_counts.items()))} "
+             "(vocabulary exact; monotonic; 500-row independent recomputation matches)")
+
     conn.close()
 
     print("SPINE VALIDATION:", "FAIL" if FAILS else "PASS")

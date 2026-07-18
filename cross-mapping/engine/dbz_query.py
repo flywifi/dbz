@@ -418,6 +418,10 @@ def cmd_master(args, conn: sqlite3.Connection) -> int:
     max_rank = (_MASTER_TIER_ORDER.index(min_tier) + 1) if min_tier else len(_MASTER_TIER_ORDER)
     tier_case = " ".join(f"WHEN '{t}' THEN {i + 1}" for i, t in enumerate(_MASTER_TIER_ORDER))
 
+    ev_state = getattr(args, "evidence_state", None)
+    ev_cond = " AND evidence_state = ?" if ev_state else ""
+    ev_params = (ev_state,) if ev_state else ()
+
     control = getattr(args, "control", None)
     fw_single = getattr(args, "framework", None)
     fa_in, fb_in = getattr(args, "framework_a", None), getattr(args, "framework_b", None)
@@ -432,9 +436,9 @@ def cmd_master(args, conn: sqlite3.Connection) -> int:
         rows = conn.execute(f"""
             SELECT * FROM master_mappings
             WHERE ((fw_a = ? AND native_a = ?) OR (fw_b = ? AND native_b = ?))
-              AND (CASE tier {tier_case} END) <= ?
+              AND (CASE tier {tier_case} END) <= ?{ev_cond}
             ORDER BY CASE tier {tier_case} END, fw_a, native_a, fw_b, native_b
-            LIMIT ?""", (fw, control, fw, control, max_rank, limit)).fetchall()
+            LIMIT ?""", (fw, control, fw, control, max_rank, *ev_params, limit)).fetchall()
         header = f"{fw} {control}: {len(rows)} master mapping(s)"
     elif fa_in and fb_in:  # ── pair mode ───────────────────────────────────────
         fa, fb = _master_canon_fw(conn, fa_in), _master_canon_fw(conn, fb_in)
@@ -447,9 +451,9 @@ def cmd_master(args, conn: sqlite3.Connection) -> int:
         rows = conn.execute(f"""
             SELECT * FROM master_mappings
             WHERE ((fw_a = ? AND fw_b = ?) OR (fw_a = ? AND fw_b = ?))
-              AND (CASE tier {tier_case} END) <= ?
+              AND (CASE tier {tier_case} END) <= ?{ev_cond}
             ORDER BY CASE tier {tier_case} END, fw_a, native_a, fw_b, native_b
-            LIMIT ?""", (fa, fb, fb, fa, max_rank, limit)).fetchall()
+            LIMIT ?""", (fa, fb, fb, fa, max_rank, *ev_params, limit)).fetchall()
         header = f"{fa} <-> {fb}: {len(rows)} master mapping(s)"
     elif fa_in and (getattr(args, "fedramp", None) or getattr(args, "cui", False)
                     or getattr(args, "privacy", False) or getattr(args, "family", None)):
@@ -513,6 +517,9 @@ def cmd_master(args, conn: sqlite3.Connection) -> int:
         return 1
 
     results = [dict(r) for r in rows]
+    if ev_state:
+        results = [d for d in results if d.get("evidence_state") == ev_state]
+        header += f" [evidence_state={ev_state}]"
     overlay_block = None
     profile = _overlay_profile(args)
     if profile:
@@ -539,7 +546,8 @@ def cmd_master(args, conn: sqlite3.Connection) -> int:
         corr = ""
         if d["corroboration"]:
             corr = f" (+{len(json.loads(d['corroboration']))} corroborating surface(s))"
-        print(f"[{d['tier']}:{d['provenance']}{conf}] {d['fw_a']} {d['native_a']} <-> "
+        ev = f" ev={d['evidence_state']}" if d.get("evidence_state") else ""
+        print(f"[{d['tier']}:{d['provenance']}{conf}{ev}] {d['fw_a']} {d['native_a']} <-> "
               f"{d['fw_b']} {d['native_b']} ({d['relationship']}){votes}{prod}{anch}{corr}")
     return 0
 
@@ -1520,6 +1528,10 @@ def build_parser() -> argparse.ArgumentParser:
     mst.add_argument("--family", help="audit-scope mode: NIST family filter (e.g. IA)")
     mst.add_argument("--min-tier", choices=list(_MASTER_TIER_ORDER),
                      help="only tiers at or above this rank")
+    mst.add_argument("--evidence-state",
+                     choices=["oracle_confirmed", "cross_validated",
+                              "columns_aligned", "asserted_by_source"],
+                     help="filter by the derived corroboration ladder (v3.13)")
     mst.add_argument("--limit", type=int, default=100)
     _add_overlay(mst); _add_format(mst)
     _add_db(mst)

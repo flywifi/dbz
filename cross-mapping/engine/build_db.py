@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.12"  # v3.12: FedRAMP Consolidated Rules 2026 (fedramp_ksi, fedramp_ksi_controls, fedramp_rules, fedramp_odp_pins); v3.11: olir_hub_edges; v3.10: anticipated_updates
+SCHEMA_VERSION = "3.13"  # v3.13: evidence_state ladder on master_mappings (derived, deterministic); v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
 
 CHUNK = 500  # executemany batch size
 
@@ -485,6 +485,8 @@ CREATE TABLE IF NOT EXISTS master_mappings (
     shared_anchors     TEXT,            -- JSON capped list of r5 anchors under the pair
     anchor_count       INTEGER,
     corroboration      TEXT,            -- JSON minority report (non-winning surfaces)
+    evidence_state     TEXT NOT NULL DEFAULT 'asserted_by_source',
+                                        -- derived ladder (v3.13): oracle_confirmed|cross_validated|columns_aligned|asserted_by_source
     source_ref         TEXT NOT NULL,
     PRIMARY KEY (fw_a, native_a, fw_b, native_b)
 );
@@ -1817,12 +1819,12 @@ def build_db(
             (fw_a, native_a, fw_b, native_b, relationship, relationship_basis,
              tier, provenance, confidence, hop_count, needs_confirmation,
              uncertainty_id, votes, production_support, shared_anchors,
-             anchor_count, corroboration, source_ref)
+             anchor_count, corroboration, evidence_state, source_ref)
         VALUES
             (:fw_a, :native_a, :fw_b, :native_b, :relationship, :relationship_basis,
              :tier, :provenance, :confidence, :hop_count, :needs_confirmation,
              :uncertainty_id, :votes, :production_support, :shared_anchors,
-             :anchor_count, :corroboration, :source_ref)
+             :anchor_count, :corroboration, :evidence_state, :source_ref)
     """, master_rows, "master_mappings")
     conn.commit()
     print(f"  master_mappings: rows={master_stats['rows']} by_tier={master_stats['by_tier']} "

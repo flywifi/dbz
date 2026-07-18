@@ -166,6 +166,31 @@ class _Claims:
         if anchors:
             self.anchors.setdefault(key, set()).update(anchors)
 
+    @staticmethod
+    def _evidence_state(tier: str, votes, production, corroborating: int) -> str:
+        """Derived evidence-strength ladder (schema 3.13) — orthogonal to the
+        provenance tier: the tier says HOW the edge was established, the state
+        says HOW STRONGLY it is corroborated. Deterministic, from existing
+        fields only (rules: protocol-layer/evidence-standards.md):
+
+          oracle_confirmed   — the production ER oracle co-cites the pair
+                               (production_support >= 1) or the edge IS
+                               production data (production_aggregate tier)
+          cross_validated    — >=1 corroborating non-winning surface, or
+                               consensus votes >= 2
+          columns_aligned    — a single directly-stated surface
+                               (owner_direct / nist_stated / owner_stated / hub)
+          asserted_by_source — a single compiled/bundled surface only
+
+        Precedence: highest applicable state wins."""
+        if (production or 0) >= 1 or tier == "production_aggregate":
+            return "oracle_confirmed"
+        if corroborating >= 1 or (votes or 0) >= 2:
+            return "cross_validated"
+        if tier in ("owner_direct", "nist_stated", "owner_stated", "hub"):
+            return "columns_aligned"
+        return "asserted_by_source"
+
     def rows(self) -> List[dict]:
         out: List[dict] = []
         for key in sorted(self.claims):
@@ -195,6 +220,9 @@ class _Claims:
                     [{k: c[k] for k in ("provenance", "tier", "confidence",
                                         "relationship", "source")} for c in rest],
                     sort_keys=True) if rest else None,
+                "evidence_state": self._evidence_state(
+                    primary["tier"], self.votes.get(key),
+                    self.production.get(key, 0), len(rest)),
                 "source_ref": primary["source"],
             })
         return out

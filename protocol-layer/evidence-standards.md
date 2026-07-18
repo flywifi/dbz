@@ -26,6 +26,22 @@ Every `master_mappings` edge carries one of seven tiers, ranked:
 - Corroborating non-winning surfaces are preserved on the edge (`corroboration` field), never
   discarded (source: master arbitration, `cross-mapping/engine/master_surface.py`).
 
+## Evidence-state ladder (source: `cross-mapping/engine/master_surface.py`, schema 3.13)
+
+Orthogonal to the tier: the tier says HOW an edge was established, the **evidence_state** says
+HOW STRONGLY it is corroborated. Derived deterministically from existing fields only, highest
+applicable state wins:
+
+| State | Meaning | Predicate |
+|---|---|---|
+| `oracle_confirmed` | the production ER oracle co-cites the pair | `production_support ≥ 1` or tier = `production_aggregate` |
+| `cross_validated` | independently corroborated | ≥1 corroborating surface, or consensus votes ≥ 2 |
+| `columns_aligned` | one directly-stated surface | tier ∈ {owner_direct, nist_stated, owner_stated, hub} |
+| `asserted_by_source` | one compiled/bundled surface only | everything else |
+
+Filter with `dbz_query.py master --evidence-state <state>`. Gated by `validate_spine.py`
+check 14 (vocabulary exact, no missing states, monotonicity, independent recomputation).
+
 ## Citation requirements (source: `tools/output_validate.py`, `docs/BENCHMARK.md`)
 
 - Every control/CCI id cited in an output must exist in the catalog; unknown ids are treated as
