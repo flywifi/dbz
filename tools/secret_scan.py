@@ -8,6 +8,12 @@ changes/CHANGE_MANAGEMENT.md). Patterns: private-key material, cloud credential
 shapes, generic secret assignments, plus the publication-hygiene leak patterns
 imported from tools/health_audit.py (single source of truth).
 
+Allowlist: exact paths (ALLOW_PATHS) and directory prefixes (ALLOW_PREFIXES), every
+entry with a reason. The only prefix is the output-validator fixture directory, whose
+files DELIBERATELY contain synthetic leak material the validator selftest must catch —
+accepted residual risk: a real secret placed in that one directory would pass this
+hook (the fixtures are short reviewed markdown; keep them synthetic placeholders only).
+
 Usage:
   python3 tools/secret_scan.py                 # scan the staged diff (pre-commit)
   python3 tools/secret_scan.py --range A..B    # scan added lines in a commit range (CI backstop)
@@ -39,6 +45,28 @@ ALLOW_PATHS = {
     "tools/health_audit.py": "leak-pattern definitions",
     "tools/output_validate.py": "imports leak patterns",
 }
+# directory prefixes that may legitimately contain planted material, with reasons
+ALLOW_PREFIXES = {
+    "cross-mapping/tests/fixtures/output_validate/":
+        "deliberately planted leak material for the output-validator selftest — "
+        "synthetic placeholders only",
+}
+
+
+def _allowed(path: str) -> bool:
+    return path in ALLOW_PATHS or any(path.startswith(p) for p in ALLOW_PREFIXES)
+
+
+def should_flag(path: str, line: str):
+    """The per-line decision scan() uses — factored out so the selftest exercises
+    the real code path. Returns (label, fragment) or None."""
+    if _allowed(path):
+        return None
+    for pat, label in SECRET_PATTERNS + list(_PUB_PATTERNS):
+        m = pat.search(line)
+        if m:
+            return label, m.group(0)[:40]
+    return None
 
 
 def _added_lines(diff_args):
@@ -55,12 +83,9 @@ def _added_lines(diff_args):
 def scan(diff_args):
     findings = []
     for path, line in _added_lines(diff_args):
-        if path in ALLOW_PATHS:
-            continue
-        for pat, label in SECRET_PATTERNS + list(_PUB_PATTERNS):
-            m = pat.search(line)
-            if m:
-                findings.append((path, label, m.group(0)[:40]))
+        hit = should_flag(path, line)
+        if hit:
+            findings.append((path, hit[0], hit[1]))
     return findings
 
 
@@ -78,6 +103,14 @@ def selftest():
     clean = "def load(name): return json.loads(path.read_text())"
     fp = any(p.search(clean) for p, _ in SECRET_PATTERNS)
     print(f"  {'ok' if not fp else 'FAIL'}: clean code line does not false-positive")
+    # allowlist is PATH-scoped, never pattern-weakening (exercises the real decision path)
+    planted = "contact analyst@example.com for the workpapers"
+    fixture_ok = should_flag(
+        "cross-mapping/tests/fixtures/output_validate/fabricated_ids.md", planted) is None
+    print(f"  {'ok' if fixture_ok else 'FAIL'}: planted material in the fixture dir is allowlisted")
+    doc_flag = should_flag("docs/anything.md", planted) is not None
+    print(f"  {'ok' if doc_flag else 'FAIL'}: the same material in a normal path still flags")
+    ok = ok and fixture_ok and doc_flag
     print("selftest:", "PASS" if ok and not fp else "FAIL")
     return 0 if ok and not fp else 1
 
