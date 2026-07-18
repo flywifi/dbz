@@ -18,6 +18,12 @@ build artifacts hidden** (the CI condition), `sync_check.py`, the golden self-te
 `benchmark_oracles.py --check` when the engine or mapping data changed. CI (`health` workflow)
 must be green on the pushed sha before a phase is declared done.
 
+## Secret-scan policy boundary
+`policy_boundary_sha: c3192c8` — the CI secret-scan backstop
+(`tools/secret_scan.py --range c3192c8..HEAD` in `health.yml`) scans every commit AFTER this
+sha. History at or before the boundary was reviewed when the policy landed and is not
+re-litigated on every run; the pre-commit hook scans every staged diff going forward.
+
 ## Rollback procedure
 Known-good anchors live in `ledger/snapshots.json` (one per phase, `known_good: true` means the
 full gate battery was green at that sha).

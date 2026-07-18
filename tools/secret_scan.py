@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+"""
+secret_scan.py — staged-diff secret/leak scan (pre-commit) + commit-range backstop (CI).
+
+Scans ADDED lines only (the policy boundary makes the check tractable and honest:
+history before the recorded boundary sha is not re-litigated — see
+changes/CHANGE_MANAGEMENT.md). Patterns: private-key material, cloud credential
+shapes, generic secret assignments, plus the publication-hygiene leak patterns
+imported from tools/health_audit.py (single source of truth).
+
+Usage:
+  python3 tools/secret_scan.py                 # scan the staged diff (pre-commit)
+  python3 tools/secret_scan.py --range A..B    # scan added lines in a commit range (CI backstop)
+  python3 tools/secret_scan.py --selftest      # patterns fire on synthetic material
+Exit 1 on any finding.
+"""
+
+import argparse
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tools"))
+from health_audit import _PUB_PATTERNS  # leak patterns: imported, never copied
+
+SECRET_PATTERNS = [
+    (re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH |DSA |PGP )?PRIVATE KEY-----"), "private key material"),
+    (re.compile(r"\bAKIA[0-9A-Z]{16}\b"), "AWS access key id"),
+    (re.compile(r"\bgh[pousr]_[A-Za-z0-9]{30,}\b"), "GitHub token"),
+    (re.compile(r"\bsk-[A-Za-z0-9_-]{20,}\b"), "API secret key shape"),
+    (re.compile(r"(?i)\b(?:api[_-]?key|secret|token|password)\s*[:=]\s*['\"][A-Za-z0-9+/_-]{16,}['\"]"),
+     "hardcoded credential assignment"),
+]
+# paths that may legitimately contain pattern LITERALS (scanners/tests), with reasons
+ALLOW_PATHS = {
+    "tools/secret_scan.py": "this scanner's own pattern literals",
+    "tools/health_audit.py": "leak-pattern definitions",
+    "tools/output_validate.py": "imports leak patterns",
+}
+
+
+def _added_lines(diff_args):
+    out = subprocess.run(["git", "diff", "--unified=0", *diff_args],
+                         capture_output=True, text=True, cwd=ROOT).stdout
+    current = None
+    for line in out.splitlines():
+        if line.startswith("+++ b/"):
+            current = line[6:]
+        elif line.startswith("+") and not line.startswith("+++") and current:
+            yield current, line[1:]
+
+
+def scan(diff_args):
+    findings = []
+    for path, line in _added_lines(diff_args):
+        if path in ALLOW_PATHS:
+            continue
+        for pat, label in SECRET_PATTERNS + list(_PUB_PATTERNS):
+            m = pat.search(line)
+            if m:
+                findings.append((path, label, m.group(0)[:40]))
+    return findings
+
+
+def selftest():
+    samples = [
+        ("private key material", "-----BEGIN RSA PRIVATE KEY-----"),
+        ("AWS access key id", "AKIAABCDEFGHIJKLMNOP"),
+        ("hardcoded credential assignment", 'api_key = "abcd1234efgh5678ijkl"'),
+    ]
+    ok = True
+    for label, text in samples:
+        hit = any(p.search(text) for p, l in SECRET_PATTERNS if l == label)
+        print(f"  {'ok' if hit else 'FAIL'}: {label}")
+        ok = ok and hit
+    clean = "def load(name): return json.loads(path.read_text())"
+    fp = any(p.search(clean) for p, _ in SECRET_PATTERNS)
+    print(f"  {'ok' if not fp else 'FAIL'}: clean code line does not false-positive")
+    print("selftest:", "PASS" if ok and not fp else "FAIL")
+    return 0 if ok and not fp else 1
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--range", metavar="A..B", help="scan a commit range (CI backstop)")
+    ap.add_argument("--selftest", action="store_true")
+    a = ap.parse_args(argv)
+    if a.selftest:
+        return selftest()
+    diff_args = [a.range] if a.range else ["--cached"]
+    findings = scan(diff_args)
+    for path, label, frag in findings:
+        print(f"  [SECRET] {path}: {label} ('{frag}')")
+    if findings:
+        print(f"\n{len(findings)} finding(s) — remove the material before committing.")
+        return 1
+    print("[secret-scan OK] no key material or leaks in added lines")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

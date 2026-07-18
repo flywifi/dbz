@@ -53,6 +53,13 @@ repos:
         pass_filenames: false
         always_run: true
 
+      - id: secret-scan-staged
+        name: secret scan (staged diff - key material + leak patterns)
+        entry: python3 tools/secret_scan.py
+        language: system
+        pass_filenames: false
+        always_run: true
+
       - id: spine-self-test
         name: overlap spine self-test (normalizers + loaders + overlap + ledger)
         entry: python3 cross-mapping/tests/test_spine.py

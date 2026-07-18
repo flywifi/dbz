@@ -155,6 +155,12 @@ def check_url_provenance():
         for url in _URL_RE.findall(text):
             host = url.split("//", 1)[1].split("/", 1)[0].lower()
             host = host.split("{", 1)[0]  # template hosts: match the literal prefix
+            # RFC 2606/6761 reserved names are unreachable by definition — test
+            # fixtures, never fetch targets; provenance does not apply.
+            if host.endswith((".invalid", ".test", ".localhost")) or \
+                    host in ("example.com", "example.org", "example.net") or \
+                    host.endswith((".example.com", ".example.org", ".example.net", ".example")):
+                continue
             if host and host not in allowed:
                 findings.append((str(path.relative_to(ROOT)), url))
     return sorted(set(findings))

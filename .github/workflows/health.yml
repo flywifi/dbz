@@ -10,9 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # secret-scan backstop needs history back to the policy boundary
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      - name: Secret-scan backstop (commits since the policy boundary sha)
+        run: |
+          # boundary recorded in changes/CHANGE_MANAGEMENT.md (do not re-litigate older history)
+          python3 tools/secret_scan.py --range c3192c8..HEAD
 
       - name: Drift guard (sync_check)
         run: python3 tools/sync_check.py
