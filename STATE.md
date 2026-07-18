@@ -38,16 +38,18 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 | 29-2 | Multi-platform export | `ea917cd` | 2026-07-18 | Generated OpenAI-function schemas for the 6 core operations, drift-guarded (sync invariant 12) |
 | 29-3 | Protocol layer + scorer | `d5200d9` | 2026-07-18 | Four authority protocols (cited to existing rules) + hard-fail-first deterministic verdicts |
 | 29-4 | Evidence-state ladder | `8ef71f2` | 2026-07-18 | Schema 3.13: derived corroboration state on every master edge + --evidence-state filter + check 14 |
+| 30-1/2/3 | Metrics + scenarios + registry IO | `5eaa48f` | 2026-07-18 | Generated scoreboard; ten pinned e2e scenarios in CI; single-writer registries + sha baselines |
+| 30-4 | Crawl citation graph | `c3192c8` | 2026-07-18 | Candidate provenance, --accept review stubs, blocked-is-not-gone pruning |
+| 30-5 | Hygiene extras | `d2a5a99` | 2026-07-18 | Secret scan + CI backstop, data-at-rest rules, URL provenance blocking, persona audit |
 
 Phases 1–18 built the foundations (catalog ingestion, ER engine, spine normalization, CCI/ODP
 bridge, consensus detection, publication hygiene, health auditor); their commits precede
 `d8c0d15` in `git log` and their outcomes are documented throughout `docs/`.
 
 ## Next planned work
-- Hardening pass: a regenerable metrics scoreboard, a pinned end-to-end scenario battery,
-  single-writer registry IO with content-sha currency baselines, a citation-graph upgrade for
-  crawl-seed discovery, and hygiene extras (staged-diff secret scan, data-at-rest placement
-  invariants, URL-provenance promotion to blocking, a three-persona output audit).
+- Candidate UX backlog from `docs/persona-audit.md`: a gap-list convenience on overlap, a
+  validated brief output format, inline voter breakdown on consensus edges. Ongoing:
+  standards-currency refresh cadence per `docs/standards-refresh-runbook.md`.
 
 ## Recovery package (fresh clone → working state)
 1. Read `CLAUDE.md` (conventions) + this file (state) + `changes/CHANGELOG.md` (history).

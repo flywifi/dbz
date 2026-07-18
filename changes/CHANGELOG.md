@@ -3,6 +3,18 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.4.0] — 2026-07-18 (phase 30 — hardening)
+### Added
+- **30-5** (`d2a5a99`) — Staged-diff secret scan + CI backstop with a recorded policy boundary;
+  fail-closed data-at-rest placement rules; URL provenance promoted to blocking;
+  `docs/persona-audit.md` (three-persona UX gap audit).
+- **30-4** (`c3192c8`) — Crawl-seed citation graph: `parent_source_id` on every candidate,
+  `--accept` review stubs in `crawl_candidates.json`, `--prune-report` with blocked-is-not-gone
+  protection.
+- **30-1/2/3** (`5eaa48f`) — `tools/metrics.py` -> generated `docs/METRICS.md` (sync invariant
+  13); ten-scenario pinned end-to-end battery in the standards-watch build; single-writer
+  `tools/registry_io.py` (invariant 14) + `tools/registry_currency.py` sha baselines.
+
 ## [0.3.0] — 2026-07-18 (phase 29)
 ### Added
 - **29-4** (`8ef71f2`) — Evidence-state ladder on `master_mappings` (schema **3.13**): derived
