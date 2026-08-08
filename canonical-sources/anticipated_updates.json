@@ -2272,7 +2272,7 @@
         "https://dowcio.war.gov/Portals/0/Documents/CMMC/OrgDefinedParmsNISTSP800-171.pdf",
         "https://dowcio.war.gov/Portals/0/Documents/Library/ImplementingSuspensionCMMC-PhaseII.pdf"
       ],
-      "notes": "Strongest official signal: the DoD ODP memo (signed 2025-04-10, McKeown) defines r3 ODP values 'In preparation to implement reference (a) as the minimum requirement for contractors'. Trade-press timing ('late 2026-mid 2027') failed the citation-loop escape - trade-press-only, no rule text; not citable. The 2026-07-13 reform review adds uncertainty on timing (CONTESTED on timing; the transition signal itself is origin-stated).",
+      "notes": "Strongest official signal: the DoD ODP memo (signed 2025-04-10, McKeown) defines r3 ODP values 'In preparation to implement reference (a) as the minimum requirement for contractors'. Trade-press timing ('late 2026-mid 2027') failed the citation-loop escape - trade-press-only, no rule text; not citable. The 2026-07-13 reform review adds uncertainty on timing (CONTESTED on timing; the transition signal itself is origin-stated). STAGE BASELINE FROZEN 2026-08-08 (user decision: wait for the task-force outcome before loading values): offline diff base + comparison procedure at docs/cmmc-odp-baseline.md.",
       "provenance": {
         "primary_source_url": "https://dowcio.war.gov/Portals/0/Documents/CMMC/OrgDefinedParmsNISTSP800-171.pdf",
         "retrieved_at": "2026-08-08",

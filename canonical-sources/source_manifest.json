@@ -1220,6 +1220,28 @@
       "role": "dod_odp_values_memo",
       "sha256": "fd83ecf4e0998f0b29d5e6f222e7364ce67eb6fdedb5ac4f34ec4310ba495916",
       "notes": "DoD Organization-Defined Parameters for NIST SP 800-171 Revision 3; Attachment A carries ODP values embedded in per-requirement prose across 50 unique r3 requirement headings; in four instances the ODP is guidance rather than a specified value. Retrieved from the dowcio.war.gov mirror (dodcio.defense.gov returned Access Denied). Scoping-first per phase 32 WS-3: NOT loaded pending the user decision gate."
+    },
+    {
+      "id": "dod-odp-values-memo-text",
+      "file": "canonical-sources/source_data/dod/OrgDefinedParmsNISTSP800-171.extracted.txt",
+      "format": "txt",
+      "version": "extracted 2026-08-08 from the 2025-04-10 memo (pdfminer.six)",
+      "retrieved": "2026-08-08",
+      "source_url": "https://dowcio.war.gov/Portals/0/Documents/CMMC/OrgDefinedParmsNISTSP800-171.pdf",
+      "role": "reference_only",
+      "sha256": "d6854e3bb9a2d61037cf44d8b137415741f7a88f3c1115e9841c40eeff560ca7",
+      "notes": "Diff-ready text baseline of the ODP memo for the future added/removed/changed comparison against final r3 values. Procedure: docs/cmmc-odp-baseline.md."
+    },
+    {
+      "id": "ecfr-32cfr170-xml",
+      "file": "canonical-sources/source_data/dod/ecfr-32cfr170-2026-08-01.xml",
+      "format": "xml",
+      "version": "eCFR full text as of 2026-08-01 (Title 32 up_to_date_as_of 2026-08-06)",
+      "retrieved": "2026-08-08",
+      "source_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-08-01/title-32.xml?part=170",
+      "role": "reference_only",
+      "sha256": "3dc8b9bebbe56753206429657cbac24ff32bfd64c75356ba276af38a1032b628",
+      "notes": "Complete 32 CFR Part 170 rule text at the phase-32 stage freeze; the generated cfr/32-cfr-170.json truncates section text at 2000 chars, so this XML is the offline diff base for any future amendment. Procedure: docs/cmmc-odp-baseline.md."
     }
   ],
   "staged_reference_sources": {
