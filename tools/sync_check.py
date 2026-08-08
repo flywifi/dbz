@@ -34,6 +34,8 @@ Plus the ledger, export, scoreboard, and registry invariants:
      fresh checkout without build artifacts).
  14. Single-writer discipline for the canonical registries — registry writes route through
      tools/registry_io.py (undeclared writers are flagged).
+ 15. Skill-asset copies of overlap-data files hash-match the canonical overlap-data/ copy
+     (silently diverged copies skew the analyzer skill against the engine).
 
 Run:   python3 tools/sync_check.py
 Exit:  0 if every invariant holds, 1 (with a report) otherwise.
@@ -273,6 +275,19 @@ def main() -> int:
                                     "tools/registry_io.py or allowlist with a reason)")
                     break
 
+    # Invariant 15: skill-asset copies of overlap-data files must hash-match the
+    # canonical copy (overlap-data/ is canonical per CLAUDE.md). A silently
+    # diverged copy skews the analyzer skill against the engine.
+    import hashlib as _hl
+    _canon = {p.name: p for p in (ROOT / "overlap-data").glob("*") if p.is_file()}
+    for asset in sorted((ROOT / "skills").rglob("assets/mappings/*")):
+        if not asset.is_file() or asset.name not in _canon:
+            continue
+        if _hl.sha256(asset.read_bytes()).hexdigest() != _hl.sha256(_canon[asset.name].read_bytes()).hexdigest():
+            failures.append(f"  ✗ Invariant 15 — skill asset diverged from canonical "
+                            f"overlap-data copy: {asset.relative_to(ROOT)} (resync from "
+                            f"overlap-data/{asset.name}; never edit the per-skill copy)")
+
     print(f"GRC drift check — {len(atom_dirs)} atom(s) + orchestration bucket + health auditor\n")
     if failures:
         print("DRIFT DETECTED:\n")
@@ -280,7 +295,7 @@ def main() -> int:
         print(f"\n{len(failures)} invariant(s) failed.")
         return 1
 
-    print(f"OK — all 14 invariants pass across {len(atom_dirs)} atom(s) + the orchestration "
+    print(f"OK — all 15 invariants pass across {len(atom_dirs)} atom(s) + the orchestration "
           f"bucket + the health auditor + the platform export.")
     return 0
 

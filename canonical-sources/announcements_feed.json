@@ -1,9 +1,57 @@
 {
   "schema_version": "1.0.0",
   "_purpose": "Structured announcements from standards-body RSS/Atom feeds. Populated by announcement_monitor.py.",
-  "generated_at": "2026-06-30T18:41:39Z",
+  "generated_at": "2026-08-08T18:51:07Z",
   "window_days": 180,
   "entries": [
+    {
+      "entry_id": "ann-disa-cci-dictionary-2026-07",
+      "framework_ids": [
+        "disa-cci"
+      ],
+      "title": "Full DISA CCI dictionary + multi-source mapping corroboration",
+      "published_at": "2026-07-04T00:00:00Z",
+      "url": "https://public.cyber.mil/stigs/cci/",
+      "source_feed": "disa-cci",
+      "summary": "5,137 CCIs with definitions now loaded (up from 4,550); CCI↔800-53 mappings cross-confirmed against acasehs + trackr republications and STIG application usage.",
+      "human_confirmed": true
+    },
+    {
+      "entry_id": "ann-disa-stig-library-2026-04",
+      "framework_ids": [
+        "disa-stig-library",
+        "disa-cci"
+      ],
+      "title": "DISA SRG-STIG Library (April 2026) ingested — STIG rule→CCI application layer",
+      "published_at": "2026-04-01T00:00:00Z",
+      "url": "https://public.cyber.mil/stigs/downloads/",
+      "source_feed": "disa-stig-library",
+      "summary": "383 STIG benchmarks / 19,667 rules distilled for CCI application evidence (539 distinct CCIs; 97.6% resolve in cci_bridge). Delta-tracked against the cyber.trackr.live catalog; on-demand product overlap via the stig: resolver.",
+      "human_confirmed": true
+    },
+    {
+      "entry_id": "ann-sox-itgc-pcaob-as2201-2026",
+      "framework_ids": [
+        "sox-itgc"
+      ],
+      "title": "PCAOB AS 2201 (SOX ITGC Integrated Audit Standard) Updated — Effective December 15, 2026",
+      "published_at": "2025-09-01T00:00:00Z",
+      "url": "https://pcaobus.org/Oversight/Standards/Auditing-Standards/Details/AS2201",
+      "source_feed": "manual-seed",
+      "change_type": "major_revision",
+      "keywords_matched": [
+        "as 2201",
+        "effective december 15 2026",
+        "sox",
+        "integrated audit"
+      ],
+      "human_reviewed": true,
+      "action_items": [
+        "Monitor PCAOB.org for final AS 2201 text effective Dec 15, 2026",
+        "Update sox-itgc feed_registry entry when final text published",
+        "Review IT General Controls (ITGC) mapping to NIST SC/AC families for updated requirements"
+      ]
+    },
     {
       "entry_id": "ann-hitrust-v11.5.0-2025",
       "framework_ids": [
@@ -49,29 +97,6 @@
         "Download v5.0.0 XLSX from OWASP/ASVS GitHub releases",
         "Note: requirement IDs are NOT backwards-compatible — crosswalk v4→v5 needed",
         "Update source_manifest.json entry for owasp-asvs"
-      ]
-    },
-    {
-      "entry_id": "ann-sox-itgc-pcaob-as2201-2026",
-      "framework_ids": [
-        "sox-itgc"
-      ],
-      "title": "PCAOB AS 2201 (SOX ITGC Integrated Audit Standard) Updated — Effective December 15, 2026",
-      "published_at": "2025-09-01T00:00:00Z",
-      "url": "https://pcaobus.org/Oversight/Standards/Auditing-Standards/Details/AS2201",
-      "source_feed": "manual-seed",
-      "change_type": "major_revision",
-      "keywords_matched": [
-        "as 2201",
-        "effective december 15 2026",
-        "sox",
-        "integrated audit"
-      ],
-      "human_reviewed": true,
-      "action_items": [
-        "Monitor PCAOB.org for final AS 2201 text effective Dec 15, 2026",
-        "Update sox-itgc feed_registry entry when final text published",
-        "Review IT General Controls (ITGC) mapping to NIST SC/AC families for updated requirements"
       ]
     },
     {
@@ -565,184 +590,6 @@
       "action_items": []
     },
     {
-      "entry_id": "577ca71171619a89",
-      "framework_ids": [
-        "hipaa"
-      ],
-      "title": "New Jersey Transit's Request To Amend Its Positive Train Control Safety Plan and Positive Train Control System",
-      "published_at": null,
-      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13184/new-jersey-transits-request-to-amend-its-positive-train-control-safety-plan-and-positive-train",
-      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
-      "change_type": "major_revision",
-      "keywords_matched": [
-        "rev 7",
-        "release",
-        "update"
-      ],
-      "human_reviewed": false,
-      "action_items": []
-    },
-    {
-      "entry_id": "e8b321679cf67e27",
-      "framework_ids": [
-        "hipaa"
-      ],
-      "title": "Notification of Cancelled Adjustment of Civil Monetary Penalties for Inflation",
-      "published_at": null,
-      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13163/notification-of-cancelled-adjustment-of-civil-monetary-penalties-for-inflation",
-      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
-      "change_type": "informational",
-      "keywords_matched": [],
-      "human_reviewed": false,
-      "action_items": []
-    },
-    {
-      "entry_id": "6d21a25a4cfdfb61",
-      "framework_ids": [
-        "hipaa"
-      ],
-      "title": "Suitability and Fitness",
-      "published_at": null,
-      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13154/suitability-and-fitness",
-      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
-      "change_type": "major_revision",
-      "keywords_matched": [
-        "final rule",
-        "final"
-      ],
-      "human_reviewed": false,
-      "action_items": []
-    },
-    {
-      "entry_id": "0410a905f4a6b292",
-      "framework_ids": [
-        "hipaa"
-      ],
-      "title": "Marine Casualty Reporting on the Outer Continental Shelf",
-      "published_at": null,
-      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13137/marine-casualty-reporting-on-the-outer-continental-shelf",
-      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
-      "change_type": "major_revision",
-      "keywords_matched": [
-        "final rule",
-        "final"
-      ],
-      "human_reviewed": false,
-      "action_items": []
-    },
-    {
-      "entry_id": "23e4bf7f04dad4e8",
-      "framework_ids": [
-        "hipaa"
-      ],
-      "title": "Submission for Office of Management and Budget Review; Adoption and Foster Care Analysis and Reporting System (AFCARS)",
-      "published_at": null,
-      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13134/submission-for-office-of-management-and-budget-review-adoption-and-foster-care-analysis-and",
-      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
-      "change_type": "major_revision",
-      "keywords_matched": [
-        "final rule",
-        "final"
-      ],
-      "human_reviewed": false,
-      "action_items": []
-    },
-    {
-      "entry_id": "23023aeab790da4b",
-      "framework_ids": [
-        "hipaa"
-      ],
-      "title": "Designation-Restrict the Operation of Unmanned Aircraft in Close Proximity to a Fixed Site Facility; Extension of Comment Period",
-      "published_at": null,
-      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13126/designation-restrict-the-operation-of-unmanned-aircraft-in-close-proximity-to-a-fixed-site-facility",
-      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
-      "change_type": "public_comment",
-      "keywords_matched": [
-        "comment period"
-      ],
-      "human_reviewed": false,
-      "action_items": []
-    },
-    {
-      "entry_id": "1daf3a213115eb94",
-      "framework_ids": [
-        "hipaa"
-      ],
-      "title": "Allocation of Assets in Single-Employer Plans; Interest Assumptions for Valuing Benefits",
-      "published_at": null,
-      "url": "https://www.federalregister.gov/documents/2026/06/30/2026-13124/allocation-of-assets-in-single-employer-plans-interest-assumptions-for-valuing-benefits",
-      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
-      "change_type": "major_revision",
-      "keywords_matched": [
-        "final rule",
-        "final"
-      ],
-      "human_reviewed": false,
-      "action_items": []
-    },
-    {
-      "entry_id": "abb35503158d02f0",
-      "framework_ids": [
-        "hipaa"
-      ],
-      "title": "Technical Guidelines for the Production of Regenerative Agricultural Biofuel Feedstocks",
-      "published_at": null,
-      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13092/technical-guidelines-for-the-production-of-regenerative-agricultural-biofuel-feedstocks",
-      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
-      "change_type": "major_revision",
-      "keywords_matched": [
-        "final rule",
-        "final"
-      ],
-      "human_reviewed": false,
-      "action_items": []
-    },
-    {
-      "entry_id": "164e0e7e248462c7",
-      "framework_ids": [
-        "hipaa"
-      ],
-      "title": "Alien Registration Form and Evidence of Registration",
-      "published_at": null,
-      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13057/alien-registration-form-and-evidence-of-registration",
-      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
-      "change_type": "major_revision",
-      "keywords_matched": [
-        "final rule",
-        "final"
-      ],
-      "human_reviewed": false,
-      "action_items": []
-    },
-    {
-      "entry_id": "8066c7303233f66c",
-      "framework_ids": [
-        "hipaa"
-      ],
-      "title": "Safety Zones; Annual Events in the Captain of the Port Detroit Zone",
-      "published_at": null,
-      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13050/safety-zones-annual-events-in-the-captain-of-the-port-detroit-zone",
-      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
-      "change_type": "informational",
-      "keywords_matched": [],
-      "human_reviewed": false,
-      "action_items": []
-    },
-    {
-      "entry_id": "90d98bfa282230f3",
-      "framework_ids": [
-        "hipaa"
-      ],
-      "title": "Agency Information Collection Activities: Requests for Comments; Clearance for Renewal of Information Collection: Privacy International Civil Aviation Organization (ICAO) Address",
-      "published_at": null,
-      "url": "https://www.federalregister.gov/documents/2026/06/29/2026-13035/agency-information-collection-activities-requests-for-comments-clearance-for-renewal-of-information",
-      "source_feed": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
-      "change_type": "informational",
-      "keywords_matched": [],
-      "human_reviewed": false,
-      "action_items": []
-    },
-    {
       "entry_id": "6a72784caa911bfa",
       "framework_ids": [
         "fedramp-20x"
@@ -1098,31 +945,7 @@
       "keywords_matched": [],
       "human_reviewed": false,
       "action_items": []
-    },
-    {
-      "entry_id": "ann-disa-stig-library-2026-04",
-      "framework_ids": [
-        "disa-stig-library",
-        "disa-cci"
-      ],
-      "title": "DISA SRG-STIG Library (April 2026) ingested — STIG rule→CCI application layer",
-      "published_at": "2026-04-01T00:00:00Z",
-      "url": "https://public.cyber.mil/stigs/downloads/",
-      "source_feed": "disa-stig-library",
-      "summary": "383 STIG benchmarks / 19,667 rules distilled for CCI application evidence (539 distinct CCIs; 97.6% resolve in cci_bridge). Delta-tracked against the cyber.trackr.live catalog; on-demand product overlap via the stig: resolver.",
-      "human_confirmed": true
-    },
-    {
-      "entry_id": "ann-disa-cci-dictionary-2026-07",
-      "framework_ids": [
-        "disa-cci"
-      ],
-      "title": "Full DISA CCI dictionary + multi-source mapping corroboration",
-      "published_at": "2026-07-04T00:00:00Z",
-      "url": "https://public.cyber.mil/stigs/cci/",
-      "source_feed": "disa-cci",
-      "summary": "5,137 CCIs with definitions now loaded (up from 4,550); CCI↔800-53 mappings cross-confirmed against acasehs + trackr republications and STIG application usage.",
-      "human_confirmed": true
     }
-  ]
+  ],
+  "_note_hipaa_prune": "2026-08-08: 11 entries tagged hipaa were pruned — all were false positives from an invalid Federal Register agency slug (department-of-health-and-human-services; the API silently ignores unknown agencies[] filters, degrading the RSS to an unfiltered firehose) combined with generic keywords. Slug corrected to health-and-human-services-department and keywords tightened to HIPAA-anchored terms."
 }

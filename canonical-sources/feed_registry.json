@@ -745,34 +745,36 @@
         "landing": "https://www.hhs.gov/hipaa/for-professionals/security/index.html",
         "security_rule": "https://www.hhs.gov/sites/default/files/ocr/privacy/hipaa/administrative/securityrule/securityrulepdf.pdf",
         "proposed_update": "https://www.hhs.gov/hipaa/for-professionals/security/guidance/federal-register-notice-hipaa-security-rule-nprm/index.html",
-        "download_page": "https://www.hhs.gov/hipaa/for-professionals/security/index.html"
+        "download_page": "https://www.hhs.gov/hipaa/for-professionals/security/index.html",
+        "nprm_federal_register": "https://www.federalregister.gov/documents/2025/01/06/2024-30983/hipaa-security-rule-to-strengthen-the-cybersecurity-of-electronic-protected-health-information",
+        "omb_agenda": "https://www.reginfo.gov/public/do/eAgendaViewRule?pubId=202510&RIN=0945-AA22"
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
       "last_changed": "2013-01-25",
-      "notes": "Security Rule NPRM published 2025-01-06 (comment period closed 2025-03-07, 4,700+ comments). OCR missed its spring-2026 final-rule target; no confirmed timeline — 2013 Omnibus rule remains the enforceable standard. Proposed: mandatory encryption, MFA, 72-hr incident reporting, annual pentest. Phase 19: HIPAA Security Rule now has a NIST-stated spine path via the SP 800-66r2 OLIR mapping (see feed nist-sp-800-66).",
+      "notes": "Security Rule NPRM 'HIPAA Security Rule To Strengthen the Cybersecurity of Electronic Protected Health Information': 90 FR 898, FR doc 2024-30983, RIN 0945-AA22, docket HHS-OCR-2024-0020, published 2025-01-06, comments closed 2025-03-07 (4,747 comments per the FR regulations.gov mirror). OMB Unified Agenda ed. 202510: Final Action 07/2027, stage 'Long-Term Actions' — projection, not commitment; contested by a reported withdrawal campaign (100+ hospital systems + AMA). The 2013 Omnibus rule remains the enforceable standard. Proposed items and the repo trigger map: docs/hipaa-security-rule-transition.md. Phase 19: HIPAA Security has a NIST-stated spine path via the SP 800-66r2 OLIR mapping (see feed nist-sp-800-66).",
       "announcement_feeds": [
         {
-          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-health-and-human-services",
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=health-and-human-services-department",
           "type": "rss",
           "filter_keywords": [
+            "HIPAA",
             "Security Rule",
-            "NPRM",
-            "final rule",
-            "enforcement"
+            "45 CFR 164"
           ],
-          "notes": "Federal Register HHS RSS (replaces hhs.gov/rss/hipaa-news.xml which returned 403)"
+          "notes": "Federal Register HHS RSS (replaces hhs.gov/rss/hipaa-news.xml which returned 403)",
+          "keyword_mode": "require_any"
         },
         {
           "url": "https://www.hhs.gov/rss/hipaa-news.xml",
           "type": "rss",
           "filter_keywords": [
+            "HIPAA",
             "Security Rule",
-            "NPRM",
-            "final rule",
-            "enforcement"
+            "45 CFR 164"
           ],
-          "notes": "HHS HIPAA-specific news RSS [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+          "notes": "HHS HIPAA-specific news RSS [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]",
+          "keyword_mode": "require_any"
         },
         {
           "url": "https://www.hhs.gov/about/news/rss/ocr-news.xml",
@@ -802,11 +804,11 @@
         ".zip"
       ],
       "version_signal": "ecfr_as_of_date",
-      "next_expected_version": "2026 Final Rule (NPRM Jan 2025; comment period closed Mar 7 2025)",
+      "next_expected_version": "Final rule projected July 2027 (OMB Unified Agenda ed. 202510 — agency projection, contested)",
       "cci_coverage_notes": "Implied-Bridge (two-hop): HIPAA §§164.308/310/312/316 → 800-53 via HHS/NIST crosswalk → r4 CCI. §164.312(a)(1) AC → AC CCIs. §164.312(e)(1) Encryption → SC-28 (CCI-001199, Confirmed-Subject: 'encryption'). §164.308(a)(5) Auth → IA CCIs (Confirmed-Subject: 'authentication'). HIPAA section numbers not in any CCI definition text.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-03"
+      "last_verified": "2026-08-08"
     },
     "eu-ai-act": {
       "label": "EU Artificial Intelligence Act (base regulation)",
@@ -824,9 +826,10 @@
       "notes": "Phased obligations: prohibited-AI Feb 2025, GPAI Aug 2025, high-risk Aug 2026/2027. Implementing acts tracked separately as eu-ai-act-impl.",
       "announcement_feeds": [
         {
-          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=cybersecurity-and-infrastructure-security-agency",
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=homeland-security-department",
           "type": "rss",
           "filter_keywords": [
+            "CISA",
             "AI Act",
             "artificial intelligence",
             "GPAI",
@@ -900,9 +903,10 @@
       "notes": "NIS2 expands scope to more sectors; member-state transposition ongoing. Maps loosely to ISO 27001 / 800-53 via risk-management measures (Art. 21). ENISA implementing acts for incident reporting in progress.",
       "announcement_feeds": [
         {
-          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=cybersecurity-and-infrastructure-security-agency",
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=homeland-security-department",
           "type": "rss",
           "filter_keywords": [
+            "CISA",
             "NIS2",
             "network and information",
             "cybersecurity directive"
@@ -1199,9 +1203,10 @@
           "notes": "EDPB decisions and guidelines feed (replaces deprecated EUR-Lex EULAW RSS)"
         },
         {
-          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=cybersecurity-and-infrastructure-security-agency",
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=homeland-security-department",
           "type": "rss",
           "filter_keywords": [
+            "CISA",
             "AI Office",
             "GPAI",
             "implementing",
@@ -1963,9 +1968,10 @@
       "last_changed": "2023-03-01",
       "announcement_feeds": [
         {
-          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=cybersecurity-and-infrastructure-security-agency",
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=homeland-security-department",
           "type": "rss",
           "filter_keywords": [
+            "CISA",
             "CPG",
             "performance goals",
             "cross-sector"
@@ -2455,14 +2461,15 @@
       "last_changed": "2023-11-01",
       "announcement_feeds": [
         {
-          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=new-york-state-department-of-financial-services",
-          "type": "rss",
+          "url": "https://www.dfs.ny.gov/industry_guidance/cybersecurity",
+          "type": "page_watch",
           "filter_keywords": [
             "500",
             "cybersecurity",
             "financial"
           ],
-          "notes": "Federal Register NYDFS feed"
+          "notes": "Federal Register NYDFS feed",
+          "note": "NYDFS is a state agency and does not publish in the Federal Register; the prior FR RSS filter was invalid and degraded to an unfiltered firehose."
         }
       ],
       "draft_status": "none",
@@ -2959,9 +2966,10 @@
       "last_changed": "2024-03-27",
       "announcement_feeds": [
         {
-          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=cybersecurity-and-infrastructure-security-agency",
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=homeland-security-department",
           "type": "rss",
           "filter_keywords": [
+            "CISA",
             "CIRCIA",
             "incident reporting",
             "6 USC"
@@ -5003,9 +5011,10 @@
       ],
       "announcement_feeds": [
         {
-          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=cybersecurity-and-infrastructure-security-agency&term=artificial+intelligence",
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=homeland-security-department&term=artificial+intelligence",
           "type": "rss",
           "filter_keywords": [
+            "CISA",
             "artificial intelligence",
             "ai security",
             "llm",

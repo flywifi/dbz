@@ -560,16 +560,20 @@
       "id": "au-hipaa",
       "feed_id": "hipaa",
       "authority": "HHS OCR",
-      "artifact": "HIPAA Security Rule 2026 Final Rule",
+      "artifact": "HIPAA Security Rule update — RIN 0945-AA22 final action",
       "current_version": "HIPAA Security Rule (2013 Omnibus)",
       "expected_type": "major_rev",
       "lifecycle_stage": "advisory_pending",
-      "expected_window": "no_fixed_date",
-      "confidence": "med",
+      "expected_window": {
+        "earliest": "2027-07-01",
+        "latest": "2027-07-31",
+        "basis": "OMB Unified Agenda edition 202510 timetable: 'Final Action 07/00/2027' — an agency projection, not a commitment; the rulemaking sits in the 'Long-Term Actions' stage. Agenda timeframes are not legally binding."
+      },
+      "confidence": "low",
       "trigger_signal": "HHS publishes the Final Rule in the Federal Register (NPRM issued Jan 2025; comment period closed Mar 7 2025 — Final Rule date not committed)",
       "detection": {
-        "url": "https://www.federalregister.gov/agencies/office-for-civil-rights",
-        "method": "poll_landing",
+        "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=health-and-human-services-department",
+        "method": "rss",
         "match": "HIPAA Security Rule final rule"
       },
       "poll_frequency": "monthly",
@@ -579,9 +583,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-08",
       "last_change_detected": null,
-      "notes": "2026 Final Rule anticipated; NPRM Jan 2025, comments closed Mar 7 2025. No committed publication date."
+      "notes": "NPRM 90 FR 898 (FR doc 2024-30983, RIN 0945-AA22, docket HHS-OCR-2024-0020) published 2025-01-06; comments closed 2025-03-07; 4,747 comments per the Federal Register's regulations.gov mirror (as checked 2025-04-04). CONTESTED: OMB projects final action July 2027 AND a formal withdrawal campaign by 100+ hospital systems and provider associations (incl. AMA) is reported by secondaries — both signals recorded; outcome (finalize/narrow/delay/withdraw) genuinely open. The 2013 Omnibus Security Rule remains the enforceable standard; no dbz mapping data changes until a final rule exists. Repo trigger map: docs/hipaa-security-rule-transition.md.",
+      "provenance": {
+        "primary_source_url": "https://www.reginfo.gov/public/do/eAgendaViewRule?pubId=202510&RIN=0945-AA22",
+        "retrieved_at": "2026-08-08",
+        "verbatim": "NPRM 01/06/2025 90 FR 898; Final Action 07/00/2027",
+        "support": "CONTESTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-hitrust",
