@@ -31,6 +31,20 @@ The generated-artifact drift checks (metrics scoreboard, platform export) run in
 `sync_check` (invariants 12–14). CI (`health` workflow) must be green on the pushed sha before
 a phase is declared done.
 
+## Regulatory-phase closing gate
+
+Any phase that changes regulatory-currency data — `feed_registry.json`,
+`anticipated_updates.json`, `framework_changelog.json`, or regulatory claims in `docs/` —
+closes with an adversarial-audit document under `docs/audits/` run against the phase's own
+diff. The audit's four passes and the provenance rules it checks are defined in
+`regulatory-provenance.md`. Two sections are mandatory and non-substitutable:
+
+- **Adversary output:** the single claim most likely to be wrong, the specific evidence that
+  would overturn it, and where that evidence would be found. A pass that cannot name one is
+  treated as not run — "least weak" is still an ordering.
+- **Residual risk:** which specific claims are most likely still wrong and why. Never an
+  all-clear; a clean self-audit is evidence about the audit, not the data.
+
 ## Critical non-overridables
 
 - **A fabricated id is a critical failure.** No composite score, reviewer preference, or

@@ -4,6 +4,10 @@ The authority file for how dbz establishes, labels, and cites evidence. Every ru
 formalizes behavior that already exists elsewhere in the repo; each cites its source. Other docs
 should cite this file rather than restate the rules.
 
+Scope note: mapping-data evidence (tiers, precedence, confirmation) lives here. Provenance for
+**regulatory events** — rule publications, effective dates, suspensions, agency projections —
+lives in `regulatory-provenance.md`; the seven-tier model below is untouched by that file.
+
 ## Source precedence (source: `CLAUDE.md` — Non-negotiables)
 
 When sources disagree about a mapping, precedence is:
