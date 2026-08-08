@@ -164,7 +164,7 @@
           "notes": "NIST Cybersecurity Insights blog RSS (replaces deprecated /news-events/cybersecurity/rss)"
         },
         {
-          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-defense",
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=defense-department",
           "type": "rss",
           "filter_keywords": [
             "800-171",
@@ -289,15 +289,18 @@
         "landing": "https://www.acq.osd.mil/cmmc/",
         "model_overview": "https://www.acq.osd.mil/cmmc/docs/CMMC_Model_Main_20220202.pdf",
         "federal_register": "https://www.federalregister.gov/documents/2024/10/15/2024-23960/cybersecurity-maturity-model-certification-cmmc-program",
-        "download_page": "https://dodcio.defense.gov/CMMC/Documentation/"
+        "download_page": "https://dodcio.defense.gov/CMMC/Documentation/",
+        "suspension_release": "https://www.war.gov/News/Releases/Release/Article/4542329/forging-the-arsenal-of-freedom-department-of-war-suspends-cmmc-phase-ii-require/",
+        "suspension_implementation_memo": "https://dowcio.war.gov/Portals/0/Documents/Library/ImplementingSuspensionCMMC-PhaseII.pdf",
+        "odp_values_memo": "https://dowcio.war.gov/Portals/0/Documents/CMMC/OrgDefinedParmsNISTSP800-171.pdf"
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
-      "last_changed": "2024-12-16",
-      "notes": "Final rule effective Dec 2024. Phase 2 (C3PAO certification for Level 2 CUI contracts) begins Nov 2026; Phase 3 Nov 2027; Phase 4 Nov 2028. CMMC stays on NIST 800-171 Rev 2 per DoD class deviation (May 2024); DoD published Rev-3 ODP values memo April 2025 (candidate seed for odp_values when transition begins).",
+      "last_changed": "2026-07-13",
+      "notes": "SUSPENSION 2026-07-13: DoW CIO paused the CMMC rollout and suspended Phase 2 implementation ('Effective immediately, the Department will suspend the transition to Phase II requirements of CMMC, as well as pending and future CMMC implementation milestones' - war.gov release; implementation memo signed Michael P. Duffey, OUSD(A&S)). 'All Phase I self-assessment requirements remain firmly in place.' Original Phase 2 date 2026-11-10 per 32 CFR 170.3(e) + the 48 CFR rule effective date. 60-day CMMC Reform Task Force review; public RFI reported due 2026-08-14 (SAM.gov; see au-cmmc-rfi). Policy pause, not a regulatory change: 32 CFR 170 (FR doc 2024-22905) and the 48 CFR rule (90 FR 43560) remain in force. CMMC Level 2 remains aligned with NIST SP 800-171 Rev 2 (memo verbatim; May-2024 class deviation). DoD 171r3 ODP values memo (signed 2025-04-10, McKeown) pinned at source_data/dod/ - see au-cmmc-171r3-transition. Department renamed: releases now publish at war.gov; dodcio mirror at dowcio.war.gov.",
       "announcement_feeds": [
         {
-          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=department-of-defense",
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=defense-department",
           "type": "rss",
           "filter_keywords": [
             "CMMC",
@@ -328,7 +331,7 @@
         }
       ],
       "draft_landing_url": "https://www.acq.osd.mil/cmmc/",
-      "draft_status": "none",
+      "draft_status": "under_review",
       "public_comment_deadline": null,
       "source_manifest_keys": [
         "cmmc-800-171-53-crosswalk"
@@ -348,7 +351,7 @@
       "cci_coverage_notes": "Implied-Bridge: CMMC Level 2 → 800-171 Rev 2 → 800-53 Rev 4/5 → CCI (two hops). Level 3 → 800-172. IA.L3-3.5.3 (MFA): Confirmed-Subject via IA-2 CCIs (CCI-000765–768, 'multifactor authentication'). FIPS 201 PIV not required for DIB contractors; PIV CCIs are Implied-Bridge only.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-08-08"
     },
     "fedramp": {
       "label": "FedRAMP Program",
@@ -5299,22 +5302,51 @@
       "last_verified": "2026-07-02"
     },
     "dfars-cyber": {
-      "label": "DFARS cyber clauses (252.204-7012/-7019/-7020/-7021)",
+      "label": "DFARS/FAR cyber clauses (252.204-7012, -7021, -7025; FAR 52.204-21) + RFO class-deviation clauses",
       "authority": "primary",
       "framework_id": "dfars-cyber",
-      "current_version": "DFARS CMMC final rule (Sep 2025, effective 2025-11-10)",
+      "current_version": "DFARS CMMC final rule 90 FR 43560 (published 2025-09-10, effective 2025-11-10); CMMC Phase 2 clause application suspended 2026-07-13",
       "urls": {
         "landing": "https://www.acquisition.gov/dfars",
         "download_page": "https://www.acquisition.gov/dfars"
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
-      "last_changed": "2025-11-10",
-      "notes": "The 48 CFR acquisition rule operationalizing CMMC in contracts. Seed bundle (dod-dfars-bundle manifest entry) carries pre-CMMC 2018-2024 guidance incl. 800-171 Assessment Methodology v1.2.1 + SPRS fact sheets — partly superseded.",
+      "last_changed": "2026-07-13",
+      "notes": "The 48 CFR acquisition rule (FR doc 2025-17359, 90 FR 43560, DFARS Case 2019-D041) operationalizes CMMC in contracts; effective 2025-11-10; amends 48 CFR parts 204/212/217/252. SUSPENSION 2026-07-13 (implementation memo, OUSD(A&S), open-publication case 26-P-1023): only CMMC Level 1 (Self) or Level 2 (Self) may be designated; no Level 2 (C3PAO)/Level 3 (DIBCAC); no waivers during the review; COs amend active solicitations and modify existing contracts before the next option period; 'The cybersecurity requirements outlined in the clause at DFARS 252.204-7012 ... remain in effect.' The memo cites FAR 52.204-21 as the operative Level 1 clause. Feb-2026 Revolutionary FAR Overhaul class deviations reportedly introduce deviation clause numbers (252.240-7997 for the ex--7020 DIBCAC-assessment function; 52.240-93 for 52.204-21's function; -7019 reportedly not carried forward) - THIN: reported by practitioner secondaries and corroborated once; the DPCAP deviation memos at acq.osd.mil have not been read (bot-walled), and class deviations do not amend CFR text, so CFR citations remain valid.",
       "draft_status": "none",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-08-08",
+      "announcement_feeds": [
+        {
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=defense-department",
+          "type": "rss",
+          "filter_keywords": [
+            "DFARS",
+            "CMMC",
+            "252.204",
+            "cybersecurity"
+          ]
+        },
+        {
+          "url": "https://www.acquisition.gov/dfars",
+          "type": "page_watch",
+          "filter_keywords": [
+            "252.204-7012",
+            "252.204-7021",
+            "CMMC"
+          ]
+        }
+      ],
+      "source_manifest_keys": [
+        "dod-dfars-bundle",
+        "dod-cmmc-suspension-memo"
+      ],
+      "crawl_seeds": [
+        "https://www.acquisition.gov/dfars"
+      ],
+      "version_signal": "federal_register_document"
     },
     "disa-cloud-srg": {
       "label": "DISA Cloud (CSP) Security Requirements Guide",
@@ -6474,6 +6506,38 @@
       "last_verified": "2026-07-10",
       "poll_exempt": true,
       "poll_exempt_reason": "cisa.gov bot-blocks non-browser clients (403); verify manually."
+    },
+    "cmmc-32cfr-170": {
+      "label": "32 CFR Part 170 — CMMC Program rule (eCFR text)",
+      "authority": "primary",
+      "framework_id": "cmmc-32cfr-170",
+      "current_version": "32 CFR part 170 (program rule; FR doc 2024-22905, published 2024-10-15); eCFR Title 32 up_to_date_as_of 2026-08-06",
+      "check_strategy": "api_poll",
+      "version_signal": "ecfr_amendment_date",
+      "last_checked": "2026-08-08",
+      "last_changed": null,
+      "last_verified": "2026-08-08",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "urls": {
+        "landing": "https://www.ecfr.gov/current/title-32/subtitle-A/chapter-I/subchapter-D/part-170",
+        "api": "https://www.ecfr.gov/api/versioner/v1/structure/current/title-32.json",
+        "final_rule": "https://www.federalregister.gov/documents/2024/10/15/2024-22905/cybersecurity-maturity-model-certification-cmmc-program"
+      },
+      "source_manifest_keys": [
+        "cfr-32-170-json"
+      ],
+      "notes": "The CMMC Program rule as its own instrument (distinct from the 48 CFR acquisition rule - see dfars-cyber). 170.3(e) codifies the four-phase implementation schedule ('Implementation of CMMC Program requirements will occur over four (4) phases'). Poll the eCFR versioner amendment date for Part 170: an amendment here is the regulatory (not policy) change signal. Rule NOT amended by the 2026-07-13 suspension (policy action).",
+      "announcement_feeds": [
+        {
+          "url": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=defense-department",
+          "type": "rss",
+          "filter_keywords": [
+            "32 CFR 170",
+            "CMMC"
+          ]
+        }
+      ]
     }
   },
   "check_schedule": {
@@ -6490,7 +6554,8 @@
       "mcp-spec",
       "owasp-llm-top10",
       "mitre-atlas",
-      "cisa-ai-security"
+      "cisa-ai-security",
+      "dfars-cyber"
     ],
     "medium_priority": [
       "nist-800-171",
@@ -6509,7 +6574,8 @@
       "google-gemini-api",
       "uk-aisi",
       "openapi-spec",
-      "ietf-oauth"
+      "ietf-oauth",
+      "cmmc-32cfr-170"
     ],
     "low_priority": [
       "nist-800-172",

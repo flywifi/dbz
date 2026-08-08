@@ -143,6 +143,11 @@ KNOWN_CFR_PARTS: dict[tuple[int, int | str], dict] = {
         "subpart": "C",
         "expected_families": ["AU", "AC", "IA", "SC", "SI"],
     },
+    (32, 170): {
+        "name": "CMMC Program Rule",
+        "subpart": None,
+        "expected_families": ["CA", "AC", "IA", "SA", "RA"],
+    },
     (16, 314): {
         "name": "GLBA Safeguards Rule",
         "subpart": None,
@@ -629,11 +634,17 @@ def _extract_section_id(elem: ET.Element, title: int, part: int | str) -> str:
 
 
 def _extract_heading(elem: ET.Element) -> str:
-    """Extract section heading from SUBJECT or HD child element."""
+    """Extract section heading from SUBJECT, HD, or HEAD child element.
+    eCFR full-XML sections carry the heading in a HEAD child (e.g.
+    "§ 164.308 Administrative safeguards.") — the missing tag was why every
+    generated title field was empty. The leading section citation is stripped
+    so the field carries the title alone."""
     for child in elem:
         local = _strip_ns(child.tag).upper()
-        if local in ("SUBJECT", "HD"):
-            return (child.text or "").strip()
+        if local in ("SUBJECT", "HD", "HEAD"):
+            heading = "".join(child.itertext()).strip()
+            heading = re.sub(r"^§+\s*\d+\.\d+[a-zA-Z0-9\-]*\s*", "", heading)
+            return heading.strip()
     return ""
 
 

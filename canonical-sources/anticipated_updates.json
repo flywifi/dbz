@@ -1,8 +1,8 @@
 {
   "_meta": {
-    "schema": "anticipated_updates/1.0",
-    "description": "Horizon-scanning registry: expected/scheduled future revisions to standards the ecosystem tracks, so updates are watched-for and never missed. Read by horizon_monitor.py. Owner role: canonical-truth-updater. Never fabricate a date — use no_fixed_date.",
-    "record_count": 70
+    "schema": "anticipated_updates/1.1",
+    "description": "Horizon-scanning registry: expected/scheduled future revisions to standards the ecosystem tracks, so updates are watched-for and never missed. Read by horizon_monitor.py. Owner role: canonical-truth-updater. Never fabricate a date — use no_fixed_date. Schema 1.1 adds an optional per-record provenance block {primary_source_url, retrieved_at, verbatim, support, terminal_state} per protocol-layer/regulatory-provenance.md; required on records created/updated from phase 32 onward, nullable on legacy records pending backfill.",
+    "record_count": 76
   },
   "records": [
     {
@@ -927,7 +927,7 @@
       "artifact": "Rev 3",
       "current_version": "Rev 3 (May 2026)",
       "expected_type": "major_rev",
-      "lifecycle_stage": "ipd",
+      "lifecycle_stage": "final",
       "expected_window": {
         "earliest": "2026-05-01",
         "latest": "2026-05-31",
@@ -947,11 +947,18 @@
         "https://csrc.nist.gov/pubs/sp/800/172/final"
       ],
       "dependent_of": null,
-      "status": "draft_observed",
+      "status": "materialized",
       "escalate_after_days": 120,
-      "last_checked": null,
-      "last_change_detected": null,
-      "notes": "Rev 3 (target May 2026; IPD out for comment)"
+      "last_checked": "2026-08-08",
+      "last_change_detected": "2026-05",
+      "notes": "CLOSED: SP 800-172 Rev 3 published. NIST CSRC final-publication page states 'Date Published: May 2026' (retrieved 2026-08-08). Feed registry and source manifest already pin the r3 artifacts.",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/sp/800/172/r3/final",
+        "retrieved_at": "2026-08-08",
+        "verbatim": "Date Published: May 2026",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-800-53",
@@ -2053,6 +2060,226 @@
       "last_checked": null,
       "last_change_detected": null,
       "notes": ""
+    },
+    {
+      "id": "au-cmmc-rfi",
+      "feed_id": "cmmc",
+      "authority": "DoW CIO / OUSD(A&S)",
+      "artifact": "CMMC Reform Task Force RFI — public comment period closes",
+      "current_version": "RFI open (issued July 2026)",
+      "expected_type": "policy_review",
+      "lifecycle_stage": "rfi_open",
+      "expected_window": {
+        "earliest": "2026-08-14",
+        "latest": "2026-08-14",
+        "basis": "Comments reported due 12:00 PM ET 2026-08-14. Date sourcing is THIN: the SAM.gov origin is a JS application not fetchable programmatically and the SBA Office of Advocacy page is bot-walled; the date rests on search-level corroboration across SBA Advocacy and press coverage of the same notice."
+      },
+      "confidence": "med",
+      "trigger_signal": "RFI comment period closes; task-force synthesis of industry feedback begins",
+      "detection": {
+        "url": "https://sam.gov/opp/9ede1222a8724b7d8afcacac6772f752/view",
+        "method": "poll_landing",
+        "match": "CMMC Reform Task Force RFI — public comment period closes"
+      },
+      "poll_frequency": "weekly",
+      "status": "watching",
+      "escalate_after_days": 14,
+      "last_checked": "2026-08-08",
+      "last_change_detected": null,
+      "dependent_of": null,
+      "source_urls": [
+        "https://sam.gov/opp/9ede1222a8724b7d8afcacac6772f752/view",
+        "https://www.war.gov/News/Releases/Release/Article/4542329/forging-the-arsenal-of-freedom-department-of-war-suspends-cmmc-phase-ii-require/"
+      ],
+      "notes": "RFI announced alongside the 2026-07-13 Phase 2 suspension: the task force will synthesize 'industry feedback from our public Request for Information (RFI) regarding compliance challenges' (war.gov release). After 2026-08-14 this record goes overdue by design — fold in the outcome.",
+      "provenance": {
+        "primary_source_url": "https://www.war.gov/News/Releases/Release/Article/4542329/forging-the-arsenal-of-freedom-department-of-war-suspends-cmmc-phase-ii-require/",
+        "retrieved_at": "2026-08-08",
+        "verbatim": "industry feedback from our public Request for Information (RFI) regarding compliance challenges",
+        "support": "THIN",
+        "terminal_state": "ORIGIN"
+      }
+    },
+    {
+      "id": "au-cmmc-taskforce-report",
+      "feed_id": "cmmc",
+      "authority": "DoW CIO",
+      "artifact": "CMMC Reform Task Force final report to the DoW CIO",
+      "current_version": "Review in progress (initiated 2026-07-13)",
+      "expected_type": "policy_review",
+      "lifecycle_stage": "review_pending",
+      "expected_window": {
+        "earliest": "2026-09-11",
+        "latest": "2026-09-11",
+        "basis": "Derived: release dated 2026-07-13 states 'final report to the DoW CIO within 60 days'; 2026-07-13 + 60 days = 2026-09-11. Derivation shown; the report date itself is not separately announced."
+      },
+      "confidence": "med",
+      "trigger_signal": "DoW publishes task-force outcome or further implementation guidance ('Further guidance will be promulgated at the conclusion of the CIO's 60-day review' — implementation memo)",
+      "detection": {
+        "url": "https://www.war.gov/News/Releases/Release/Article/4542329/forging-the-arsenal-of-freedom-department-of-war-suspends-cmmc-phase-ii-require/",
+        "method": "poll_landing",
+        "match": "CMMC Reform Task Force final report to the DoW CIO"
+      },
+      "poll_frequency": "weekly",
+      "status": "watching",
+      "escalate_after_days": 30,
+      "last_checked": "2026-08-08",
+      "last_change_detected": null,
+      "dependent_of": null,
+      "source_urls": [
+        "https://www.war.gov/News/Releases/Release/Article/4542329/forging-the-arsenal-of-freedom-department-of-war-suspends-cmmc-phase-ii-require/",
+        "https://dowcio.war.gov/Portals/0/Documents/Library/ImplementingSuspensionCMMC-PhaseII.pdf"
+      ],
+      "notes": "Task force conducts a 'comprehensive top-to-bottom review of the certification program' (release). Outcome determines the disposition of the suspended phases.",
+      "provenance": {
+        "primary_source_url": "https://www.war.gov/News/Releases/Release/Article/4542329/forging-the-arsenal-of-freedom-department-of-war-suspends-cmmc-phase-ii-require/",
+        "retrieved_at": "2026-08-08",
+        "verbatim": "final report to the DoW CIO within 60 days",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
+    },
+    {
+      "id": "au-cmmc-phase2",
+      "feed_id": "dfars-cyber",
+      "authority": "DoW (32 CFR 170 / 48 CFR)",
+      "artifact": "CMMC Phase 2 (Level 2 C3PAO in applicable solicitations) — SUSPENDED",
+      "current_version": "Phase 1 in force since 2025-11-10; Phase 2 suspended 2026-07-13",
+      "expected_type": "phase_transition",
+      "lifecycle_stage": "suspended",
+      "expected_window": "no_fixed_date",
+      "confidence": "high",
+      "trigger_signal": "Reinstatement announcement, guidance at the conclusion of the CIO's 60-day review, or amendment to 32 CFR 170 / DFARS",
+      "detection": {
+        "url": "https://dowcio.war.gov/Portals/0/Documents/Library/ImplementingSuspensionCMMC-PhaseII.pdf",
+        "method": "poll_landing",
+        "match": "CMMC Phase 2 (Level 2 C3PAO in applicable solicitations) — SUSPENDED"
+      },
+      "poll_frequency": "monthly",
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": "2026-08-08",
+      "last_change_detected": null,
+      "dependent_of": null,
+      "source_urls": [
+        "https://dowcio.war.gov/Portals/0/Documents/Library/ImplementingSuspensionCMMC-PhaseII.pdf",
+        "https://www.war.gov/News/Releases/Release/Article/4542329/forging-the-arsenal-of-freedom-department-of-war-suspends-cmmc-phase-ii-require/",
+        "https://www.ecfr.gov/current/title-32/subtitle-A/chapter-I/subchapter-D/part-170/section-170.3",
+        "https://www.federalregister.gov/documents/2025/09/10/2025-17359/defense-federal-acquisition-regulation-supplement-assessing-contractor-implementation-of"
+      ],
+      "notes": "Original schedule: 32 CFR 170.3(e) 'Phase 2. Begins one calendar year following the start date of Phase 1'; Phase 1 began on the 48 CFR rule effective date 2025-11-10 (90 FR 43560) -> derived original Phase 2 date 2026-11-10, confirmed by the release ('originally scheduled to come into effect on November 10, 2026'). Suspended 2026-07-13: only CMMC Level 1 (Self) or Level 2 (Self) may be designated; no Level 2 (C3PAO) or Level 3 (DIBCAC) designations; no waivers during the review; COs directed to amend active solicitations and modify existing contracts before the next option period. DFARS 252.204-7012 remains in effect. Policy pause, NOT a regulatory change: 32 CFR 170 and the 48 CFR rule remain in force.",
+      "provenance": {
+        "primary_source_url": "https://dowcio.war.gov/Portals/0/Documents/Library/ImplementingSuspensionCMMC-PhaseII.pdf",
+        "retrieved_at": "2026-08-08",
+        "verbatim": "The upcoming November 2026 transition to Phase 2 of CMMC implementation is suspended.",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
+    },
+    {
+      "id": "au-cmmc-phase3",
+      "feed_id": "dfars-cyber",
+      "authority": "DoW (32 CFR 170)",
+      "artifact": "CMMC Phase 3 (L2 C3PAO as award+option condition; L3 DIBCAC) — suspended with all future milestones",
+      "current_version": "Not started; suspended 2026-07-13",
+      "expected_type": "phase_transition",
+      "lifecycle_stage": "suspended",
+      "expected_window": "no_fixed_date",
+      "confidence": "med",
+      "trigger_signal": "Reinstatement of the phased implementation schedule or amendment to 32 CFR 170",
+      "detection": {
+        "url": "https://www.ecfr.gov/current/title-32/subtitle-A/chapter-I/subchapter-D/part-170/section-170.3",
+        "method": "poll_landing",
+        "match": "CMMC Phase 3 (L2 C3PAO as award+option condition; L3 DIBCAC) — suspended with all future milestones"
+      },
+      "poll_frequency": "monthly",
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": "2026-08-08",
+      "last_change_detected": null,
+      "dependent_of": null,
+      "source_urls": [
+        "https://www.ecfr.gov/current/title-32/subtitle-A/chapter-I/subchapter-D/part-170/section-170.3",
+        "https://dowcio.war.gov/Portals/0/Documents/Library/ImplementingSuspensionCMMC-PhaseII.pdf"
+      ],
+      "notes": "32 CFR 170.3(e): 'Phase 3. Begins one calendar year following the start date of Phase 2.' Pre-suspension derivation: Phase 2 original 2026-11-10 + 1 year = 2027-11-10. The release suspends 'pending and future CMMC implementation milestones', so no date is asserted.",
+      "provenance": {
+        "primary_source_url": "https://www.ecfr.gov/current/title-32/subtitle-A/chapter-I/subchapter-D/part-170/section-170.3",
+        "retrieved_at": "2026-08-08",
+        "verbatim": "Phase 3. Begins one calendar year following the start date of Phase 2.",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
+    },
+    {
+      "id": "au-cmmc-phase4",
+      "feed_id": "dfars-cyber",
+      "authority": "DoW (32 CFR 170)",
+      "artifact": "CMMC Phase 4 (full implementation) — suspended with all future milestones",
+      "current_version": "Not started; suspended 2026-07-13",
+      "expected_type": "phase_transition",
+      "lifecycle_stage": "suspended",
+      "expected_window": "no_fixed_date",
+      "confidence": "med",
+      "trigger_signal": "Reinstatement of the phased implementation schedule or amendment to 32 CFR 170",
+      "detection": {
+        "url": "https://www.ecfr.gov/current/title-32/subtitle-A/chapter-I/subchapter-D/part-170/section-170.3",
+        "method": "poll_landing",
+        "match": "CMMC Phase 4 (full implementation) — suspended with all future milestones"
+      },
+      "poll_frequency": "monthly",
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": "2026-08-08",
+      "last_change_detected": null,
+      "dependent_of": null,
+      "source_urls": [
+        "https://www.ecfr.gov/current/title-32/subtitle-A/chapter-I/subchapter-D/part-170/section-170.3",
+        "https://dowcio.war.gov/Portals/0/Documents/Library/ImplementingSuspensionCMMC-PhaseII.pdf"
+      ],
+      "notes": "32 CFR 170.3(e): 'Phase 4, full implementation. Begins one calendar year following the start date of Phase 3.' Pre-suspension derivation: 2028-11-10. Suspended per the 2026-07-13 action; no date asserted.",
+      "provenance": {
+        "primary_source_url": "https://www.ecfr.gov/current/title-32/subtitle-A/chapter-I/subchapter-D/part-170/section-170.3",
+        "retrieved_at": "2026-08-08",
+        "verbatim": "Phase 4, full implementation. Begins one calendar year following the start date of Phase 3.",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
+    },
+    {
+      "id": "au-cmmc-171r3-transition",
+      "feed_id": "nist-800-171",
+      "authority": "DoD CIO / DoW",
+      "artifact": "CMMC transition from NIST SP 800-171 r2 to r3 (rulemaking)",
+      "current_version": "CMMC Level 2 assesses against 800-171 r2 (May-2024 class deviation; reaffirmed by the 2026-07-13 implementation memo: 'CMMC Level 2 is aligned with NIST SP 800-171 Rev 2')",
+      "expected_type": "major_rev",
+      "lifecycle_stage": null,
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
+      "trigger_signal": "Rescission of the May-2024 class deviation, a proposed rule amending 32 CFR 170 to adopt r3, or task-force outcome addressing the r3 transition",
+      "detection": {
+        "url": "https://dowcio.war.gov/Portals/0/Documents/CMMC/OrgDefinedParmsNISTSP800-171.pdf",
+        "method": "poll_landing",
+        "match": "CMMC transition from NIST SP 800-171 r2 to r3 (rulemaking)"
+      },
+      "poll_frequency": "quarterly",
+      "status": "watching",
+      "escalate_after_days": 120,
+      "last_checked": "2026-08-08",
+      "last_change_detected": null,
+      "dependent_of": null,
+      "source_urls": [
+        "https://dowcio.war.gov/Portals/0/Documents/CMMC/OrgDefinedParmsNISTSP800-171.pdf",
+        "https://dowcio.war.gov/Portals/0/Documents/Library/ImplementingSuspensionCMMC-PhaseII.pdf"
+      ],
+      "notes": "Strongest official signal: the DoD ODP memo (signed 2025-04-10, McKeown) defines r3 ODP values 'In preparation to implement reference (a) as the minimum requirement for contractors'. Trade-press timing ('late 2026-mid 2027') failed the citation-loop escape - trade-press-only, no rule text; not citable. The 2026-07-13 reform review adds uncertainty on timing (CONTESTED on timing; the transition signal itself is origin-stated).",
+      "provenance": {
+        "primary_source_url": "https://dowcio.war.gov/Portals/0/Documents/CMMC/OrgDefinedParmsNISTSP800-171.pdf",
+        "retrieved_at": "2026-08-08",
+        "verbatim": "In preparation to implement reference (a) as the minimum requirement for contractors, the Department of Defense (DoD) has defined as policy the attached values for the ODPs identified in the reference (a) source document.",
+        "support": "CONTESTED",
+        "terminal_state": "ORIGIN"
+      }
     }
   ]
 }

@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.13"  # v3.13: evidence_state ladder on master_mappings (derived, deterministic); v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
+SCHEMA_VERSION = "3.14"  # v3.14: regulatory-provenance columns on anticipated_updates (enum-enforced); v3.13: evidence_state ladder on master_mappings; v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
 
 CHUNK = 500  # executemany batch size
 
@@ -198,6 +198,11 @@ CREATE TABLE IF NOT EXISTS anticipated_updates (
     escalate_after_days INTEGER NOT NULL DEFAULT 120,
     last_checked      TEXT,
     last_change_detected TEXT,
+    provenance_url    TEXT,   -- v3.14 regulatory-provenance block (nullable on legacy records)
+    provenance_retrieved TEXT,
+    provenance_verbatim  TEXT,
+    support_label     TEXT,   -- WELL_SUPPORTED | CONTESTED | THIN | UNSUPPORTED (framework_vocab)
+    terminal_state    TEXT,   -- ORIGIN | ORIGIN_RECOVERED | DEAD_END | ORPHAN_CONFIRMED | CIRCULAR_UNRESOLVED
     notes             TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_anticipated_status ON anticipated_updates(status);
@@ -895,15 +900,30 @@ def load_changelog(path: Path) -> list[dict]:
     return rows
 
 
+_PROV_SUPPORT = {"WELL_SUPPORTED", "CONTESTED", "THIN", "UNSUPPORTED"}
+_PROV_TERMINAL = {"ORIGIN", "ORIGIN_RECOVERED", "DEAD_END", "ORPHAN_CONFIRMED", "CIRCULAR_UNRESOLVED"}
+
+
 def load_anticipated_updates(path: Path) -> list[dict]:
     """Load the horizon registry (anticipated_updates.json) into flat rows.
     Static content only — the dynamic overdue/materialized state is computed at
-    query time by horizon_monitor.py, so the table stays deterministic."""
+    query time by horizon_monitor.py, so the table stays deterministic.
+    v3.14: flattens the optional regulatory-provenance block and HARD-FAILS on
+    out-of-vocab support/terminal values (protocol-layer/regulatory-provenance.md)."""
     if not path.exists():
         return []
     doc = json.loads(path.read_text(encoding="utf-8"))
     rows = []
     for r in doc.get("records", []):
+        prov = r.get("provenance") or {}
+        support = prov.get("support")
+        terminal = prov.get("terminal_state")
+        if support is not None and support not in _PROV_SUPPORT:
+            raise SystemExit(f"anticipated_updates: record {r.get('id')} has invalid "
+                             f"support label {support!r} (allowed: {sorted(_PROV_SUPPORT)})")
+        if terminal is not None and terminal not in _PROV_TERMINAL:
+            raise SystemExit(f"anticipated_updates: record {r.get('id')} has invalid "
+                             f"terminal state {terminal!r} (allowed: {sorted(_PROV_TERMINAL)})")
         rows.append({
             "id": r.get("id", ""),
             "feed_id": r.get("feed_id", ""),
@@ -923,6 +943,11 @@ def load_anticipated_updates(path: Path) -> list[dict]:
             "escalate_after_days": int(r.get("escalate_after_days", 120)),
             "last_checked": r.get("last_checked"),
             "last_change_detected": r.get("last_change_detected"),
+            "provenance_url": prov.get("primary_source_url"),
+            "provenance_retrieved": prov.get("retrieved_at"),
+            "provenance_verbatim": prov.get("verbatim"),
+            "support_label": support,
+            "terminal_state": terminal,
             "notes": r.get("notes", ""),
         })
     return rows
@@ -1605,11 +1630,15 @@ def build_db(
             INSERT OR REPLACE INTO anticipated_updates
                 (id, feed_id, authority, artifact, current_version, expected_type, lifecycle_stage,
                  expected_window, confidence, trigger_signal, detection, poll_frequency, source_urls,
-                 dependent_of, status, escalate_after_days, last_checked, last_change_detected, notes)
+                 dependent_of, status, escalate_after_days, last_checked, last_change_detected,
+                 provenance_url, provenance_retrieved, provenance_verbatim, support_label,
+                 terminal_state, notes)
             VALUES
                 (:id, :feed_id, :authority, :artifact, :current_version, :expected_type, :lifecycle_stage,
                  :expected_window, :confidence, :trigger_signal, :detection, :poll_frequency, :source_urls,
-                 :dependent_of, :status, :escalate_after_days, :last_checked, :last_change_detected, :notes)
+                 :dependent_of, :status, :escalate_after_days, :last_checked, :last_change_detected,
+                 :provenance_url, :provenance_retrieved, :provenance_verbatim, :support_label,
+                 :terminal_state, :notes)
         """, au_rows, "anticipated_updates")
         print(f"  anticipated_updates: {len(au_rows)} horizon records")
     conn.commit()

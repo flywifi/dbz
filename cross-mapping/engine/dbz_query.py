@@ -72,7 +72,7 @@ def _open_db(db_path: Path) -> sqlite3.Connection:
 _FW_ALIASES: dict[str, list[str]] = {
     "iso": ["ISO/IEC 27001:2022", "ISO 27001/2 (2022)", "ISO/IEC 27001"],
     "iso27001": ["ISO/IEC 27001:2022", "ISO 27001/2 (2022)"],
-    "cmmc": ["CMMC 2.0 / NIST 800-171", "CMMC"],
+    "cmmc": ["CMMC 2.0", "NIST SP 800-171 r2", "CMMC 2.0 / NIST 800-171", "CMMC"],
     "hitrust": ["HITRUST CSF", "HITRUST e1", "HITRUST"],
     "csf": ["NIST CSF 2.0", "NIST CSF"],
     "nist-csf": ["NIST CSF 2.0", "NIST CSF"],
@@ -81,7 +81,7 @@ _FW_ALIASES: dict[str, list[str]] = {
     "soc2": ["SOC 2"],
     "soc1": ["SOC 1"],
     "daapm": ["DAAPM Appendix A (DoD DCSA)"],
-    "800-171": ["NIST SP 800-171", "NIST SP 800-171 Rev 3", "CMMC 2.0 / NIST 800-171"],
+    "800-171": ["NIST SP 800-171 r2", "NIST SP 800-171", "NIST SP 800-171 Rev 3", "CMMC 2.0 / NIST 800-171"],
     "iot": ["NIST SP 800-213A (IoT)"],
     "appendix-j": ["NIST SP 800-53 Rev 4 (Appendix J)"],
 }

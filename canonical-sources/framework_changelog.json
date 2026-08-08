@@ -1,7 +1,7 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "_purpose": "Confirmed control-level changes when a new framework version is loaded. Populated by oscal_diff.py --write-changelog (human_confirmed=false) and by humans for non-OSCAL frameworks.",
-  "_usage": "human_confirmed=false entries are machine-generated diffs. Set human_confirmed=true after verifying on the primary source. announcement_ref links to an entry_id in announcements_feed.json.",
+  "_usage": "human_confirmed=false entries are machine-generated diffs. Set human_confirmed=true after verifying on the primary source. announcement_ref links to an entry_id in announcements_feed.json. Schema 1.1.0 adds an optional provenance block per protocol-layer/regulatory-provenance.md (required on entries from phase 32 onward).",
   "entries": [
     {
       "entry_id": "chg-nist-800-53-r5-to-r5.1.1",
@@ -381,6 +381,52 @@
       "source_url": "https://www.fedramp.gov/2026/timeline/",
       "summary": "FedRAMP revised its assessment methodology on top of the unchanged 800-53 r5 control substance (the ISO 27001 2013->2022 pattern): authorizations become certification Classes A-D; legacy ConMon becomes Collaborative Continuous Monitoring with KSI validations and 11 machine-readable reporting schemas. Coexistence window: optional adoption 2026-07-04, mandatory 2027-01-01, new Rev5 certifications end 2027-06-11 (existing ones persist). Carry-over map = the 373 FedRAMP-published KSI->800-53 edges (fedramp_ksi_controls). FedRAMP r5 baselines remain a first-class matrix framework.",
       "human_confirmed": true
+    },
+    {
+      "entry_id": "chg-cmmc-48cfr-acquisition-2025",
+      "framework_id": "dfars-cyber",
+      "old_version": "DFARS interim rule era (2020-21123)",
+      "new_version": "DFARS CMMC final rule 90 FR 43560 (effective 2025-11-10)",
+      "change_type": "regulatory_milestone",
+      "changed_at": "2025-09-10",
+      "summary": "48 CFR acquisition final rule published (FR doc 2025-17359, DFARS Case 2019-D041): incorporates CMMC contractual requirements into DFARS parts 204/212/217/252; effective 2025-11-10; starts the four-phase implementation clock codified at 32 CFR 170.3(e).",
+      "controls_added": null,
+      "controls_removed": null,
+      "controls_modified": null,
+      "source_url": "https://www.federalregister.gov/documents/2025/09/10/2025-17359/defense-federal-acquisition-regulation-supplement-assessing-contractor-implementation-of",
+      "announcement_ref": null,
+      "confirmation_source": "primary_document",
+      "human_confirmed": true,
+      "provenance": {
+        "primary_source_url": "https://www.federalregister.gov/documents/2025/09/10/2025-17359/defense-federal-acquisition-regulation-supplement-assessing-contractor-implementation-of",
+        "retrieved_at": "2026-08-08",
+        "verbatim": "DoD is issuing a final rule amending the Defense Federal Acquisition Regulation Supplement (DFARS) to incorporate contractual requirements related to the final Cybersecurity Maturity Model Certification program rule",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
+    },
+    {
+      "entry_id": "chg-cmmc-phase2-suspension-2026",
+      "framework_id": "cmmc",
+      "old_version": "Phased implementation on schedule (Phase 2 due 2026-11-10)",
+      "new_version": "Phase 2 + all future milestones suspended; 60-day reform review",
+      "change_type": "regulatory_milestone",
+      "changed_at": "2026-07-13",
+      "summary": "DoW CIO suspended the advancement to CMMC Phase 2 and all pending/future implementation milestones; only Level 1 (Self)/Level 2 (Self) designations permitted; no waivers during the review; Phase 1 self-assessments and DFARS 252.204-7012 remain in effect. Policy action - 32 CFR 170 and the 48 CFR rule are NOT amended.",
+      "controls_added": null,
+      "controls_removed": null,
+      "controls_modified": null,
+      "source_url": "https://www.war.gov/News/Releases/Release/Article/4542329/forging-the-arsenal-of-freedom-department-of-war-suspends-cmmc-phase-ii-require/",
+      "announcement_ref": null,
+      "confirmation_source": "primary_document",
+      "human_confirmed": true,
+      "provenance": {
+        "primary_source_url": "https://dowcio.war.gov/Portals/0/Documents/Library/ImplementingSuspensionCMMC-PhaseII.pdf",
+        "retrieved_at": "2026-08-08",
+        "verbatim": "The upcoming November 2026 transition to Phase 2 of CMMC implementation is suspended.",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     }
   ]
 }

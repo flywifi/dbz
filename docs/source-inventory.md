@@ -12,8 +12,8 @@ All `human_review_required: true`. Never fabricate control IDs or crosswalk rela
 |---|---|---|---|---|---|
 | NIST SP 800-53 Rev 5.1.1 | Rev 5.1.1 | `https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json` | OSCAL JSON | GitHub Releases Atom | `oscal_diff.py` |
 | NIST SP 800-53B Baselines | Rev 5 | `https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/baselines/` | OSCAL JSON | GitHub Releases | `oscal_diff.py` |
-| NIST SP 800-171 Rev 3 | Rev 3 final | `https://csrc.nist.gov/pubs/sp/800/171/r3/final` | OSCAL JSON + PDF | csrc.nist.gov | `oscal_diff.py` adapter |
-| NIST SP 800-172 Rev 3 | Rev 3 (May 2026) | `https://csrc.nist.gov/pubs/sp/800/172/r3/final` | OSCAL JSON + PDF | May 2026 target | pending |
+| NIST SP 800-171 Rev 3 | Rev 3 final | `https://csrc.nist.gov/pubs/sp/800/171/r3/final` | OSCAL JSON + PDF | csrc.nist.gov | `spine_loader.load_171r3_projection` (CPRT) |
+| NIST SP 800-172 Rev 3 | Rev 3 (May 2026) | `https://csrc.nist.gov/pubs/sp/800/172/r3/final` | OSCAL JSON + PDF | csrc.nist.gov | `spine_loader.load_172r3_projection` (CPRT) |
 | NIST CSF 2.0 | 2.0 | `https://csrc.nist.gov/extensions/nudp/services/json/csf/download?olirids=all` | JSON (CPRT) | Real-time | `generate_controls_csf20.py` |
 | NIST AI RMF | 1.0 | `https://nvlpubs.nist.gov/nistpubs/ai/nist.ai.100-1.pdf` | PDF | NIST news RSS | manual |
 | NIST AI 600-1 (GenAI) | 1.0 | `https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf` | PDF | NIST news RSS | manual |
@@ -45,7 +45,7 @@ All `human_review_required: true`. Never fabricate control IDs or crosswalk rela
 | CCI Trackr API (3,551 CCIs) | `https://cyber.trackr.live/cci` | REST JSON | Continuous | `cci_trackr_loader.py` |
 | DISA CCI List XML | `https://public.cyber.mil/stigs/cci-downloads/` | XML | Quarterly | manual |
 | STIG Library | `https://public.cyber.mil/stigs/compilations/` | XML | Quarterly | poll_landing |
-| CMMC Assessment Guide | `https://www.acq.osd.mil/asda/dpc/cp/cyber/cmmc.html` | PDF | Version-based | reference |
+| CMMC Assessment Guide | `https://dodcio.defense.gov/CMMC/Documentation/` | PDF | Version-based | reference |
 | DoD ZT Discovery Guide v2 | `https://media.defense.gov/2024/Jul/25/2003510911/-1/-1/1/DOD_ZT_DISCOVERY_GUIDE_V2.PDF` | PDF | Static | reference |
 | DoD ZT Phase One Guide v2 | `https://media.defense.gov/2024/Jul/25/2003510908/-1/-1/1/DOD_ZT_PHASE_ONE_GUIDE_V2.PDF` | PDF | Static | reference |
 | DoD ZT Phase Two Guide v2 | `https://media.defense.gov/2024/Jul/25/2003510909/-1/-1/1/DOD_ZT_PHASE_TWO_GUIDE_V2.PDF` | PDF | Static | reference |

@@ -18,7 +18,7 @@ any-framework. (Before Phase 19 these were two separate crosswalks; they are now
                     │  framework_monitor.py    (version signals)            │
                     │  announcement_monitor.py (RSS/Atom announcement feeds)│
                     │  horizon_monitor.py      (anticipated future revs)    │
-                    │      ▲ feed_registry.json (160 sources)               │
+                    │      ▲ feed_registry.json (161 sources)               │
                     │      → announcements_feed.json / framework_changelog  │
                     │      → anticipated_updates.json (horizon, 70 records) │
                     └──────┼──────────────────────────────────────────────┘
@@ -50,7 +50,7 @@ any-framework. (Before Phase 19 these were two separate crosswalks; they are now
                      build_db.py
               ┌──────────────────────────────┐
               │   grc.db (SQLite, ~40 tables) │  ← query layer; deterministic rebuild
-              │   schema 3.13, indexed        │
+              │   schema 3.14, indexed        │
               └────────┬─────────────────────┘
                        ▼
                  dbz_query.py  (CLI: master, overlap, reverse, forward, scope,

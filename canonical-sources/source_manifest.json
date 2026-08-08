@@ -1198,6 +1198,28 @@
       "sha256_prefix": "035f9c0b0a27b4f3",
       "role": "fedramp_rules_narrative",
       "notes": "Complete 291-file narrative corpus (per-audience rule text + guidance), mirrored whole — FedRAMP publishes it specifically for machine consumption. Drift signal: _sources.json (sha256 pinned here)."
+    },
+    {
+      "id": "dod-cmmc-suspension-memo",
+      "file": "canonical-sources/source_data/dod/ImplementingSuspensionCMMC-PhaseII.pdf",
+      "format": "pdf",
+      "version": "2026-07-13 (open-publication case 26-P-1023)",
+      "retrieved": "2026-08-08",
+      "source_url": "https://dowcio.war.gov/Portals/0/Documents/Library/ImplementingSuspensionCMMC-PhaseII.pdf",
+      "role": "reference_only",
+      "sha256": "e5a0fdc30466b8453f345bc8f8ab14f6ae8ca39f806a441646bb06416bbc41e0",
+      "notes": "OUSD(A&S) implementation memo (signed Michael P. Duffey, dated JUL 13 2026) implementing the DoW CIO's suspension of the advancement to CMMC Phase 2; Attachment 1 = CMMC procedures during suspension. Authority document for au-cmmc-phase2/-phase3/-phase4 and chg-cmmc-phase2-suspension-2026."
+    },
+    {
+      "id": "dod-odp-values-memo",
+      "file": "canonical-sources/source_data/dod/OrgDefinedParmsNISTSP800-171.pdf",
+      "format": "pdf",
+      "version": "signed 2025-04-10 (McKeown, Performing the Duties of the Deputy DoD CIO for Cybersecurity)",
+      "retrieved": "2026-08-08",
+      "source_url": "https://dowcio.war.gov/Portals/0/Documents/CMMC/OrgDefinedParmsNISTSP800-171.pdf",
+      "role": "dod_odp_values_memo",
+      "sha256": "fd83ecf4e0998f0b29d5e6f222e7364ce67eb6fdedb5ac4f34ec4310ba495916",
+      "notes": "DoD Organization-Defined Parameters for NIST SP 800-171 Revision 3; Attachment A carries ODP values embedded in per-requirement prose across 50 unique r3 requirement headings; in four instances the ODP is guidance rather than a specified value. Retrieved from the dowcio.war.gov mirror (dodcio.defense.gov returned Access Denied). Scoping-first per phase 32 WS-3: NOT loaded pending the user decision gate."
     }
   ],
   "staged_reference_sources": {

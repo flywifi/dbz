@@ -1,0 +1,1036 @@
+{
+  "schema_version": "1.0.0",
+  "_source": "eCFR REST API v1",
+  "_loader": "ecfr_loader.py",
+  "_framework_id": "32-cfr-170",
+  "_cfr_part": "32 CFR 170",
+  "_as_of_date": "2026-03-04",
+  "human_review_required": true,
+  "fetched_at": "2026-08-08T18:28:59Z",
+  "title": 32,
+  "part": "170",
+  "subpart": null,
+  "cfr_citation": "32 CFR 170",
+  "section_count": 25,
+  "requirement_count": 25,
+  "sections": [
+    {
+      "section_id": "170",
+      "title": "PART 170—CYBERSECURITY MATURITY MODEL CERTIFICATION (CMMC) PROGRAM",
+      "text": "PART 170—CYBERSECURITY MATURITY MODEL CERTIFICATION (CMMC) PROGRAM Authority: 5 U.S.C. 301; Sec. 1648, Pub. L. 116-92, 133 Stat. 1198. Source: 89 FR 83214, Oct. 15, 2024, unless otherwise noted. Subpart A—General Information. § 170.1 Purpose. (a) This part describes the Cybersecurity Maturity Model Certification (CMMC) Program of the Department of Defense (DoD) and establishes requirements for defense contractors and subcontractors to implement prescribed cybersecurity standards for safeguarding Federal Contract Information (FCI) and Controlled Unclassified Information (CUI). This part (the CMMC Program) also establishes requirements for conducting an assessment of compliance with the applicable prescribed cybersecurity standard for contractor information systems that: process, store, or transmit FCI or CUI; provide security protections for systems which process, store, or transmit CUI; or are not logically or physically isolated from systems which process, store, or transmit CUI. (b) The CMMC Program provides DoD with a viable means of conducting the volume of assessments necessary to verify contractor and subcontractor implementation of required cybersecurity requirements. (c) The CMMC Program is designed to ensure defense contractors are properly safeguarding FCI and CUI that is processed, stored, or transmitted on defense contractor information systems. FCI and CUI must be protected to meet evolving threats and safeguard nonpublic, unclassified information that supports and enables the warfighter. The CMMC Program provides a consistent methodology to assess a defense contractor's implementation of required cybersecurity requirements. The CMMC Program utilizes the security standards set forth in the 48 CFR 52.204-21; National Institute of Standards and Technology (NIST) Special Publication (SP) 800-171, Basic Safeguarding of Covered Contractor Information Systems, Revision 2, February 2020 (includes updates as of January 28, 2021) (NIST SP 800-171 R2); and select …",
+      "paragraph_hierarchy": [],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.1",
+      "title": "Purpose.",
+      "text": "§ 170.1 Purpose. (a) This part describes the Cybersecurity Maturity Model Certification (CMMC) Program of the Department of Defense (DoD) and establishes requirements for defense contractors and subcontractors to implement prescribed cybersecurity standards for safeguarding Federal Contract Information (FCI) and Controlled Unclassified Information (CUI). This part (the CMMC Program) also establishes requirements for conducting an assessment of compliance with the applicable prescribed cybersecurity standard for contractor information systems that: process, store, or transmit FCI or CUI; provide security protections for systems which process, store, or transmit CUI; or are not logically or physically isolated from systems which process, store, or transmit CUI. (b) The CMMC Program provides DoD with a viable means of conducting the volume of assessments necessary to verify contractor and subcontractor implementation of required cybersecurity requirements. (c) The CMMC Program is designed to ensure defense contractors are properly safeguarding FCI and CUI that is processed, stored, or transmitted on defense contractor information systems. FCI and CUI must be protected to meet evolving threats and safeguard nonpublic, unclassified information that supports and enables the warfighter. The CMMC Program provides a consistent methodology to assess a defense contractor's implementation of required cybersecurity requirements. The CMMC Program utilizes the security standards set forth in the 48 CFR 52.204-21; National Institute of Standards and Technology (NIST) Special Publication (SP) 800-171, Basic Safeguarding of Covered Contractor Information Systems, Revision 2, February 2020 (includes updates as of January 28, 2021) (NIST SP 800-171 R2); and selected requirements from the NIST SP 800-172, Enhanced Security Requirements for Protecting Controlled Unclassified Information: A Supplement to NIST Special Publication 800-171, February 2021 (NIST SP 800-172 Feb2021), as applica …",
+      "paragraph_hierarchy": [
+        "(a) This part describes the Cybersecurity Maturity Model Certification (CMMC) Program of the Department of Defense (DoD) and establishes requirements for defense contractors and subcontractors to impl",
+        "(b) The CMMC Program provides DoD with a viable means of conducting the volume of assessments necessary to verify contractor and subcontractor implementation of required cybersecurity requirements.",
+        "(c) The CMMC Program is designed to ensure defense contractors are properly safeguarding FCI and CUI that is processed, stored, or transmitted on defense contractor information systems. FCI and CUI mu",
+        "(d) The CMMC Program balances the need to safeguard FCI and CUI and the requirement to share information appropriately with defense contractors in order to develop capabilities for the DoD. The CMMC P",
+        "(e) The CMMC Program creates no right or benefit, substantive or procedural, enforceable by law or in equity by any party against the United States, its departments, agencies, or entities, its officer"
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.2",
+      "title": "Incorporation by reference.",
+      "text": "§ 170.2 Incorporation by reference. Certain material is incorporated by reference into this part with the approval of the Director of the Federal Register under 5 U.S.C. 552(a) and 1 CFR part 51. Material approved for incorporation by reference (IBR) is available for inspection at the Department of Defense (DoD) and at the National Archives and Records Administration (NARA). Contact DoD online: https://DoDcio.defense.gov/CMMC/ ; email: osd.mc-alex.DoD-cio.mbx.cmmc-rule@mail.mil ; or phone: (202) 770-9100. For information on the availability of this material at NARA, visit: www.archives.gov/federal-register/cfr/ibr-locations or email: fr.inspection@nara.gov . The material may be obtained from the following sources: (a) National Institute of Standards and Technology, U.S. Department of Commerce, 100 Bureau Drive, Gaithersburg, MD 20899; phone: (301) 975-8443; website: https://csrc.nist.gov/publications/ . (1) FIPS PUB 200, Minimum Security Requirements for Federal Information and Information Systems, March 2006 (FIPS PUB 200 Mar2006); IBR approved for § 170.4(b). (2) FIPS PUB 201-3, Personal Identity Verification (PIV) of Federal Employees and Contractors, January 2022 (FIPS PUB 201-3 Jan2022); IBR approved for § 170.4(b). (3) SP 800-37, Risk Management Framework for Information Systems and Organizations: A System Life Cycle Approach for Security and Privacy, Revision 2, December 2018 (NIST SP 800-37 R2); IBR approved for § 170.4(b). (4) SP 800-39, Managing Information Security Risk: Organization, Mission, and Information System View, March 2011 (NIST SP 800-39 Mar2011); IBR approved for § 170.4(b). (5) SP 800-53, Security and Privacy Controls for Information Systems and Organizations, Revision 5, September 2020 (includes updates as of December 10, 2020) (NIST SP 800-53 R5); IBR approved for § 170.4(b). (6) SP 800-82r3, Guide to Operational Technology (OT) Security, September 2023 (NIST SP 800-82r3); IBR approved for § 170.4(b). (7) SP 800-115, Technical Guide to Info …",
+      "paragraph_hierarchy": [
+        "Certain material is incorporated by reference into this part with the approval of the Director of the Federal Register under 5 U.S.C. 552(a) and 1 CFR part 51. Material approved for incorporation by r",
+        "(a) National Institute of Standards and Technology, U.S. Department of Commerce, 100 Bureau Drive, Gaithersburg, MD 20899; phone: (301) 975-8443; website:",
+        "(1) FIPS PUB 200, Minimum Security Requirements for Federal Information and Information Systems, March 2006 (FIPS PUB 200 Mar2006); IBR approved for § 170.4(b).",
+        "(2) FIPS PUB 201-3, Personal Identity Verification (PIV) of Federal Employees and Contractors, January 2022 (FIPS PUB 201-3 Jan2022); IBR approved for § 170.4(b).",
+        "(3) SP 800-37, Risk Management Framework for Information Systems and Organizations: A System Life Cycle Approach for Security and Privacy, Revision 2, December 2018 (NIST SP 800-37 R2); IBR approved f",
+        "(4) SP 800-39, Managing Information Security Risk: Organization, Mission, and Information System View, March 2011 (NIST SP 800-39 Mar2011); IBR approved for § 170.4(b).",
+        "(5) SP 800-53, Security and Privacy Controls for Information Systems and Organizations, Revision 5, September 2020 (includes updates as of December 10, 2020) (NIST SP 800-53 R5); IBR approved for § 17",
+        "(6) SP 800-82r3, Guide to Operational Technology (OT) Security, September 2023 (NIST SP 800-82r3); IBR approved for § 170.4(b).",
+        "(7) SP 800-115, Technical Guide to Information Security Testing and Assessment, September 2008 (NIST SP 800-115 Sept2008); IBR approved for § 170.4(b).",
+        "(8) SP 800-160, Volume 2, Developing Cyber-Resilient Systems: A Systems Security Engineering Approach, Revision 1, December 2021 (NIST SP 800-160 V2R1); IBR approved for § 170.4(b)."
+      ],
+      "keywords": [
+        "identity"
+      ],
+      "nist_families": [
+        "IA"
+      ]
+    },
+    {
+      "section_id": "170.3",
+      "title": "Applicability.",
+      "text": "§ 170.3 Applicability. (a) The requirements of this part apply to: (1) All DoD contract and subcontract awardees that will process, store, or transmit information, in performance of the DoD contract, that meets the standards for FCI or CUI on contractor information systems; and, (2) Private-sector businesses or other entities comprising the CMMC Assessment and Certification Ecosystem, as specified in subpart C of this part. (b) The requirements of this part do not apply to Federal information systems operated by contractors or subcontractors on behalf of the Government. (c) CMMC Program requirements apply to all DoD solicitations and contracts pursuant to which a defense contractor or subcontractor will process, store, or transmit FCI or CUI on unclassified contractor information systems, including those for the acquisition of commercial items (except those exclusively for COTS items) valued at greater than the micro-purchase threshold except under the following circumstances: (1) The procurement occurs during Implementation Phase 1, 2, or 3 as described in paragraph (e) of this section, in which case CMMC Program requirements apply in accordance with the requirements for the relevant phase-in period; or (2) Application of CMMC Program requirements to a procurement or class of procurements may be waived in advance of the solicitation at the discretion of DoD in accordance with all applicable policies, procedures, and approval requirements. (d) DoD Program Managers or requiring activities are responsible for selecting the CMMC Status that will apply for a particular procurement or contract based upon the type of information, FCI or CUI, that will be processed on, stored on, or transmitted through a contractor information system. Application of the CMMC Status for subcontractors will be determined in accordance with § 170.23. (e) DoD is utilizing a phased approach for the inclusion of CMMC Program requirements in solicitations and contracts. Implementation of CMMC Pro …",
+      "paragraph_hierarchy": [
+        "(a) The requirements of this part apply to:",
+        "(1) All DoD contract and subcontract awardees that will process, store, or transmit information, in performance of the DoD contract, that meets the standards for FCI or CUI on contractor information s",
+        "(2) Private-sector businesses or other entities comprising the CMMC Assessment and Certification Ecosystem, as specified in subpart C of this part.",
+        "(b) The requirements of this part do not apply to Federal information systems operated by contractors or subcontractors on behalf of the Government.",
+        "(c) CMMC Program requirements apply to all DoD solicitations and contracts pursuant to which a defense contractor or subcontractor will process, store, or transmit FCI or CUI on unclassified contracto",
+        "(1) The procurement occurs during Implementation Phase 1, 2, or 3 as described in paragraph (e) of this section, in which case CMMC Program requirements apply in accordance with the requirements for t",
+        "(2) Application of CMMC Program requirements to a procurement or class of procurements may be waived in advance of the solicitation at the discretion of DoD in accordance with all applicable policies,",
+        "(d) DoD Program Managers or requiring activities are responsible for selecting the CMMC Status that will apply for a particular procurement or contract based upon the type of information, FCI or CUI, ",
+        "(e) DoD is utilizing a phased approach for the inclusion of CMMC Program requirements in solicitations and contracts. Implementation of CMMC Program requirements will occur over four (4) phases:",
+        "(1)"
+      ],
+      "keywords": [
+        "acquisition"
+      ],
+      "nist_families": [
+        "SA"
+      ]
+    },
+    {
+      "section_id": "170.4",
+      "title": "Acronyms and definitions.",
+      "text": "§ 170.4 Acronyms and definitions. (a) Acronyms. Unless otherwise noted, the following acronyms and their terms are for the purposes of this part. AC—Access Control APT—Advanced Persistent Threat AT—Awareness and Training C3PAO—CMMC Third-Party Assessment Organization CA—Security Assessment CAICO—CMMC Assessors and Instructors Certification Organization CAGE—Commercial and Government Entity CCA—CMMC-Certified Assessor CCI—CMMC-Certified Instructor CCP—CMMC-Certified Professional CFR—Code of Federal Regulations CIO—Chief Information Officer CM—Configuration Management CMMC—Cybersecurity Maturity Model Certification CMMC PMO—CMMC Program Management Office CNC—Computerized Numerical Control CoPC—Code of Professional Conduct CSP—Cloud Service Provider CUI—Controlled Unclassified Information DCMA—Defense Contract Management Agency DD—Represents any two-character CMMC Domain acronym DFARS—Defense Federal Acquisition Regulation Supplement DIB—Defense Industrial Base DIBCAC—DCMA's Defense Industrial Base Cybersecurity Assessment Center DoD—Department of Defense DoDI—Department of Defense Instruction eMASS—Enterprise Mission Assurance Support Service ESP—External Service Provider FAR—Federal Acquisition Regulation FCI—Federal Contract Information FedRAMP—Federal Risk and Authorization Management Program GFE—Government Furnished Equipment IA—Identification and Authentication ICS—Industrial Control System IIoT—Industrial Internet of Things IoT—Internet of Things IR—Incident Response IS—Information System IEC—International Electrotechnical Commission ISO/IEC—International Organization for Standardization/International Electrotechnical Commission IT—Information Technology L#—CMMC Level Number MA—Maintenance MP—Media Protection MSSP—Managed Security Service Provider NARA—National Archives and Records Administration NAICS—North American Industry Classification System NIST—National Institute of Standards and Technology N/A—Not Applicable ODP—Organization-Defined Parameter OSA—Organi …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(i)",
+        "(ii)",
+        "(iii)",
+        "(iv)",
+        "(v)",
+        "(vi)",
+        "(i)",
+        "(ii)"
+      ],
+      "keywords": [
+        "authentication",
+        "access control",
+        "authorization",
+        "incident",
+        "configuration",
+        "acquisition",
+        "third-party"
+      ],
+      "nist_families": [
+        "AC",
+        "CM",
+        "IA",
+        "IR",
+        "SA"
+      ]
+    },
+    {
+      "section_id": "170.5",
+      "title": "Policy.",
+      "text": "§ 170.5 Policy. (a) Protection of FCI and CUI on contractor information systems is of paramount importance to the DoD and can directly impact its ability to successfully conduct essential missions and functions. It is DoD policy that defense contractors and subcontractors shall be required to safeguard FCI and CUI that is processed, stored, or transmitted on contractor information systems by applying specified security requirements. In addition, defense contractors and subcontractors may be required to implement additional safeguards defined in NIST SP 800-172 Feb2021 (incorporated by reference, see § 170.2), implementing DoD specified parameters to meet CMMC Level 3 security requirements (see table 1 to § 170.14(c)(4)). These additional requirements are necessary to protect CUI being processed, stored, or transmitted in contractor information systems, when designated by a requirement for CMMC Status of Level 3 (DIBCAC) as defined by a DoD program manager or requiring activity. In general, the Department will identify a requirement for a CMMC Status of Level 3 (DIBCAC) for solicitations and resulting contracts supporting its most critical programs and technologies. (b) Program managers and requiring activities are responsible for identifying the CMMC Status that will apply to a procurement. Selection of the applicable CMMC Status will be based on factors including but not limited to: (1) Criticality of the associated mission capability; (2) Type of acquisition program or technology; (3) Threat of loss of the FCI or CUI to be shared or generated in relation to the effort; (4) Impacts from exploitation of information security deficiencies; and (5) Other relevant policies and factors, including Milestone Decision Authority guidance. (c) In accordance with the implementation plan described in § 170.3, CMMC Program requirements will apply to new DoD solicitations and contracts, and shall flow down to subcontractors who will process, store, or transmit FCI or CUI in perfo …",
+      "paragraph_hierarchy": [
+        "(a) Protection of FCI and CUI on contractor information systems is of paramount importance to the DoD and can directly impact its ability to successfully conduct essential missions and functions. It i",
+        "(b) Program managers and requiring activities are responsible for identifying the CMMC Status that will apply to a procurement. Selection of the applicable CMMC Status will be based on factors includi",
+        "(1) Criticality of the associated mission capability;",
+        "(2) Type of acquisition program or technology;",
+        "(3) Threat of loss of the FCI or CUI to be shared or generated in relation to the effort;",
+        "(4) Impacts from exploitation of information security deficiencies; and",
+        "(5) Other relevant policies and factors, including Milestone Decision Authority guidance.",
+        "(c) In accordance with the implementation plan described in § 170.3, CMMC Program requirements will apply to new DoD solicitations and contracts, and shall flow down to subcontractors who will process",
+        "(d) In very limited circumstances, and in accordance with all applicable policies, procedures, and requirements, a Service Acquisition Executive or Component Acquisition Executive in the DoD, or as de",
+        "(e) The CMMC Program does not alter any separately applicable requirements to protect FCI or CUI, including those requirements in accordance with 48 CFR 52.204-21,"
+      ],
+      "keywords": [
+        "acquisition"
+      ],
+      "nist_families": [
+        "SA"
+      ]
+    },
+    {
+      "section_id": "170.6",
+      "title": "CMMC PMO.",
+      "text": "§ 170.6 CMMC PMO. (a) The Office of the Department of Defense Chief Information Officer (DoD CIO) Office of the Deputy CIO for Cybersecurity (DoD CIO(CS)) provides oversight of the CMMC Program and is responsible for establishing CMMC assessment, accreditation, and training requirements as well as developing and updating CMMC Program policies and implementing guidance. (b) The CMMC PMO is responsible for monitoring the CMMC AB's performance of roles assigned in this rule and acting as necessary to address problems pertaining to effective performance. (c) The CMMC PMO retains, on behalf of the DoD CIO(CS), the prerogative to review decisions of the CMMC Accreditation Body as part of its oversight of the CMMC program and evaluate any alleged conflicts of interest purported to influence the CMMC Accreditation Body's objectivity. (d) The CMMC PMO is responsible for sponsoring necessary DCSA activities including FOCI risk assessment and Tier 3 security background investigations for the CMMC Ecosystem members as specified in §§ 170.8(b)(4) and (5), 170.9(b)(3) through (5), 170.11(b)(3) and (4), and 170.13(b)(3) and (4). (e) The CMMC PMO is responsible for investigating and acting upon indications that an active CMMC Status has been called into question. Indications that may trigger investigative evaluations include, but are not limited to, reports from the CMMC Accreditation Body, a C3PAO, or anyone knowledgeable of the security processes and activities of the OSA. Investigative evaluations include, but are not limited to, reviewing pertinent assessment information, and exercising the right to conduct a DCMA DIBCAC assessment of the OSA, as provided for under the 48 CFR 252.204-7020. (f) If a subsequent DCMA DIBCAC assessment shows that adherence to the provisions of this rule and the required CMMC Status have not been achieved or maintained, the DIBCAC results will take precedence over any pre-existing CMMC Status recorded in SPRS, or its successor capability. The DoD wi …",
+      "paragraph_hierarchy": [
+        "(a) The Office of the Department of Defense Chief Information Officer (DoD CIO) Office of the Deputy CIO for Cybersecurity (DoD CIO(CS)) provides oversight of the CMMC Program and is responsible for e",
+        "(b) The CMMC PMO is responsible for monitoring the CMMC AB's performance of roles assigned in this rule and acting as necessary to address problems pertaining to effective performance.",
+        "(c) The CMMC PMO retains, on behalf of the DoD CIO(CS), the prerogative to review decisions of the CMMC Accreditation Body as part of its oversight of the CMMC program and evaluate any alleged conflic",
+        "(d) The CMMC PMO is responsible for sponsoring necessary DCSA activities including FOCI risk assessment and Tier 3 security background investigations for the CMMC Ecosystem members as specified in §§ ",
+        "(e) The CMMC PMO is responsible for investigating and acting upon indications that an active CMMC Status has been called into question. Indications that may trigger investigative evaluations include, ",
+        "(f) If a subsequent DCMA DIBCAC assessment shows that adherence to the provisions of this rule and the required CMMC Status have not been achieved or maintained, the DIBCAC results will take precedenc"
+      ],
+      "keywords": [
+        "risk assessment"
+      ],
+      "nist_families": [
+        "RA"
+      ]
+    },
+    {
+      "section_id": "170.7",
+      "title": "DCMA DIBCAC.",
+      "text": "§ 170.7 DCMA DIBCAC. (a) DCMA DIBCAC assessors in support of the CMMC Program will: (1) Complete CMMC Level 2 and Level 3 training. (2) Conduct Level 3 certification assessments and upload assessment results into the CMMC instantiation of eMASS, or its successor capability. (3) Issue Certificates of CMMC Status resulting from Level 3 certification assessments. (4) Conduct Level 2 certification assessments of the Accreditation Body and prospective C3PAOs' information systems that process, store, and/or transmit CUI. (5) Create and maintain a process for assessors to collect the list of assessment artifacts to include artifact names, their return value of the hashing algorithm, the hashing algorithm used, and upload that data into the CMMC instantiation of eMASS. (6) As authorized and in accordance with all legal requirements, enter and track, OSC appeals and updated results arising from Level 3 certification assessment activities into the CMMC instantiation of eMASS. (7) Retain all records in accordance with DCMA-MAN 4501-04. (8) Conduct an assessment of the OSA, when requested by the CMMC PMO per §§ 170.6(e) and (f), as provided for under the 48 CFR 252.204-7019 and 48 CFR 252.204-7020. (9) Identify assessments that meet the criteria in § 170.20 and verify that SPRS accurately reflects the CMMC Status. (b) An OSC, the CMMC AB, or a C3PAO may appeal the outcome of its DCMA DIBCAC conducted assessment within 21 days by submitting a written basis for appeal with the requirements in question for DCMA DIBCAC consideration. Appeals may be submitted for review by visiting www.dcma.mil/DIBCAC for contact information, and a DCMA DIBCAC Quality Assurance Review Team will provide a written response or request additional supporting documentation.",
+      "paragraph_hierarchy": [
+        "(a) DCMA DIBCAC assessors in support of the CMMC Program will:",
+        "(1) Complete CMMC Level 2 and Level 3 training.",
+        "(2) Conduct Level 3 certification assessments and upload assessment results into the CMMC instantiation of eMASS, or its successor capability.",
+        "(3) Issue Certificates of CMMC Status resulting from Level 3 certification assessments.",
+        "(4) Conduct Level 2 certification assessments of the Accreditation Body and prospective C3PAOs' information systems that process, store, and/or transmit CUI.",
+        "(5) Create and maintain a process for assessors to collect the list of assessment artifacts to include artifact names, their return value of the hashing algorithm, the hashing algorithm used, and uplo",
+        "(6) As authorized and in accordance with all legal requirements, enter and track, OSC appeals and updated results arising from Level 3 certification assessment activities into the CMMC instantiation o",
+        "(7) Retain all records in accordance with DCMA-MAN 4501-04.",
+        "(8) Conduct an assessment of the OSA, when requested by the CMMC PMO per §§ 170.6(e) and (f), as provided for under the 48 CFR 252.204-7019 and 48 CFR 252.204-7020.",
+        "(9) Identify assessments that meet the criteria in § 170.20 and verify that SPRS accurately reflects the CMMC Status."
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.8",
+      "title": "Accreditation Body.",
+      "text": "§ 170.8 Accreditation Body. (a) Roles and responsibilities. The Accreditation Body is responsible for authorizing and ensuring the accreditation of CMMC Third-Party Assessment Organizations (C3PAOs) in accordance with ISO/IEC 17020:2012(E) (incorporated by reference, see § 170.2) and all applicable authorization and accreditation requirements set forth. The Accreditation Body is responsible for establishing the C3PAO authorization requirements and the C3PAO Accreditation Scheme and submitting both for approval by the CMMC PMO. At any given point in time, there will be only one Accreditation Body for the DoD CMMC Program. (b) Requirements. The CMMC Accreditation Body shall: (1) Be US-based and be and remain a member in good standing of the Inter-American Accreditation Cooperation (IAAC) and become an International Laboratory Accreditation Cooperation (ILAC) Mutual Recognition Arrangement (MRA) signatory, with a signatory status scope of ISO/IEC 17020:2012(E) (incorporated by reference, see § 170.2). (2) Be and remain a member in good standing of the International Accreditation Forum (IAF) with mutual recognition arrangement signatory status scope of ISO/IEC 17024:2012(E) (incorporated by reference, see § 170.2). (3) Achieve and maintain full compliance with ISO/IEC 17011:2017(E) (incorporated by reference, see § 170.2) and complete a peer assessment by other ILAC signatories for competence in accrediting conformity assessment bodies to ISO/IEC 17020:2012(E) (incorporated by reference, see § 170.2), both within 24 months of DoD approval. (i) Prior to achieving full compliance as set forth in this paragraph (b)(3), the Accreditation Body shall: (A) Authorize C3PAOs who meet all requirements set forth in § 170.9 as well as administrative requirements as determined by the Accreditation Body to conduct Level 2 certification assessments and issue Certificates of CMMC Status to OSCs based on the assessment results. (B) Require all C3PAOs to achieve and maintain the ISO/IEC  …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(1) Be US-based and be and remain a member in good standing of the Inter-American Accreditation Cooperation (IAAC) and become an International Laboratory Accreditation Cooperation (ILAC) Mutual Recogn",
+        "(2) Be and remain a member in good standing of the International Accreditation Forum (IAF) with mutual recognition arrangement signatory status scope of ISO/IEC 17024:2012(E) (incorporated by referenc",
+        "(3) Achieve and maintain full compliance with ISO/IEC 17011:2017(E) (incorporated by reference, see § 170.2) and complete a peer assessment by other ILAC signatories for competence in accrediting conf",
+        "(i) Prior to achieving full compliance as set forth in this paragraph (b)(3), the Accreditation Body shall:",
+        "(A) Authorize C3PAOs who meet all requirements set forth in § 170.9 as well as administrative requirements as determined by the Accreditation Body to conduct Level 2 certification assessments and issu",
+        "(B) Require all C3PAOs to achieve and maintain the ISO/IEC 17020:2012(E) (incorporated by reference, see § 170.2) requirements within 27 months of authorization.",
+        "(ii) The Accreditation Body shall accredit C3PAOs, in accordance with ISO/IEC 17020:2012(E) (incorporated by reference, see § 170.2), who meet all requirements set forth in § 170.9 to conduct Level 2 ",
+        "(4) Ensure that the Accreditation Body's Board of Directors, professional staff, Information Technology (IT) staff, accreditation staff, and independent CMMC Certified Assessor staff complete a Tier 3"
+      ],
+      "keywords": [
+        "authorization",
+        "third-party"
+      ],
+      "nist_families": [
+        "AC",
+        "SA"
+      ]
+    },
+    {
+      "section_id": "170.9",
+      "title": "CMMC Third-Party Assessment Organizations (C3PAOs).",
+      "text": "§ 170.9 CMMC Third-Party Assessment Organizations (C3PAOs). (a) Roles and responsibilities. C3PAOs are organizations that are responsible for conducting Level 2 certification assessments and issuing Certificates of CMMC Status to OSCs based on the results. C3PAOs must be accredited or authorized by the Accreditation Body in accordance with the requirements set forth. (b) Requirements. C3PAOs shall: (1) Obtain authorization or accreditation from the Accreditation Body in accordance with § 170.8(b)(3)(i) and (ii). (2) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17); and achieve and maintain compliance with ISO/IEC 17020:2012(E) (incorporated by reference, see § 170.2) within 27 months of authorization. (3) Require all C3PAO company personnel participating in the Level 2 certification assessment process to complete a Tier 3 background investigation resulting in a determination of national security eligibility. This includes the CMMC Assessment Team and the quality assurance individual. This Tier 3 background investigation will not result in a security clearance and is not being executed for the purpose of government employment. The Tier 3 background investigation is initiated using the Standard Form (SF) 86 ( www.gsa.gov/reference/forms/questionnaire-for-national-security-positions ). These positions are designated as non-critical sensitive with a risk designation of “Moderate Risk” in accordance with 5 CFR 1400.201(b) and (d) and the investigative requirements of 5 CFR 731.106(c)(2). (4) Require all C3PAO company personnel participating in the Level 2 certification assessment process who are not eligible to obtain a Tier 3 background investigation to meet the equivalent of a favorably adjudicated Tier 3 background investigation. DoD will determine the Tier 3 background investigation equivalence for use with the CMMC Program only. (5) Comply with Foreign Ownership, Control or Inf …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(1) Obtain authorization or accreditation from the Accreditation Body in accordance with § 170.8(b)(3)(i) and (ii).",
+        "(2) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17); and achieve and maintain compliance with ISO/IEC 17020:2",
+        "(3) Require all C3PAO company personnel participating in the Level 2 certification assessment process to complete a Tier 3 background investigation resulting in a determination of national security el",
+        "(4) Require all C3PAO company personnel participating in the Level 2 certification assessment process who are not eligible to obtain a Tier 3 background investigation to meet the equivalent of a favor",
+        "(5) Comply with Foreign Ownership, Control or Influence (FOCI) by:",
+        "(i) Completing and submitting Standard Form (SF) 328 (",
+        "(ii) Receiving a non-disqualifying eligibility determination from the CMMC PMO resulting from the FOCI risk assessment in order to proceed to a DCMA DIBCAC CMMC Level 2 assessment, as part of the auth",
+        "(iii) Reporting any change to the information provided on its SF 328 by resubmitting the SF 328 to DCSA within 15 business days of the change being effective. A disqualifying eligibility determination"
+      ],
+      "keywords": [
+        "authorization",
+        "third-party"
+      ],
+      "nist_families": [
+        "AC",
+        "SA"
+      ]
+    },
+    {
+      "section_id": "170.10",
+      "title": "CMMC Assessor and Instructor Certification Organization (CAICO).",
+      "text": "§ 170.10 CMMC Assessor and Instructor Certification Organization (CAICO). (a) Roles and responsibilities. The CAICO is responsible for training, testing, authorizing, certifying, and recertifying CMMC assessors, instructors, and related professionals. Only the CAICO may make decisions relating to examination certifications, including the granting, maintaining, recertifying, expanding, and reducing the scope of certification, and suspending or withdrawing certification in accordance with current ISO/IEC 17024:2012(E) (incorporated by reference, see § 170.2). At any given point in time, there will be only one CAICO for the DoD CMMC Program. (b) Requirements. The CAICO shall: (1) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17); and achieve and maintain ISO/IEC 17024(E) accreditation within 12 months of December 16, 2024. (2) Provide all documentation and records in English. (3) Train, test, and designate PIs in accordance with the requirements of this section. Train, test, certify, and recertify CCPs, CCAs, and CCIs in accordance with the requirements of this section. (4) Ensure the instructor and assessor certification examinations are certified under ISO/IEC 17024:2012(E) (incorporated by reference, see § 170.2), by a recognized US-based accreditor who is not a member of the CMMC Accreditation Body. The US-based accreditor must be a signatory to International Laboratory Accreditation Cooperation (ILAC) or relevant International Accreditation Forum (IAF) Mutual Recognition Arrangement (MRA) and must operate in accordance with ISO/IEC 17011:2017(E) (incorporated by reference, see § 170.2). (5) Establish quality control policies and procedures for the generation of training products, instruction, and testing materials. (6) Oversee development, administration, and management pertaining to the quality of training and examination materials for CMMC assessor and instructor certificati …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(1) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17); and achieve and maintain ISO/IEC 17024(E) accreditation ",
+        "(2) Provide all documentation and records in English.",
+        "(3) Train, test, and designate PIs in accordance with the requirements of this section. Train, test, certify, and recertify CCPs, CCAs, and CCIs in accordance with the requirements of this section.",
+        "(4) Ensure the instructor and assessor certification examinations are certified under ISO/IEC 17024:2012(E) (incorporated by reference, see § 170.2), by a recognized US-based accreditor who is not a m",
+        "(5) Establish quality control policies and procedures for the generation of training products, instruction, and testing materials.",
+        "(6) Oversee development, administration, and management pertaining to the quality of training and examination materials for CMMC assessor and instructor certification and recertification.",
+        "(7) Establish and publish an authorization and certification appeals process to receive, evaluate, and make decisions on complaints and appeals in accordance with ISO/IEC 17024:2012(E) (incorporated b",
+        "(8) Address all appeals arising from the CCA, CCI, and CCP authorizations and certifications process through use of internal processes in accordance with ISO/IEC 17024:2012(E) (incorporated by referen"
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.11",
+      "title": "CMMC Certified Assessor (CCA).",
+      "text": "§ 170.11 CMMC Certified Assessor (CCA). (a) Roles and responsibilities. CCAs, in support of a C3PAO, conduct Level 2 certification assessments of OSCs in accordance with NIST SP 800-171A Jun2018 (incorporated by reference, see § 170.2), the assessment processes defined in § 170.17, and the scoping requirements defined in § 170.19(c). CCAs must meet all of the requirements set forth in paragraph (b) of this section. A CCA may conduct Level 2 certification assessments and participate on a C3PAO Assessment Team. (b) Requirements. CCAs shall: (1) Obtain and maintain certification from the CAICO in accordance with the requirements set forth in § 170.10. Certification is valid for 3 years from the date of issuance. (2) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17). (3) Complete a Tier 3 background investigation resulting in a determination of national security eligibility. This Tier 3 background investigation will not result in a security clearance and is not being executed for the purpose of government employment. The Tier 3 background investigation is initiated using the Standard Form (SF) 86 ( www.gsa.gov/reference/forms/questionnaire-for-national-security-positions ). These positions are designated as non-critical sensitive with a risk designation of “Moderate Risk” in accordance with 5 CFR 1400.201(b) and (d) and the investigative requirements of 5 CFR 731.106(c)(2). (4) Meet the equivalent of a favorably adjudicated Tier 3 background investigation when not eligible for a Tier 3 background investigation. DoD will determine the Tier 3 background investigation equivalence for use with the CMMC Program only. (5) Provide all documentation and records in English. (6) Be a CCP who has at least 3 years of cybersecurity experience, at least 1 year of assessment or audit experience, and at least one foundational qualification, aligned to at least the Intermediate Proficiency Level of  …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(1) Obtain and maintain certification from the CAICO in accordance with the requirements set forth in § 170.10. Certification is valid for 3 years from the date of issuance.",
+        "(2) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17).",
+        "(3) Complete a Tier 3 background investigation resulting in a determination of national security eligibility. This Tier 3 background investigation will not result in a security clearance and is not be",
+        "(4) Meet the equivalent of a favorably adjudicated Tier 3 background investigation when not eligible for a Tier 3 background investigation. DoD will determine the Tier 3 background investigation equiv",
+        "(5) Provide all documentation and records in English.",
+        "(6) Be a CCP who has at least 3 years of cybersecurity experience, at least 1 year of assessment or audit experience, and at least one foundational qualification, aligned to at least the Intermediate ",
+        "(7) Only use IT, cloud, cybersecurity services, and end-point devices provided by the authorized/accredited C3PAO that has been engaged to perform that OSA's Level 2 certification assessment and which",
+        "(8) Immediately notify the responsible C3PAO of any breach or potential breach of security to any CMMC-related assessment materials under the assessors' purview."
+      ],
+      "keywords": [
+        "audit"
+      ],
+      "nist_families": [
+        "AU"
+      ]
+    },
+    {
+      "section_id": "170.12",
+      "title": "CMMC Instructor.",
+      "text": "§ 170.12 CMMC Instructor. (a) CMMC Provisional Instructor (PI) roles and responsibilities. A CMMC Provisional Instructor (PI) teaches CCA and CCP candidates during the transitional period that ends 18 months after December 16, 2024. A PI is trained, tested, and designated to perform CMMC instructional duties by the CAICO to teach CCP and CCA candidates. PIs are designated by the CAICO after successful completion of the PI training and testing requirements set forth by the CAICO. A PI with a valid CCP certification may instruct CCP candidates, while a PI with a valid CCA certification may instruct CCP and CCA candidates. PIs are required to meet requirements in (c) of this section. (b) CMMC Certified Instructor (CCI) roles and responsibilities. A CMMC Certified Instructor (CCI) teaches CCP, CCA, and CCI candidates and performs CMMC instructional duties. Candidate CCIs are certified by the CAICO after successful completion of the CCI training and testing requirements. A CCI is required to obtain and maintain assessor and instructor certifications from the CAICO in accordance with the requirements set forth in § 170.10 and in paragraph (c) of this section. A CCI with a valid CCP certification may instruct CCP candidates, while a CCI with a valid CCA certification may instruct CCP, CCA, and CCI candidates. Certifications are valid for 3 years from the date of issuance. CCIs are required to meet requirements in paragraph (c) of this section. (c) Requirements. CMMC Instructors shall: (1) Obtain and maintain instructor designation or certification, as appropriate, from the CAICO in accordance with the requirements set forth in § 170.10. (2) Obtain and maintain CCP or CCA certification to deliver CCP training. (3) Obtain and maintain a CCA certification to deliver CCA training. (4) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17). (5) Provide all documentation and records in English. ( …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(c)",
+        "(1) Obtain and maintain instructor designation or certification, as appropriate, from the CAICO in accordance with the requirements set forth in § 170.10.",
+        "(2) Obtain and maintain CCP or CCA certification to deliver CCP training.",
+        "(3) Obtain and maintain a CCA certification to deliver CCA training.",
+        "(4) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17).",
+        "(5) Provide all documentation and records in English.",
+        "(6) Provide the Accreditation Body and the CAICO annually with accurate information detailing their qualifications, training experience, professional affiliations, and certifications, and, upon reason",
+        "(7) Not provide CMMC consulting services while serving as a CMMC instructor; however, subject to the Code of Professional Conduct and Conflict of Interest policies, can serve on an assessment team."
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.13",
+      "title": "CMMC Certified Professional (CCP).",
+      "text": "§ 170.13 CMMC Certified Professional (CCP). (a) Roles and responsibilities. A CMMC Certified Professional (CCP) completes rigorous training on CMMC and the assessment process to provide advice, consulting, and recommendations to their OSA clients. Candidate CCPs are certified by the CAICO after successful completion of the CCP training and testing requirements set forth in paragraph (b) of this section. CCPs are eligible to become CMMC Certified Assessors and can participate as a CCP on Level 2 certification assessments with CCA oversight where the CCA makes all final determinations. (b) Requirements. CCPs shall: (1) Obtain and maintain certification from the CAICO in accordance with the requirements set forth in § 170.10. Certification is valid for 3 years from the date of issuance. (2) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics as set forth in § 170.8(b)(17). (3) Complete a Tier 3 background investigation resulting in a determination of national security eligibility. This Tier 3 background investigation will not result in a security clearance and is not being executed for the purpose of government employment. The Tier 3 background investigation is initiated using the Standard Form (SF) 86 ( www.gsa.gov/reference/forms/questionnaire-for-national-security-positions ). These positions are designated as non-critical sensitive with a risk designation of “Moderate Risk” in accordance with 5 CFR 1400.201(b) and (d) and the investigative requirements of 5 CFR 731.106(c)(2). (4) Meet the equivalent of a favorably adjudicated Tier 3 background investigation when not eligible to obtain a Tier 3 background investigation. DoD will determine the Tier 3 background investigation equivalence for use with the CMMC Program only. (5) Provide all documentation and records in English. (6) Not share any information about an OSC obtained during CMMC pre-assessment and assessment activities with any person not involved wi …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(1) Obtain and maintain certification from the CAICO in accordance with the requirements set forth in § 170.10. Certification is valid for 3 years from the date of issuance.",
+        "(2) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics as set forth in § 170.8(b)(17).",
+        "(3) Complete a Tier 3 background investigation resulting in a determination of national security eligibility. This Tier 3 background investigation will not result in a security clearance and is not be",
+        "(4) Meet the equivalent of a favorably adjudicated Tier 3 background investigation when not eligible to obtain a Tier 3 background investigation. DoD will determine the Tier 3 background investigation",
+        "(5) Provide all documentation and records in English.",
+        "(6) Not share any information about an OSC obtained during CMMC pre-assessment and assessment activities with any person not involved with that specific assessment, except as otherwise required by law"
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.14",
+      "title": "CMMC Model.",
+      "text": "§ 170.14 CMMC Model. (a) Overview. The CMMC Model incorporates the security requirements from: (1) 48 CFR 52.204-21, Basic Safeguarding of Covered Contractor Information Systems; (2) NIST SP 800-171 R2, Protecting Controlled Unclassified Information in Nonfederal Systems and Organizations (incorporated by reference, see § 170.2); and (3) Selected security requirements from NIST SP 800-172 Feb2021, Enhanced Security Requirements for Protecting Controlled Unclassified Information: A Supplement to NIST Special Publication 800-171 (incorporated by reference, see § 170.2). (b) CMMC domains. The CMMC Model consists of domains that map to the Security Requirement Families defined in NIST SP 800-171 R2 (incorporated by reference, see § 170.2). (c) CMMC level requirements. CMMC Levels 1-3 utilize the safeguarding requirements and security requirements specified in 48 CFR 52.204-21 (for Level 1), NIST SP 800-171 R2 (incorporated by reference, see § 170.2) (for Level 2), and selected security requirements from NIST SP 800-172 Feb2021 (incorporated by reference, see § 170.2) (for Level 3). This paragraph discusses the numbering scheme and the security requirements for each level. (1) Numbering. Each security requirement has an identification number in the format—DD.L#-REQ—where: (i) DD is the two-letter domain abbreviation; (ii) L# is the CMMC level number; and (iii) REQ is the 48 CFR 52.204-21 paragraph number, NIST SP 800-171 R2 requirement number, or NIST SP 800-172 Feb2021 requirement number. (2) CMMC Level 1 security requirements. The security requirements in CMMC Level 1 are those set forth in 48 CFR 52.204-21(b)(1)(i) through (xv). (3) CMMC Level 2 security requirements. The security requirements in CMMC Level 2 are identical to the requirements in NIST SP 800-171 R2. (4) CMMC Level 3 security requirements. The security requirements in CMMC Level 3 are selected from NIST SP 800-172 Feb2021, and where applicable, Organization-Defined Parameters (ODPs) are assigned. Table  …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1) 48 CFR 52.204-21,",
+        "(2) NIST SP 800-171 R2,",
+        "(3) Selected security requirements from NIST SP 800-172 Feb2021,",
+        "(b)",
+        "(c)",
+        "(1)",
+        "(i) DD is the two-letter domain abbreviation;",
+        "(ii) L# is the CMMC level number; and",
+        "(iii) REQ is the 48 CFR 52.204-21 paragraph number, NIST SP 800-171 R2 requirement number, or NIST SP 800-172 Feb2021 requirement number."
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.15",
+      "title": "CMMC Level 1 self-assessment and affirmation requirements.",
+      "text": "§ 170.15 CMMC Level 1 self-assessment and affirmation requirements. (a) Level 1 self-assessment. To comply with CMMC Level 1 self-assessment requirements, the OSA must meet the requirements detailed in paragraphs (a)(1) and (2) of this section. An OSA conducts a Level 1 self-assessment as detailed in paragraph (c) of this section to achieve a CMMC Status of Final Level 1 (Self). (1) Level 1 self-assessment requirements. The OSA must complete and achieve a MET result for all security requirements specified in § 170.14(c)(2) to achieve the CMMC Status of Final Level 1 (Self). No POA&Ms are permitted for CMMC Level 1. The OSA must conduct a self-assessment in accordance with the procedures set forth in § 170.15(c)(1) and submit assessment results in SPRS. To maintain compliance with the requirements for the CMMC Status of Final Level 1 (Self), the OSA must conduct a Level 1 self-assessment on an annual basis and submit the results in SPRS, or its successor capability. (i) Inputs to SPRS. The Level 1 self-assessment results in the Supplier Performance Risk System (SPRS) shall include, at minimum, the following items: (A) CMMC Level. (B) CMMC Status Date. (C) CMMC Assessment Scope. (D) All industry CAGE code(s) associated with the information system(s) addressed by the CMMC Assessment Scope. (E) Compliance result. (ii) [Reserved] (2) Affirmation. Affirmation of the Level 1 (Self) CMMC Status is required for all Level 1 self-assessments. Affirmation procedures are set forth in § 170.22. (b) Contract eligibility. Prior to award of any contract or subcontract with a requirement for the CMMC Status of Level 1 (Self), OSAs must both achieve a CMMC Status of Level 1 (Self) and have submitted an affirmation of compliance into SPRS for all information systems within the CMMC Assessment Scope. (c) Procedures —(1) Level 1 self-assessment. The OSA must conduct a Level 1 self-assessment scored in accordance with the CMMC Scoring Methodology described in § 170.24. The Level 1 self-as …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1)",
+        "(i)",
+        "(A) CMMC Level.",
+        "(B) CMMC Status Date.",
+        "(C) CMMC Assessment Scope.",
+        "(D) All industry CAGE code(s) associated with the information system(s) addressed by the CMMC Assessment Scope.",
+        "(E) Compliance result.",
+        "(ii) [Reserved]",
+        "(2)"
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.16",
+      "title": "CMMC Level 2 self-assessment and affirmation requirements.",
+      "text": "§ 170.16 CMMC Level 2 self-assessment and affirmation requirements. (a) Level 2 self-assessment. To comply with Level 2 self-assessment requirements, the OSA must meet the requirements detailed in paragraphs (a)(1) and (2) of this section. An OSA conducts a Level 2 self-assessment as detailed in paragraph (c) of this section to achieve a CMMC Status of either Conditional or Final Level 2 (Self). Achieving a CMMC Status of Level 2 (Self) also satisfies the requirements for a CMMC Status of Level 1 (Self) detailed in § 170.15 for the same CMMC Assessment Scope. (1) Level 2 self-assessment requirements. The OSA must complete and achieve a MET result for all security requirements specified in § 170.14(c)(3) to achieve the CMMC Status of Level 2 (Self). The OSA must conduct a self-assessment in accordance with the procedures set forth in paragraph (c)(1) of this section and submit assessment results in Supplier Performance Risk System (SPRS). To maintain compliance with the requirements for a CMMC Status of Level 2 (Self), the OSA must conduct a Level 2 self-assessment every three years and submit the results in SPRS, within three years of the CMMC Status Date associated with the Conditional Level 2 (Self). (i) Inputs to SPRS. The Level 2 self-assessment results in the SPRS shall include, at minimum, the following information: (A) CMMC Level. (B) CMMC Status Date. (C) CMMC Assessment Scope. (D) All industry CAGE code(s) associated with the information system(s) addressed by the CMMC Assessment Scope. (E) Overall Level 2 self-assessment score ( e.g., 105 out of 110). (F) POA&M usage and compliance status, if applicable. (ii) Conditional Level 2 (Self). The OSA has achieved the CMMC Status of Conditional Level 2 (Self) if the Level 2 self-assessment results in a POA&M and the POA&M meets all the CMMC Level 2 POA&M requirements listed in § 170.21(a)(2). (A) Plan of Action and Milestones. A Level 2 POA&M is allowed only in accordance with the CMMC POA&M requirements listed i …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1)",
+        "(i)",
+        "(A) CMMC Level.",
+        "(B) CMMC Status Date.",
+        "(C) CMMC Assessment Scope.",
+        "(D) All industry CAGE code(s) associated with the information system(s) addressed by the CMMC Assessment Scope.",
+        "(E) Overall Level 2 self-assessment score (",
+        "(F) POA&M usage and compliance status, if applicable.",
+        "(ii)"
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.17",
+      "title": "CMMC Level 2 certification assessment and affirmation requirements.",
+      "text": "§ 170.17 CMMC Level 2 certification assessment and affirmation requirements. (a) Level 2 certification assessment. To comply with Level 2 certification assessment requirements, the OSC must meet the requirements set forth in paragraphs (a)(1) and (2) of this section. An OSC undergoes a Level 2 certification assessment as detailed in paragraph (c) of this section to achieve a CMMC Status of either Conditional or Final Level 2 (C3PAO). Achieving a CMMC Status of Level 2 (C3PAO) also satisfies the requirements for a CMMC Statuses of Level 1 (Self) and Level 2 (Self) set forth in §§ 170.15 and 170.16 respectively for the same CMMC Assessment Scope. (1) Level 2 certification assessment requirements. The OSC must complete and achieve a MET result for all security requirements specified in § 170.14(c)(3) to achieve the CMMC Status of Level 2 (C3PAO). The OSC must obtain a Level 2 certification assessment from an authorized or accredited C3PAO following the procedures outlined in paragraph (c) of this section. The C3PAO must submit the Level 2 certification assessment results into the CMMC instantiation of eMASS, which then provides automated transmission to SPRS. To maintain compliance with the requirements for a CMMC Status of Level 2 (C3PAO), the Level 2 certification assessment must be completed within three years of the CMMC Status Date associated with the Conditional Level 2 (C3PAO). (i) Inputs into the CMMC instantiation of eMASS. The Level 2 certification assessment results input into the CMMC instantiation of eMASS shall include, at minimum, the following information: (A) Date and level of the assessment. (B) C3PAO name. (C) Assessment unique identifier. (D) For each Assessor conducting the assessment, name and business contact information. (E) All industry CAGE codes associated with the information systems addressed by the CMMC Assessment Scope. (F) The name, date, and version of the SSP. (G) CMMC Status Date. (H) Assessment result for each requirement objective.  …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1)",
+        "(i)",
+        "(A) Date and level of the assessment.",
+        "(B) C3PAO name.",
+        "(C) Assessment unique identifier.",
+        "(D) For each Assessor conducting the assessment, name and business contact information.",
+        "(E) All industry CAGE codes associated with the information systems addressed by the CMMC Assessment Scope.",
+        "(F) The name, date, and version of the SSP.",
+        "(G) CMMC Status Date."
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.18",
+      "title": "CMMC Level 3 certification assessment and affirmation requirements.",
+      "text": "§ 170.18 CMMC Level 3 certification assessment and affirmation requirements. (a) Level 3 certification assessment. To comply with Level 3 certification assessment requirements, the OSC must meet the requirements set forth in paragraphs (a)(1) and (2) of this section. An OSC undergoes a Level 3 certification assessment as detailed in paragraph (c) of this section to achieve a CMMC Status of either Conditional or Final Level 3 (DIBCAC). A CMMC Status of Final Level 2 (C3PAO) for information systems within the Level 3 CMMC Assessment Scope is a prerequisite to undergo a Level 3 certification assessment. CMMC Level 3 recertification also has a prerequisite for a new CMMC Level 2 assessment. Achieving a CMMC Status of Level 3 (DIBCAC) also satisfies the requirements for CMMC Statuses of Level 1 (Self), Level 2 (Self), and Level 2 (C3PAO) set forth in §§ 170.15 through 170.17 respectively for the same CMMC Assessment Scope. (1) Level 3 certification assessment requirements. The OSC must achieve a CMMC Status of Final Level 2 (C3PAO) on the Level 3 CMMC Assessment Scope, as defined in § 170.19(d), prior to initiating a Level 3 certification assessment, which will be performed by DCMA DIBCAC ( www.dcma.mil/DIBCAC ) on behalf of the DoD. The OSC must complete and achieve a MET result for all security requirements specified in table 1 to § 170.14(c)(4) to achieve the CMMC Status of Level 3 (DIBCAC). DCMA DIBCAC will submit the Level 3 certification assessment results into the CMMC instantiation of eMASS, which then provides automated transmission to SPRS. To maintain compliance with the requirements for a CMMC Status of Level 3 (DIBCAC), the Level 3 certification assessment must be performed every three years for all information systems within the Level 3 CMMC Assessment Scope. In addition, given that compliance with Level 2 requirements is a prerequisite for applying for CMMC Level 3, a Level 2 (C3PAO) certification assessment must also be conducted every three years to main …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1)",
+        "(i)",
+        "(A) Date and level of the assessment.",
+        "(B) For each Assessor(s) conducting the assessment, name and government organization information.",
+        "(C) All industry CAGE code(s) associated with the information system(s) addressed by the CMMC Assessment Scope.",
+        "(D) The name, date, and version of the system security plan(s) (SSP).",
+        "(E) CMMC Status Date.",
+        "(F) Result for each security requirement objective.",
+        "(G) POA&M usage and compliance, as applicable."
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.19",
+      "title": "CMMC scoping.",
+      "text": "§ 170.19 CMMC scoping. (a) Scoping requirement. (1) The CMMC Assessment Scope must be specified prior to assessment in accordance with the requirements of this section. The CMMC Assessment Scope is the set of all assets in the OSA's environment that will be assessed against CMMC security requirements. (2) The requirements for defining the CMMC Assessment Scope for CMMC Levels 1, 2, and 3 are set forth in this section. Additional guidance regarding scoping can be found in the guidance documents listed in paragraphs (e) through (g) of appendix A to this part. (b) CMMC Level 1 scoping. Prior to performing a Level 1 self-assessment, the OSA must specify the CMMC Assessment Scope. (1) Assets in scope for Level 1 self-assessment. OSA information systems which process, store, or transmit FCI are in scope for CMMC Level 1 and must be self-assessed against applicable CMMC security requirements. (2) Assets not in scope for Level 1 self-assessment —(i) Out-of-Scope Assets. OSA information systems which do not process, store, or transmit FCI are outside the scope for CMMC Level 1. An endpoint hosting a VDI client configured to not allow any processing, storage, or transmission of FCI beyond the Keyboard/Video/Mouse sent to the VDI client is considered out-of-scope. There are no documentation requirements for out-of-scope assets. (ii) Specialized Assets. Specialized Assets are those assets that can process, store, or transmit FCI but are unable to be fully secured, including: Internet of Things (IoT) devices, Industrial Internet of Things (IIoT) devices, Operational Technology (OT), Government Furnished Equipment (GFE), Restricted Information Systems, and Test Equipment. Specialized Assets are not part of the Level 1 CMMC Assessment Scope and are not assessed against CMMC security requirements. (3) Level 1 self-assessment scoping considerations. To scope a Level 1 self-assessment, OSAs should consider the people, technology, facilities, and External Service Providers (ESP) withi …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(2) The requirements for defining the CMMC Assessment Scope for CMMC Levels 1, 2, and 3 are set forth in this section. Additional guidance regarding scoping can be found in the guidance documents list",
+        "(b)",
+        "(1)",
+        "(2)",
+        "(ii)",
+        "(3)",
+        "(c)",
+        "(1) The CMMC Assessment Scope for CMMC Level 2 is based on the specification of asset categories and their respective requirements as defined in table 3 to this paragraph (c)(1). Additional informatio",
+        "(2)(i) Table 4 to this paragraph (c)(2)(i) defines the requirements to be met when utilizing an External Service Provider (ESP). The OSA must consider whether the ESP is a Cloud Service Provider (CSP)"
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.20",
+      "title": "Standards acceptance.",
+      "text": "§ 170.20 Standards acceptance. (a) NIST SP 800-171 R2 DoD assessments. In order to avoid duplication of efforts, thereby reducing the aggregate cost to industry and the Department, OSCs that have completed a DCMA DIBCAC High Assessment aligned with CMMC Level 2 Scoping will be given the CMMC Status of Final Level 2 (C3PAO) under the following conditions: (1) DCMA DIBCAC High Assessment. An OSC that achieved a perfect score with no open POA&M from a DCMA DIBCAC High Assessment conducted prior to the effective date of this rule, will be given a CMMC Status of Level 2 Final (C3PAO) with a validity period of three (3) years from the date of the original DCMA DIBCAC High Assessment. DCMA DIBCAC will identify assessments that meet these criteria and verify that SPRS accurately reflects the CMMC Status. Eligible DCMA DIBCAC High Assessments include ones conducted with Joint Surveillance in accordance with the DCMA Manual 2302-01 Surveillance. The scope of the Level 2 certification assessment is identical to the scope of the DCMA DIBCAC High Assessment. In accordance with § 170.17(a)(2), the OSC must also submit an affirmation in SPRS and annually thereafter to achieve contractual eligibility. (2) [Reserved]. (b) [Reserved].",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1)",
+        "(2) [Reserved].",
+        "(b) [Reserved]."
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.21",
+      "title": "Plan of Action and Milestones requirements.",
+      "text": "§ 170.21 Plan of Action and Milestones requirements. (a) POA&M. For purposes of achieving a Conditional CMMC Status, an OSA is only permitted to have a POA&M for select requirements scored as NOT MET during the CMMC assessment and only under the following conditions: (1) Level 1 self-assessment. A POA&M is not permitted at any time for Level 1 self-assessments. (2) Level 2 self-assessment and Level 2 certification assessment. An OSA is only permitted to achieve the CMMC Status of Conditional Level 2 (Self) or Conditional Level 2 (C3PAO), as appropriate, if all the following conditions are met: (i) The assessment score divided by the total number of CMMC Level 2 security requirements is greater than or equal to 0.8; (ii) None of the security requirements included in the POA&M have a point value of greater than 1 as specified in the CMMC Scoring Methodology set forth in § 170.24, except SC.L2-3.13.11 CUI Encryption may be included on a POA&M if encryption is employed but it is not FIPS-validated, which would result in a point value of 3; and (iii) None of the following security requirements are included in the POA&M: (A) AC.L2-3.1.20 External Connections (CUI Data). (B) AC.L2-3.1.22 Control Public Information (CUI Data). (C) CA.L2-3.12.4 System Security Plan. (D) PE.L2-3.10.3 Escort Visitors (CUI Data). (E) PE.L2-3.10.4 Physical Access Logs (CUI Data). (F) PE.L2-3.10.5 Manage Physical Access (CUI Data). (3) Level 3 certification assessment. An OSC is only permitted to achieve the CMMC Status of Conditional Level 3 (DIBCAC) if all the following conditions are met: (i) The assessment score divided by the total number of CMMC Level 3 security requirements is greater than or equal to 0.8; and (ii) The POA&M does not include any of following security requirements: (A) IR.L3-3.6.1e Security Operations Center. (B) IR.L3-3.6.2e Cyber Incident Response Team. (C) RA.L3-3.11.1e Threat-Informed Risk Assessment. (D) RA.L3-3.11.6e Supply Chain Risk Response. (E) RA.L3-3.11.7e Suppl …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1)",
+        "(2)",
+        "(i) The assessment score divided by the total number of CMMC Level 2 security requirements is greater than or equal to 0.8;",
+        "(ii) None of the security requirements included in the POA&M have a point value of greater than 1 as specified in the CMMC Scoring Methodology set forth in § 170.24, except SC.L2-3.13.11 CUI Encryptio",
+        "(iii) None of the following security requirements are included in the POA&M:",
+        "(A) AC.L2-3.1.20 External Connections (CUI Data).",
+        "(B) AC.L2-3.1.22 Control Public Information (CUI Data).",
+        "(C) CA.L2-3.12.4 System Security Plan.",
+        "(D) PE.L2-3.10.3 Escort Visitors (CUI Data)."
+      ],
+      "keywords": [
+        "incident",
+        "risk assessment",
+        "supply chain"
+      ],
+      "nist_families": [
+        "IR",
+        "RA",
+        "SA"
+      ]
+    },
+    {
+      "section_id": "170.22",
+      "title": "Affirmation.",
+      "text": "§ 170.22 Affirmation. (a) General. The OSA must affirm continuing compliance with the appropriate level self-assessment or certification assessment. An Affirming Official from each OSA, whether a prime or subcontractor, must affirm the continuing compliance of their respective organizations with the specified security requirement after every assessment, including POA&M closeout, and annually thereafter. Affirmations are entered electronically in SPRS. The affirmation shall be submitted in accordance with the following requirements: (1) Affirming Official. The Affirming Official is the senior level representative from within each Organization Seeking Assessment (OSA) who is responsible for ensuring the OSA's compliance with the CMMC Program requirements and has the authority to affirm the OSA's continuing compliance with the specified security requirements for their respective organizations. (2) Affirmation content. Each CMMC affirmation shall include the following information: (i) Name, title, and contact information for the Affirming Official; and (ii) Affirmation statement attesting that the OSA has implemented and will maintain implementation of all applicable CMMC security requirements to their CMMC Status for all information systems within the relevant CMMC Assessment Scope. (3) Affirmation submission. The Affirming Official shall submit a CMMC affirmation in the following instances: (i) Upon achievement of a Conditional CMMC Status, as applicable; (ii) Upon achievement of a Final CMMC Status; (iii) Annually following a Final CMMC Status Date; and (iv) Following a POA&M closeout assessment, as applicable. (b) Submission procedures. All affirmations shall be completed in SPRS. The Department will verify submission of the affirmation in SPRS to ensure compliance with CMMC solicitation or contract requirements. (1) Level 1 self-assessment. At the completion of a Level 1 self-assessment and annually thereafter, the Affirming Official shall submit a CMMC affirmation …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1)",
+        "(2)",
+        "(i) Name, title, and contact information for the Affirming Official; and",
+        "(ii) Affirmation statement attesting that the OSA has implemented and will maintain implementation of all applicable CMMC security requirements to their CMMC Status for all information systems within ",
+        "(3)",
+        "(i) Upon achievement of a Conditional CMMC Status, as applicable;",
+        "(ii) Upon achievement of a Final CMMC Status;",
+        "(iii) Annually following a Final CMMC Status Date; and",
+        "(iv) Following a POA&M closeout assessment, as applicable."
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.23",
+      "title": "Application to subcontractors.",
+      "text": "§ 170.23 Application to subcontractors. (a) CMMC requirements apply to prime contractors and subcontractors throughout the supply chain at all tiers that will process, store, or transmit any FCI or CUI on contractor information systems in the performance of the DoD contract or subcontract. Prime contractors shall comply and shall require subcontractors to comply with and to flow down CMMC requirements, such that compliance will be required throughout the supply chain at all tiers with the applicable CMMC level and assessment type for each subcontract as follows: (1) If a subcontractor will only process, store, or transmit FCI (and not CUI) in performance of the subcontract, then a CMMC Status of Level 1 (Self) is required for the subcontractor. (2) If a subcontractor will process, store, or transmit CUI in performance of the subcontract, then a CMMC Status of Level 2 (Self) is the minimum requirement for the subcontractor. (3) If a subcontractor will process, store, or transmit CUI in performance of the subcontract and the associated prime contract has a requirement for a CMMC Status of Level 2 (C3PAO), then the CMMC Status of Level 2 (C3PAO) is the minimum requirement for the subcontractor. (4) If a subcontractor will process, store, or transmit CUI in performance of the subcontract and the associated prime contract has a requirement for the CMMC Status of Level 3 (DIBCAC), then the CMMC Status of Level 2 (C3PAO) is the minimum requirement for the subcontractor. (b) As with any solicitation or contract, the DoD may provide specific guidance pertaining to flow-down.",
+      "paragraph_hierarchy": [
+        "(a) CMMC requirements apply to prime contractors and subcontractors throughout the supply chain at all tiers that will process, store, or transmit any FCI or CUI on contractor information systems in t",
+        "(1) If a subcontractor will only process, store, or transmit FCI (and not CUI) in performance of the subcontract, then a CMMC Status of Level 1 (Self) is required for the subcontractor.",
+        "(2) If a subcontractor will process, store, or transmit CUI in performance of the subcontract, then a CMMC Status of Level 2 (Self) is the minimum requirement for the subcontractor.",
+        "(3) If a subcontractor will process, store, or transmit CUI in performance of the subcontract and the associated prime contract has a requirement for a CMMC Status of Level 2 (C3PAO), then the CMMC St",
+        "(4) If a subcontractor will process, store, or transmit CUI in performance of the subcontract and the associated prime contract has a requirement for the CMMC Status of Level 3 (DIBCAC), then the CMMC",
+        "(b) As with any solicitation or contract, the DoD may provide specific guidance pertaining to flow-down."
+      ],
+      "keywords": [
+        "supply chain"
+      ],
+      "nist_families": [
+        "SA"
+      ]
+    },
+    {
+      "section_id": "170.24",
+      "title": "CMMC Scoring Methodology.",
+      "text": "§ 170.24 CMMC Scoring Methodology. (a) General. This scoring methodology is designed to provide a measurement of an OSA's implementation status of the NIST SP 800-171 R2 security requirements (incorporated by reference elsewhere in this part, see § 170.2) and the selected NIST SP 800-172 Feb2021 security requirements (incorporated by reference elsewhere in this part, see § 170.2). The CMMC Scoring Methodology is designed to credit partial implementation only in limited cases ( e.g., multi-factor authentication IA.L2-3.5.3). (b) Assessment findings. Each security requirement assessed under the CMMC Scoring Methodology must result in one of three possible assessment findings, as follows: (1) Met. All applicable objectives for the security requirement are satisfied based on evidence. All evidence must be in final form and not draft. Unacceptable forms of evidence include but are not limited to working papers, drafts, and unofficial or unapproved policies. (i) Enduring exceptions when described, along with any mitigations, in the system security plan shall be assessed as MET. (ii) Temporary deficiencies that are appropriately addressed in operational plans of action ( i.e., include deficiency reviews and show progress towards the implementation of corrections to reduce or eliminate identified vulnerabilities) shall be assessed as MET. (2) Not Met. One or more applicable objectives for the security requirement is not satisfied. During an assessment, for each security requirement objective marked NOT MET, the assessor will document why the evidence does not conform. (3) Not Applicable (N/A). A security requirement and/or objective does not apply at the time of the CMMC assessment. For example, Public-Access System Separation (SC.L2-3.13.5) might be N/A if there are no publicly accessible systems within the CMMC Assessment Scope. During an assessment, an assessment objective assessed as N/A is equivalent to the same assessment objective being assessed as MET. (c) Scoring.  …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(1)",
+        "(i) Enduring exceptions when described, along with any mitigations, in the system security plan shall be assessed as MET.",
+        "(ii) Temporary deficiencies that are appropriately addressed in operational plans of action (",
+        "(2)",
+        "(3)",
+        "(c)",
+        "(1)",
+        "(2)"
+      ],
+      "keywords": [
+        "authentication",
+        "multi-factor",
+        "vulnerabilities"
+      ],
+      "nist_families": [
+        "IA",
+        "RA"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "section_id": "170",
+      "title": "PART 170—CYBERSECURITY MATURITY MODEL CERTIFICATION (CMMC) PROGRAM",
+      "text": "PART 170—CYBERSECURITY MATURITY MODEL CERTIFICATION (CMMC) PROGRAM Authority: 5 U.S.C. 301; Sec. 1648, Pub. L. 116-92, 133 Stat. 1198. Source: 89 FR 83214, Oct. 15, 2024, unless otherwise noted. Subpart A—General Information. § 170.1 Purpose. (a) This part describes the Cybersecurity Maturity Model Certification (CMMC) Program of the Department of Defense (DoD) and establishes requirements for defense contractors and subcontractors to implement prescribed cybersecurity standards for safeguarding Federal Contract Information (FCI) and Controlled Unclassified Information (CUI). This part (the CMMC Program) also establishes requirements for conducting an assessment of compliance with the applicable prescribed cybersecurity standard for contractor information systems that: process, store, or transmit FCI or CUI; provide security protections for systems which process, store, or transmit CUI; or are not logically or physically isolated from systems which process, store, or transmit CUI. (b) The CMMC Program provides DoD with a viable means of conducting the volume of assessments necessary to verify contractor and subcontractor implementation of required cybersecurity requirements. (c) The CMMC Program is designed to ensure defense contractors are properly safeguarding FCI and CUI that is processed, stored, or transmitted on defense contractor information systems. FCI and CUI must be protected to meet evolving threats and safeguard nonpublic, unclassified information that supports and enables the warfighter. The CMMC Program provides a consistent methodology to assess a defense contractor's implementation of required cybersecurity requirements. The CMMC Program utilizes the security standards set forth in the 48 CFR 52.204-21; National Institute of Standards and Technology (NIST) Special Publication (SP) 800-171, Basic Safeguarding of Covered Contractor Information Systems, Revision 2, February 2020 (includes updates as of January 28, 2021) (NIST SP 800-171 R2); and select …",
+      "paragraph_hierarchy": [],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.1",
+      "title": "Purpose.",
+      "text": "§ 170.1 Purpose. (a) This part describes the Cybersecurity Maturity Model Certification (CMMC) Program of the Department of Defense (DoD) and establishes requirements for defense contractors and subcontractors to implement prescribed cybersecurity standards for safeguarding Federal Contract Information (FCI) and Controlled Unclassified Information (CUI). This part (the CMMC Program) also establishes requirements for conducting an assessment of compliance with the applicable prescribed cybersecurity standard for contractor information systems that: process, store, or transmit FCI or CUI; provide security protections for systems which process, store, or transmit CUI; or are not logically or physically isolated from systems which process, store, or transmit CUI. (b) The CMMC Program provides DoD with a viable means of conducting the volume of assessments necessary to verify contractor and subcontractor implementation of required cybersecurity requirements. (c) The CMMC Program is designed to ensure defense contractors are properly safeguarding FCI and CUI that is processed, stored, or transmitted on defense contractor information systems. FCI and CUI must be protected to meet evolving threats and safeguard nonpublic, unclassified information that supports and enables the warfighter. The CMMC Program provides a consistent methodology to assess a defense contractor's implementation of required cybersecurity requirements. The CMMC Program utilizes the security standards set forth in the 48 CFR 52.204-21; National Institute of Standards and Technology (NIST) Special Publication (SP) 800-171, Basic Safeguarding of Covered Contractor Information Systems, Revision 2, February 2020 (includes updates as of January 28, 2021) (NIST SP 800-171 R2); and selected requirements from the NIST SP 800-172, Enhanced Security Requirements for Protecting Controlled Unclassified Information: A Supplement to NIST Special Publication 800-171, February 2021 (NIST SP 800-172 Feb2021), as applica …",
+      "paragraph_hierarchy": [
+        "(a) This part describes the Cybersecurity Maturity Model Certification (CMMC) Program of the Department of Defense (DoD) and establishes requirements for defense contractors and subcontractors to impl",
+        "(b) The CMMC Program provides DoD with a viable means of conducting the volume of assessments necessary to verify contractor and subcontractor implementation of required cybersecurity requirements.",
+        "(c) The CMMC Program is designed to ensure defense contractors are properly safeguarding FCI and CUI that is processed, stored, or transmitted on defense contractor information systems. FCI and CUI mu",
+        "(d) The CMMC Program balances the need to safeguard FCI and CUI and the requirement to share information appropriately with defense contractors in order to develop capabilities for the DoD. The CMMC P",
+        "(e) The CMMC Program creates no right or benefit, substantive or procedural, enforceable by law or in equity by any party against the United States, its departments, agencies, or entities, its officer"
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.2",
+      "title": "Incorporation by reference.",
+      "text": "§ 170.2 Incorporation by reference. Certain material is incorporated by reference into this part with the approval of the Director of the Federal Register under 5 U.S.C. 552(a) and 1 CFR part 51. Material approved for incorporation by reference (IBR) is available for inspection at the Department of Defense (DoD) and at the National Archives and Records Administration (NARA). Contact DoD online: https://DoDcio.defense.gov/CMMC/ ; email: osd.mc-alex.DoD-cio.mbx.cmmc-rule@mail.mil ; or phone: (202) 770-9100. For information on the availability of this material at NARA, visit: www.archives.gov/federal-register/cfr/ibr-locations or email: fr.inspection@nara.gov . The material may be obtained from the following sources: (a) National Institute of Standards and Technology, U.S. Department of Commerce, 100 Bureau Drive, Gaithersburg, MD 20899; phone: (301) 975-8443; website: https://csrc.nist.gov/publications/ . (1) FIPS PUB 200, Minimum Security Requirements for Federal Information and Information Systems, March 2006 (FIPS PUB 200 Mar2006); IBR approved for § 170.4(b). (2) FIPS PUB 201-3, Personal Identity Verification (PIV) of Federal Employees and Contractors, January 2022 (FIPS PUB 201-3 Jan2022); IBR approved for § 170.4(b). (3) SP 800-37, Risk Management Framework for Information Systems and Organizations: A System Life Cycle Approach for Security and Privacy, Revision 2, December 2018 (NIST SP 800-37 R2); IBR approved for § 170.4(b). (4) SP 800-39, Managing Information Security Risk: Organization, Mission, and Information System View, March 2011 (NIST SP 800-39 Mar2011); IBR approved for § 170.4(b). (5) SP 800-53, Security and Privacy Controls for Information Systems and Organizations, Revision 5, September 2020 (includes updates as of December 10, 2020) (NIST SP 800-53 R5); IBR approved for § 170.4(b). (6) SP 800-82r3, Guide to Operational Technology (OT) Security, September 2023 (NIST SP 800-82r3); IBR approved for § 170.4(b). (7) SP 800-115, Technical Guide to Info …",
+      "paragraph_hierarchy": [
+        "Certain material is incorporated by reference into this part with the approval of the Director of the Federal Register under 5 U.S.C. 552(a) and 1 CFR part 51. Material approved for incorporation by r",
+        "(a) National Institute of Standards and Technology, U.S. Department of Commerce, 100 Bureau Drive, Gaithersburg, MD 20899; phone: (301) 975-8443; website:",
+        "(1) FIPS PUB 200, Minimum Security Requirements for Federal Information and Information Systems, March 2006 (FIPS PUB 200 Mar2006); IBR approved for § 170.4(b).",
+        "(2) FIPS PUB 201-3, Personal Identity Verification (PIV) of Federal Employees and Contractors, January 2022 (FIPS PUB 201-3 Jan2022); IBR approved for § 170.4(b).",
+        "(3) SP 800-37, Risk Management Framework for Information Systems and Organizations: A System Life Cycle Approach for Security and Privacy, Revision 2, December 2018 (NIST SP 800-37 R2); IBR approved f",
+        "(4) SP 800-39, Managing Information Security Risk: Organization, Mission, and Information System View, March 2011 (NIST SP 800-39 Mar2011); IBR approved for § 170.4(b).",
+        "(5) SP 800-53, Security and Privacy Controls for Information Systems and Organizations, Revision 5, September 2020 (includes updates as of December 10, 2020) (NIST SP 800-53 R5); IBR approved for § 17",
+        "(6) SP 800-82r3, Guide to Operational Technology (OT) Security, September 2023 (NIST SP 800-82r3); IBR approved for § 170.4(b).",
+        "(7) SP 800-115, Technical Guide to Information Security Testing and Assessment, September 2008 (NIST SP 800-115 Sept2008); IBR approved for § 170.4(b).",
+        "(8) SP 800-160, Volume 2, Developing Cyber-Resilient Systems: A Systems Security Engineering Approach, Revision 1, December 2021 (NIST SP 800-160 V2R1); IBR approved for § 170.4(b)."
+      ],
+      "keywords": [
+        "identity"
+      ],
+      "nist_families": [
+        "IA"
+      ]
+    },
+    {
+      "section_id": "170.3",
+      "title": "Applicability.",
+      "text": "§ 170.3 Applicability. (a) The requirements of this part apply to: (1) All DoD contract and subcontract awardees that will process, store, or transmit information, in performance of the DoD contract, that meets the standards for FCI or CUI on contractor information systems; and, (2) Private-sector businesses or other entities comprising the CMMC Assessment and Certification Ecosystem, as specified in subpart C of this part. (b) The requirements of this part do not apply to Federal information systems operated by contractors or subcontractors on behalf of the Government. (c) CMMC Program requirements apply to all DoD solicitations and contracts pursuant to which a defense contractor or subcontractor will process, store, or transmit FCI or CUI on unclassified contractor information systems, including those for the acquisition of commercial items (except those exclusively for COTS items) valued at greater than the micro-purchase threshold except under the following circumstances: (1) The procurement occurs during Implementation Phase 1, 2, or 3 as described in paragraph (e) of this section, in which case CMMC Program requirements apply in accordance with the requirements for the relevant phase-in period; or (2) Application of CMMC Program requirements to a procurement or class of procurements may be waived in advance of the solicitation at the discretion of DoD in accordance with all applicable policies, procedures, and approval requirements. (d) DoD Program Managers or requiring activities are responsible for selecting the CMMC Status that will apply for a particular procurement or contract based upon the type of information, FCI or CUI, that will be processed on, stored on, or transmitted through a contractor information system. Application of the CMMC Status for subcontractors will be determined in accordance with § 170.23. (e) DoD is utilizing a phased approach for the inclusion of CMMC Program requirements in solicitations and contracts. Implementation of CMMC Pro …",
+      "paragraph_hierarchy": [
+        "(a) The requirements of this part apply to:",
+        "(1) All DoD contract and subcontract awardees that will process, store, or transmit information, in performance of the DoD contract, that meets the standards for FCI or CUI on contractor information s",
+        "(2) Private-sector businesses or other entities comprising the CMMC Assessment and Certification Ecosystem, as specified in subpart C of this part.",
+        "(b) The requirements of this part do not apply to Federal information systems operated by contractors or subcontractors on behalf of the Government.",
+        "(c) CMMC Program requirements apply to all DoD solicitations and contracts pursuant to which a defense contractor or subcontractor will process, store, or transmit FCI or CUI on unclassified contracto",
+        "(1) The procurement occurs during Implementation Phase 1, 2, or 3 as described in paragraph (e) of this section, in which case CMMC Program requirements apply in accordance with the requirements for t",
+        "(2) Application of CMMC Program requirements to a procurement or class of procurements may be waived in advance of the solicitation at the discretion of DoD in accordance with all applicable policies,",
+        "(d) DoD Program Managers or requiring activities are responsible for selecting the CMMC Status that will apply for a particular procurement or contract based upon the type of information, FCI or CUI, ",
+        "(e) DoD is utilizing a phased approach for the inclusion of CMMC Program requirements in solicitations and contracts. Implementation of CMMC Program requirements will occur over four (4) phases:",
+        "(1)"
+      ],
+      "keywords": [
+        "acquisition"
+      ],
+      "nist_families": [
+        "SA"
+      ]
+    },
+    {
+      "section_id": "170.4",
+      "title": "Acronyms and definitions.",
+      "text": "§ 170.4 Acronyms and definitions. (a) Acronyms. Unless otherwise noted, the following acronyms and their terms are for the purposes of this part. AC—Access Control APT—Advanced Persistent Threat AT—Awareness and Training C3PAO—CMMC Third-Party Assessment Organization CA—Security Assessment CAICO—CMMC Assessors and Instructors Certification Organization CAGE—Commercial and Government Entity CCA—CMMC-Certified Assessor CCI—CMMC-Certified Instructor CCP—CMMC-Certified Professional CFR—Code of Federal Regulations CIO—Chief Information Officer CM—Configuration Management CMMC—Cybersecurity Maturity Model Certification CMMC PMO—CMMC Program Management Office CNC—Computerized Numerical Control CoPC—Code of Professional Conduct CSP—Cloud Service Provider CUI—Controlled Unclassified Information DCMA—Defense Contract Management Agency DD—Represents any two-character CMMC Domain acronym DFARS—Defense Federal Acquisition Regulation Supplement DIB—Defense Industrial Base DIBCAC—DCMA's Defense Industrial Base Cybersecurity Assessment Center DoD—Department of Defense DoDI—Department of Defense Instruction eMASS—Enterprise Mission Assurance Support Service ESP—External Service Provider FAR—Federal Acquisition Regulation FCI—Federal Contract Information FedRAMP—Federal Risk and Authorization Management Program GFE—Government Furnished Equipment IA—Identification and Authentication ICS—Industrial Control System IIoT—Industrial Internet of Things IoT—Internet of Things IR—Incident Response IS—Information System IEC—International Electrotechnical Commission ISO/IEC—International Organization for Standardization/International Electrotechnical Commission IT—Information Technology L#—CMMC Level Number MA—Maintenance MP—Media Protection MSSP—Managed Security Service Provider NARA—National Archives and Records Administration NAICS—North American Industry Classification System NIST—National Institute of Standards and Technology N/A—Not Applicable ODP—Organization-Defined Parameter OSA—Organi …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(i)",
+        "(ii)",
+        "(iii)",
+        "(iv)",
+        "(v)",
+        "(vi)",
+        "(i)",
+        "(ii)"
+      ],
+      "keywords": [
+        "authentication",
+        "access control",
+        "authorization",
+        "incident",
+        "configuration",
+        "acquisition",
+        "third-party"
+      ],
+      "nist_families": [
+        "AC",
+        "CM",
+        "IA",
+        "IR",
+        "SA"
+      ]
+    },
+    {
+      "section_id": "170.5",
+      "title": "Policy.",
+      "text": "§ 170.5 Policy. (a) Protection of FCI and CUI on contractor information systems is of paramount importance to the DoD and can directly impact its ability to successfully conduct essential missions and functions. It is DoD policy that defense contractors and subcontractors shall be required to safeguard FCI and CUI that is processed, stored, or transmitted on contractor information systems by applying specified security requirements. In addition, defense contractors and subcontractors may be required to implement additional safeguards defined in NIST SP 800-172 Feb2021 (incorporated by reference, see § 170.2), implementing DoD specified parameters to meet CMMC Level 3 security requirements (see table 1 to § 170.14(c)(4)). These additional requirements are necessary to protect CUI being processed, stored, or transmitted in contractor information systems, when designated by a requirement for CMMC Status of Level 3 (DIBCAC) as defined by a DoD program manager or requiring activity. In general, the Department will identify a requirement for a CMMC Status of Level 3 (DIBCAC) for solicitations and resulting contracts supporting its most critical programs and technologies. (b) Program managers and requiring activities are responsible for identifying the CMMC Status that will apply to a procurement. Selection of the applicable CMMC Status will be based on factors including but not limited to: (1) Criticality of the associated mission capability; (2) Type of acquisition program or technology; (3) Threat of loss of the FCI or CUI to be shared or generated in relation to the effort; (4) Impacts from exploitation of information security deficiencies; and (5) Other relevant policies and factors, including Milestone Decision Authority guidance. (c) In accordance with the implementation plan described in § 170.3, CMMC Program requirements will apply to new DoD solicitations and contracts, and shall flow down to subcontractors who will process, store, or transmit FCI or CUI in perfo …",
+      "paragraph_hierarchy": [
+        "(a) Protection of FCI and CUI on contractor information systems is of paramount importance to the DoD and can directly impact its ability to successfully conduct essential missions and functions. It i",
+        "(b) Program managers and requiring activities are responsible for identifying the CMMC Status that will apply to a procurement. Selection of the applicable CMMC Status will be based on factors includi",
+        "(1) Criticality of the associated mission capability;",
+        "(2) Type of acquisition program or technology;",
+        "(3) Threat of loss of the FCI or CUI to be shared or generated in relation to the effort;",
+        "(4) Impacts from exploitation of information security deficiencies; and",
+        "(5) Other relevant policies and factors, including Milestone Decision Authority guidance.",
+        "(c) In accordance with the implementation plan described in § 170.3, CMMC Program requirements will apply to new DoD solicitations and contracts, and shall flow down to subcontractors who will process",
+        "(d) In very limited circumstances, and in accordance with all applicable policies, procedures, and requirements, a Service Acquisition Executive or Component Acquisition Executive in the DoD, or as de",
+        "(e) The CMMC Program does not alter any separately applicable requirements to protect FCI or CUI, including those requirements in accordance with 48 CFR 52.204-21,"
+      ],
+      "keywords": [
+        "acquisition"
+      ],
+      "nist_families": [
+        "SA"
+      ]
+    },
+    {
+      "section_id": "170.6",
+      "title": "CMMC PMO.",
+      "text": "§ 170.6 CMMC PMO. (a) The Office of the Department of Defense Chief Information Officer (DoD CIO) Office of the Deputy CIO for Cybersecurity (DoD CIO(CS)) provides oversight of the CMMC Program and is responsible for establishing CMMC assessment, accreditation, and training requirements as well as developing and updating CMMC Program policies and implementing guidance. (b) The CMMC PMO is responsible for monitoring the CMMC AB's performance of roles assigned in this rule and acting as necessary to address problems pertaining to effective performance. (c) The CMMC PMO retains, on behalf of the DoD CIO(CS), the prerogative to review decisions of the CMMC Accreditation Body as part of its oversight of the CMMC program and evaluate any alleged conflicts of interest purported to influence the CMMC Accreditation Body's objectivity. (d) The CMMC PMO is responsible for sponsoring necessary DCSA activities including FOCI risk assessment and Tier 3 security background investigations for the CMMC Ecosystem members as specified in §§ 170.8(b)(4) and (5), 170.9(b)(3) through (5), 170.11(b)(3) and (4), and 170.13(b)(3) and (4). (e) The CMMC PMO is responsible for investigating and acting upon indications that an active CMMC Status has been called into question. Indications that may trigger investigative evaluations include, but are not limited to, reports from the CMMC Accreditation Body, a C3PAO, or anyone knowledgeable of the security processes and activities of the OSA. Investigative evaluations include, but are not limited to, reviewing pertinent assessment information, and exercising the right to conduct a DCMA DIBCAC assessment of the OSA, as provided for under the 48 CFR 252.204-7020. (f) If a subsequent DCMA DIBCAC assessment shows that adherence to the provisions of this rule and the required CMMC Status have not been achieved or maintained, the DIBCAC results will take precedence over any pre-existing CMMC Status recorded in SPRS, or its successor capability. The DoD wi …",
+      "paragraph_hierarchy": [
+        "(a) The Office of the Department of Defense Chief Information Officer (DoD CIO) Office of the Deputy CIO for Cybersecurity (DoD CIO(CS)) provides oversight of the CMMC Program and is responsible for e",
+        "(b) The CMMC PMO is responsible for monitoring the CMMC AB's performance of roles assigned in this rule and acting as necessary to address problems pertaining to effective performance.",
+        "(c) The CMMC PMO retains, on behalf of the DoD CIO(CS), the prerogative to review decisions of the CMMC Accreditation Body as part of its oversight of the CMMC program and evaluate any alleged conflic",
+        "(d) The CMMC PMO is responsible for sponsoring necessary DCSA activities including FOCI risk assessment and Tier 3 security background investigations for the CMMC Ecosystem members as specified in §§ ",
+        "(e) The CMMC PMO is responsible for investigating and acting upon indications that an active CMMC Status has been called into question. Indications that may trigger investigative evaluations include, ",
+        "(f) If a subsequent DCMA DIBCAC assessment shows that adherence to the provisions of this rule and the required CMMC Status have not been achieved or maintained, the DIBCAC results will take precedenc"
+      ],
+      "keywords": [
+        "risk assessment"
+      ],
+      "nist_families": [
+        "RA"
+      ]
+    },
+    {
+      "section_id": "170.7",
+      "title": "DCMA DIBCAC.",
+      "text": "§ 170.7 DCMA DIBCAC. (a) DCMA DIBCAC assessors in support of the CMMC Program will: (1) Complete CMMC Level 2 and Level 3 training. (2) Conduct Level 3 certification assessments and upload assessment results into the CMMC instantiation of eMASS, or its successor capability. (3) Issue Certificates of CMMC Status resulting from Level 3 certification assessments. (4) Conduct Level 2 certification assessments of the Accreditation Body and prospective C3PAOs' information systems that process, store, and/or transmit CUI. (5) Create and maintain a process for assessors to collect the list of assessment artifacts to include artifact names, their return value of the hashing algorithm, the hashing algorithm used, and upload that data into the CMMC instantiation of eMASS. (6) As authorized and in accordance with all legal requirements, enter and track, OSC appeals and updated results arising from Level 3 certification assessment activities into the CMMC instantiation of eMASS. (7) Retain all records in accordance with DCMA-MAN 4501-04. (8) Conduct an assessment of the OSA, when requested by the CMMC PMO per §§ 170.6(e) and (f), as provided for under the 48 CFR 252.204-7019 and 48 CFR 252.204-7020. (9) Identify assessments that meet the criteria in § 170.20 and verify that SPRS accurately reflects the CMMC Status. (b) An OSC, the CMMC AB, or a C3PAO may appeal the outcome of its DCMA DIBCAC conducted assessment within 21 days by submitting a written basis for appeal with the requirements in question for DCMA DIBCAC consideration. Appeals may be submitted for review by visiting www.dcma.mil/DIBCAC for contact information, and a DCMA DIBCAC Quality Assurance Review Team will provide a written response or request additional supporting documentation.",
+      "paragraph_hierarchy": [
+        "(a) DCMA DIBCAC assessors in support of the CMMC Program will:",
+        "(1) Complete CMMC Level 2 and Level 3 training.",
+        "(2) Conduct Level 3 certification assessments and upload assessment results into the CMMC instantiation of eMASS, or its successor capability.",
+        "(3) Issue Certificates of CMMC Status resulting from Level 3 certification assessments.",
+        "(4) Conduct Level 2 certification assessments of the Accreditation Body and prospective C3PAOs' information systems that process, store, and/or transmit CUI.",
+        "(5) Create and maintain a process for assessors to collect the list of assessment artifacts to include artifact names, their return value of the hashing algorithm, the hashing algorithm used, and uplo",
+        "(6) As authorized and in accordance with all legal requirements, enter and track, OSC appeals and updated results arising from Level 3 certification assessment activities into the CMMC instantiation o",
+        "(7) Retain all records in accordance with DCMA-MAN 4501-04.",
+        "(8) Conduct an assessment of the OSA, when requested by the CMMC PMO per §§ 170.6(e) and (f), as provided for under the 48 CFR 252.204-7019 and 48 CFR 252.204-7020.",
+        "(9) Identify assessments that meet the criteria in § 170.20 and verify that SPRS accurately reflects the CMMC Status."
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.8",
+      "title": "Accreditation Body.",
+      "text": "§ 170.8 Accreditation Body. (a) Roles and responsibilities. The Accreditation Body is responsible for authorizing and ensuring the accreditation of CMMC Third-Party Assessment Organizations (C3PAOs) in accordance with ISO/IEC 17020:2012(E) (incorporated by reference, see § 170.2) and all applicable authorization and accreditation requirements set forth. The Accreditation Body is responsible for establishing the C3PAO authorization requirements and the C3PAO Accreditation Scheme and submitting both for approval by the CMMC PMO. At any given point in time, there will be only one Accreditation Body for the DoD CMMC Program. (b) Requirements. The CMMC Accreditation Body shall: (1) Be US-based and be and remain a member in good standing of the Inter-American Accreditation Cooperation (IAAC) and become an International Laboratory Accreditation Cooperation (ILAC) Mutual Recognition Arrangement (MRA) signatory, with a signatory status scope of ISO/IEC 17020:2012(E) (incorporated by reference, see § 170.2). (2) Be and remain a member in good standing of the International Accreditation Forum (IAF) with mutual recognition arrangement signatory status scope of ISO/IEC 17024:2012(E) (incorporated by reference, see § 170.2). (3) Achieve and maintain full compliance with ISO/IEC 17011:2017(E) (incorporated by reference, see § 170.2) and complete a peer assessment by other ILAC signatories for competence in accrediting conformity assessment bodies to ISO/IEC 17020:2012(E) (incorporated by reference, see § 170.2), both within 24 months of DoD approval. (i) Prior to achieving full compliance as set forth in this paragraph (b)(3), the Accreditation Body shall: (A) Authorize C3PAOs who meet all requirements set forth in § 170.9 as well as administrative requirements as determined by the Accreditation Body to conduct Level 2 certification assessments and issue Certificates of CMMC Status to OSCs based on the assessment results. (B) Require all C3PAOs to achieve and maintain the ISO/IEC  …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(1) Be US-based and be and remain a member in good standing of the Inter-American Accreditation Cooperation (IAAC) and become an International Laboratory Accreditation Cooperation (ILAC) Mutual Recogn",
+        "(2) Be and remain a member in good standing of the International Accreditation Forum (IAF) with mutual recognition arrangement signatory status scope of ISO/IEC 17024:2012(E) (incorporated by referenc",
+        "(3) Achieve and maintain full compliance with ISO/IEC 17011:2017(E) (incorporated by reference, see § 170.2) and complete a peer assessment by other ILAC signatories for competence in accrediting conf",
+        "(i) Prior to achieving full compliance as set forth in this paragraph (b)(3), the Accreditation Body shall:",
+        "(A) Authorize C3PAOs who meet all requirements set forth in § 170.9 as well as administrative requirements as determined by the Accreditation Body to conduct Level 2 certification assessments and issu",
+        "(B) Require all C3PAOs to achieve and maintain the ISO/IEC 17020:2012(E) (incorporated by reference, see § 170.2) requirements within 27 months of authorization.",
+        "(ii) The Accreditation Body shall accredit C3PAOs, in accordance with ISO/IEC 17020:2012(E) (incorporated by reference, see § 170.2), who meet all requirements set forth in § 170.9 to conduct Level 2 ",
+        "(4) Ensure that the Accreditation Body's Board of Directors, professional staff, Information Technology (IT) staff, accreditation staff, and independent CMMC Certified Assessor staff complete a Tier 3"
+      ],
+      "keywords": [
+        "authorization",
+        "third-party"
+      ],
+      "nist_families": [
+        "AC",
+        "SA"
+      ]
+    },
+    {
+      "section_id": "170.9",
+      "title": "CMMC Third-Party Assessment Organizations (C3PAOs).",
+      "text": "§ 170.9 CMMC Third-Party Assessment Organizations (C3PAOs). (a) Roles and responsibilities. C3PAOs are organizations that are responsible for conducting Level 2 certification assessments and issuing Certificates of CMMC Status to OSCs based on the results. C3PAOs must be accredited or authorized by the Accreditation Body in accordance with the requirements set forth. (b) Requirements. C3PAOs shall: (1) Obtain authorization or accreditation from the Accreditation Body in accordance with § 170.8(b)(3)(i) and (ii). (2) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17); and achieve and maintain compliance with ISO/IEC 17020:2012(E) (incorporated by reference, see § 170.2) within 27 months of authorization. (3) Require all C3PAO company personnel participating in the Level 2 certification assessment process to complete a Tier 3 background investigation resulting in a determination of national security eligibility. This includes the CMMC Assessment Team and the quality assurance individual. This Tier 3 background investigation will not result in a security clearance and is not being executed for the purpose of government employment. The Tier 3 background investigation is initiated using the Standard Form (SF) 86 ( www.gsa.gov/reference/forms/questionnaire-for-national-security-positions ). These positions are designated as non-critical sensitive with a risk designation of “Moderate Risk” in accordance with 5 CFR 1400.201(b) and (d) and the investigative requirements of 5 CFR 731.106(c)(2). (4) Require all C3PAO company personnel participating in the Level 2 certification assessment process who are not eligible to obtain a Tier 3 background investigation to meet the equivalent of a favorably adjudicated Tier 3 background investigation. DoD will determine the Tier 3 background investigation equivalence for use with the CMMC Program only. (5) Comply with Foreign Ownership, Control or Inf …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(1) Obtain authorization or accreditation from the Accreditation Body in accordance with § 170.8(b)(3)(i) and (ii).",
+        "(2) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17); and achieve and maintain compliance with ISO/IEC 17020:2",
+        "(3) Require all C3PAO company personnel participating in the Level 2 certification assessment process to complete a Tier 3 background investigation resulting in a determination of national security el",
+        "(4) Require all C3PAO company personnel participating in the Level 2 certification assessment process who are not eligible to obtain a Tier 3 background investigation to meet the equivalent of a favor",
+        "(5) Comply with Foreign Ownership, Control or Influence (FOCI) by:",
+        "(i) Completing and submitting Standard Form (SF) 328 (",
+        "(ii) Receiving a non-disqualifying eligibility determination from the CMMC PMO resulting from the FOCI risk assessment in order to proceed to a DCMA DIBCAC CMMC Level 2 assessment, as part of the auth",
+        "(iii) Reporting any change to the information provided on its SF 328 by resubmitting the SF 328 to DCSA within 15 business days of the change being effective. A disqualifying eligibility determination"
+      ],
+      "keywords": [
+        "authorization",
+        "third-party"
+      ],
+      "nist_families": [
+        "AC",
+        "SA"
+      ]
+    },
+    {
+      "section_id": "170.10",
+      "title": "CMMC Assessor and Instructor Certification Organization (CAICO).",
+      "text": "§ 170.10 CMMC Assessor and Instructor Certification Organization (CAICO). (a) Roles and responsibilities. The CAICO is responsible for training, testing, authorizing, certifying, and recertifying CMMC assessors, instructors, and related professionals. Only the CAICO may make decisions relating to examination certifications, including the granting, maintaining, recertifying, expanding, and reducing the scope of certification, and suspending or withdrawing certification in accordance with current ISO/IEC 17024:2012(E) (incorporated by reference, see § 170.2). At any given point in time, there will be only one CAICO for the DoD CMMC Program. (b) Requirements. The CAICO shall: (1) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17); and achieve and maintain ISO/IEC 17024(E) accreditation within 12 months of December 16, 2024. (2) Provide all documentation and records in English. (3) Train, test, and designate PIs in accordance with the requirements of this section. Train, test, certify, and recertify CCPs, CCAs, and CCIs in accordance with the requirements of this section. (4) Ensure the instructor and assessor certification examinations are certified under ISO/IEC 17024:2012(E) (incorporated by reference, see § 170.2), by a recognized US-based accreditor who is not a member of the CMMC Accreditation Body. The US-based accreditor must be a signatory to International Laboratory Accreditation Cooperation (ILAC) or relevant International Accreditation Forum (IAF) Mutual Recognition Arrangement (MRA) and must operate in accordance with ISO/IEC 17011:2017(E) (incorporated by reference, see § 170.2). (5) Establish quality control policies and procedures for the generation of training products, instruction, and testing materials. (6) Oversee development, administration, and management pertaining to the quality of training and examination materials for CMMC assessor and instructor certificati …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(1) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17); and achieve and maintain ISO/IEC 17024(E) accreditation ",
+        "(2) Provide all documentation and records in English.",
+        "(3) Train, test, and designate PIs in accordance with the requirements of this section. Train, test, certify, and recertify CCPs, CCAs, and CCIs in accordance with the requirements of this section.",
+        "(4) Ensure the instructor and assessor certification examinations are certified under ISO/IEC 17024:2012(E) (incorporated by reference, see § 170.2), by a recognized US-based accreditor who is not a m",
+        "(5) Establish quality control policies and procedures for the generation of training products, instruction, and testing materials.",
+        "(6) Oversee development, administration, and management pertaining to the quality of training and examination materials for CMMC assessor and instructor certification and recertification.",
+        "(7) Establish and publish an authorization and certification appeals process to receive, evaluate, and make decisions on complaints and appeals in accordance with ISO/IEC 17024:2012(E) (incorporated b",
+        "(8) Address all appeals arising from the CCA, CCI, and CCP authorizations and certifications process through use of internal processes in accordance with ISO/IEC 17024:2012(E) (incorporated by referen"
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.11",
+      "title": "CMMC Certified Assessor (CCA).",
+      "text": "§ 170.11 CMMC Certified Assessor (CCA). (a) Roles and responsibilities. CCAs, in support of a C3PAO, conduct Level 2 certification assessments of OSCs in accordance with NIST SP 800-171A Jun2018 (incorporated by reference, see § 170.2), the assessment processes defined in § 170.17, and the scoping requirements defined in § 170.19(c). CCAs must meet all of the requirements set forth in paragraph (b) of this section. A CCA may conduct Level 2 certification assessments and participate on a C3PAO Assessment Team. (b) Requirements. CCAs shall: (1) Obtain and maintain certification from the CAICO in accordance with the requirements set forth in § 170.10. Certification is valid for 3 years from the date of issuance. (2) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17). (3) Complete a Tier 3 background investigation resulting in a determination of national security eligibility. This Tier 3 background investigation will not result in a security clearance and is not being executed for the purpose of government employment. The Tier 3 background investigation is initiated using the Standard Form (SF) 86 ( www.gsa.gov/reference/forms/questionnaire-for-national-security-positions ). These positions are designated as non-critical sensitive with a risk designation of “Moderate Risk” in accordance with 5 CFR 1400.201(b) and (d) and the investigative requirements of 5 CFR 731.106(c)(2). (4) Meet the equivalent of a favorably adjudicated Tier 3 background investigation when not eligible for a Tier 3 background investigation. DoD will determine the Tier 3 background investigation equivalence for use with the CMMC Program only. (5) Provide all documentation and records in English. (6) Be a CCP who has at least 3 years of cybersecurity experience, at least 1 year of assessment or audit experience, and at least one foundational qualification, aligned to at least the Intermediate Proficiency Level of  …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(1) Obtain and maintain certification from the CAICO in accordance with the requirements set forth in § 170.10. Certification is valid for 3 years from the date of issuance.",
+        "(2) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17).",
+        "(3) Complete a Tier 3 background investigation resulting in a determination of national security eligibility. This Tier 3 background investigation will not result in a security clearance and is not be",
+        "(4) Meet the equivalent of a favorably adjudicated Tier 3 background investigation when not eligible for a Tier 3 background investigation. DoD will determine the Tier 3 background investigation equiv",
+        "(5) Provide all documentation and records in English.",
+        "(6) Be a CCP who has at least 3 years of cybersecurity experience, at least 1 year of assessment or audit experience, and at least one foundational qualification, aligned to at least the Intermediate ",
+        "(7) Only use IT, cloud, cybersecurity services, and end-point devices provided by the authorized/accredited C3PAO that has been engaged to perform that OSA's Level 2 certification assessment and which",
+        "(8) Immediately notify the responsible C3PAO of any breach or potential breach of security to any CMMC-related assessment materials under the assessors' purview."
+      ],
+      "keywords": [
+        "audit"
+      ],
+      "nist_families": [
+        "AU"
+      ]
+    },
+    {
+      "section_id": "170.12",
+      "title": "CMMC Instructor.",
+      "text": "§ 170.12 CMMC Instructor. (a) CMMC Provisional Instructor (PI) roles and responsibilities. A CMMC Provisional Instructor (PI) teaches CCA and CCP candidates during the transitional period that ends 18 months after December 16, 2024. A PI is trained, tested, and designated to perform CMMC instructional duties by the CAICO to teach CCP and CCA candidates. PIs are designated by the CAICO after successful completion of the PI training and testing requirements set forth by the CAICO. A PI with a valid CCP certification may instruct CCP candidates, while a PI with a valid CCA certification may instruct CCP and CCA candidates. PIs are required to meet requirements in (c) of this section. (b) CMMC Certified Instructor (CCI) roles and responsibilities. A CMMC Certified Instructor (CCI) teaches CCP, CCA, and CCI candidates and performs CMMC instructional duties. Candidate CCIs are certified by the CAICO after successful completion of the CCI training and testing requirements. A CCI is required to obtain and maintain assessor and instructor certifications from the CAICO in accordance with the requirements set forth in § 170.10 and in paragraph (c) of this section. A CCI with a valid CCP certification may instruct CCP candidates, while a CCI with a valid CCA certification may instruct CCP, CCA, and CCI candidates. Certifications are valid for 3 years from the date of issuance. CCIs are required to meet requirements in paragraph (c) of this section. (c) Requirements. CMMC Instructors shall: (1) Obtain and maintain instructor designation or certification, as appropriate, from the CAICO in accordance with the requirements set forth in § 170.10. (2) Obtain and maintain CCP or CCA certification to deliver CCP training. (3) Obtain and maintain a CCA certification to deliver CCA training. (4) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17). (5) Provide all documentation and records in English. ( …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(c)",
+        "(1) Obtain and maintain instructor designation or certification, as appropriate, from the CAICO in accordance with the requirements set forth in § 170.10.",
+        "(2) Obtain and maintain CCP or CCA certification to deliver CCP training.",
+        "(3) Obtain and maintain a CCA certification to deliver CCA training.",
+        "(4) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics set forth in § 170.8(b)(17).",
+        "(5) Provide all documentation and records in English.",
+        "(6) Provide the Accreditation Body and the CAICO annually with accurate information detailing their qualifications, training experience, professional affiliations, and certifications, and, upon reason",
+        "(7) Not provide CMMC consulting services while serving as a CMMC instructor; however, subject to the Code of Professional Conduct and Conflict of Interest policies, can serve on an assessment team."
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.13",
+      "title": "CMMC Certified Professional (CCP).",
+      "text": "§ 170.13 CMMC Certified Professional (CCP). (a) Roles and responsibilities. A CMMC Certified Professional (CCP) completes rigorous training on CMMC and the assessment process to provide advice, consulting, and recommendations to their OSA clients. Candidate CCPs are certified by the CAICO after successful completion of the CCP training and testing requirements set forth in paragraph (b) of this section. CCPs are eligible to become CMMC Certified Assessors and can participate as a CCP on Level 2 certification assessments with CCA oversight where the CCA makes all final determinations. (b) Requirements. CCPs shall: (1) Obtain and maintain certification from the CAICO in accordance with the requirements set forth in § 170.10. Certification is valid for 3 years from the date of issuance. (2) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics as set forth in § 170.8(b)(17). (3) Complete a Tier 3 background investigation resulting in a determination of national security eligibility. This Tier 3 background investigation will not result in a security clearance and is not being executed for the purpose of government employment. The Tier 3 background investigation is initiated using the Standard Form (SF) 86 ( www.gsa.gov/reference/forms/questionnaire-for-national-security-positions ). These positions are designated as non-critical sensitive with a risk designation of “Moderate Risk” in accordance with 5 CFR 1400.201(b) and (d) and the investigative requirements of 5 CFR 731.106(c)(2). (4) Meet the equivalent of a favorably adjudicated Tier 3 background investigation when not eligible to obtain a Tier 3 background investigation. DoD will determine the Tier 3 background investigation equivalence for use with the CMMC Program only. (5) Provide all documentation and records in English. (6) Not share any information about an OSC obtained during CMMC pre-assessment and assessment activities with any person not involved wi …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(1) Obtain and maintain certification from the CAICO in accordance with the requirements set forth in § 170.10. Certification is valid for 3 years from the date of issuance.",
+        "(2) Comply with the Accreditation Body policies for Conflict of Interest, Code of Professional Conduct, and Ethics as set forth in § 170.8(b)(17).",
+        "(3) Complete a Tier 3 background investigation resulting in a determination of national security eligibility. This Tier 3 background investigation will not result in a security clearance and is not be",
+        "(4) Meet the equivalent of a favorably adjudicated Tier 3 background investigation when not eligible to obtain a Tier 3 background investigation. DoD will determine the Tier 3 background investigation",
+        "(5) Provide all documentation and records in English.",
+        "(6) Not share any information about an OSC obtained during CMMC pre-assessment and assessment activities with any person not involved with that specific assessment, except as otherwise required by law"
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.14",
+      "title": "CMMC Model.",
+      "text": "§ 170.14 CMMC Model. (a) Overview. The CMMC Model incorporates the security requirements from: (1) 48 CFR 52.204-21, Basic Safeguarding of Covered Contractor Information Systems; (2) NIST SP 800-171 R2, Protecting Controlled Unclassified Information in Nonfederal Systems and Organizations (incorporated by reference, see § 170.2); and (3) Selected security requirements from NIST SP 800-172 Feb2021, Enhanced Security Requirements for Protecting Controlled Unclassified Information: A Supplement to NIST Special Publication 800-171 (incorporated by reference, see § 170.2). (b) CMMC domains. The CMMC Model consists of domains that map to the Security Requirement Families defined in NIST SP 800-171 R2 (incorporated by reference, see § 170.2). (c) CMMC level requirements. CMMC Levels 1-3 utilize the safeguarding requirements and security requirements specified in 48 CFR 52.204-21 (for Level 1), NIST SP 800-171 R2 (incorporated by reference, see § 170.2) (for Level 2), and selected security requirements from NIST SP 800-172 Feb2021 (incorporated by reference, see § 170.2) (for Level 3). This paragraph discusses the numbering scheme and the security requirements for each level. (1) Numbering. Each security requirement has an identification number in the format—DD.L#-REQ—where: (i) DD is the two-letter domain abbreviation; (ii) L# is the CMMC level number; and (iii) REQ is the 48 CFR 52.204-21 paragraph number, NIST SP 800-171 R2 requirement number, or NIST SP 800-172 Feb2021 requirement number. (2) CMMC Level 1 security requirements. The security requirements in CMMC Level 1 are those set forth in 48 CFR 52.204-21(b)(1)(i) through (xv). (3) CMMC Level 2 security requirements. The security requirements in CMMC Level 2 are identical to the requirements in NIST SP 800-171 R2. (4) CMMC Level 3 security requirements. The security requirements in CMMC Level 3 are selected from NIST SP 800-172 Feb2021, and where applicable, Organization-Defined Parameters (ODPs) are assigned. Table  …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1) 48 CFR 52.204-21,",
+        "(2) NIST SP 800-171 R2,",
+        "(3) Selected security requirements from NIST SP 800-172 Feb2021,",
+        "(b)",
+        "(c)",
+        "(1)",
+        "(i) DD is the two-letter domain abbreviation;",
+        "(ii) L# is the CMMC level number; and",
+        "(iii) REQ is the 48 CFR 52.204-21 paragraph number, NIST SP 800-171 R2 requirement number, or NIST SP 800-172 Feb2021 requirement number."
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.15",
+      "title": "CMMC Level 1 self-assessment and affirmation requirements.",
+      "text": "§ 170.15 CMMC Level 1 self-assessment and affirmation requirements. (a) Level 1 self-assessment. To comply with CMMC Level 1 self-assessment requirements, the OSA must meet the requirements detailed in paragraphs (a)(1) and (2) of this section. An OSA conducts a Level 1 self-assessment as detailed in paragraph (c) of this section to achieve a CMMC Status of Final Level 1 (Self). (1) Level 1 self-assessment requirements. The OSA must complete and achieve a MET result for all security requirements specified in § 170.14(c)(2) to achieve the CMMC Status of Final Level 1 (Self). No POA&Ms are permitted for CMMC Level 1. The OSA must conduct a self-assessment in accordance with the procedures set forth in § 170.15(c)(1) and submit assessment results in SPRS. To maintain compliance with the requirements for the CMMC Status of Final Level 1 (Self), the OSA must conduct a Level 1 self-assessment on an annual basis and submit the results in SPRS, or its successor capability. (i) Inputs to SPRS. The Level 1 self-assessment results in the Supplier Performance Risk System (SPRS) shall include, at minimum, the following items: (A) CMMC Level. (B) CMMC Status Date. (C) CMMC Assessment Scope. (D) All industry CAGE code(s) associated with the information system(s) addressed by the CMMC Assessment Scope. (E) Compliance result. (ii) [Reserved] (2) Affirmation. Affirmation of the Level 1 (Self) CMMC Status is required for all Level 1 self-assessments. Affirmation procedures are set forth in § 170.22. (b) Contract eligibility. Prior to award of any contract or subcontract with a requirement for the CMMC Status of Level 1 (Self), OSAs must both achieve a CMMC Status of Level 1 (Self) and have submitted an affirmation of compliance into SPRS for all information systems within the CMMC Assessment Scope. (c) Procedures —(1) Level 1 self-assessment. The OSA must conduct a Level 1 self-assessment scored in accordance with the CMMC Scoring Methodology described in § 170.24. The Level 1 self-as …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1)",
+        "(i)",
+        "(A) CMMC Level.",
+        "(B) CMMC Status Date.",
+        "(C) CMMC Assessment Scope.",
+        "(D) All industry CAGE code(s) associated with the information system(s) addressed by the CMMC Assessment Scope.",
+        "(E) Compliance result.",
+        "(ii) [Reserved]",
+        "(2)"
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.16",
+      "title": "CMMC Level 2 self-assessment and affirmation requirements.",
+      "text": "§ 170.16 CMMC Level 2 self-assessment and affirmation requirements. (a) Level 2 self-assessment. To comply with Level 2 self-assessment requirements, the OSA must meet the requirements detailed in paragraphs (a)(1) and (2) of this section. An OSA conducts a Level 2 self-assessment as detailed in paragraph (c) of this section to achieve a CMMC Status of either Conditional or Final Level 2 (Self). Achieving a CMMC Status of Level 2 (Self) also satisfies the requirements for a CMMC Status of Level 1 (Self) detailed in § 170.15 for the same CMMC Assessment Scope. (1) Level 2 self-assessment requirements. The OSA must complete and achieve a MET result for all security requirements specified in § 170.14(c)(3) to achieve the CMMC Status of Level 2 (Self). The OSA must conduct a self-assessment in accordance with the procedures set forth in paragraph (c)(1) of this section and submit assessment results in Supplier Performance Risk System (SPRS). To maintain compliance with the requirements for a CMMC Status of Level 2 (Self), the OSA must conduct a Level 2 self-assessment every three years and submit the results in SPRS, within three years of the CMMC Status Date associated with the Conditional Level 2 (Self). (i) Inputs to SPRS. The Level 2 self-assessment results in the SPRS shall include, at minimum, the following information: (A) CMMC Level. (B) CMMC Status Date. (C) CMMC Assessment Scope. (D) All industry CAGE code(s) associated with the information system(s) addressed by the CMMC Assessment Scope. (E) Overall Level 2 self-assessment score ( e.g., 105 out of 110). (F) POA&M usage and compliance status, if applicable. (ii) Conditional Level 2 (Self). The OSA has achieved the CMMC Status of Conditional Level 2 (Self) if the Level 2 self-assessment results in a POA&M and the POA&M meets all the CMMC Level 2 POA&M requirements listed in § 170.21(a)(2). (A) Plan of Action and Milestones. A Level 2 POA&M is allowed only in accordance with the CMMC POA&M requirements listed i …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1)",
+        "(i)",
+        "(A) CMMC Level.",
+        "(B) CMMC Status Date.",
+        "(C) CMMC Assessment Scope.",
+        "(D) All industry CAGE code(s) associated with the information system(s) addressed by the CMMC Assessment Scope.",
+        "(E) Overall Level 2 self-assessment score (",
+        "(F) POA&M usage and compliance status, if applicable.",
+        "(ii)"
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.17",
+      "title": "CMMC Level 2 certification assessment and affirmation requirements.",
+      "text": "§ 170.17 CMMC Level 2 certification assessment and affirmation requirements. (a) Level 2 certification assessment. To comply with Level 2 certification assessment requirements, the OSC must meet the requirements set forth in paragraphs (a)(1) and (2) of this section. An OSC undergoes a Level 2 certification assessment as detailed in paragraph (c) of this section to achieve a CMMC Status of either Conditional or Final Level 2 (C3PAO). Achieving a CMMC Status of Level 2 (C3PAO) also satisfies the requirements for a CMMC Statuses of Level 1 (Self) and Level 2 (Self) set forth in §§ 170.15 and 170.16 respectively for the same CMMC Assessment Scope. (1) Level 2 certification assessment requirements. The OSC must complete and achieve a MET result for all security requirements specified in § 170.14(c)(3) to achieve the CMMC Status of Level 2 (C3PAO). The OSC must obtain a Level 2 certification assessment from an authorized or accredited C3PAO following the procedures outlined in paragraph (c) of this section. The C3PAO must submit the Level 2 certification assessment results into the CMMC instantiation of eMASS, which then provides automated transmission to SPRS. To maintain compliance with the requirements for a CMMC Status of Level 2 (C3PAO), the Level 2 certification assessment must be completed within three years of the CMMC Status Date associated with the Conditional Level 2 (C3PAO). (i) Inputs into the CMMC instantiation of eMASS. The Level 2 certification assessment results input into the CMMC instantiation of eMASS shall include, at minimum, the following information: (A) Date and level of the assessment. (B) C3PAO name. (C) Assessment unique identifier. (D) For each Assessor conducting the assessment, name and business contact information. (E) All industry CAGE codes associated with the information systems addressed by the CMMC Assessment Scope. (F) The name, date, and version of the SSP. (G) CMMC Status Date. (H) Assessment result for each requirement objective.  …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1)",
+        "(i)",
+        "(A) Date and level of the assessment.",
+        "(B) C3PAO name.",
+        "(C) Assessment unique identifier.",
+        "(D) For each Assessor conducting the assessment, name and business contact information.",
+        "(E) All industry CAGE codes associated with the information systems addressed by the CMMC Assessment Scope.",
+        "(F) The name, date, and version of the SSP.",
+        "(G) CMMC Status Date."
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.18",
+      "title": "CMMC Level 3 certification assessment and affirmation requirements.",
+      "text": "§ 170.18 CMMC Level 3 certification assessment and affirmation requirements. (a) Level 3 certification assessment. To comply with Level 3 certification assessment requirements, the OSC must meet the requirements set forth in paragraphs (a)(1) and (2) of this section. An OSC undergoes a Level 3 certification assessment as detailed in paragraph (c) of this section to achieve a CMMC Status of either Conditional or Final Level 3 (DIBCAC). A CMMC Status of Final Level 2 (C3PAO) for information systems within the Level 3 CMMC Assessment Scope is a prerequisite to undergo a Level 3 certification assessment. CMMC Level 3 recertification also has a prerequisite for a new CMMC Level 2 assessment. Achieving a CMMC Status of Level 3 (DIBCAC) also satisfies the requirements for CMMC Statuses of Level 1 (Self), Level 2 (Self), and Level 2 (C3PAO) set forth in §§ 170.15 through 170.17 respectively for the same CMMC Assessment Scope. (1) Level 3 certification assessment requirements. The OSC must achieve a CMMC Status of Final Level 2 (C3PAO) on the Level 3 CMMC Assessment Scope, as defined in § 170.19(d), prior to initiating a Level 3 certification assessment, which will be performed by DCMA DIBCAC ( www.dcma.mil/DIBCAC ) on behalf of the DoD. The OSC must complete and achieve a MET result for all security requirements specified in table 1 to § 170.14(c)(4) to achieve the CMMC Status of Level 3 (DIBCAC). DCMA DIBCAC will submit the Level 3 certification assessment results into the CMMC instantiation of eMASS, which then provides automated transmission to SPRS. To maintain compliance with the requirements for a CMMC Status of Level 3 (DIBCAC), the Level 3 certification assessment must be performed every three years for all information systems within the Level 3 CMMC Assessment Scope. In addition, given that compliance with Level 2 requirements is a prerequisite for applying for CMMC Level 3, a Level 2 (C3PAO) certification assessment must also be conducted every three years to main …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1)",
+        "(i)",
+        "(A) Date and level of the assessment.",
+        "(B) For each Assessor(s) conducting the assessment, name and government organization information.",
+        "(C) All industry CAGE code(s) associated with the information system(s) addressed by the CMMC Assessment Scope.",
+        "(D) The name, date, and version of the system security plan(s) (SSP).",
+        "(E) CMMC Status Date.",
+        "(F) Result for each security requirement objective.",
+        "(G) POA&M usage and compliance, as applicable."
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.19",
+      "title": "CMMC scoping.",
+      "text": "§ 170.19 CMMC scoping. (a) Scoping requirement. (1) The CMMC Assessment Scope must be specified prior to assessment in accordance with the requirements of this section. The CMMC Assessment Scope is the set of all assets in the OSA's environment that will be assessed against CMMC security requirements. (2) The requirements for defining the CMMC Assessment Scope for CMMC Levels 1, 2, and 3 are set forth in this section. Additional guidance regarding scoping can be found in the guidance documents listed in paragraphs (e) through (g) of appendix A to this part. (b) CMMC Level 1 scoping. Prior to performing a Level 1 self-assessment, the OSA must specify the CMMC Assessment Scope. (1) Assets in scope for Level 1 self-assessment. OSA information systems which process, store, or transmit FCI are in scope for CMMC Level 1 and must be self-assessed against applicable CMMC security requirements. (2) Assets not in scope for Level 1 self-assessment —(i) Out-of-Scope Assets. OSA information systems which do not process, store, or transmit FCI are outside the scope for CMMC Level 1. An endpoint hosting a VDI client configured to not allow any processing, storage, or transmission of FCI beyond the Keyboard/Video/Mouse sent to the VDI client is considered out-of-scope. There are no documentation requirements for out-of-scope assets. (ii) Specialized Assets. Specialized Assets are those assets that can process, store, or transmit FCI but are unable to be fully secured, including: Internet of Things (IoT) devices, Industrial Internet of Things (IIoT) devices, Operational Technology (OT), Government Furnished Equipment (GFE), Restricted Information Systems, and Test Equipment. Specialized Assets are not part of the Level 1 CMMC Assessment Scope and are not assessed against CMMC security requirements. (3) Level 1 self-assessment scoping considerations. To scope a Level 1 self-assessment, OSAs should consider the people, technology, facilities, and External Service Providers (ESP) withi …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(2) The requirements for defining the CMMC Assessment Scope for CMMC Levels 1, 2, and 3 are set forth in this section. Additional guidance regarding scoping can be found in the guidance documents list",
+        "(b)",
+        "(1)",
+        "(2)",
+        "(ii)",
+        "(3)",
+        "(c)",
+        "(1) The CMMC Assessment Scope for CMMC Level 2 is based on the specification of asset categories and their respective requirements as defined in table 3 to this paragraph (c)(1). Additional informatio",
+        "(2)(i) Table 4 to this paragraph (c)(2)(i) defines the requirements to be met when utilizing an External Service Provider (ESP). The OSA must consider whether the ESP is a Cloud Service Provider (CSP)"
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.20",
+      "title": "Standards acceptance.",
+      "text": "§ 170.20 Standards acceptance. (a) NIST SP 800-171 R2 DoD assessments. In order to avoid duplication of efforts, thereby reducing the aggregate cost to industry and the Department, OSCs that have completed a DCMA DIBCAC High Assessment aligned with CMMC Level 2 Scoping will be given the CMMC Status of Final Level 2 (C3PAO) under the following conditions: (1) DCMA DIBCAC High Assessment. An OSC that achieved a perfect score with no open POA&M from a DCMA DIBCAC High Assessment conducted prior to the effective date of this rule, will be given a CMMC Status of Level 2 Final (C3PAO) with a validity period of three (3) years from the date of the original DCMA DIBCAC High Assessment. DCMA DIBCAC will identify assessments that meet these criteria and verify that SPRS accurately reflects the CMMC Status. Eligible DCMA DIBCAC High Assessments include ones conducted with Joint Surveillance in accordance with the DCMA Manual 2302-01 Surveillance. The scope of the Level 2 certification assessment is identical to the scope of the DCMA DIBCAC High Assessment. In accordance with § 170.17(a)(2), the OSC must also submit an affirmation in SPRS and annually thereafter to achieve contractual eligibility. (2) [Reserved]. (b) [Reserved].",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1)",
+        "(2) [Reserved].",
+        "(b) [Reserved]."
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.21",
+      "title": "Plan of Action and Milestones requirements.",
+      "text": "§ 170.21 Plan of Action and Milestones requirements. (a) POA&M. For purposes of achieving a Conditional CMMC Status, an OSA is only permitted to have a POA&M for select requirements scored as NOT MET during the CMMC assessment and only under the following conditions: (1) Level 1 self-assessment. A POA&M is not permitted at any time for Level 1 self-assessments. (2) Level 2 self-assessment and Level 2 certification assessment. An OSA is only permitted to achieve the CMMC Status of Conditional Level 2 (Self) or Conditional Level 2 (C3PAO), as appropriate, if all the following conditions are met: (i) The assessment score divided by the total number of CMMC Level 2 security requirements is greater than or equal to 0.8; (ii) None of the security requirements included in the POA&M have a point value of greater than 1 as specified in the CMMC Scoring Methodology set forth in § 170.24, except SC.L2-3.13.11 CUI Encryption may be included on a POA&M if encryption is employed but it is not FIPS-validated, which would result in a point value of 3; and (iii) None of the following security requirements are included in the POA&M: (A) AC.L2-3.1.20 External Connections (CUI Data). (B) AC.L2-3.1.22 Control Public Information (CUI Data). (C) CA.L2-3.12.4 System Security Plan. (D) PE.L2-3.10.3 Escort Visitors (CUI Data). (E) PE.L2-3.10.4 Physical Access Logs (CUI Data). (F) PE.L2-3.10.5 Manage Physical Access (CUI Data). (3) Level 3 certification assessment. An OSC is only permitted to achieve the CMMC Status of Conditional Level 3 (DIBCAC) if all the following conditions are met: (i) The assessment score divided by the total number of CMMC Level 3 security requirements is greater than or equal to 0.8; and (ii) The POA&M does not include any of following security requirements: (A) IR.L3-3.6.1e Security Operations Center. (B) IR.L3-3.6.2e Cyber Incident Response Team. (C) RA.L3-3.11.1e Threat-Informed Risk Assessment. (D) RA.L3-3.11.6e Supply Chain Risk Response. (E) RA.L3-3.11.7e Suppl …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1)",
+        "(2)",
+        "(i) The assessment score divided by the total number of CMMC Level 2 security requirements is greater than or equal to 0.8;",
+        "(ii) None of the security requirements included in the POA&M have a point value of greater than 1 as specified in the CMMC Scoring Methodology set forth in § 170.24, except SC.L2-3.13.11 CUI Encryptio",
+        "(iii) None of the following security requirements are included in the POA&M:",
+        "(A) AC.L2-3.1.20 External Connections (CUI Data).",
+        "(B) AC.L2-3.1.22 Control Public Information (CUI Data).",
+        "(C) CA.L2-3.12.4 System Security Plan.",
+        "(D) PE.L2-3.10.3 Escort Visitors (CUI Data)."
+      ],
+      "keywords": [
+        "incident",
+        "risk assessment",
+        "supply chain"
+      ],
+      "nist_families": [
+        "IR",
+        "RA",
+        "SA"
+      ]
+    },
+    {
+      "section_id": "170.22",
+      "title": "Affirmation.",
+      "text": "§ 170.22 Affirmation. (a) General. The OSA must affirm continuing compliance with the appropriate level self-assessment or certification assessment. An Affirming Official from each OSA, whether a prime or subcontractor, must affirm the continuing compliance of their respective organizations with the specified security requirement after every assessment, including POA&M closeout, and annually thereafter. Affirmations are entered electronically in SPRS. The affirmation shall be submitted in accordance with the following requirements: (1) Affirming Official. The Affirming Official is the senior level representative from within each Organization Seeking Assessment (OSA) who is responsible for ensuring the OSA's compliance with the CMMC Program requirements and has the authority to affirm the OSA's continuing compliance with the specified security requirements for their respective organizations. (2) Affirmation content. Each CMMC affirmation shall include the following information: (i) Name, title, and contact information for the Affirming Official; and (ii) Affirmation statement attesting that the OSA has implemented and will maintain implementation of all applicable CMMC security requirements to their CMMC Status for all information systems within the relevant CMMC Assessment Scope. (3) Affirmation submission. The Affirming Official shall submit a CMMC affirmation in the following instances: (i) Upon achievement of a Conditional CMMC Status, as applicable; (ii) Upon achievement of a Final CMMC Status; (iii) Annually following a Final CMMC Status Date; and (iv) Following a POA&M closeout assessment, as applicable. (b) Submission procedures. All affirmations shall be completed in SPRS. The Department will verify submission of the affirmation in SPRS to ensure compliance with CMMC solicitation or contract requirements. (1) Level 1 self-assessment. At the completion of a Level 1 self-assessment and annually thereafter, the Affirming Official shall submit a CMMC affirmation …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(1)",
+        "(2)",
+        "(i) Name, title, and contact information for the Affirming Official; and",
+        "(ii) Affirmation statement attesting that the OSA has implemented and will maintain implementation of all applicable CMMC security requirements to their CMMC Status for all information systems within ",
+        "(3)",
+        "(i) Upon achievement of a Conditional CMMC Status, as applicable;",
+        "(ii) Upon achievement of a Final CMMC Status;",
+        "(iii) Annually following a Final CMMC Status Date; and",
+        "(iv) Following a POA&M closeout assessment, as applicable."
+      ],
+      "keywords": [],
+      "nist_families": []
+    },
+    {
+      "section_id": "170.23",
+      "title": "Application to subcontractors.",
+      "text": "§ 170.23 Application to subcontractors. (a) CMMC requirements apply to prime contractors and subcontractors throughout the supply chain at all tiers that will process, store, or transmit any FCI or CUI on contractor information systems in the performance of the DoD contract or subcontract. Prime contractors shall comply and shall require subcontractors to comply with and to flow down CMMC requirements, such that compliance will be required throughout the supply chain at all tiers with the applicable CMMC level and assessment type for each subcontract as follows: (1) If a subcontractor will only process, store, or transmit FCI (and not CUI) in performance of the subcontract, then a CMMC Status of Level 1 (Self) is required for the subcontractor. (2) If a subcontractor will process, store, or transmit CUI in performance of the subcontract, then a CMMC Status of Level 2 (Self) is the minimum requirement for the subcontractor. (3) If a subcontractor will process, store, or transmit CUI in performance of the subcontract and the associated prime contract has a requirement for a CMMC Status of Level 2 (C3PAO), then the CMMC Status of Level 2 (C3PAO) is the minimum requirement for the subcontractor. (4) If a subcontractor will process, store, or transmit CUI in performance of the subcontract and the associated prime contract has a requirement for the CMMC Status of Level 3 (DIBCAC), then the CMMC Status of Level 2 (C3PAO) is the minimum requirement for the subcontractor. (b) As with any solicitation or contract, the DoD may provide specific guidance pertaining to flow-down.",
+      "paragraph_hierarchy": [
+        "(a) CMMC requirements apply to prime contractors and subcontractors throughout the supply chain at all tiers that will process, store, or transmit any FCI or CUI on contractor information systems in t",
+        "(1) If a subcontractor will only process, store, or transmit FCI (and not CUI) in performance of the subcontract, then a CMMC Status of Level 1 (Self) is required for the subcontractor.",
+        "(2) If a subcontractor will process, store, or transmit CUI in performance of the subcontract, then a CMMC Status of Level 2 (Self) is the minimum requirement for the subcontractor.",
+        "(3) If a subcontractor will process, store, or transmit CUI in performance of the subcontract and the associated prime contract has a requirement for a CMMC Status of Level 2 (C3PAO), then the CMMC St",
+        "(4) If a subcontractor will process, store, or transmit CUI in performance of the subcontract and the associated prime contract has a requirement for the CMMC Status of Level 3 (DIBCAC), then the CMMC",
+        "(b) As with any solicitation or contract, the DoD may provide specific guidance pertaining to flow-down."
+      ],
+      "keywords": [
+        "supply chain"
+      ],
+      "nist_families": [
+        "SA"
+      ]
+    },
+    {
+      "section_id": "170.24",
+      "title": "CMMC Scoring Methodology.",
+      "text": "§ 170.24 CMMC Scoring Methodology. (a) General. This scoring methodology is designed to provide a measurement of an OSA's implementation status of the NIST SP 800-171 R2 security requirements (incorporated by reference elsewhere in this part, see § 170.2) and the selected NIST SP 800-172 Feb2021 security requirements (incorporated by reference elsewhere in this part, see § 170.2). The CMMC Scoring Methodology is designed to credit partial implementation only in limited cases ( e.g., multi-factor authentication IA.L2-3.5.3). (b) Assessment findings. Each security requirement assessed under the CMMC Scoring Methodology must result in one of three possible assessment findings, as follows: (1) Met. All applicable objectives for the security requirement are satisfied based on evidence. All evidence must be in final form and not draft. Unacceptable forms of evidence include but are not limited to working papers, drafts, and unofficial or unapproved policies. (i) Enduring exceptions when described, along with any mitigations, in the system security plan shall be assessed as MET. (ii) Temporary deficiencies that are appropriately addressed in operational plans of action ( i.e., include deficiency reviews and show progress towards the implementation of corrections to reduce or eliminate identified vulnerabilities) shall be assessed as MET. (2) Not Met. One or more applicable objectives for the security requirement is not satisfied. During an assessment, for each security requirement objective marked NOT MET, the assessor will document why the evidence does not conform. (3) Not Applicable (N/A). A security requirement and/or objective does not apply at the time of the CMMC assessment. For example, Public-Access System Separation (SC.L2-3.13.5) might be N/A if there are no publicly accessible systems within the CMMC Assessment Scope. During an assessment, an assessment objective assessed as N/A is equivalent to the same assessment objective being assessed as MET. (c) Scoring.  …",
+      "paragraph_hierarchy": [
+        "(a)",
+        "(b)",
+        "(1)",
+        "(i) Enduring exceptions when described, along with any mitigations, in the system security plan shall be assessed as MET.",
+        "(ii) Temporary deficiencies that are appropriately addressed in operational plans of action (",
+        "(2)",
+        "(3)",
+        "(c)",
+        "(1)",
+        "(2)"
+      ],
+      "keywords": [
+        "authentication",
+        "multi-factor",
+        "vulnerabilities"
+      ],
+      "nist_families": [
+        "IA",
+        "RA"
+      ]
+    }
+  ]
+}

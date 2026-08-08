@@ -169,6 +169,13 @@
       "sha": "d8ac868",
       "date": "2026-07-18",
       "known_good": true
+    },
+    {
+      "phase": "32-0",
+      "name": "Regulatory-provenance protocol",
+      "sha": "1cf7aa3",
+      "date": "2026-08-08",
+      "known_good": true
     }
   ]
 }

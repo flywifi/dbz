@@ -28,7 +28,7 @@ overlapping controls listed. It's **one unified map**, not a shelf of separate c
 | **CCI dictionary** | 5,137 DISA control-correlation identifiers with definitions + multi-source corroboration |
 | **STIG evidence** | 383 hardening benchmarks / 19,667 rules for per-product implementation proof |
 | **FedRAMP 2026 (KSIs)** | FedRAMP's own 46 Key Security Indicators and their 373 published links to 800-53 |
-| **Keep-current** | 160 official sources watched for changes, plus a horizon of 70 anticipated future revisions |
+| **Keep-current** | 161 official sources watched for changes, plus a horizon of 76 anticipated future revisions |
 
 ## How it works
 
@@ -40,7 +40,7 @@ carries a tag saying which, so you always know how strong a match is.
 
 **Under the hood:** raw framework sources → the 800-53 projection spine → a `master_mappings`
 surface + a precomputed `overlap_matrix`, all assembled deterministically into `grc.db` (SQLite,
-~40 tables, schema 3.13) and queried with `dbz_query.py`. Full technical detail:
+~40 tables, schema 3.14) and queried with `dbz_query.py`. Full technical detail:
 [`docs/cross-mapping-architecture.md`](docs/cross-mapping-architecture.md).
 
 ## Quick start
@@ -73,7 +73,7 @@ python cross-mapping/engine/dbz_query.py horizon --upcoming 10          # antici
 
 ## Staying current
 
-dbz watches **160 official sources** (`canonical-sources/feed_registry.json`) for version changes
+dbz watches **161 official sources** (`canonical-sources/feed_registry.json`) for version changes
 and keeps a **horizon** of 70 anticipated future revisions (`canonical-sources/anticipated_updates.json`)
 so a scheduled change — a new FedRAMP rule, an ISO amendment — is flagged before it lands, never
 missed. See [`docs/standards-refresh-runbook.md`](docs/standards-refresh-runbook.md).
