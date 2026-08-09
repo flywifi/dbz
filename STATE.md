@@ -50,6 +50,8 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 | 32-3 | ODP baseline freeze | `1a8ca33`, `4af0bf9` | 2026-08-08 | 2025 ODP memo + full 32 CFR 170 text pinned offline with a diff procedure; load deferred per user gate pending the reform review |
 | 32-4 | HIPAA refresh | `075dc74` | 2026-08-08 | au-hipaa → July-2027/CONTESTED, NPRM identity + 18-item transition doc, FR slug repairs, 11 false positives pruned, sync invariant 15 |
 | 32-1 | Horizon provenance backfill | `670d9a2` | 2026-08-09 | All 76 records origin-verified or honestly degraded; ten drift repairs; unreachable primaries recorded THIN/DEAD_END |
+| 32-5 | Docs, counts, VERSION 0.5.0 | `e9725fe` | 2026-08-09 | Currency rows, horizon-scanning provenance section, runbook update, changelog + anchors |
+| 32-6 | Closing adversarial audit | see `changes/CHANGELOG.md` | 2026-08-09 | `docs/audits/phase-32-adversarial-audit.md`: 76/76 URLs re-fetched, pins re-hashed, 3 findings fixed, adversary output + residual risk |
 
 Phases 1–18 built the foundations (catalog ingestion, ER engine, spine normalization, CCI/ODP
 bridge, consensus detection, publication hygiene, health auditor); their commits precede

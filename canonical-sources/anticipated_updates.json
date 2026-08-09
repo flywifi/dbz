@@ -33,11 +33,11 @@
       "escalate_after_days": 120,
       "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Continuous model releases; track docs.anthropic.com/changelog. docs.anthropic.com renders as a JS application (title only in static fetch, retrieved 2026-08-09); model-lineup claims not re-verifiable without a browser — THIN.",
+      "notes": "Continuous model releases; track docs.anthropic.com/changelog. docs.anthropic.com renders as a JS application (title only in static fetch, retrieved 2026-08-09); model-lineup claims not re-verifiable without a browser — THIN. Audit note: /en/api/changelog now returns 404 (SPA shell only); the block cites the /en/api landing title instead — model-lineup claims still not verifiable without a browser.",
       "provenance": {
-        "primary_source_url": "https://docs.anthropic.com/en/api/changelog",
+        "primary_source_url": "https://docs.anthropic.com/en/api",
         "retrieved_at": "2026-08-09",
-        "verbatim": "Documentation | Claude Platform",
+        "verbatim": "API overview - Claude Platform Docs",
         "support": "THIN",
         "terminal_state": "ORIGIN"
       }
@@ -143,7 +143,7 @@
       "last_change_detected": null,
       "notes": "Final Rule did not publish in the anticipated May-2026 window: the Federal Register's newest CIRCIA rulemaking documents (retrieved 2026-08-09) are town-hall Proposed Rule notices (2026-05-26, 2026-02-13) and no CIRCIA document of type Rule exists — CISA reopened public input instead. Window moved to no_fixed_date; NPRM (Apr 2024) remains the latest substantive stage. cisa.gov/circia itself returns Access Denied to static fetchers.",
       "provenance": {
-        "primary_source_url": "https://www.federalregister.gov/api/v1/documents.json?conditions[term]=CIRCIA&conditions[agencies][]=homeland-security-department&conditions[type][]=PRORULE&conditions[type][]=RULE&order=newest",
+        "primary_source_url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=CIRCIA&conditions%5Bagencies%5D%5B%5D=homeland-security-department&conditions%5Btype%5D%5B%5D=PRORULE&conditions%5Btype%5D%5B%5D=RULE&order=newest",
         "retrieved_at": "2026-08-09",
         "verbatim": "Town Hall Meetings To Provide Input on Cyber Incident Reporting for Critical Infrastructure Act … \"publication_date\":\"2026-05-26\"",
         "support": "WELL_SUPPORTED",
@@ -718,7 +718,7 @@
       "provenance": {
         "primary_source_url": "https://www.reginfo.gov/public/do/eAgendaViewRule?pubId=202510&RIN=0945-AA22",
         "retrieved_at": "2026-08-08",
-        "verbatim": "NPRM 01/06/2025 90 FR 898; Final Action 07/00/2027",
+        "verbatim": "Timetable: Action Date FR Cite NPRM 01/06/2025 90 FR 898 Final Action 07/00/2027",
         "support": "CONTESTED",
         "terminal_state": "ORIGIN"
       }
