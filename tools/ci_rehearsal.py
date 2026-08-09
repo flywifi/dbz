@@ -15,6 +15,11 @@ ritual was performed from memory. This harness makes the rehearsal mechanical:
   4. restore the stash unconditionally (finally:), report a per-step PASS/FAIL table, exit 1
      if any step failed.
 
+`--standards-watch` mirrors the OTHER workflow instead (monthly standards-watch.yml, which
+builds on the runner and therefore needs the generated catalog + OSCAL cache produced first
+— the fresh-checkout mode that turned that workflow red on 2026-08-03). Slow and opt-in:
+run it when touching that workflow, the generators, or the benchmark.
+
 Run it before every push (merge bar: changes/CHANGE_MANAGEMENT.md). Deliberately NOT a
 pre-commit hook — it moves directories, which is hostile per-commit; it is the pre-PUSH step.
 NEVER run concurrently with build_db.py: the stash move would pull the build's output paths
@@ -46,6 +51,20 @@ STEPS = [
     # health.yml runs the catalog validator only when the build output exists; in the
     # rehearsal the artifacts are hidden, so CI's skip path is what we exercise.
     ("catalog validators (CI-conditional)", None),
+]
+
+# Mirrors .github/workflows/standards-watch.yml (--standards-watch). That workflow is
+# monthly and BUILDS on the runner, so its fresh-checkout failure mode is different from
+# health.yml's: it needs the generated catalog and the OSCAL cache produced first. The
+# 2026-08-03 run went red exactly here. Slow (~build + a ~5MB OSCAL fetch) — opt-in.
+WATCH_STEPS = [
+    ("standards drift check", "python3 tools/standards_refresh.py --check"),
+    ("generate catalog", "python3 cross-mapping/nist-catalog/ingestion/generate_controls.py"),
+    ("warm OSCAL cache", "python3 cross-mapping/engine/oscal_diff.py "
+                         "--oscal-cache cross-mapping/output/oscal_v5.2.0_cache.json --dry-run"),
+    ("build grc.db", "python3 cross-mapping/engine/build_db.py"),
+    ("oracle benchmark", "python3 cross-mapping/tests/benchmark_oracles.py --check"),
+    ("scenario battery", "python3 cross-mapping/tests/run_scenarios.py"),
 ]
 
 
@@ -82,6 +101,8 @@ def _drift_check():
 
 
 def main():
+    watch = "--standards-watch" in sys.argv
+    steps, yml = (WATCH_STEPS, "standards-watch.yml") if watch else (STEPS, "health.yml")
     tracked = subprocess.run(
         ["git", "status", "--porcelain", *HIDE_DIRS],
         capture_output=True, text=True, cwd=ROOT).stdout.strip()
@@ -94,11 +115,12 @@ def main():
         print("[recover] restoring stash from an interrupted run first")
         _restore()
 
-    _drift_check()
+    if not watch:
+        _drift_check()
     results = []
     try:
         _hide()
-        for label, cmd in STEPS:
+        for label, cmd in steps:
             if cmd is None:  # CI-conditional step: artifacts hidden -> CI's skip path
                 results.append((label, 0, "skipped (build artifacts absent, as on CI)"))
                 continue
@@ -108,7 +130,7 @@ def main():
     finally:
         _restore()
 
-    print("\nCI REHEARSAL (mirrors .github/workflows/health.yml, artifacts hidden):")
+    print(f"\nCI REHEARSAL (mirrors .github/workflows/{yml}, artifacts hidden):")
     failed = 0
     for label, rc, tail in results:
         status = "PASS" if rc == 0 else f"FAIL rc={rc}"

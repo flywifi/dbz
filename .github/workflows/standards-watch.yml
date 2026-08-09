@@ -28,11 +28,22 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install minimal deps
-        run: pip install pandas openpyxl
+      - name: Install deps
+        run: pip install -r requirements.txt
 
       - name: Standards drift check
         run: python3 tools/standards_refresh.py --check
+
+      # The runner is a fresh checkout: the generated catalog and the OSCAL cache are
+      # build products, not committed. Without the catalog the build dies
+      # (FileNotFoundError on NIST_800_53_FULL_ALL_FAMILIES.json); without the cache it
+      # SILENTLY degrades (oscal_structural controls=None, 0 objectives) and the benchmark
+      # then measures a different database than the one this repo ships.
+      - name: Build prerequisites (generated catalog + OSCAL cache)
+        run: |
+          python3 cross-mapping/nist-catalog/ingestion/generate_controls.py
+          python3 cross-mapping/engine/oscal_diff.py \
+            --oscal-cache cross-mapping/output/oscal_v5.2.0_cache.json --dry-run
 
       - name: Oracle accuracy benchmark (build db, then regression check)
         run: |
