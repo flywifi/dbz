@@ -19,6 +19,11 @@ Format follows Keep a Changelog conventions; one entry per shipped phase. Versio
   `cmmc-32cfr-170` feed (feeds 160→161), two FR agency slugs fixed, suspension + ODP memo
   PDFs sha-pinned. DB schema 3.14: enum-enforced provenance columns on
   `anticipated_updates`; eCFR loader gains Part 170 + a heading-extraction fix.
+  *Deliberate scope drop:* the planned `chg-dfars-clause-renumbering-2026` changelog entry
+  was NOT written — the Feb-2026 class-deviation memos stayed bot-walled at acq.osd.mil, so
+  under the provenance floor there was nothing citable to record. The renumbering is carried
+  in the `dfars-cyber` feed label as deviation clauses (not CFR changes); the entry gets
+  written when a DPCAP memo is read at origin.
 - **32-3** (`1a8ca33`, allowlist fix `4af0bf9`) — CMMC ODP transition baseline frozen per
   the user gate (WAIT for the task-force outcome): diff-ready memo text extraction, full
   32 CFR 170 XML as of 2026-08-01, comparison procedure in `docs/cmmc-odp-baseline.md`.

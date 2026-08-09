@@ -44,6 +44,22 @@ ever diverge), restores the artifacts unconditionally — even after an interrup
 prints a per-step PASS/FAIL table. This closes the recurring failure class where a check
 passes on a built workspace but fails on CI. Never run it concurrently with `build_db.py`.
 
+**Coverage limit:** the rehearsal mirrors `health.yml` only. `standards-watch.yml` runs a
+different step list (drift check + fresh build + benchmark) and has its own fresh-checkout
+failure mode — rehearse it with `python3 tools/ci_rehearsal.py --standards-watch` before
+touching that workflow or the generators it depends on.
+
+## Phase hygiene (learned rules — phase-33 audit)
+
+- **Commit messages are 1–2 plain sentences.** If the change list does not fit, it belongs in
+  the `changes/CHANGELOG.md` entry, not in the message. (Two phase-32 commits ran to 3–4
+  sentences; the itemization should have gone to the changelog.)
+- **Cut the phase snapshot anchor BEFORE the first data-touching commit,** as its own commit.
+  An anchor added inside the first data commit cannot serve as that commit's rollback point.
+- **Deliberate scope drops get recorded.** If a planned deliverable is dropped for a good
+  reason (typically the provenance floor: nothing citable), say so in the changelog entry —
+  a silent deviation is indistinguishable from an oversight when read later.
+
 ## Shared fetch layer (`cross-mapping/engine/fetchkit.py`)
 
 All live fetching in the monitors routes through fetchkit: per-host pacing (min interval +
@@ -242,7 +258,9 @@ scope-relative acceptance differences, not errors.
   (`docs/cmmc-odp-baseline.md`); the `odp_values` load decision reopens after the review.
   Horizon records `au-cmmc-*` escalate on each signal. Regulatory claims entering this
   runbook's registries follow `protocol-layer/regulatory-provenance.md` (verbatim +
-  support label + terminal state; mutation check at intake). **Phase 19 landed the data
+  support label + terminal state; mutation check at intake). When the assessment basis
+  moves off r2, revisit `_MASTER_FW_GROUPS` in `dbz_query.py` — the `cmmc` alias fans out to
+  `CMMC 2.0` + `NIST SP 800-171 r2` precisely because of the May-2024 class deviation. **Phase 19 landed the data
   side**: 171r3 + 172r3 CPRT datasets pinned with NIST's own →800-53 mappings loaded as
   spine frameworks, NIST's r2→r3 analysis workbook + r3 CUI overlay pinned, and
   `framework_changelog` entries seeded.

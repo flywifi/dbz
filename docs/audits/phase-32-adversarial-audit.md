@@ -20,9 +20,11 @@ URL re-fetched and every verbatim re-matched by script; results below.
 
 ## Pass 1 — source integrity (re-fetch + re-hash)
 
-All 76 provenance URLs were re-fetched on 2026-08-09 by script
-(scratchpad `audit/pass1_results.json`): **66/76 resolved to the cited page with the
-recorded verbatim present**. The 10 flags, dispositioned:
+75 of the 76 provenance URLs were re-fetched on 2026-08-09 by script (scratchpad
+`audit/pass1_results.json`); the 76th (`au-iso-15408`) held an empty URL string and so was
+never fetchable — a defect this pass did not detect, found later by the phase-33 audit
+(finding C-1) and repaired in `38b69f0`. Of those fetched, **66 resolved to the cited page
+with the recorded verbatim present**. The 10 flags, dispositioned:
 
 | Record | Flag | Disposition |
 |---|---|---|
@@ -128,6 +130,14 @@ library.
 
 Affected pass (1) re-run after the fixes: all three records now fetch and match
 (re-verified live before commit). No findings in passes 3–4 required data changes.
+
+**Phase-33 follow-up (independent audit of this phase, 2026-08-09).** A separate full-surface
+audit re-ran this document's checks and found what this pass could not see, because its
+DEAD_END branch skipped URL validation entirely: `au-iso-15408` carried an empty
+`primary_source_url` (C-1, repaired `38b69f0`), and the Pass-1 sentence above overstated
+coverage by one record (G-2, corrected above). The gap is now mechanized rather than left to
+practice — `load_anticipated_updates()` hard-fails on a non-http provenance URL in every
+terminal state (`cd1449c`), so this record class cannot ship unauditable again.
 
 ## Residual risk (never an all-clear)
 

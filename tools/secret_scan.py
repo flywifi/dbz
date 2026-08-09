@@ -9,10 +9,13 @@ shapes, generic secret assignments, plus the publication-hygiene leak patterns
 imported from tools/health_audit.py (single source of truth).
 
 Allowlist: exact paths (ALLOW_PATHS) and directory prefixes (ALLOW_PREFIXES), every
-entry with a reason. The only prefix is the output-validator fixture directory, whose
-files DELIBERATELY contain synthetic leak material the validator selftest must catch —
-accepted residual risk: a real secret placed in that one directory would pass this
-hook (the fixtures are short reviewed markdown; keep them synthetic placeholders only).
+entry with a reason (read ALLOW_PREFIXES for the reasoning; three prefixes today):
+the output-validator fixture directory, whose files DELIBERATELY contain synthetic leak
+material the selftest must catch, plus canonical-sources/cfr/ and
+canonical-sources/source_data/dod/, which hold verbatim primary regulatory text that is
+never edited. Accepted residual risk: a real secret placed under any allowlisted prefix
+would pass this hook — keep fixtures synthetic, and treat the regulatory directories as
+pin-review-only (nothing is authored there, only fetched and sha-pinned).
 
 Usage:
   python3 tools/secret_scan.py                 # scan the staged diff (pre-commit)

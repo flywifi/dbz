@@ -104,14 +104,14 @@
       "phase": "29-1",
       "name": "Context overlays",
       "sha": "ae0f772",
-      "date": "2026-07-18",
+      "date": "2026-07-17",
       "known_good": true
     },
     {
       "phase": "29-2",
       "name": "Multi-platform export",
       "sha": "ea917cd",
-      "date": "2026-07-18",
+      "date": "2026-07-17",
       "known_good": true
     },
     {

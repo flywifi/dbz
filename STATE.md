@@ -10,7 +10,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 - **Gate battery:** rebuild ×2 identical digests · `test_spine.py` · `validate_spine.py` ·
   `health_audit.py --scan/--full` 100/100 (including the artifacts-hidden CI condition) ·
   `sync_check.py` (15 invariants) · golden self-test · `benchmark_oracles.py --check` ·
-  ten-scenario battery (`run_scenarios.py`) · pre-commit selftests (output validator, scorer,
+  eleven-scenario battery (`run_scenarios.py`) · pre-commit selftests (output validator, scorer,
   secret scan) — all green as of 2026-08-09 (incl. phase-32 regulatory absorption; rehearse CI pre-push with tools/ci_rehearsal.py). Authority list: `protocol-layer/quality-gates.md`.
 - **CI:** `health` workflow green on every push; `standards-watch` (monthly) runs the drift
   check + a fresh-build oracle benchmark regression check.
@@ -35,8 +35,8 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 | 28-3 | Durable state + rollback | `b6a9f84` | 2026-07-17 | STATE/CHANGELOG/CHANGE_MANAGEMENT + known-good snapshot anchors; VERSION 0.2.0 |
 | 28-4 | fetchkit shared fetch layer | `70e807e` | 2026-07-17 | Rate governor + conditional-GET cache + labeled Wayback fallback; monitors adopted |
 | 28-5 | Output validator | `650aa66` | 2026-07-17 | Mechanical fabrication/unsourced/tier/leak gate for analysis deliverables |
-| 29-1 | Context overlays | `ae0f772` | 2026-07-18 | Industry/jurisdiction/client presentation profiles + --overlay with disclosed suppression |
-| 29-2 | Multi-platform export | `ea917cd` | 2026-07-18 | Generated OpenAI-function schemas for the 6 core operations, drift-guarded (sync invariant 12) |
+| 29-1 | Context overlays | `ae0f772` | 2026-07-17 | Industry/jurisdiction/client presentation profiles + --overlay with disclosed suppression |
+| 29-2 | Multi-platform export | `ea917cd` | 2026-07-17 | Generated OpenAI-function schemas for the 6 core operations, drift-guarded (sync invariant 12) |
 | 29-3 | Protocol layer + scorer | `d5200d9` | 2026-07-18 | Four authority protocols (cited to existing rules) + hard-fail-first deterministic verdicts |
 | 29-4 | Evidence-state ladder | `8ef71f2` | 2026-07-18 | Schema 3.13: derived corroboration state on every master edge + --evidence-state filter + check 14 |
 | 30-1/2/3 | Metrics + scenarios + registry IO | `5eaa48f` | 2026-07-18 | Generated scoreboard; ten pinned e2e scenarios in CI; single-writer registries + sha baselines |
@@ -51,7 +51,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 | 32-4 | HIPAA refresh | `075dc74` | 2026-08-08 | au-hipaa → July-2027/CONTESTED, NPRM identity + 18-item transition doc, FR slug repairs, 11 false positives pruned, sync invariant 15 |
 | 32-1 | Horizon provenance backfill | `670d9a2` | 2026-08-09 | All 76 records origin-verified or honestly degraded; ten drift repairs; unreachable primaries recorded THIN/DEAD_END |
 | 32-5 | Docs, counts, VERSION 0.5.0 | `e9725fe` | 2026-08-09 | Currency rows, horizon-scanning provenance section, runbook update, changelog + anchors |
-| 32-6 | Closing adversarial audit | see `changes/CHANGELOG.md` | 2026-08-09 | `docs/audits/phase-32-adversarial-audit.md`: 76/76 URLs re-fetched, pins re-hashed, 3 findings fixed, adversary output + residual risk |
+| 32-6 | Closing adversarial audit | see `changes/CHANGELOG.md` | 2026-08-09 | `docs/audits/phase-32-adversarial-audit.md`: 75 of 76 URLs re-fetched (one empty, later repaired), pins re-hashed, 3 findings fixed, adversary output + residual risk |
 
 Phases 1–18 built the foundations (catalog ingestion, ER engine, spine normalization, CCI/ODP
 bridge, consensus detection, publication hygiene, health auditor); their commits precede

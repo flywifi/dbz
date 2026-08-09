@@ -45,8 +45,12 @@ against pinned artifacts rather than reconstructed from memory. Rules of evidenc
 2. **Pin the new document(s)** exactly as this baseline was pinned: PDF + sha256 + retrieval
    URL + date into `source_data/dod/`, manifest-registered, provenance block per
    `regulatory-provenance.md` (verbatim + support label + terminal state).
-3. **Extract text with the same tool** (pdfminer.six) so the diff is tool-consistent; record
-   the extractor + source sha in the header as done here.
+3. **Extract text with the same tool** (pdfminer.six **20260107** at freeze time —
+   determinism re-proven 2026-08-09: re-extraction reproduced the committed body
+   byte-for-byte) so the diff is tool-consistent; record the extractor + source sha in the
+   header as done here. If a different pdfminer version is unavoidable, first re-extract
+   this baseline with it and confirm byte-equality — a version that does not reproduce the
+   frozen text invalidates the diff before it starts.
 4. **Diff against `OrgDefinedParmsNISTSP800-171.extracted.txt`** per requirement heading
    (`3.x.y` sections): classify each as UNCHANGED / VALUE_CHANGED (state both values,
    origin-form) / ADDED / REMOVED / GUIDANCE↔VALUE flipped. The mutation-check categories
