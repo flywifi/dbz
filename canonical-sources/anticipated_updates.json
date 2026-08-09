@@ -303,7 +303,7 @@
       "id": "au-eu-ai-act",
       "feed_id": "eu-ai-act",
       "authority": "primary",
-      "artifact": "GPAI implementing acts Aug 2025",
+      "artifact": "GPAI obligations + first implementing acts (Aug 2025)",
       "current_version": "Regulation (EU) 2024/1689 (in force Aug 2024, phased to 2027)",
       "expected_type": "revision",
       "lifecycle_stage": "final",
@@ -330,7 +330,7 @@
       "escalate_after_days": 120,
       "last_checked": "2026-08-09",
       "last_change_detected": "2025-08",
-      "notes": "CLOSED: the GPAI application date passed by the regulation's own text — Regulation (EU) 2024/1689 recital states GPAI-provider obligations 'should apply from 2 August 2025' (EUR-Lex, retrieved 2026-08-09); high-risk phases through 2026-2027 are tracked by au-eu-ai-act-impl.",
+      "notes": "CLOSED: the GPAI application date passed by the regulation's own text — Regulation (EU) 2024/1689 recital states GPAI-provider obligations 'should apply from 2 August 2025' (EUR-Lex, retrieved 2026-08-09); high-risk phases through 2026-2027 are tracked by au-eu-ai-act-impl. Acts-side evidence: the companion au-eu-ai-act-impl record's baseline lists the GPAI Code of Practice among the first implementing acts adopted 2025; this record's closing verbatim proves the 2 Aug 2025 obligations application date.",
       "provenance": {
         "primary_source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=OJ:L_202401689",
         "retrieved_at": "2026-08-09",
@@ -925,12 +925,14 @@
       "confidence": "low",
       "trigger_signal": "new published version / draft / advisory at the authority source",
       "detection": {
-        "url": "",
+        "url": "https://www.commoncriteriaportal.org/cc/",
         "method": "poll_landing",
         "match": ""
       },
       "poll_frequency": "quarterly",
-      "source_urls": [],
+      "source_urls": [
+        "https://www.commoncriteriaportal.org/cc/"
+      ],
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
@@ -938,7 +940,7 @@
       "last_change_detected": null,
       "notes": "Not announced. Common Criteria portal blocked static fetchers; CC edition currency (recorded v3.1 Rev 5) was not re-verifiable this pass — flag for a browser-based refresh, do not rewrite the version without an origin read.",
       "provenance": {
-        "primary_source_url": "",
+        "primary_source_url": "https://www.commoncriteriaportal.org/cc/",
         "retrieved_at": "2026-08-09",
         "verbatim": "HTTP 403 from www.commoncriteriaportal.org/cc/ on 2026-08-09",
         "support": "THIN",
@@ -2291,7 +2293,7 @@
       "feed_id": "fedramp-20x",
       "authority": "FedRAMP (GSA)",
       "artifact": "20x Class A certification pipeline opens",
-      "current_version": "pre-pipeline",
+      "current_version": "Class A pipeline open (fedramp.gov/20x 'Available now', verified 2026-08-09)",
       "expected_type": "amendment",
       "lifecycle_stage": "final",
       "expected_window": {
