@@ -23,6 +23,20 @@ One structured record per anticipated artifact. Fields:
 | `dependent_of` | models the CSA "catalog-first, mappings-later" dependency |
 | `status` | watching · draft_observed · materialized · superseded |
 | `escalate_after_days` / `last_checked` / `last_change_detected` | overdue grace / audit timestamps |
+| `provenance` | schema 1.1: `{primary_source_url, retrieved_at, verbatim, support, terminal_state}` per `protocol-layer/regulatory-provenance.md` |
+
+## Provenance (schema 1.1)
+
+Since phase 32 every record carries a claim provenance block: the issuing authority's own URL,
+the retrieval date, a verbatim snippet stating the claim, a support label
+(`WELL_SUPPORTED` · `CONTESTED` · `THIN` · `UNSUPPORTED`) and a terminal state (`ORIGIN` ·
+`ORIGIN_RECOVERED` · `DEAD_END` · `ORPHAN_CONFIRMED` · `CIRCULAR_UNRESOLVED`). The build
+(`load_anticipated_updates`) hard-fails on out-of-vocabulary labels. All 76 records were
+origin-verified or honestly degraded in the phase-32 backfill — unreachable primaries are
+recorded `THIN`/`DEAD_END` with the obstacle named, never as fabricated confirmations; the
+backfill also repaired ten records whose claims had drifted from their authorities' pages
+(stale versions, a two-year-stale "not yet released" watch, a lapsed bill, a passed
+final-rule window). Rules of evidence: `protocol-layer/regulatory-provenance.md`.
 
 The table `anticipated_updates` in `grc.db` holds the static records (deterministic); the dynamic
 overdue/materialized state is computed at query time by `horizon_monitor.py`.

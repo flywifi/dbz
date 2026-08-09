@@ -9,9 +9,9 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 - **DB schema:** 3.14 (adds regulatory-provenance columns on `anticipated_updates`; 3.13 added the `evidence_state` ladder) (`grc.db`, deterministic build, double-build digest check)
 - **Gate battery:** rebuild ×2 identical digests · `test_spine.py` · `validate_spine.py` ·
   `health_audit.py --scan/--full` 100/100 (including the artifacts-hidden CI condition) ·
-  `sync_check.py` (14 invariants) · golden self-test · `benchmark_oracles.py --check` ·
+  `sync_check.py` (15 invariants) · golden self-test · `benchmark_oracles.py --check` ·
   ten-scenario battery (`run_scenarios.py`) · pre-commit selftests (output validator, scorer,
-  secret scan) — all green as of 2026-07-18 (incl. phase-31 remediation; rehearse CI pre-push with tools/ci_rehearsal.py). Authority list: `protocol-layer/quality-gates.md`.
+  secret scan) — all green as of 2026-08-09 (incl. phase-32 regulatory absorption; rehearse CI pre-push with tools/ci_rehearsal.py). Authority list: `protocol-layer/quality-gates.md`.
 - **CI:** `health` workflow green on every push; `standards-watch` (monthly) runs the drift
   check + a fresh-build oracle benchmark regression check.
 - **Accuracy record:** see [docs/BENCHMARK.md](docs/BENCHMARK.md) (measured, pinned).
@@ -45,6 +45,11 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 | 31-1 | Secret-scan fixture allowlist | `54141d5` | 2026-07-18 | Full-range scans clean; allowlist path-scoped and selftest-proven |
 | 31-2 | Digest coverage by derivation | `9764f7c` | 2026-07-18 | All 40 content tables in the determinism gate, exclusions reasoned |
 | 31-3 | CI rehearsal harness | `d8ac868` | 2026-07-18 | One command mirrors CI locally with guaranteed artifact restoration |
+| 32-0 | Regulatory-provenance protocol | `1cf7aa3` | 2026-08-08 | Claim provenance blocks, terminal states, loop escape, mutation check, GRC trap list, closing-audit gate |
+| 32-2 | CMMC absorption | `c1f5f3b` | 2026-08-08 | Six suspension-aware horizon records (Phase 2 suspended 2026-07-13, RFI, task force), dfars-cyber rescheduled, 32 CFR 170 feed + eCFR part, schema 3.14 |
+| 32-3 | ODP baseline freeze | `1a8ca33`, `4af0bf9` | 2026-08-08 | 2025 ODP memo + full 32 CFR 170 text pinned offline with a diff procedure; load deferred per user gate pending the reform review |
+| 32-4 | HIPAA refresh | `075dc74` | 2026-08-08 | au-hipaa → July-2027/CONTESTED, NPRM identity + 18-item transition doc, FR slug repairs, 11 false positives pruned, sync invariant 15 |
+| 32-1 | Horizon provenance backfill | `670d9a2` | 2026-08-09 | All 76 records origin-verified or honestly degraded; ten drift repairs; unreachable primaries recorded THIN/DEAD_END |
 
 Phases 1–18 built the foundations (catalog ingestion, ER engine, spine normalization, CCI/ODP
 bridge, consensus detection, publication hygiene, health auditor); their commits precede

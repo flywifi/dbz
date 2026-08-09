@@ -3,6 +3,43 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.5.0] — 2026-08-09 (phase 32 — CMMC + HIPAA regulatory absorption, provenance hardening)
+### Added
+- **32-0** (`1cf7aa3`) — `protocol-layer/regulatory-provenance.md`: claim provenance blocks
+  (URL + retrieved_at + verbatim + support label), terminal-state vocabulary, citation-loop
+  escape, mutation-check intake, an 11-item GRC domain-trap list, recall/injection rules, and
+  a recorded non-adoption boundary (decomposed from the maintainer's research-provenance
+  skill v1.5.2 — 7 pieces adopted, the rest skipped with reasons). `quality-gates.md` gains
+  a permanent regulatory-phase closing gate (adversarial audit with mandatory adversary
+  output + residual risk).
+- **32-2** (`c1f5f3b`) — CMMC posture absorbed on origin evidence: six suspension-aware
+  horizon records (Phase 2 suspended 2026-07-13; RFI closing 2026-08-14; task-force report
+  window; Phases 3/4 frozen; 171r3 transition signal), `au-nist-800-172` closed as
+  materialized, `dfars-cyber` rescheduled high-priority with a clause-accurate label, new
+  `cmmc-32cfr-170` feed (feeds 160→161), two FR agency slugs fixed, suspension + ODP memo
+  PDFs sha-pinned. DB schema 3.14: enum-enforced provenance columns on
+  `anticipated_updates`; eCFR loader gains Part 170 + a heading-extraction fix.
+- **32-3** (`1a8ca33`, allowlist fix `4af0bf9`) — CMMC ODP transition baseline frozen per
+  the user gate (WAIT for the task-force outcome): diff-ready memo text extraction, full
+  32 CFR 170 XML as of 2026-08-01, comparison procedure in `docs/cmmc-odp-baseline.md`.
+- **32-4** (`075dc74`) — HIPAA horizon refresh: `au-hipaa` carries the OMB 202510 July-2027
+  projection at low confidence/CONTESTED, the `hipaa` feed records the NPRM's full identity
+  (90 FR 898, RIN 0945-AA22, docket HHS-OCR-2024-0020, 4,747 comments), and
+  `docs/hipaa-security-rule-transition.md` enumerates the 18 proposed items with the repo
+  trigger map. Announcement pipeline slug repairs (HHS/CISA/NYDFS), 11 false positives
+  pruned, diverged analyzer xlsx resynced, sync invariant 15 (skill-asset hash guard).
+- **32-1** (`670d9a2`) — Provenance backfill: all 68 legacy horizon records verified at
+  their primary sources and stamped (56 WELL_SUPPORTED/ORIGIN; unreachable primaries
+  recorded THIN/DEAD_END with the obstacle named). Ten drift repairs, including a
+  two-year-stale IR 8477 watch, the OWASP LLM Top 10 2026 edition, the EU AI Act GPAI
+  milestone, Bill C-27's lapse, and the passed CIRCIA final-rule window.
+- **32-5/6** — docs/counts sync (this entry), VERSION 0.5.0, and the closing adversarial
+  audit `docs/audits/phase-32-adversarial-audit.md` required by the new quality gate.
+### Fixed
+- Secret-scan allowlist (`4af0bf9`): verbatim regulatory-text paths (CFR JSON, pinned DoD
+  documents) join the reasoned prefix allowlist after the 32 CFR 170 org-mailbox finding
+  turned CI red on `c1f5f3b`/`1a8ca33`; green from `4af0bf9`.
+
 ## [0.4.1] — 2026-07-18 (phase 31 — 48-hour-audit remediation)
 ### Fixed
 - **31-3** (`d8ac868`) — `tools/ci_rehearsal.py`: one-command local reproduction of the CI

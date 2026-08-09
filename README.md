@@ -74,7 +74,7 @@ python cross-mapping/engine/dbz_query.py horizon --upcoming 10          # antici
 ## Staying current
 
 dbz watches **161 official sources** (`canonical-sources/feed_registry.json`) for version changes
-and keeps a **horizon** of 70 anticipated future revisions (`canonical-sources/anticipated_updates.json`)
+and keeps a **horizon** of 76 anticipated future revisions (`canonical-sources/anticipated_updates.json`)
 so a scheduled change — a new FedRAMP rule, an ISO amendment — is flagged before it lands, never
 missed. See [`docs/standards-refresh-runbook.md`](docs/standards-refresh-runbook.md).
 

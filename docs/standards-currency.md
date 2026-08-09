@@ -72,11 +72,11 @@ audit verdict and the deliberate pins.
 |---|---|---|
 | NIST SP 800-53 / 800-53A | Release 5.2.0 (Aug 2025; OSCAL content last modified 2026-05-11) | Catalog data 5.2.0-complete; verified against the NIST CPRT 5.2.0 export (validate_spine oracle) |
 | DISA CCI List | 2025-01-23 | Ingested XML is that release (native rev-5 references) |
-| NIST SP 800-171 | Rev 2 remains the CMMC basis (DoD class deviation, May 2024); Rev 3 published May 2024 | Crosswalk pinned to r2 — correct for CMMC; DoD's April-2025 Rev-3 ODP-values memo is a candidate future `odp_values` seed |
-| CMMC | 2.0 (final rule Dec 2024); Phase 2 (C3PAO for Level 2) begins Nov 2026 | Current |
+| NIST SP 800-171 | Rev 2 remains the CMMC basis (DoD class deviation, May 2024; reaffirmed by the July-2026 suspension memo: "CMMC Level 2 is aligned with NIST SP 800-171 Rev 2"); Rev 3 published May 2024 | Crosswalk pinned to r2 — correct for CMMC; DoD's 2025-04-10 Rev-3 ODP-values memo is now sha-pinned with a frozen comparison baseline (`docs/cmmc-odp-baseline.md`) — load deferred pending the reform-review outcome |
+| CMMC | 2.0 (32 CFR 170 program rule Oct 2024; 48 CFR acquisition rule effective 2025-11-10). **Phase 2 suspended 2026-07-13** (DoW CIO suspension + OUSD(A&S) implementation memo): only Level 1 (Self)/Level 2 (Self) designations, no waivers, DFARS 252.204-7012 remains; Reform Task Force report due ~Sep 2026 (verified 2026-08-08) | Current — six suspension-aware horizon records (`au-cmmc-*`), `cmmc-32cfr-170` feed, rule text pinned offline |
 | SOC 2 / AICPA TSC | 2017 TSC with 2022 revised points of focus | Current |
 | ISO/IEC 27001 / 27002 | 2022 editions (+Amd 1:2024, climate text — no control changes); 2013 certs expired 2025-10-31 | Current. The 2013→2022 major revision (114 controls/14 clauses → 93 controls/4 themes, 11 new controls) is recorded in `framework_changelog.json`; `feed_registry.json` tracks 27001 and 27002 separately. |
-| HIPAA Security Rule | 2013 Omnibus still the enforceable standard; Jan-2025 NPRM not finalized (OCR missed its spring-2026 target) | Current; registry tracks the pending NPRM |
+| HIPAA Security Rule | 2013 Omnibus still the enforceable standard; the Jan-2025 NPRM (90 FR 898, RIN 0945-AA22) is **postponed and contested** — OMB agenda edition 202510 projects Final Action July 2027 ("Long-Term Actions" stage), amid a formal withdrawal campaign (verified 2026-08-08) | Current; `au-hipaa` carries the projection at low confidence/CONTESTED; full enumeration + trigger map in `docs/hipaa-security-rule-transition.md` |
 | HITRUST CSF | v11.8.0 (2026-05-08; mandatory for new e1/i1 since 2026-05-07) | **Deliberate pin:** the hub mapping uses the licensed v11.4.0 authoritative-sources cross-reference (March 2025) — the newest artifact on disk. Registry records v11.8.0 as current. |
 | PCI DSS | v4.0.1 (no v4.1 exists; all future-dated requirements mandatory since 2025-03-31) | Current (spec PDFs + PCI↔ISO crosswalk on disk) |
 | CIS Controls | v8.1 (Jun 2024) | Registry current; the HITRUST hub's CIS column maps to v8.0 ids (what that source states) |
@@ -105,7 +105,9 @@ Raw ER CSVs stay untouched on disk (canonical production data); normalization is
   pinned to the artifact we hold, the registry records the true current version, and the delta
   is visible in `framework_changelog.json`.
 - **NIST 800-171 r2 for CMMC** — r2 is what CMMC assessments legally target until DoD completes
-  Rev-3 rulemaking (expected 12–24 months notice).
+  Rev-3 rulemaking; no transition date is citable (trade-press timing failed the citation-loop
+  escape — `protocol-layer/regulatory-provenance.md` §3), and the July-2026 reform review adds
+  further uncertainty. `au-cmmc-171r3-transition` watches the signals.
 - **CIS v8.0 ids in the HITRUST hub** — that column is what the v11.4.0 source states; upgrading
   the label without a v8.1-mapped source would fabricate a crosswalk.
 

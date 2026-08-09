@@ -176,6 +176,41 @@
       "sha": "1cf7aa3",
       "date": "2026-08-08",
       "known_good": true
+    },
+    {
+      "phase": "32-2",
+      "name": "CMMC absorption",
+      "sha": "c1f5f3b",
+      "date": "2026-08-08",
+      "known_good": true
+    },
+    {
+      "phase": "32-3",
+      "name": "ODP baseline freeze",
+      "sha": "1a8ca33",
+      "date": "2026-08-08",
+      "known_good": true
+    },
+    {
+      "phase": "32-3b",
+      "name": "Secret-scan regulatory-text allowlist",
+      "sha": "4af0bf9",
+      "date": "2026-08-08",
+      "known_good": true
+    },
+    {
+      "phase": "32-4",
+      "name": "HIPAA refresh",
+      "sha": "075dc74",
+      "date": "2026-08-08",
+      "known_good": true
+    },
+    {
+      "phase": "32-1",
+      "name": "Horizon provenance backfill",
+      "sha": "670d9a2",
+      "date": "2026-08-09",
+      "known_good": true
     }
   ]
 }

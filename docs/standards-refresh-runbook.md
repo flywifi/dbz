@@ -235,11 +235,17 @@ scope-relative acceptance differences, not errors.
 ## Known open follow-ups (as of 2026-07-03)
 
 - `nist-800-63b-requirements.json` still derives from 63B **r3**; regenerate from 63B-4.
-- CMMC → 800-171 r3 transition: waiting on DoD rulemaking (12–24 mo notice expected);
-  DoD's Apr-2025 Rev-3 ODP memo is the seed for `odp_values` when it starts. **Phase 19
-  landed the data side**: 171r3 + 172r3 CPRT datasets pinned with NIST's own →800-53
-  mappings loaded as spine frameworks, NIST's r2→r3 analysis workbook + r3 CUI overlay
-  pinned, and `framework_changelog` entries seeded.
+- CMMC → 800-171 r3 transition: **no transition date is citable** — CMMC Phase 2 was
+  suspended 2026-07-13 pending a Reform Task Force review (report due ~Sep 2026), and
+  trade-press r3-timing figures failed the citation-loop escape. DoD's 2025-04-10 Rev-3
+  ODP memo is sha-pinned with a frozen offline comparison baseline
+  (`docs/cmmc-odp-baseline.md`); the `odp_values` load decision reopens after the review.
+  Horizon records `au-cmmc-*` escalate on each signal. Regulatory claims entering this
+  runbook's registries follow `protocol-layer/regulatory-provenance.md` (verbatim +
+  support label + terminal state; mutation check at intake). **Phase 19 landed the data
+  side**: 171r3 + 172r3 CPRT datasets pinned with NIST's own →800-53 mappings loaded as
+  spine frameworks, NIST's r2→r3 analysis workbook + r3 CUI overlay pinned, and
+  `framework_changelog` entries seeded.
 - 171A r3 / 172A r3 assessment-objective loading (artifacts pinned, 157 objective-level
   refs to 800-53A 5.1.1 available) — assessment-procedure depth for the r3 line.
 - **SRG-level ingestion (queued, Phase 21 source-class checklist):** STIG rule `version_id`s
