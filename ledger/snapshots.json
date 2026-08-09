@@ -211,6 +211,13 @@
       "sha": "670d9a2",
       "date": "2026-08-09",
       "known_good": true
+    },
+    {
+      "phase": "34-pre",
+      "name": "Pre-remediation baseline (phase 32 close + phase 33 audit)",
+      "sha": "b7e0369",
+      "date": "2026-08-09",
+      "known_good": true
     }
   ]
 }
