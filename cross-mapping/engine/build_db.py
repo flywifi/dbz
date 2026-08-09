@@ -924,6 +924,14 @@ def load_anticipated_updates(path: Path) -> list[dict]:
         if terminal is not None and terminal not in _PROV_TERMINAL:
             raise SystemExit(f"anticipated_updates: record {r.get('id')} has invalid "
                              f"terminal state {terminal!r} (allowed: {sorted(_PROV_TERMINAL)})")
+        # URL well-formedness applies to EVERY terminal state: DEAD_END exempts content
+        # matching, never the citation itself (regulatory-provenance.md §2). Validation
+        # tightening only — no schema shape change, so SCHEMA_VERSION is unaffected.
+        url = prov.get("primary_source_url")
+        if url is not None and not str(url).startswith(("http://", "https://")):
+            raise SystemExit(f"anticipated_updates: record {r.get('id')} provenance URL "
+                             f"must be http(s) and non-empty for every terminal state "
+                             f"(got {url!r})")
         rows.append({
             "id": r.get("id", ""),
             "feed_id": r.get("feed_id", ""),

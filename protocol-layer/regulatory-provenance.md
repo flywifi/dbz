@@ -41,6 +41,11 @@ Provenance for a claim ends in exactly one of:
 | `ORPHAN_CONFIRMED` | Escape exhausted: nothing predates the temporal floor | Report as a finding, never assert as fact; requires §3 moves 1–3 logged + a recorded floor |
 | `CIRCULAR_UNRESOLVED` | Budget spent before a loop resolved | State depth reached and moves attempted |
 
+`primary_source_url` must be a non-empty http(s) URL in EVERY terminal state — `DEAD_END`
+exempts content matching, never the citation itself (an unretrievable target still has a
+last attempted hop, and an empty URL makes the block unauditable). The build enforces this
+in `load_anticipated_updates()` alongside the enum checks.
+
 An environmentally blocked escape (bot wall, unreachable archive) may NOT be promoted to
 `ORPHAN_CONFIRMED` — record the blocked move and keep the weaker state. Absence of origin is
 weak evidence against a claim and strong evidence against citing it.
