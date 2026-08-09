@@ -72,7 +72,10 @@ def _open_db(db_path: Path) -> sqlite3.Connection:
 _FW_ALIASES: dict[str, list[str]] = {
     "iso": ["ISO/IEC 27001:2022", "ISO 27001/2 (2022)", "ISO/IEC 27001"],
     "iso27001": ["ISO/IEC 27001:2022", "ISO 27001/2 (2022)"],
-    "cmmc": ["CMMC 2.0", "NIST SP 800-171 r2", "CMMC 2.0 / NIST 800-171", "CMMC"],
+    # _resolve_fw serves unified_mappings-backed commands only (reverse/forward);
+    # spine labels don't exist there. Master-surface alias behavior — including the
+    # cmmc→r2 fan-out — lives in _MASTER_FW_GROUPS / _master_fw_set.
+    "cmmc": ["CMMC 2.0 / NIST 800-171", "CMMC"],
     "hitrust": ["HITRUST CSF", "HITRUST e1", "HITRUST"],
     "csf": ["NIST CSF 2.0", "NIST CSF"],
     "nist-csf": ["NIST CSF 2.0", "NIST CSF"],
@@ -81,7 +84,7 @@ _FW_ALIASES: dict[str, list[str]] = {
     "soc2": ["SOC 2"],
     "soc1": ["SOC 1"],
     "daapm": ["DAAPM Appendix A (DoD DCSA)"],
-    "800-171": ["NIST SP 800-171 r2", "NIST SP 800-171", "NIST SP 800-171 Rev 3", "CMMC 2.0 / NIST 800-171"],
+    "800-171": ["NIST SP 800-171", "NIST SP 800-171 Rev 3", "CMMC 2.0 / NIST 800-171"],
     "iot": ["NIST SP 800-213A (IoT)"],
     "appendix-j": ["NIST SP 800-53 Rev 4 (Appendix J)"],
 }
@@ -387,6 +390,29 @@ def _master_canon_fw(conn: sqlite3.Connection, name: str) -> str | None:
     return None
 
 
+# Aliases whose program reality spans multiple master-surface labels. Applied ONLY
+# when the user typed the alias — an exact label stays exact. CMMC: Level 2 assesses
+# against NIST SP 800-171 r2 (May-2024 class deviation; reaffirmed by the Jul-2026
+# suspension memo), so the program's master data spans both labels. The 171r3
+# transition phase revisits this group when the assessment basis changes.
+_MASTER_FW_GROUPS = {"cmmc": ["CMMC 2.0", "NIST SP 800-171 r2"]}
+
+
+def _master_fw_set(conn: sqlite3.Connection, name: str) -> tuple[list[str], str]:
+    """Resolve a user-typed framework name for the master surface. Returns
+    (labels, note): a group alias fans out to every member label (each still
+    canonicalized through the framework_labels authority); anything else resolves
+    to a single canonical. `note` explains a fan-out so the answer is self-describing."""
+    group = _MASTER_FW_GROUPS.get(name.strip().lower())
+    if group:
+        labels = [c for c in (_master_canon_fw(conn, g) for g in group) if c]
+        if labels:
+            return labels, (f"'{name}' spans {' + '.join(labels)} "
+                            "(CMMC L2 assesses against 800-171 r2 — May-2024 class deviation)")
+    c = _master_canon_fw(conn, name)
+    return ([c] if c else []), ""
+
+
 def _master_soc1_gap(fmt: str) -> int:
     gap = {
         "tool": "master-crosswalk",
@@ -427,34 +453,41 @@ def cmd_master(args, conn: sqlite3.Connection) -> int:
     fa_in, fb_in = getattr(args, "framework_a", None), getattr(args, "framework_b", None)
 
     if control and fw_single:  # ── control mode ────────────────────────────────
-        fw = _master_canon_fw(conn, fw_single)
-        if fw == "SOC 1":
+        fws, note = _master_fw_set(conn, fw_single)
+        if "SOC 1" in fws:
             return _master_soc1_gap(args.format)
-        if not fw:
+        if not fws:
             print(f"[input error] unknown framework: {fw_single!r}", file=sys.stderr)
             return 1
+        ph = ",".join("?" * len(fws))
         rows = conn.execute(f"""
             SELECT * FROM master_mappings
-            WHERE ((fw_a = ? AND native_a = ?) OR (fw_b = ? AND native_b = ?))
+            WHERE ((fw_a IN ({ph}) AND native_a = ?) OR (fw_b IN ({ph}) AND native_b = ?))
               AND (CASE tier {tier_case} END) <= ?{ev_cond}
             ORDER BY CASE tier {tier_case} END, fw_a, native_a, fw_b, native_b
-            LIMIT ?""", (fw, control, fw, control, max_rank, *ev_params, limit)).fetchall()
-        header = f"{fw} {control}: {len(rows)} master mapping(s)"
+            LIMIT ?""", (*fws, control, *fws, control, max_rank, *ev_params, limit)).fetchall()
+        header = f"{' + '.join(fws)} {control}: {len(rows)} master mapping(s)" + \
+                 (f" [{note}]" if note else "")
     elif fa_in and fb_in:  # ── pair mode ───────────────────────────────────────
-        fa, fb = _master_canon_fw(conn, fa_in), _master_canon_fw(conn, fb_in)
-        if "SOC 1" in (fa, fb):
+        fas, note_a = _master_fw_set(conn, fa_in)
+        fbs, note_b = _master_fw_set(conn, fb_in)
+        if "SOC 1" in fas or "SOC 1" in fbs:
             return _master_soc1_gap(args.format)
-        if not fa or not fb:
-            missing = [x for x, r in ((fa_in, fa), (fb_in, fb)) if not r]
+        if not fas or not fbs:
+            missing = [x for x, r in ((fa_in, fas), (fb_in, fbs)) if not r]
             print(f"[input error] unknown framework(s): {missing}", file=sys.stderr)
             return 1
+        pha, phb = ",".join("?" * len(fas)), ",".join("?" * len(fbs))
         rows = conn.execute(f"""
             SELECT * FROM master_mappings
-            WHERE ((fw_a = ? AND fw_b = ?) OR (fw_a = ? AND fw_b = ?))
+            WHERE ((fw_a IN ({pha}) AND fw_b IN ({phb}))
+                OR (fw_a IN ({phb}) AND fw_b IN ({pha})))
               AND (CASE tier {tier_case} END) <= ?{ev_cond}
             ORDER BY CASE tier {tier_case} END, fw_a, native_a, fw_b, native_b
-            LIMIT ?""", (fa, fb, fb, fa, max_rank, *ev_params, limit)).fetchall()
-        header = f"{fa} <-> {fb}: {len(rows)} master mapping(s)"
+            LIMIT ?""", (*fas, *fbs, *fbs, *fas, max_rank, *ev_params, limit)).fetchall()
+        notes = "; ".join(n for n in (note_a, note_b) if n)
+        header = f"{' + '.join(fas)} <-> {' + '.join(fbs)}: {len(rows)} master mapping(s)" + \
+                 (f" [{notes}]" if notes else "")
     elif fa_in and (getattr(args, "fedramp", None) or getattr(args, "cui", False)
                     or getattr(args, "privacy", False) or getattr(args, "family", None)):
         # ── audit-scope mode: which of A's requirements touch the in-scope

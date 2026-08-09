@@ -2,7 +2,7 @@
 """
 run_scenarios.py — pinned end-to-end scenario battery.
 
-Unit tests check parts; this battery checks that the ten questions users
+Unit tests check parts; this battery checks that the eleven questions users
 actually ask still return the expected ANSWERS through the full pipeline
 (loaders -> assemble -> grc.db -> query). Any regression surfaces as "the
 SOC2xISO answer changed" — the user-meaningful signal.
@@ -100,6 +100,17 @@ def main() -> int:
     # 10. Strong consensus pairs (measured 845; band +-10% — voters can shift).
     n = c.execute("SELECT COUNT(*) FROM consensus_edges WHERE tier='strong'").fetchone()[0]
     check(760 <= n <= 930, f"scenario 10: strong consensus pairs in band (measured 845; got {n})")
+
+    # 11. The cmmc alias reaches the master surface's r2-labeled rows (phase-34 fix
+    #     for the dead-alias regression: 'cmmc' fans out to CMMC 2.0 + 800-171 r2
+    #     per the May-2024 class deviation; measured 105 SOC2 pairs, band +-15%).
+    d = json.loads(q("master", "--framework-a", "cmmc", "--framework-b", "SOC 2",
+                     "--format", "json", "--limit", "500"))
+    rows11 = d.get("rows", [])
+    check(89 <= len(rows11) <= 121,
+          f"scenario 11: cmmc-alias master answer nonzero and in band (measured 105; got {len(rows11)})")
+    check(any("NIST SP 800-171 r2" in (r.get("fw_a"), r.get("fw_b")) for r in rows11),
+          "scenario 11: answer includes r2-labeled rows (the exact shipped regression)")
 
     c.close()
     print("\nSCENARIO BATTERY:", "PASS" if not FAILS else f"FAIL ({len(FAILS)})")
