@@ -31,18 +31,25 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Continuous model releases; track docs.anthropic.com/changelog"
+      "notes": "Continuous model releases; track docs.anthropic.com/changelog. docs.anthropic.com renders as a JS application (title only in static fetch, retrieved 2026-08-09); model-lineup claims not re-verifiable without a browser — THIN.",
+      "provenance": {
+        "primary_source_url": "https://docs.anthropic.com/en/api/changelog",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Documentation | Claude Platform",
+        "support": "THIN",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-canada-pipeda",
       "feed_id": "canada-pipeda",
       "authority": "primary",
-      "artifact": "CPPA via Bill C-27 pending Royal Assent",
-      "current_version": "PIPEDA current; Bill C-27 in progress",
+      "artifact": "Federal privacy reform (Bill C-27 lapsed, not enacted)",
+      "current_version": "PIPEDA current; Bill C-27 lapsed with the prior session",
       "expected_type": "revision",
-      "lifecycle_stage": "ipd",
+      "lifecycle_stage": null,
       "expected_window": "no_fixed_date",
       "confidence": "low",
       "trigger_signal": "new published version / draft / advisory at the authority source",
@@ -58,11 +65,18 @@
         "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/index.xml"
       ],
       "dependent_of": null,
-      "status": "draft_observed",
+      "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "CPPA via Bill C-27 pending Royal Assent"
+      "notes": "LEGISinfo lists C-27 under 'a prior session' (44th Parliament, 1st session) with last status 'At consideration in committee' (retrieved 2026-08-09) — the bill was not enacted and lapsed when that session ended; no successor bill verified. PIPEDA remains the in-force statute.",
+      "provenance": {
+        "primary_source_url": "https://www.parl.ca/legisinfo/en/bill/44-1/c-27",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "The information below relates to a prior session … At consideration in committee in the House of Commons",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-ccpa-cppa",
@@ -89,23 +103,26 @@
       "dependent_of": null,
       "status": "draft_observed",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "draft_status=second_draft"
+      "notes": "draft_status=second_draft",
+      "provenance": {
+        "primary_source_url": "https://cppa.ca.gov/regulations/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "California voters passed Proposition 24, which amended the California Consumer Privacy Act of 2018",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-circia",
       "feed_id": "circia",
       "authority": "primary",
-      "artifact": "Final Rule May 2026",
+      "artifact": "CIRCIA Final Rule",
       "current_version": "NPRM (Mar 2024); Final Rule pending",
       "expected_type": "major_rev",
       "lifecycle_stage": "ipd",
-      "expected_window": {
-        "earliest": "2026-05-01",
-        "latest": "2026-05-31",
-        "basis": "Final Rule May 2026"
-      },
+      "expected_window": "no_fixed_date",
       "confidence": "med",
       "trigger_signal": "new published version / draft / advisory at the authority source",
       "detection": {
@@ -122,9 +139,16 @@
       "dependent_of": null,
       "status": "draft_observed",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Final Rule May 2026"
+      "notes": "Final Rule did not publish in the anticipated May-2026 window: the Federal Register's newest CIRCIA rulemaking documents (retrieved 2026-08-09) are town-hall Proposed Rule notices (2026-05-26, 2026-02-13) and no CIRCIA document of type Rule exists — CISA reopened public input instead. Window moved to no_fixed_date; NPRM (Apr 2024) remains the latest substantive stage. cisa.gov/circia itself returns Access Denied to static fetchers.",
+      "provenance": {
+        "primary_source_url": "https://www.federalregister.gov/api/v1/documents.json?conditions[term]=CIRCIA&conditions[agencies][]=homeland-security-department&conditions[type][]=PRORULE&conditions[type][]=RULE&order=newest",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Town Hall Meetings To Provide Input on Cyber Incident Reporting for Critical Infrastructure Act … \"publication_date\":\"2026-05-26\"",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-cisa-ai-security",
@@ -152,9 +176,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Ongoing joint advisories; track cisa.gov/ai"
+      "notes": "Ongoing joint advisories; track cisa.gov/ai. cisa.gov returns 403 to static fetchers (Akamai bot wall) — guidance-currency claims not re-verifiable this pass; obstacle recorded per regulatory-provenance.md §2.",
+      "provenance": {
+        "primary_source_url": "https://www.cisa.gov/ai",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "HTTP 403 from www.cisa.gov (both recorded source URLs) on 2026-08-09",
+        "support": "THIN",
+        "terminal_state": "DEAD_END"
+      }
     },
     {
       "id": "au-csa-ccm",
@@ -181,9 +212,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 180,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "CCM v4.1 catalog/CAIQ published 2026-01; mappings explicitly 'not available yet'. v4.0.x withdrawn Jan 2028 — mappings must land before then. Seeded from the Phase-24 traversal (catalog-first, mappings-later pattern)."
+      "notes": "CCM v4.1 catalog/CAIQ published 2026-01; mappings explicitly 'not available yet'. v4.0.x withdrawn Jan 2028 — mappings must land before then. Seeded from the Phase-24 traversal (catalog-first, mappings-later pattern).",
+      "provenance": {
+        "primary_source_url": "https://cloudsecurityalliance.org/artifacts/cloud-controls-matrix-v4-1",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Cloud Controls Matrix and CAIQ v4.1",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-csa-star-ccm5",
@@ -211,9 +249,16 @@
       "dependent_of": null,
       "status": "draft_observed",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "draft_status=ipd"
+      "notes": "draft_status=ipd. STAR page (retrieved 2026-08-09) still operates on CAIQ v4; the 'v5 in development' claim was not re-verifiable there — THIN pending a CCM v5 origin signal.",
+      "provenance": {
+        "primary_source_url": "https://cloudsecurityalliance.org/star/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "using AI to automatically evaluate CAIQ v4 submissions",
+        "support": "THIN",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-disa-cci-quarterly",
@@ -243,9 +288,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 30,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "CCI List only (the definition source — core to this ecosystem). STIGs are explicitly out of scope: no STIG anticipation, no STIG data update."
+      "notes": "CCI List only (the definition source — core to this ecosystem). STIGs are explicitly out of scope: no STIG anticipation, no STIG data update. DISA hosts sit behind an SSO/JavaScript wall; the quarterly CCI drop could not be confirmed or refuted this pass — the past-window escalation stands. The pinned CCI List 2025-01-23 artifact is unaffected (committed).",
+      "provenance": {
+        "primary_source_url": "https://public.cyber.mil/stigs/cci/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "cyber.mil responds 'Home Realm Discovery JavaScript required' — an SSO/JS wall — on 2026-08-09",
+        "support": "THIN",
+        "terminal_state": "DEAD_END"
+      }
     },
     {
       "id": "au-eu-ai-act",
@@ -254,7 +306,7 @@
       "artifact": "GPAI implementing acts Aug 2025",
       "current_version": "Regulation (EU) 2024/1689 (in force Aug 2024, phased to 2027)",
       "expected_type": "revision",
-      "lifecycle_stage": null,
+      "lifecycle_stage": "final",
       "expected_window": {
         "earliest": "2025-08-01",
         "latest": "2025-08-31",
@@ -274,11 +326,18 @@
         "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
       ],
       "dependent_of": null,
-      "status": "watching",
+      "status": "materialized",
       "escalate_after_days": 120,
-      "last_checked": null,
-      "last_change_detected": null,
-      "notes": "GPAI implementing acts Aug 2025; high-risk implementing acts 2026-2027"
+      "last_checked": "2026-08-09",
+      "last_change_detected": "2025-08",
+      "notes": "CLOSED: the GPAI application date passed by the regulation's own text — Regulation (EU) 2024/1689 recital states GPAI-provider obligations 'should apply from 2 August 2025' (EUR-Lex, retrieved 2026-08-09); high-risk phases through 2026-2027 are tracked by au-eu-ai-act-impl.",
+      "provenance": {
+        "primary_source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=OJ:L_202401689",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "obligations for providers of general-purpose AI models should apply from 2 August 2025",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-eu-ai-act-impl",
@@ -306,9 +365,16 @@
       "dependent_of": null,
       "status": "draft_observed",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "draft_status=ipd"
+      "notes": "draft_status=ipd",
+      "provenance": {
+        "primary_source_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Prohibitions 1-8 became effective in February 2025",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-fedramp",
@@ -336,9 +402,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Superseded context: the Consolidated Rules 2026 timeline is now tracked by the au-fedramp-* records (Class pipelines, mandatory adoption 2027-01-01, end of new Rev5 certs 2027-06-11)."
+      "notes": "Superseded context: the Consolidated Rules 2026 timeline is now tracked by the au-fedramp-* records (Class pipelines, mandatory adoption 2027-01-01, end of new Rev5 certs 2027-06-11). 20x page (retrieved 2026-08-09) states rules finalized for Classes A, B, and C; Class D not named there.",
+      "provenance": {
+        "primary_source_url": "https://www.fedramp.gov/20x/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "The full rules for FedRAMP 20x Certification are now finalized for Class A, Class B, and Class C",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-fedramp-20x",
@@ -366,9 +439,16 @@
       "dependent_of": null,
       "status": "draft_observed",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Superseded context: canonical dataset now ingested (fedramp-consolidated-rules 2026.07.06.01); revisions tracked by au-fedramp-rules-revision."
+      "notes": "Superseded context: canonical dataset now ingested (fedramp-consolidated-rules 2026.07.06.01); revisions tracked by au-fedramp-rules-revision.",
+      "provenance": {
+        "primary_source_url": "https://www.fedramp.gov/20x/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "The full rules for FedRAMP 20x Certification are now finalized for Class A, Class B, and Class C",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-ffiec-cat",
@@ -393,9 +473,16 @@
       "dependent_of": null,
       "status": "superseded",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "draft_status=retired"
+      "notes": "draft_status=retired. OCC Bulletin 2024-25 (retrieved 2026-08-09): the FFIEC would 'sunset the Cybersecurity Assessment Tool (CAT) on August 31, 2025' — the sunset date has passed; the superseded status is origin-confirmed. ffiec.gov itself returned 403 to static fetchers.",
+      "provenance": {
+        "primary_source_url": "https://www.occ.treas.gov/news-issuances/bulletins/2024/bulletin-2024-25.html",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "sunset the Cybersecurity Assessment Tool (CAT) on August 31, 2025",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-fips-140-3",
@@ -418,9 +505,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Not announced; post-quantum algorithm updates anticipated"
+      "notes": "Not announced; post-quantum algorithm updates anticipated",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/fips/140-3/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: March 22, 2019",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-fips-199",
@@ -443,9 +537,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Not announced; stable since 2004"
+      "notes": "Not announced; stable since 2004",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/fips/199/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: February 2004",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-fips-200",
@@ -468,9 +569,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Not announced; stable since 2006"
+      "notes": "Not announced; stable since 2006",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/fips/200/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: March 2006",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-fips-201-3",
@@ -493,9 +601,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "FIPS 201-4 (not announced)"
+      "notes": "FIPS 201-4 (not announced)",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/fips/201-3/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: January 2022",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-gdpr",
@@ -522,9 +637,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "draft_status=amendment_proposed"
+      "notes": "draft_status=amendment_proposed",
+      "provenance": {
+        "primary_source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "REGULATION (EU) 2016/679 OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL of 27 April 2016",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-google-gemini-api",
@@ -552,9 +674,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Continuous model and API updates; track ai.google.dev/gemini-api/docs/release-notes"
+      "notes": "Continuous model and API updates; track ai.google.dev/gemini-api/docs/release-notes",
+      "provenance": {
+        "primary_source_url": "https://ai.google.dev/gemini-api/docs",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Generate and edit highly contextual images natively with Gemini 2.5 Flash Image",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-hipaa",
@@ -623,9 +752,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "v11.6.0 (anticipated 2026; adds new framework columns)"
+      "notes": "v11.6.0 (anticipated 2026; adds new framework columns). hitrustalliance.net restructured: /csf/ and /csf/csf-suite-updates/ return 404; the framework page carries no version string, so v11.8.0 currency was not re-verifiable this pass — THIN.",
+      "provenance": {
+        "primary_source_url": "https://hitrustalliance.net/hitrust-framework",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "HITRUST Framework for Cybersecurity and Compliance Success",
+        "support": "THIN",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-huggingface-hub",
@@ -653,9 +789,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Continuous; track huggingface/hub-docs GitHub"
+      "notes": "Continuous; track huggingface/hub-docs GitHub. Hub docs reachable (retrieved 2026-08-09) but carry no spec version string; the pinned 'Model Card spec v0.5' was not re-verifiable — THIN.",
+      "provenance": {
+        "primary_source_url": "https://huggingface.co/docs/hub/model-cards",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Model cards are files that accompany the models and provide handy information",
+        "support": "THIN",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-ieee-ai-standards",
@@ -687,9 +830,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "P3119 (Procurement of AI, anticipated 2026); P2840 (Responsible AI, anticipated 2026)"
+      "notes": "P3119 (Procurement of AI, anticipated 2026); P2840 (Responsible AI, anticipated 2026). IEEE pages render client-side/entitlement-gated; P7000-series status not re-verifiable this pass.",
+      "provenance": {
+        "primary_source_url": "https://standards.ieee.org/industry-connections/autonomous-systems/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "ieeexplore.ieee.org returned a contentless script-rendered browse stub; standards.ieee.org path 404 — 2026-08-09",
+        "support": "THIN",
+        "terminal_state": "DEAD_END"
+      }
     },
     {
       "id": "au-ietf-oauth",
@@ -717,9 +867,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "OAuth 2.1 finalization complete; subsequent profile RFCs TBD"
+      "notes": "OAuth 2.1 finalization complete; subsequent profile RFCs TBD. IETF OAuth WG charter (retrieved 2026-08-09) lists OAuth 2.1 as still being finalized — the current_version line's attribution of RFC 9700 to 'OAuth 2.1' needs review at next refresh (RFC 9700 is a security-BCP document; 2.1 itself is not yet an RFC per the charter).",
+      "provenance": {
+        "primary_source_url": "https://datatracker.ietf.org/wg/oauth/about/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Finalizing OAuth 2.1 to consolidate the core framework and incorporate established security best practices",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-india-dpdp",
@@ -745,9 +902,16 @@
       "dependent_of": null,
       "status": "draft_observed",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "draft_status=ipd"
+      "notes": "draft_status=ipd. MeitY pages render client-side and returned no static content; DPDP implementing-rules status not re-verifiable this pass.",
+      "provenance": {
+        "primary_source_url": "https://www.meity.gov.in/writereaddata/files/Digital%20Personal%20Data%20Protection%20Act%202023.pdf",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "meity.gov.in pages returned empty script-rendered shells on 2026-08-09",
+        "support": "THIN",
+        "terminal_state": "DEAD_END"
+      }
     },
     {
       "id": "au-iso-15408",
@@ -770,9 +934,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Not announced"
+      "notes": "Not announced. Common Criteria portal blocked static fetchers; CC edition currency (recorded v3.1 Rev 5) was not re-verifiable this pass — flag for a browser-based refresh, do not rewrite the version without an origin read.",
+      "provenance": {
+        "primary_source_url": "",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "HTTP 403 from www.commoncriteriaportal.org/cc/ on 2026-08-09",
+        "support": "THIN",
+        "terminal_state": "DEAD_END"
+      }
     },
     {
       "id": "au-iso-27001",
@@ -803,9 +974,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Amendment cycle anticipated 2026-2027"
+      "notes": "Amendment cycle anticipated 2026-2027. iso.org sits behind a Cloudflare JS challenge; the 2022+Amd1 currency claim rests on the committed edition data, not a live read — THIN until a browser-based re-pin.",
+      "provenance": {
+        "primary_source_url": "https://www.iso.org/standard/27001",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "iso.org served a JS challenge page: 'Just a moment... Enable JavaScript and cookies to continue' on 2026-08-09",
+        "support": "THIN",
+        "terminal_state": "DEAD_END"
+      }
     },
     {
       "id": "au-iso-jtc1-sc42",
@@ -837,16 +1015,23 @@
       "dependent_of": null,
       "status": "materialized",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "ISO/IEC 42005:2025 (AI system impact assessment) PUBLISHED — materialized. Sibling artifacts (42002 AI system engineering, extensions to 42006) remain anticipated and are tracked here."
+      "notes": "ISO/IEC 42005:2025 (AI system impact assessment) PUBLISHED — materialized. Sibling artifacts (42002 AI system engineering, extensions to 42006) remain anticipated and are tracked here. iso.org blocked static fetchers; the record is already materialized (42001:2023 / 23894:2023 published) and closed — the stamp records that the close-out claims were not re-verified live this pass.",
+      "provenance": {
+        "primary_source_url": "https://www.iso.org/committee/6794475.html",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "HTTP 403 from iso.org committee pages on 2026-08-09",
+        "support": "THIN",
+        "terminal_state": "DEAD_END"
+      }
     },
     {
       "id": "au-mcp-spec",
       "feed_id": "mcp-spec",
       "authority": "Anthropic (spec steward); open standard via modelcontextprotocol.io",
       "artifact": "Incremental revisions tracked by schema date",
-      "current_version": "2025-03-26 (schema version date; published Nov 2024)",
+      "current_version": "2025-06-18 (spec version)",
       "expected_type": "revision",
       "lifecycle_stage": null,
       "expected_window": "no_fixed_date",
@@ -867,9 +1052,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
-      "last_change_detected": null,
-      "notes": "Incremental revisions tracked by schema date"
+      "last_checked": "2026-08-09",
+      "last_change_detected": "2025-06-18",
+      "notes": "Incremental revisions tracked by schema date. Spec site's current version is 2025-06-18, listing changes 'since the previous revision, 2025-03-26' (retrieved 2026-08-09) — the recorded 2025-03-26 was one revision stale; repaired.",
+      "provenance": {
+        "primary_source_url": "https://modelcontextprotocol.io/specification/2025-06-18/changelog",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Version 2025-06-18 … since the previous revision, 2025-03-26",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-mitre-atlas",
@@ -897,9 +1089,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Quarterly cadence (v5.0 anticipated)"
+      "notes": "Quarterly cadence (v5.0 anticipated). atlas.mitre.org is a JS application (title-only static render). The atlas-data dist ATLAS.yaml (retrieved 2026-08-09) carries 'version: 5.6.0' under a deprecation header ('no longer being updated') — the recorded v4.8.0 is behind at least 5.6.0, and the live current version needs a browser-based origin re-pin; cv left until then.",
+      "provenance": {
+        "primary_source_url": "https://raw.githubusercontent.com/mitre-atlas/atlas-data/main/dist/ATLAS.yaml",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "This version of the ATLAS data is deprecated … version: 5.6.0",
+        "support": "THIN",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-800-171",
@@ -927,9 +1126,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Rev 4 (not yet announced; monitor csrc.nist.gov post-2027)"
+      "notes": "Rev 4 (not yet announced; monitor csrc.nist.gov post-2027)",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/sp/800/171/r3/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: May 2024 … Supersedes: SP 800-171 Rev. 2 (01/28/2021)",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-800-172",
@@ -997,9 +1203,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Rev 5.2 or Rev 6 (not yet announced; monitor csrc.nist.gov)"
+      "notes": "Rev 5.2 or Rev 6 (not yet announced; monitor csrc.nist.gov)",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "On August 27, 2025, NIST issued a minor release of SP 800-53 (Release 5.2.0)",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-csf",
@@ -1027,9 +1240,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Minor update or new Profiles (not yet announced)"
+      "notes": "Minor update or new Profiles (not yet announced)",
+      "provenance": {
+        "primary_source_url": "https://www.nist.gov/cyberframework",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "CSF 2.0 Resource Center",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-csrc-drafts",
@@ -1055,18 +1275,25 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 365,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "800-53 now ships minor 5.x.y releases (5.2.0 = Aug 2025); an AI-focused update is signaled with no fixed date. The catalog is the ecosystem's spine — highest-priority watch."
+      "notes": "800-53 now ships minor 5.x.y releases (5.2.0 = Aug 2025); an AI-focused update is signaled with no fixed date. The catalog is the ecosystem's spine — highest-priority watch.",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/projects/risk-management",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "NIST SP 800-53 Release 5.2.0 has been finalized",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-ir-8477",
       "feed_id": "nist-ir-8477",
       "authority": "NIST",
       "artifact": "Final",
-      "current_version": "Initial Public Draft (Oct 2022)",
+      "current_version": "Final (Feb 2024)",
       "expected_type": "revision",
-      "lifecycle_stage": "ipd",
+      "lifecycle_stage": "final",
       "expected_window": "no_fixed_date",
       "confidence": "low",
       "trigger_signal": "new published version / draft / advisory at the authority source",
@@ -1078,11 +1305,18 @@
       "poll_frequency": "quarterly",
       "source_urls": [],
       "dependent_of": null,
-      "status": "draft_observed",
+      "status": "materialized",
       "escalate_after_days": 120,
-      "last_checked": null,
-      "last_change_detected": null,
-      "notes": "Final (not yet released)"
+      "last_checked": "2026-08-09",
+      "last_change_detected": "2024-02",
+      "notes": "CLOSED: IR 8477 published as final. CSRC page states 'Date Published: February 2024' (retrieved 2026-08-09); the record's 'Final (not yet released)' watch had gone stale — the final existed for over two years.",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/ir/8477/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: February 2024",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-sp-800-160-2",
@@ -1105,16 +1339,23 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Not announced"
+      "notes": "Not announced",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/sp/800/160/v2/r1/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: December 2021 … Supersedes: SP 800-160 Vol. 2 (11/27/2019)",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-sp-800-166",
       "feed_id": "nist-sp-800-166",
       "authority": "NIST",
       "artifact": "Not announced",
-      "current_version": "Final (Oct 2016)",
+      "current_version": "Final (Jun 2016)",
       "expected_type": "revision",
       "lifecycle_stage": null,
       "expected_window": "no_fixed_date",
@@ -1130,9 +1371,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Not announced"
+      "notes": "Not announced. CSRC page states Date Published: June 2016 — the prior 'Oct 2016' month was drift; corrected from origin.",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/sp/800/166/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: June 2016",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-sp-800-189",
@@ -1155,9 +1403,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Not announced"
+      "notes": "Not announced",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/sp/800/189/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: December 2019",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-sp-800-213a",
@@ -1180,9 +1435,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Not announced"
+      "notes": "Not announced",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/sp/800/213/a/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: November 2021",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-sp-800-37",
@@ -1205,9 +1467,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Rev 3 (not announced; monitor csrc.nist.gov)"
+      "notes": "Rev 3 (not announced; monitor csrc.nist.gov)",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/sp/800/37/r2/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: December 2018 … Supersedes: SP 800-37 Rev. 1",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-sp-800-56a",
@@ -1230,9 +1499,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Not announced; monitor for post-quantum updates"
+      "notes": "Not announced; monitor for post-quantum updates",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/sp/800/56/a/r3/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: April 2018",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-sp-800-57pt1",
@@ -1255,16 +1531,23 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Rev 6 (not announced; post-quantum transition likely trigger)"
+      "notes": "Rev 6 (not announced; post-quantum transition likely trigger)",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: May 2020",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-sp-800-63",
       "feed_id": "nist-sp-800-63",
       "authority": "NIST",
       "artifact": "Rev 4",
-      "current_version": "Rev 4 (final, Aug 2025)",
+      "current_version": "Rev 4 (final, Jul 2025)",
       "expected_type": "major_rev",
       "lifecycle_stage": null,
       "expected_window": {
@@ -1284,16 +1567,23 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Rev 4 (800-63-4 in development; anticipated 2026)"
+      "notes": "Rev 4 (800-63-4 in development; anticipated 2026). CSRC page states Date Published: July 2025 — the prior 'Aug 2025' month was drift; corrected from origin.",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/sp/800/63/4/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: July 2025 … Supersedes: SP 800-63-3",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-sp-800-63a",
       "feed_id": "nist-sp-800-63a",
       "authority": "NIST",
       "artifact": "Rev 4",
-      "current_version": "Rev 4 (final, Aug 2025)",
+      "current_version": "Rev 4 (final, Jul 2025)",
       "expected_type": "major_rev",
       "lifecycle_stage": null,
       "expected_window": "no_fixed_date",
@@ -1309,16 +1599,23 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Rev 4 (companion to 800-63-4)"
+      "notes": "Rev 4 (companion to 800-63-4). CSRC page states Date Published: July 2025 — the prior 'Aug 2025' month was drift; corrected from origin.",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/sp/800/63/a/4/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: July 2025 … Supersedes: SP 800-63A",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-sp-800-63b",
       "feed_id": "nist-sp-800-63b",
       "authority": "NIST",
       "artifact": "Rev 4",
-      "current_version": "Rev 4 (final, Aug 2025)",
+      "current_version": "Rev 4 (final, Jul 2025)",
       "expected_type": "major_rev",
       "lifecycle_stage": null,
       "expected_window": {
@@ -1338,9 +1635,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Rev 4 (companion to 800-63-4; anticipated 2026)"
+      "notes": "Rev 4 (companion to 800-63-4; anticipated 2026). CSRC page states Date Published: July 2025 — the prior 'Aug 2025' month was drift; corrected from origin.",
+      "provenance": {
+        "primary_source_url": "https://csrc.nist.gov/pubs/sp/800/63/b/4/final",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Date Published: July 2025 … Supersedes: SP 800-63B",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nsm-8",
@@ -1365,16 +1669,23 @@
       "dependent_of": null,
       "status": "superseded",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "draft_status=retired"
+      "notes": "draft_status=retired. The NSM-8 page is gone from whitehouse.gov (404) — consistent with the recorded June-2026 rescission, but the rescission instrument itself was not retrieved this pass; the superseded status stands on its original evidence.",
+      "provenance": {
+        "primary_source_url": "https://www.whitehouse.gov/briefing-room/statements-releases/2021/07/28/national-security-memorandum-on-improving-cybersecurity-for-critical-infrastructure-control-systems/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "HTTP 404 from the recorded whitehouse.gov NSM-8 URL on 2026-08-09",
+        "support": "THIN",
+        "terminal_state": "DEAD_END"
+      }
     },
     {
       "id": "au-openai-api",
       "feed_id": "openai-api",
       "authority": "OpenAI",
       "artifact": "Continuous model and API updates",
-      "current_version": "GPT-4o, o3 series (2025); API v1",
+      "current_version": "GPT-5.6 series (Jul 2026); API v1",
       "expected_type": "revision",
       "lifecycle_stage": null,
       "expected_window": "no_fixed_date",
@@ -1395,16 +1706,23 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
-      "last_change_detected": null,
-      "notes": "Continuous model and API updates; track platform.openai.com/docs/changelog"
+      "last_checked": "2026-08-09",
+      "last_change_detected": "2026-07-30",
+      "notes": "Continuous model and API updates; track platform.openai.com/docs/changelog. Changelog (retrieved 2026-08-09) shows GPT-5.6-generation models as of July 2026 — the recorded 'GPT-4o, o3 series (2025)' was stale; repaired.",
+      "provenance": {
+        "primary_source_url": "https://platform.openai.com/docs/changelog",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Jul 30 Update gpt-5.6-sol gpt-5.6-terra gpt-5.6-luna",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-openapi-spec",
       "feed_id": "openapi-spec",
       "authority": "OpenAPI Initiative (Linux Foundation)",
       "artifact": "OAS 4.0",
-      "current_version": "3.1.1 (Sep 2024); 4.0 (Moonwalk, in development)",
+      "current_version": "3.2.0 (Sep 2025); 4.0 (Moonwalk, in development)",
       "expected_type": "minor_rel",
       "lifecycle_stage": null,
       "expected_window": {
@@ -1428,9 +1746,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
-      "last_change_detected": null,
-      "notes": "OAS 4.0 (Moonwalk) — target 2026"
+      "last_checked": "2026-08-09",
+      "last_change_detected": "2025-09-19",
+      "notes": "OAS 4.0 (Moonwalk) — target 2026. spec.openapis.org version history (retrieved 2026-08-09) lists 3.2.0 released 2025-09-19 (with patch 3.1.2 the same day) — the recorded 3.1.1 was stale; repaired. OAS 4.0 watch unchanged.",
+      "provenance": {
+        "primary_source_url": "https://spec.openapis.org/oas/latest.html",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Release of the OpenAPI Specification 3.2.0 … Patch release of the OpenAPI Specification 3.1.2",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-owasp-asvs",
@@ -1458,18 +1783,25 @@
       "dependent_of": null,
       "status": "draft_observed",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "draft_status=second_draft"
+      "notes": "draft_status=second_draft",
+      "provenance": {
+        "primary_source_url": "https://owasp.org/www-project-application-security-verification-standard/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "latest stable version of the ASVS (5.0.0) … ASVS Version 5.0.0 is released",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-owasp-llm-top10",
       "feed_id": "owasp-llm-top10",
       "authority": "OWASP Foundation",
       "artifact": "v2.1 or annual cadence update",
-      "current_version": "v2.0 (2025)",
+      "current_version": "Version 2026 (project page current)",
       "expected_type": "quarterly_bundle",
-      "lifecycle_stage": null,
+      "lifecycle_stage": "final",
       "expected_window": {
         "earliest": "2026-01-01",
         "latest": "2026-12-31",
@@ -1490,11 +1822,18 @@
         "https://owasp.org/www-project-top-10-for-large-language-model-applications/assets/PDF/OWASP-Top-10-for-LLMs-2023-v1_1.pdf"
       ],
       "dependent_of": null,
-      "status": "watching",
+      "status": "materialized",
       "escalate_after_days": 120,
-      "last_checked": null,
-      "last_change_detected": null,
-      "notes": "v2.1 or annual cadence update (2026 anticipated)"
+      "last_checked": "2026-08-09",
+      "last_change_detected": "2026-08-09",
+      "notes": "CLOSED: the project page lists 'Version 2026 (current)' with Version 2025 archived (retrieved 2026-08-09) — the anticipated 2026 cadence update materialized; publication month not stated on the page.",
+      "provenance": {
+        "primary_source_url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Version 2026 (current",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-owasp-top10",
@@ -1521,9 +1860,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "2025 edition (second draft in progress as of mid-2025)"
+      "notes": "2025 edition (second draft in progress as of mid-2025)",
+      "provenance": {
+        "primary_source_url": "https://owasp.org/Top10/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Redirecting to OWASP Top 10:2025",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-pci-dss",
@@ -1549,9 +1895,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "v4.1 (not announced; future-dated v4.0.1 reqs active Mar 31 2025)"
+      "notes": "v4.1 (not announced; future-dated v4.0.1 reqs active Mar 31 2025)",
+      "provenance": {
+        "primary_source_url": "https://www.pcisecuritystandards.org/document_library/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "PCI DSS v4.0.1 View Document",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-sox-itgc",
@@ -1581,9 +1934,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "PCAOB AS 2201 updated, effective Dec 15 2026"
+      "notes": "PCAOB AS 2201 updated, effective Dec 15 2026",
+      "provenance": {
+        "primary_source_url": "https://pcaobus.org/Oversight/Standards/Auditing-Standards/Details/AS2201",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "The amended standard will be effective on December 15, 2026. See PCAOB Release No. 2024-005",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-uk-aisi",
@@ -1611,9 +1971,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Annual reports and evaluation framework updates"
+      "notes": "Annual reports and evaluation framework updates. gov.uk page states 'AI Safety Institute is now called AI Security Institute' (retrieved 2026-08-09) — organization renamed; artifact labels referencing 'AISI' remain era-correct for their dates.",
+      "provenance": {
+        "primary_source_url": "https://www.gov.uk/government/organisations/ai-safety-institute",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "AI Safety Institute is now called AI Security Institute",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-canada-itsg-33",
@@ -1642,9 +2009,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 90,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Rev 5 realigns ITSG-33 to 800-53 r5; watch the CCCS guidance page for the new annex."
+      "notes": "Rev 5 realigns ITSG-33 to 800-53 r5; watch the CCCS guidance page for the new annex. Authority page still lists the December 2014 Annex 3A as current (retrieved 2026-08-09) — the anticipated March-2026 refresh has not appeared; the past-window escalation stands.",
+      "provenance": {
+        "primary_source_url": "https://www.cyber.gc.ca/en/guidance/annex-3a-security-control-catalogue-itsg-33",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Annex 3A - Security control catalogue (ITSG-33) (PDF, 2.24 MB) December 2014",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-cms-arc-ampe",
@@ -1673,9 +2047,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 45,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "ARC-AMPE replaces MARS-E for ACA exchanges; mandatory 2026-03-04."
+      "notes": "ARC-AMPE replaces MARS-E for ACA exchanges; mandatory 2026-03-04. CMS ARS program page confirms ARS 5.2 current (retrieved 2026-08-09). The ARC-AMPE publication page was not located this pass (security.cms.gov path 404; cms.gov search is script-rendered); an ARC-AMPE Vol I v1.02 PDF (2025-04-10) stating it supersedes MARS-E was read earlier in this phase but its stable URL was not re-located — re-pin at origin before any status change; the past-window escalation stands.",
+      "provenance": {
+        "primary_source_url": "https://security.cms.gov/policy-guidance/cms-acceptable-risk-safeguards-ars",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Updates were made to the current version of the ARS (5.2)",
+        "support": "THIN",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-nist-privacy-fw-11",
@@ -1704,9 +2085,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "PFW 1.1 realigns to CSF 2.0 structure; final expected 2026."
+      "notes": "PFW 1.1 realigns to CSF 2.0 structure; final expected 2026.",
+      "provenance": {
+        "primary_source_url": "https://www.nist.gov/privacy-framework",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Privacy Framework, Version 1.1",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-swift-cscf-2026",
@@ -1735,9 +2123,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 60,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Annual CSCF refresh; v2026 expected ~Jul 2026 (source proxy-gated, verify manually)."
+      "notes": "Annual CSCF refresh; v2026 expected ~Jul 2026 (source proxy-gated, verify manually). SWIFT's site is unreachable from this environment (network-level block; CSCF is also login-gated for customers) — the CSCF v2026 release could not be confirmed or refuted; the past-window escalation stands.",
+      "provenance": {
+        "primary_source_url": "https://www.swift.com/myswift/customer-security-programme-csp",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Connection to www2.swift.com failed from this environment on 2026-08-09 (no HTTP response)",
+        "support": "THIN",
+        "terminal_state": "DEAD_END"
+      }
     },
     {
       "id": "au-apra-cps230",
@@ -1766,9 +2161,16 @@
       "dependent_of": null,
       "status": "materialized",
       "escalate_after_days": 60,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "CPS 230 operational-risk standard took effect 2025-07-01 (materialized); certain SFI transitional arrangements extend into 2026."
+      "notes": "CPS 230 operational-risk standard took effect 2025-07-01 (materialized); certain SFI transitional arrangements extend into 2026.",
+      "provenance": {
+        "primary_source_url": "https://www.apra.gov.au/operational-risk-management",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "move the effective date for the new standard to 1 July 2025",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-chile-21719",
@@ -1797,9 +2199,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Chile's data-protection law becomes enforceable ~Dec 2026 (source proxy-gated)."
+      "notes": "Chile's data-protection law becomes enforceable ~Dec 2026 (source proxy-gated). Biblioteca del Congreso Nacional page timed out server-side on both attempts this phase; Law 21.719 vigencia dates not re-verifiable this pass.",
+      "provenance": {
+        "primary_source_url": "https://www.bcn.cl/leychile/navegar?idNorma=1208650",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "bcn.cl responded with its own timeout notice: 'Este proceso demora demasiado' on 2026-08-09",
+        "support": "THIN",
+        "terminal_state": "DEAD_END"
+      }
     },
     {
       "id": "au-eu-cra-reporting",
@@ -1828,9 +2237,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 45,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Cyber Resilience Act incident/vuln reporting duties apply 2026-09-11; full application 2027-12-11."
+      "notes": "Cyber Resilience Act incident/vuln reporting duties apply 2026-09-11; full application 2027-12-11.",
+      "provenance": {
+        "primary_source_url": "https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "incidents having an impact on the security of products with digital elements, which should apply from 11 September 2026",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-fedramp-ready-sunset",
@@ -1859,9 +2275,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 30,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Providers directed to 20x Class A certification instead."
+      "notes": "Providers directed to 20x Class A certification instead. Scheduled date (2026-07-28) has passed per the live timeline; the timeline entry is a schedule statement, not a completion notice — closure pends a state confirmation (the OVERDUE escalation is the prompt).",
+      "provenance": {
+        "primary_source_url": "https://www.fedramp.gov/2026/timeline/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "July 28, 2026 FedRAMP Ready goes Legacy No FedRAMP Ready submissions will be accepted after this date",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-fedramp-class-a",
@@ -1888,11 +2311,18 @@
         "https://www.fedramp.gov/2026/timeline/"
       ],
       "dependent_of": null,
-      "status": "watching",
+      "status": "materialized",
       "escalate_after_days": 30,
-      "last_checked": null,
-      "last_change_detected": null,
-      "notes": "First 20x certification class pipeline."
+      "last_checked": "2026-08-09",
+      "last_change_detected": "2026-08-09",
+      "notes": "CLOSED: the 20x page states Class A is 'Available now' (retrieved 2026-08-09) — the pipeline scheduled to open 2026-08-03 is open.",
+      "provenance": {
+        "primary_source_url": "https://www.fedramp.gov/20x/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "Class A Available now Class A Certifications are for cloud services",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-fedramp-rev5-bc-temp",
@@ -1921,9 +2351,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 30,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "Transition-window mechanism for existing Rev5 providers."
+      "notes": "Transition-window mechanism for existing Rev5 providers.",
+      "provenance": {
+        "primary_source_url": "https://www.fedramp.gov/2026/timeline/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "August 10, 2026 Temporary Rev5 Program Certification Pipelines Open for Class B and C",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-fedramp-class-bc",
@@ -1952,9 +2389,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 30,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": ""
+      "notes": "",
+      "provenance": {
+        "primary_source_url": "https://www.fedramp.gov/2026/timeline/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "August 31, 2026 FedRAMP 20x Class B & C pipeline opens",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-fedramp-mandatory-adoption",
@@ -1983,9 +2427,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 45,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "The audit-framework revision takes mandatory effect (ISO-2013->2022-style transition of the same 800-53-derived framework)."
+      "notes": "The audit-framework revision takes mandatory effect (ISO-2013->2022-style transition of the same 800-53-derived framework).",
+      "provenance": {
+        "primary_source_url": "https://www.fedramp.gov/2026/timeline/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "January 1, 2027 Mandatory Adoption The Consolidated Rules for 2026 take mandatory effect for all stakeholders",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-fedramp-rev5-cert-end",
@@ -2014,16 +2465,23 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 45,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": "EXISTING Rev5 certifications persist; 800-53 r5 remains the master mapping spine."
+      "notes": "EXISTING Rev5 certifications persist; 800-53 r5 remains the master mapping spine.",
+      "provenance": {
+        "primary_source_url": "https://www.fedramp.gov/2026/timeline/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "June 11, 2027 End of New Rev5 Certifications FedRAMP will no longer accept applications for new FedRAMP Rev5 Certifications.",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-fedramp-rules-revision",
       "feed_id": "fedramp-20x",
       "authority": "FedRAMP (GSA)",
       "artifact": "Consolidated Rules dataset revision",
-      "current_version": "2026.07.06.01",
+      "current_version": "2026.07.14.01",
       "expected_type": "minor_rel",
       "lifecycle_stage": null,
       "expected_window": "no_fixed_date",
@@ -2041,9 +2499,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 90,
-      "last_checked": null,
-      "last_change_detected": null,
-      "notes": "Continuous-revision dataset; re-harvest + re-pin on change."
+      "last_checked": "2026-08-09",
+      "last_change_detected": "2026-07-14",
+      "notes": "Continuous-revision dataset; re-harvest + re-pin on change. Live consolidated-rules JSON reads version 2026.07.14.01 / last_updated 2026-07-14 (retrieved 2026-08-09) — one revision ahead of the previously recorded 2026.07.06.01; drift repaired.",
+      "provenance": {
+        "primary_source_url": "https://raw.githubusercontent.com/FedRAMP/rules/main/fedramp-consolidated-rules.json",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "\"version\": \"2026.07.14.01\" … \"last_updated\": \"2026-07-14\"",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-fedramp-schemas-set",
@@ -2068,9 +2533,16 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": null,
+      "last_checked": "2026-08-09",
       "last_change_detected": null,
-      "notes": ""
+      "notes": ". Schemas page reachable (retrieved 2026-08-09) but carries no set date/count — the pinned 2026-06-24 11-schema set was not re-verifiable on the page; THIN.",
+      "provenance": {
+        "primary_source_url": "https://www.fedramp.gov/schemas/",
+        "retrieved_at": "2026-08-09",
+        "verbatim": "FedRAMP JSON Schemas Machine-readable JSON Schema files for FedRAMP submission artifacts",
+        "support": "THIN",
+        "terminal_state": "ORIGIN"
+      }
     },
     {
       "id": "au-cmmc-rfi",
