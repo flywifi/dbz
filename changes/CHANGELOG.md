@@ -3,6 +3,45 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.5.1] — 2026-08-09 (phase 34 — remediation of the phase-33 audit findings)
+
+Phase 33 was a read-only independent audit of the phase-32 series (8 commits / 37 files):
+0 CRITICAL, 1 HIGH, 4 MED, 5 LOW. Every regulatory claim, pin, and count held; this release
+fixes the defects it did find. Audit record: the phase-33 log; findings referenced by id.
+
+### Fixed
+- **B-1 (HIGH)** (`49aedce`) — master-surface CMMC alias resolution. `master --framework-a
+  cmmc` returned 0 rows while 105 SOC 2 × NIST SP 800-171 r2 master pairs existed: the
+  `framework_labels` authority maps an alias to ONE canonical, but CMMC's program reality
+  spans two labels (Level 2 assesses against 800-171 r2 per the May-2024 class deviation).
+  `_MASTER_FW_GROUPS` + `_master_fw_set()` fan the alias out across both labels in pair and
+  control modes, rows keep their true labels, and the header names the fan-out and its
+  basis. Scenario 11 pins the answer (measured 105, band ±15%) plus the presence of
+  r2-labeled rows. The dead alias entries phase 32 added to the legacy `_resolve_fw` map
+  (which serves only `unified_mappings`-backed commands) are removed.
+- **C-1 / C-6 / C-2 (MED, LOW, LOW)** (`38b69f0`) — horizon record repairs: `au-iso-15408`'s
+  empty provenance URL now cites the attempted portal hop (with `source_urls`/`detection`
+  filled); `au-fedramp-class-a`'s baseline version reflects the opened pipeline instead of
+  "pre-pipeline" on a materialized record; `au-eu-ai-act`'s artifact names the obligations
+  milestone its closing verbatim proves, with the acts-side evidence recorded.
+- **G-1 (MED)** (`cd1449c`) — the audit-harness gap that let the empty URL ship is now
+  mechanized: `load_anticipated_updates()` hard-fails on a non-http provenance URL in every
+  terminal state, and `regulatory-provenance.md` §2 states that DEAD_END exempts content
+  matching, never the citation. Validation tightening only — schema stays 3.14.
+- **F-2 (MED, pre-existing)** (`28ff354`) — the monthly `standards-watch` workflow failed on
+  every fresh checkout (`FileNotFoundError` on the generated catalog) and, once past that,
+  would have built a silently degraded database (no OSCAL cache → `oscal_structural`
+  controls=None, 0 objectives). Both build products are now produced on the runner. The
+  failure and the fix were reproduced locally under hidden artifacts first;
+  `tools/ci_rehearsal.py --standards-watch` makes that second fresh-checkout mode testable.
+- **C-4 / G-2 / B-2 / NOTE-D3 / F-1 / A1 / E2** (`74f022a`) — record-keeping: the deliberate
+  drop of `chg-dfars-clause-renumbering-2026` is recorded with its provenance-floor reason;
+  the phase-32 audit doc's coverage sentence is corrected (75 of 76 fetched) and carries the
+  phase-33 follow-up; the secret-scan docstring enumerates all three allowlisted prefixes;
+  the ODP baseline pins the extractor version proven to reproduce it; the runbook gains the
+  learned phase-hygiene rules (message length, anchor ordering, recording scope drops) and
+  the rehearsal's coverage limit; three stale date labels now match their commits.
+
 ## [0.5.0] — 2026-08-09 (phase 32 — CMMC + HIPAA regulatory absorption, provenance hardening)
 ### Added
 - **32-0** (`1cf7aa3`) — `protocol-layer/regulatory-provenance.md`: claim provenance blocks

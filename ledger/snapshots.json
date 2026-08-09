@@ -218,6 +218,41 @@
       "sha": "b7e0369",
       "date": "2026-08-09",
       "known_good": true
+    },
+    {
+      "phase": "34-1",
+      "name": "Master-surface CMMC alias fan-out",
+      "sha": "49aedce",
+      "date": "2026-08-09",
+      "known_good": true
+    },
+    {
+      "phase": "34-2",
+      "name": "Horizon record repairs",
+      "sha": "38b69f0",
+      "date": "2026-08-09",
+      "known_good": true
+    },
+    {
+      "phase": "34-3",
+      "name": "Build-time provenance URL validation",
+      "sha": "cd1449c",
+      "date": "2026-08-09",
+      "known_good": true
+    },
+    {
+      "phase": "34-4",
+      "name": "Audit record-keeping closures",
+      "sha": "74f022a",
+      "date": "2026-08-09",
+      "known_good": true
+    },
+    {
+      "phase": "34-5",
+      "name": "standards-watch fresh-checkout fix",
+      "sha": "28ff354",
+      "date": "2026-08-09",
+      "known_good": true
     }
   ]
 }

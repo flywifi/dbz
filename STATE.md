@@ -52,6 +52,8 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 | 32-1 | Horizon provenance backfill | `670d9a2` | 2026-08-09 | All 76 records origin-verified or honestly degraded; ten drift repairs; unreachable primaries recorded THIN/DEAD_END |
 | 32-5 | Docs, counts, VERSION 0.5.0 | `e9725fe` | 2026-08-09 | Currency rows, horizon-scanning provenance section, runbook update, changelog + anchors |
 | 32-6 | Closing adversarial audit | see `changes/CHANGELOG.md` | 2026-08-09 | `docs/audits/phase-32-adversarial-audit.md`: 75 of 76 URLs re-fetched (one empty, later repaired), pins re-hashed, 3 findings fixed, adversary output + residual risk |
+| 33 | Independent 24-hour change audit (read-only) | `b7e0369` (audited head) | 2026-08-09 | 7 passes over the phase-32 series: 0 CRITICAL / 1 HIGH / 4 MED / 5 LOW; no repo changes made |
+| 34 | Audit remediation | `49aedce`, `38b69f0`, `cd1449c`, `74f022a`, `28ff354` | 2026-08-09 | CMMC alias fan-out + scenario 11, three record repairs, build-time URL validation, standards-watch fresh-checkout fix + rehearsal mode, record-keeping closures |
 
 Phases 1–18 built the foundations (catalog ingestion, ER engine, spine normalization, CCI/ODP
 bridge, consensus detection, publication hygiene, health auditor); their commits precede
