@@ -1,6 +1,6 @@
 {
   "_purpose": "Controlled vocabularies the health auditor validates against, so a typo or a fabricated identifier is caught before it corrupts a query. Deterministic allow-lists only — never fabricate an entry to make a check pass; add the real canonical name.",
-  "_version": "1.1.0",
+  "_version": "1.2.0",
   "_generated": "2026-07-02",
   "framework_names": {
     "_note": "Canonical framework names as they must appear in crosswalk/catalog data. A name not on this list (e.g. 'ISO 27001' missing the '/IEC') is flagged so overlap queries don't silently miss it.",
@@ -136,8 +136,11 @@
       "NIST CSF 2.0": {
         "aliases": [
           "CSF 2.0",
+          "csf 2.0",
           "csf2",
-          "csf 2.0"
+          "csf2.0",
+          "nist csf 2.0",
+          "nist-csf"
         ]
       },
       "NIST SP 800-171 r2": {
@@ -194,6 +197,12 @@
           "ccm"
         ],
         "note": "ccm_oscal projection edges are CSA-STAR-scope acceptance rules (source-stated equivalent-to/superset-of from the v4.0.12 OSCAL mapping-collection)."
+      },
+      "ISO/IEC 27799 (Health Informatics)": {
+        "aliases": [
+          "ISO/IEC 27799",
+          "27799"
+        ]
       }
     },
     "deliberately_distinct": {
@@ -201,12 +210,87 @@
       "labels": [
         "ISO/IEC 27001",
         "ISO/IEC 27002",
-        "ISO/IEC 27799",
         "NIST CSF",
         "HIPAA Privacy Rule",
         "NIST 800-172",
         "NIST SP 800-53 Rev 4 (Appendix J)"
       ]
+    },
+    "ambiguous": {
+      "_note": "Shorthand that maps to more than one framework family. Resolvers raise rather than guess (framework_alias.AmbiguousFrameworkError) — a wrong framework answer is worse than no answer. Phase 35: 'csf' silently returned HITRUST CSF on the master surface because that label sorts first alphabetically.",
+      "csf": {
+        "candidates": [
+          "NIST CSF 2.0",
+          "NIST CSF",
+          "HITRUST CSF"
+        ],
+        "reason": "CSF is the common shorthand for both the NIST Cybersecurity Framework and the HITRUST CSF"
+      }
+    },
+    "data_gaps": {
+      "_note": "Framework/surface pairs with no rows BY FACT, not by defect. A resolver may return nothing here without it being a bug; test_alias_contract asserts each declaration still matches the data.",
+      "soc 1": {
+        "surfaces": [
+          "master"
+        ],
+        "reason": "SSAE 22 / AT-C 320 defines report standards, not a public control catalog — the master surface exposes SOC 1 as a data gap (dbz_query._master_soc1_gap)"
+      },
+      "soc1": {
+        "surfaces": [
+          "master"
+        ],
+        "reason": "SSAE 22 / AT-C 320 defines report standards, not a public control catalog — the master surface exposes SOC 1 as a data gap (dbz_query._master_soc1_gap)"
+      },
+      "fedramp": {
+        "surfaces": [
+          "master",
+          "unified"
+        ],
+        "reason": "FedRAMP r5 is a baseline overlay on the 800-53 spine, not a separate mapped framework: it carries projection rows (overlap) but no master or unified edges"
+      },
+      "fedramp r5": {
+        "surfaces": [
+          "master",
+          "unified"
+        ],
+        "reason": "FedRAMP r5 is a baseline overlay on the 800-53 spine, not a separate mapped framework: it carries projection rows (overlap) but no master or unified edges"
+      },
+      "hipaa": {
+        "surfaces": [
+          "unified"
+        ],
+        "reason": "the unified (legacy) surface carries only HIPAA Privacy Rule rows; HIPAA Security lives on the spine/master surfaces. Resolving 'hipaa' to the Privacy Rule there would answer a different rule than the user asked for"
+      },
+      "nist 800-172": {
+        "surfaces": [
+          "master",
+          "unified",
+          "projection"
+        ],
+        "reason": "the 2021 edition is dual-pinned for CMMC Level 3 reference only; the mapped artifact is NIST SP 800-172 r3"
+      },
+      "800-53": {
+        "surfaces": [
+          "unified"
+        ],
+        "reason": "the unified (legacy) surface carries only the Rev 4 Appendix J privacy catalog under an 800-53 name; the r5 spine is the master/projection surfaces"
+      },
+      "nist sp 800-53": {
+        "surfaces": [
+          "unified"
+        ],
+        "reason": "the unified (legacy) surface carries only the Rev 4 Appendix J privacy catalog under an 800-53 name; the r5 spine is the master/projection surfaces"
+      }
+    },
+    "family_groups": {
+      "_note": "Shorthand whose program reality spans MORE THAN ONE canonical label because an external authority makes them one thing. Only added with the instrument cited — never as a convenience, and never to merge versions (that is what deliberately_distinct forbids). Resolvers fan a group out across whichever members the queried surface carries; rows keep their true labels.",
+      "cmmc": {
+        "labels": [
+          "CMMC 2.0",
+          "NIST SP 800-171 r2"
+        ],
+        "basis": "CMMC Level 2 assesses against NIST SP 800-171 r2 (DoD class deviation, May 2024; reaffirmed by the July-2026 Phase 2 suspension memo). Revisit when the assessment basis moves to r3."
+      }
     }
   },
   "relationship_types": {

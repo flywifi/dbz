@@ -39,6 +39,20 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import framework_alias  # the single alias authority (see its module docstring)
+from framework_alias import AmbiguousFrameworkError
+
+_ALIAS_REGISTRY: dict | None = None
+
+
+def _alias_registry(conn) -> dict:
+    """Load the alias registry once per process (framework_labels + vocab blocks)."""
+    global _ALIAS_REGISTRY
+    if _ALIAS_REGISTRY is None:
+        _ALIAS_REGISTRY = framework_alias.load_registry(conn)
+    return _ALIAS_REGISTRY
+
 
 # ── DB discovery ──────────────────────────────────────────────────────────────
 
@@ -90,33 +104,33 @@ _FW_ALIASES: dict[str, list[str]] = {
 }
 
 
+def _unified_labels(conn: sqlite3.Connection) -> list[str]:
+    return [r[0] for r in conn.execute("SELECT DISTINCT framework FROM unified_mappings")]
+
+
 def _resolve_fw(alias: str, conn: sqlite3.Connection) -> list[str]:
-    """Resolve a framework alias/shorthand to exact DB framework name(s)."""
-    # Exact match in DB first
-    row = conn.execute(
-        "SELECT DISTINCT framework FROM unified_mappings WHERE framework = ? LIMIT 1",
-        (alias,),
-    ).fetchone()
-    if row:
-        return [alias]
-    # Try alias map
-    candidates = _FW_ALIASES.get(alias.lower(), [])
-    found = []
-    for c in candidates:
-        r = conn.execute(
-            "SELECT DISTINCT framework FROM unified_mappings WHERE framework = ? LIMIT 1",
-            (c,),
-        ).fetchone()
-        if r:
-            found.append(c)
-    if found:
-        return found
-    # Fuzzy: substring match
-    rows = conn.execute(
-        "SELECT DISTINCT framework FROM unified_mappings WHERE framework LIKE ? LIMIT 5",
-        (f"%{alias}%",),
-    ).fetchall()
-    return [r[0] for r in rows]
+    """Resolve a framework alias/shorthand to exact `unified_mappings` name(s).
+
+    Delegates to framework_alias — the single registry — so this surface can no longer
+    disagree with `master`/`overlap` about what a word means. Registry-declared
+    ambiguity raises; the legacy _FW_ALIASES map is consulted only for multi-label
+    legacy groupings the registry doesn't express."""
+    pool = _unified_labels(conn)
+    reg = _alias_registry(conn)
+    hit = framework_alias.resolve(alias, pool, reg, surface="unified")
+    if hit:
+        return hit
+    # A declared gap means this framework genuinely has no rows here: report nothing
+    # rather than letting the legacy map substitute a neighbouring framework (how
+    # 'hipaa' used to answer with the Privacy Rule and '800-53' with Rev 4 Appendix J).
+    if framework_alias.declared_gap(alias, "unified", reg):
+        return []
+    canonical = reg["alias_map"].get(alias.strip().lower())
+    found = [c for c in _FW_ALIASES.get(alias.lower(), []) if c in set(pool)]
+    if canonical:
+        found = [c for c in found if framework_alias.compatible_families(
+            reg["alias_map"].get(c.lower(), c), canonical, reg)]
+    return found
 
 
 # ── Context overlays (presentation filter — never touches tables) ──────────────
@@ -373,44 +387,53 @@ def _master_canon_fw(conn: sqlite3.Connection, name: str) -> str | None:
     """Resolve any framework alias/label to the master-surface canonical label
     via the framework_labels registry (exact, case-insensitive, then substring
     over the canonicals actually present in master_mappings)."""
-    row = conn.execute(
-        "SELECT canonical FROM framework_labels WHERE alias = ? "
-        "OR lower(alias) = lower(?) LIMIT 1", (name, name)).fetchone()
-    if row:
-        return row[0]
-    fws = [r[0] for r in conn.execute(
+    hits = framework_alias.resolve(name, _master_labels(conn),
+                                   _alias_registry(conn), surface="master")
+    return hits[0] if hits else None
+
+
+def _master_labels(conn: sqlite3.Connection) -> list[str]:
+    return [r[0] for r in conn.execute(
         "SELECT DISTINCT fw_a FROM master_mappings "
         "UNION SELECT DISTINCT fw_b FROM master_mappings")]
-    for f in fws:
-        if f.lower() == name.lower():
-            return f
-    for f in fws:
-        if name.lower() in f.lower():
-            return f
-    return None
-
-
-# Aliases whose program reality spans multiple master-surface labels. Applied ONLY
-# when the user typed the alias — an exact label stays exact. CMMC: Level 2 assesses
-# against NIST SP 800-171 r2 (May-2024 class deviation; reaffirmed by the Jul-2026
-# suspension memo), so the program's master data spans both labels. The 171r3
-# transition phase revisits this group when the assessment basis changes.
-_MASTER_FW_GROUPS = {"cmmc": ["CMMC 2.0", "NIST SP 800-171 r2"]}
 
 
 def _master_fw_set(conn: sqlite3.Connection, name: str) -> tuple[list[str], str]:
     """Resolve a user-typed framework name for the master surface. Returns
-    (labels, note): a group alias fans out to every member label (each still
-    canonicalized through the framework_labels authority); anything else resolves
-    to a single canonical. `note` explains a fan-out so the answer is self-describing."""
-    group = _MASTER_FW_GROUPS.get(name.strip().lower())
-    if group:
-        labels = [c for c in (_master_canon_fw(conn, g) for g in group) if c]
-        if labels:
-            return labels, (f"'{name}' spans {' + '.join(labels)} "
-                            "(CMMC L2 assesses against 800-171 r2 — May-2024 class deviation)")
-    c = _master_canon_fw(conn, name)
-    return ([c] if c else []), ""
+    (labels, note): a declared family group (framework_vocab framework_aliases.
+    family_groups — e.g. cmmc spanning CMMC 2.0 + 800-171 r2 under the May-2024 class
+    deviation) fans out to every member the surface carries; anything else resolves to
+    a single canonical. `note` explains a fan-out so the answer is self-describing."""
+    reg = _alias_registry(conn)
+    labels = framework_alias.resolve(name, _master_labels(conn), reg, surface="master")
+    group = framework_alias.group_for(name, reg)
+    if group and len(labels) > 1:
+        basis = reg["family_groups"][name.strip().lower()].get("basis", "")
+        return labels, (f"'{name}' spans {' + '.join(labels)}"
+                        + (f" — {basis.split('.')[0]}" if basis else ""))
+    return labels, ""
+
+
+def _master_declared_gap(conn, name: str, fmt: str) -> int | None:
+    """A registry-declared framework/surface data gap answered as a structured gap
+    rather than 'unknown framework' — the difference between "we know this framework
+    has no master rows and why" and "we do not recognise the word". Same response shape
+    as _master_soc1_gap, which is the original instance of this pattern."""
+    spec = framework_alias.declared_gap(name, "master", _alias_registry(conn))
+    if not spec:
+        return None
+    gap = {
+        "tool": "master-crosswalk",
+        "framework": name,
+        "data_gap": "declared_no_master_rows",
+        "explanation": spec.get("reason", ""),
+        "human_review_required": True,
+    }
+    if fmt == "json":
+        print(json.dumps(gap, indent=2))
+    else:
+        print(f"[data gap] {name}: {gap['explanation']}")
+    return 0
 
 
 def _master_soc1_gap(fmt: str) -> int:
@@ -475,6 +498,10 @@ def cmd_master(args, conn: sqlite3.Connection) -> int:
             return _master_soc1_gap(args.format)
         if not fas or not fbs:
             missing = [x for x, r in ((fa_in, fas), (fb_in, fbs)) if not r]
+            for m in missing:
+                rc = _master_declared_gap(conn, m, args.format)
+                if rc is not None:
+                    return rc
             print(f"[input error] unknown framework(s): {missing}", file=sys.stderr)
             return 1
         pha, phb = ",".join("?" * len(fas)), ",".join("?" * len(fbs))
@@ -1769,6 +1796,14 @@ def main(argv=None) -> int:
 
     try:
         return fn(args, conn)
+    except AmbiguousFrameworkError as e:
+        # Explicit, not incidental: a term that maps to several framework families is
+        # reported with its candidates instead of resolved by guessing (phase 35 —
+        # 'csf' used to answer HITRUST CSF on this surface and NIST CSF 2.0 on overlap).
+        print(f"[input error] {e}", file=sys.stderr)
+        for c in e.candidates:
+            print(f"    --framework-a {c!r}", file=sys.stderr)
+        return 1
     except Exception as e:
         print(f"[ERROR] {e}", file=sys.stderr)
         return 1

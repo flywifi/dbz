@@ -14,7 +14,22 @@ Read-only over grc.db; stdlib + sqlite only.  Deterministic (sorted output).
 from __future__ import annotations
 
 import sqlite3
+import sys
+from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import framework_alias  # the single alias authority
+from framework_alias import AmbiguousFrameworkError  # noqa: F401 (re-exported for callers)
+
+_ALIAS_REGISTRY: Optional[dict] = None
+
+
+def _alias_registry(conn) -> dict:
+    global _ALIAS_REGISTRY
+    if _ALIAS_REGISTRY is None:
+        _ALIAS_REGISTRY = framework_alias.load_registry(conn)
+    return _ALIAS_REGISTRY
 
 # ── framework name resolution ───────────────────────────────────────────────────
 
@@ -141,18 +156,15 @@ def resolve_framework(conn, name: str) -> Optional[str]:
     proj = _projection_frameworks(conn)
     er = _er_frameworks(conn)
     known = proj + [f for f in er if f not in proj]
-    lower = {k.lower(): k for k in known}
+    # The shared registry decides (framework_alias): same authority as `master` and
+    # `reverse`/`forward`, so one word can no longer mean different frameworks on
+    # different subcommands. Declared-ambiguous terms raise instead of guessing.
+    hits = framework_alias.resolve(name, known, _alias_registry(conn), surface="projection")
+    if hits:
+        return hits[0]
     n = name.strip()
-    if n in known:
-        return n
-    if n.lower() in lower:
-        return lower[n.lower()]
     if n.lower() in _ALIASES and _ALIASES[n.lower()] in known:
         return _ALIASES[n.lower()]
-    # substring
-    for k in known:
-        if n.lower() in k.lower() or k.lower() in n.lower():
-            return k
     return None
 
 

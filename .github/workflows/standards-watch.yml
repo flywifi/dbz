@@ -50,6 +50,7 @@ jobs:
           python3 cross-mapping/engine/build_db.py
           python3 cross-mapping/tests/benchmark_oracles.py --check
           python3 cross-mapping/tests/run_scenarios.py
+          python3 cross-mapping/tests/test_alias_contract.py
 
       - name: Optional artifact fetch (manual dispatch only)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.fetch == 'true' }}

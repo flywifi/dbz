@@ -65,6 +65,7 @@ WATCH_STEPS = [
     ("build grc.db", "python3 cross-mapping/engine/build_db.py"),
     ("oracle benchmark", "python3 cross-mapping/tests/benchmark_oracles.py --check"),
     ("scenario battery", "python3 cross-mapping/tests/run_scenarios.py"),
+    ("alias contract", "python3 cross-mapping/tests/test_alias_contract.py"),
 ]
 
 
