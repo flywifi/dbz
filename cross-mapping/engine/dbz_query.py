@@ -398,6 +398,55 @@ def _master_labels(conn: sqlite3.Connection) -> list[str]:
         "UNION SELECT DISTINCT fw_b FROM master_mappings")]
 
 
+def _sibling_note(conn: sqlite3.Connection, labels: list[str]) -> tuple[str, list[dict]]:
+    """Labels the answer did NOT include but that a user might have meant: other
+    master-surface labels naming the same standard family (e.g. asking `iso` answers
+    ISO 27001/2 (2022) while ISO/IEC 27001 and ISO/IEC 27002 carry rows of their own).
+
+    These are separate canonicals BY DESIGN — version-ambiguous labels are never merged
+    into a versioned one (framework_vocab framework_aliases._note) — so the fix for the
+    silent-partial-answer problem is disclosure, not fan-out. Counts are measured here,
+    never hardcoded."""
+    if not labels:
+        return "", []
+    import re as _re
+
+    def std_numbers(lbl: str) -> set:
+        """The standard's identity number(s) — what makes ISO/IEC 27002 a sibling of
+        ISO 27001/2 (2022) but NOT of ISO 31000. Edition/revision markers (r3, :2022)
+        are deliberately excluded: differing editions of one standard ARE siblings."""
+        s = lbl.lower()
+        nums = set(_re.findall(r"\b(\d{3,5}(?:-\d{1,4})?)\b", s))
+        # "27001/2" names both 27001 and 27002
+        for base, tail in _re.findall(r"\b(\d{4,5})/(\d{1,4})\b", s):
+            nums.add(base)
+            nums.add(base[: len(base) - len(tail)] + tail)
+        return {n for n in nums if not _re.fullmatch(r"(19|20)\d\d", n)}
+
+    # Non-numeric families that are genuinely related, declared rather than guessed.
+    RELATED = {"hipaa security": {"HIPAA Privacy Rule"},
+               "hipaa privacy rule": {"HIPAA Security"}}
+
+    want_nums = set().union(*(std_numbers(l) for l in labels)) if labels else set()
+    want_related = set().union(*(RELATED.get(l.lower(), set()) for l in labels))
+    sibs = []
+    for lbl in _master_labels(conn):
+        if lbl in labels:
+            continue
+        shares_number = bool(want_nums & std_numbers(lbl))
+        if not shares_number and lbl not in want_related:
+            continue
+        n = conn.execute("SELECT COUNT(*) FROM master_mappings WHERE fw_a=? OR fw_b=?",
+                         (lbl, lbl)).fetchone()[0]
+        if n:
+            sibs.append({"label": lbl, "rows": n})
+    if not sibs:
+        return "", []
+    listed = ", ".join(f"{s['label']} ({s['rows']:,} rows)" for s in sibs)
+    return (f"also present under {listed} — separate canonicals by design "
+            f"(version-ambiguous labels are never merged); query them by exact label"), sibs
+
+
 def _master_fw_set(conn: sqlite3.Connection, name: str) -> tuple[list[str], str]:
     """Resolve a user-typed framework name for the master surface. Returns
     (labels, note): a declared family group (framework_vocab framework_aliases.
@@ -586,14 +635,23 @@ def cmd_master(args, conn: sqlite3.Connection) -> int:
         import overlay_resolver
         results, suppressed = overlay_resolver.apply_to_rows(profile, results)
         overlay_block = overlay_resolver.stamp(profile, suppressed)
+    # Disclose same-family labels the answer did not cover, so a scoped answer is never
+    # mistaken for the whole family (phase 35: `iso` answers 6,224 of 11,503 family rows).
+    sib_text, sib_rows = _sibling_note(conn, sorted({r["fw_a"] for r in results}
+                                                    | {r["fw_b"] for r in results})
+                                       if results else [])
     if args.format == "json":
         payload = {"tool": "master-crosswalk", "summary": header,
                    "rows": results, "human_review_required": True}
+        if sib_rows:
+            payload["sibling_labels"] = sib_rows
         if overlay_block:
             payload["overlay"] = overlay_block
         print(json.dumps(payload, indent=2, ensure_ascii=False))
         return 0
     print(header)
+    if sib_text:
+        print(f"note: {sib_text}")
     if profile:
         _overlay_note(profile, overlay_block["suppressed_count"])
     print(f"Tier order: {' > '.join(_MASTER_TIER_ORDER)}; "
