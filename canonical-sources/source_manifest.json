@@ -1242,6 +1242,17 @@
       "role": "reference_only",
       "sha256": "3dc8b9bebbe56753206429657cbac24ff32bfd64c75356ba276af38a1032b628",
       "notes": "Complete 32 CFR Part 170 rule text at the phase-32 stage freeze; the generated cfr/32-cfr-170.json truncates section text at 2000 chars, so this XML is the offline diff base for any future amendment. Procedure: docs/cmmc-odp-baseline.md."
+    },
+    {
+      "id": "hhs-hipaa-security-nprm-fr",
+      "file": "canonical-sources/source_data/hhs/FR-2025-01-06-2024-30983.pdf",
+      "format": "pdf",
+      "version": "90 FR 898 (FR doc 2024-30983, RIN 0945-AA22) — proposed rule as published 2025-01-06",
+      "retrieved": "2026-08-10",
+      "source_url": "https://www.govinfo.gov/content/pkg/FR-2025-01-06/pdf/2024-30983.pdf",
+      "sha256_prefix": "d5e1ec4107308e5e",
+      "role": "reference_only",
+      "notes": "The HIPAA Security Rule NPRM as published, pinned so the 18 proposed items in docs/hipaa-security-rule-transition.md quote regulatory text rather than the agency fact sheet. hhs.gov refuses this environment (403); govinfo serves the Federal Register original, which is the better origin anyway. Extracted with pdfminer.six 20260107. Proposed rule — binds no one; the 2013 Omnibus rule remains the enforceable standard."
     }
   ],
   "staged_reference_sources": {
