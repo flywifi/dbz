@@ -260,6 +260,48 @@
       "sha": "d00954b",
       "date": "2026-08-10",
       "known_good": true
+    },
+    {
+      "phase": "35-1",
+      "name": "Alias authority + contract test",
+      "sha": "ae99dd7",
+      "date": "2026-08-10",
+      "known_good": true
+    },
+    {
+      "phase": "35-2",
+      "name": "Sibling disclosure",
+      "sha": "c84f509",
+      "date": "2026-08-10",
+      "known_good": true
+    },
+    {
+      "phase": "35-3",
+      "name": "Phase-34 adversarial audit",
+      "sha": "7737b26",
+      "date": "2026-08-10",
+      "known_good": true
+    },
+    {
+      "phase": "35-4",
+      "name": "FedRAMP rules re-harvest 2026.07.14.01",
+      "sha": "55ffa93",
+      "date": "2026-08-10",
+      "known_good": true
+    },
+    {
+      "phase": "35-5",
+      "name": "HIPAA NPRM verbatims pinned",
+      "sha": "3399a48",
+      "date": "2026-08-10",
+      "known_good": true
+    },
+    {
+      "phase": "35-6",
+      "name": "Overdue horizon records resolved",
+      "sha": "1b7b8f3",
+      "date": "2026-08-10",
+      "known_good": true
     }
   ]
 }

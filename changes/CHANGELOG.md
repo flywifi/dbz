@@ -3,6 +3,51 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.6.0] — 2026-08-10 (phase 35 — alias-resolution correctness, the missing phase-34 audit, carried-over regulatory items)
+
+Phase 34 closed the phase-33 findings as written, but B-1 was written as an instance and the
+class was never swept. Phase 35 swept it, and the class was worse than the original finding.
+
+### Fixed
+- **Alias resolution — one authority, no accidental substring matches** (`ae99dd7`). dbz had
+  three query-time resolvers with three hand-maintained alias dictionaries, each ending in a
+  "first substring match wins" fallback over a SQL-ordered list. Measured consequences:
+  `master --framework-a csf` answered **HITRUST CSF** (because that label sorts before
+  "NIST CSF") while `overlap` answered **NIST CSF 2.0** — one word, two frameworks, one
+  session; `fedramp` resolved to a label with zero master rows (a silent empty answer);
+  `nist-csf` errored as unknown on master while working elsewhere. New
+  `cross-mapping/engine/framework_alias.py` is the single authority: the registry decides,
+  declared-ambiguous terms raise with their candidates instead of guessing, family groups fan
+  out only where an external instrument makes two labels one thing, and the substring fallback
+  collects every match and rejects cross-family hits. `framework_vocab.json` → 1.2.0 with
+  `ambiguous`, `data_gaps` and `family_groups` blocks (the CMMC group moves out of code).
+  **Breaking for one input:** bare `csf` now errors and lists its three candidates.
+- **Sibling disclosure** (`c84f509`) — a scoped answer is no longer mistaken for the whole
+  family: `iso` names the ISO/IEC 27001 and 27002 labels it did not cover with measured row
+  counts, plus a `sibling_labels` JSON key. Matching is by standard number, so unrelated ISO
+  standards are not swept in. Version-ambiguous labels are still never merged.
+- **FedRAMP consolidated rules re-harvested** (`55ffa93`) at 2026.07.14.01, closing drift the
+  horizon record had carried since July. Diffed before re-pinning: guidance-only revision, KSI
+  families/indicators/control references byte-for-byte unchanged, so no pinned count moved.
+- **The two five-month-overdue horizon records resolved** (`1b7b8f3`) by chasing both at their
+  authorities. ITSG-33 still serves the December 2014 Rev-4-based annex, so the unfounded
+  March window is withdrawn; the ARC-AMPE watch is downgraded to THIN after its own detection
+  URL proved to track the CMS ARS baseline. No date replaced by a guess.
+### Added
+- **Alias contract test** (`ae99dd7`) — `cross-mapping/tests/test_alias_contract.py` asserts
+  agreement, non-emptiness, explicitness and declared ambiguity across all three resolvers,
+  and pins the four historical regressions by input string. Proven red on the pre-fix code
+  (15 failures) before the fix landed. Wired into `ci_rehearsal` and `standards-watch`.
+- **HIPAA NPRM regulatory-text verbatims** (`3399a48`) — all 18 proposed items now quote
+  90 FR 898 itself, closing the follow-up two phases could not reach. hhs.gov refuses this
+  environment; govinfo serves the Federal Register original, pinned by sha and extracted with
+  pdfminer.six 20260107. Each quote is labelled regulatory text or preamble and was
+  mechanically asserted present in the pinned document before being written.
+- **Phase-34 adversarial audit** (`7737b26`) — `docs/audits/phase-34-adversarial-audit.md`,
+  required by the regulatory-phase gate and missing when phase 34 closed. It records both the
+  omission and that phase 34's own changelog entry read as a class fix when only the CMMC
+  instance was closed.
+
 ## [0.5.1] — 2026-08-09 (phase 34 — remediation of the phase-33 audit findings)
 
 Phase 33 was a read-only independent audit of the phase-32 series (8 commits / 37 files):
