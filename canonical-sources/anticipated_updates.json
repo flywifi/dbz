@@ -1992,12 +1992,8 @@
       "current_version": "ITSG-33 (2014)",
       "expected_type": "major_rev",
       "lifecycle_stage": "final",
-      "expected_window": {
-        "earliest": "2026-03-01",
-        "latest": "2026-03-31",
-        "basis": "CCCS scheduled ITSG-33 Rev 5 alignment 2026-03-31"
-      },
-      "confidence": "high",
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
       "trigger_signal": "new Annex 3A revision published",
       "detection": {
         "url": "https://www.cyber.gc.ca/en/guidance/annex-3a-security-control-catalogue-itsg-33",
@@ -2011,12 +2007,12 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 90,
-      "last_checked": "2026-08-09",
+      "last_checked": "2026-08-10",
       "last_change_detected": null,
-      "notes": "Rev 5 realigns ITSG-33 to 800-53 r5; watch the CCCS guidance page for the new annex. Authority page still lists the December 2014 Annex 3A as current (retrieved 2026-08-09) — the anticipated March-2026 refresh has not appeared; the past-window escalation stands.",
+      "notes": "Chased at origin 2026-08-10: the authority's Annex 3A page still serves the December 2014 catalogue, still built on NIST SP 800-53 Revision 4 — the anticipated Rev 5 catalogue has not appeared. The earlier March-2026 window was an expectation with no authority statement behind it, so it is withdrawn rather than rolled forward: no date is citable (regulatory-provenance.md — never a fabricated date). Watch the same page; a Rev 5 annex or a move off the 800-53 r4 basis is the signal.",
       "provenance": {
         "primary_source_url": "https://www.cyber.gc.ca/en/guidance/annex-3a-security-control-catalogue-itsg-33",
-        "retrieved_at": "2026-08-09",
+        "retrieved_at": "2026-08-10",
         "verbatim": "Annex 3A - Security control catalogue (ITSG-33) (PDF, 2.24 MB) December 2014",
         "support": "WELL_SUPPORTED",
         "terminal_state": "ORIGIN"
@@ -2030,12 +2026,8 @@
       "current_version": "ARS 5.x",
       "expected_type": "amendment",
       "lifecycle_stage": "final",
-      "expected_window": {
-        "earliest": "2026-03-04",
-        "latest": "2026-03-04",
-        "basis": "ARC-AMPE mandatory compliance date 2026-03-04"
-      },
-      "confidence": "high",
+      "expected_window": "no_fixed_date",
+      "confidence": "low",
       "trigger_signal": "ARC-AMPE effective / superseding MARS-E",
       "detection": {
         "url": "https://security.cms.gov/policy-guidance/cms-acceptable-risk-safeguards-ars",
@@ -2049,13 +2041,13 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 45,
-      "last_checked": "2026-08-09",
+      "last_checked": "2026-08-10",
       "last_change_detected": null,
-      "notes": "ARC-AMPE replaces MARS-E for ACA exchanges; mandatory 2026-03-04. CMS ARS program page confirms ARS 5.2 current (retrieved 2026-08-09). The ARC-AMPE publication page was not located this pass (security.cms.gov path 404; cms.gov search is script-rendered); an ARC-AMPE Vol I v1.02 PDF (2025-04-10) stating it supersedes MARS-E was read earlier in this phase but its stable URL was not re-located — re-pin at origin before any status change; the past-window escalation stands.",
+      "notes": "Chased at origin 2026-08-10 and DOWNGRADED honestly. The record's own detection URL is the CMS ARS policy page: it is live (reviewed 7/16/2026, ARS 5.2 current) but says nothing about ARC-AMPE, so it cannot evidence this artifact — a watcher pointed at the wrong page. The ARC-AMPE publication page was not locatable this pass (cms.gov candidates 404; the Federal Register has zero ARC-AMPE documents), and the Vol I v1.02 PDF read in phase 32 had no re-locatable stable URL. The claimed 2026-03-04 mandatory date therefore has no reachable origin and the dated window is withdrawn rather than left to escalate on unverifiable grounds. Re-point detection at an ARC-AMPE page when one is found; until then this is a THIN watch on the ARS page only.",
       "provenance": {
         "primary_source_url": "https://security.cms.gov/policy-guidance/cms-acceptable-risk-safeguards-ars",
-        "retrieved_at": "2026-08-09",
-        "verbatim": "Updates were made to the current version of the ARS (5.2)",
+        "retrieved_at": "2026-08-10",
+        "verbatim": "Current version of the ARS: ARS 5.2 … Last Reviewed: 7/16/2026",
         "support": "THIN",
         "terminal_state": "ORIGIN"
       }
