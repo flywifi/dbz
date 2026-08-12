@@ -302,6 +302,13 @@
       "sha": "1b7b8f3",
       "date": "2026-08-10",
       "known_good": true
+    },
+    {
+      "phase": "37-pre",
+      "name": "Pre-phase-37 baseline (phase-36 audit head)",
+      "sha": "b2d3796",
+      "date": "2026-08-10",
+      "known_good": true
     }
   ]
 }
