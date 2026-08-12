@@ -448,6 +448,56 @@ def parse_oscal_parts(control: dict) -> List[dict]:
     return out
 
 
+_CMMC_PRACTICE_RE = re.compile(
+    r"^([A-Z]{2})\.L\d+[-.](\d+\.\d+\.\d+)\s*\(\s*([a-z])\.?\s*\)\s*$")
+_CMMC_BARE_RE = re.compile(r"^([A-Z]{2})\.L\d+[-.](\d+\.\d+\.\d+)\s*$")
+
+
+def normalize_171_objective_id(cmmc_practice: str) -> Optional[str]:
+    """
+    Derive the NIST SP 800-171A assessment-objective id from a CMMC practice id.
+
+    'AC.L1-3.1.1(a.)' -> '3.1.1[a]'      'AC.L1-3.1.1(b.)' -> '3.1.1[b]'
+
+    Why this exists (phase-36 finding F-7): the CMMC/800-171/800-53 crosswalk has NO
+    800-171 objective-id column — only the prose objective ("Determine if authorized
+    users are identified;"), which the loader was storing in `native_id` at the top
+    confidence tier.  The sibling 'CMMC Practice' column encodes the same objective as
+    an id, so the identifier is recoverable rather than lost.
+
+    The output form is deliberately the bracket notation the HITRUST hub already uses
+    for this framework ('3.1.10[a]'), so the two surfaces become joinable and the hub's
+    800-171 edges can finally be corroborated (finding F-6).
+    """
+    if not isinstance(cmmc_practice, str):
+        return None
+    m = _CMMC_PRACTICE_RE.match(cmmc_practice.strip())
+    if m:
+        return f"{m.group(2)}[{m.group(3)}]"
+    m = _CMMC_BARE_RE.match(cmmc_practice.strip())
+    if m:                       # practice with no objective suffix -> control level
+        return m.group(2)
+    return None
+
+
+def normalize_cmmc_id(raw: str) -> Optional[str]:
+    """
+    Canonical CMMC practice id: 'AC.L1.3.1.1' and 'AC.L1-3.1.1' both -> 'AC.L1-3.1.1'.
+
+    The hub writes dot-separated ids ('AC.L1.3.1.1') while the CMMC crosswalk writes
+    hyphenated ones ('AC.L1-3.1.1(a.)'); phase 36 found the two never joined (F-6).
+    Objective suffixes are dropped — this is the control-level identity.
+    """
+    if not isinstance(raw, str):
+        return None
+    s = raw.strip()
+    m = _CMMC_PRACTICE_RE.match(s) or _CMMC_BARE_RE.match(s)
+    if not m:
+        return None
+    return f"{m.group(1)}.L{s.split('.L')[1].split('-')[0].split('.')[0]}-{m.group(2)}" \
+        if ".L" in s else None
+
+
 def parse_cui_sort_id(raw: str) -> Optional[Tuple[str, int]]:
     """
     Parse a CUI-overlay sort id 'FAMILY-CTRL-ENH-PART' into (control_id, part_ordinal).

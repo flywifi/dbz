@@ -30,6 +30,7 @@ for _p in (str(_INGEST), str(_HERE)):
 import pandas as pd  # provided via requirements.txt
 from config import source_path, sheet_name, header_row, col  # type: ignore
 from spine_normalize import (  # type: ignore
+    normalize_171_objective_id,
     normalize_control_id,
     normalize_hipaa_citation,
     normalize_iso_id,
@@ -1545,13 +1546,20 @@ def load_cmmc171_projection(
                     source_file=fname, source_sheet=sname, source_row=i,
                 ))
 
-        # Emit NIST SP 800-171 r2 edge
-        if obj171_raw:
-            key = ("NIST SP 800-171 r2", obj171_raw, r5_control, r5_subpart or "")
+        # Emit NIST SP 800-171 r2 edge.
+        # native_id must be the 800-171A OBJECTIVE ID, not the objective prose. The
+        # crosswalk has no id column for it, but the CMMC practice id encodes the same
+        # objective ('AC.L1-3.1.1(a.)' -> '3.1.1[a]'), which is also the form the
+        # HITRUST hub uses for this framework — so the two surfaces become joinable.
+        # (phase-36 findings F-7 and F-6.) The prose stays recoverable: every row
+        # carries source_file/source_sheet/source_row pointing at the pinned artifact.
+        obj171_id = normalize_171_objective_id(cmmc_id) if cmmc_id else None
+        if obj171_id:
+            key = ("NIST SP 800-171 r2", obj171_id, r5_control, r5_subpart or "")
             if key not in seen_edge:
                 seen_edge.add(key)
                 edges.append(_projection_row(
-                    framework="NIST SP 800-171 r2", native_id=obj171_raw,
+                    framework="NIST SP 800-171 r2", native_id=obj171_id,
                     r5_control=r5_control, r5_subpart=r5_subpart,
                     odp_id=odp_id,
                     relationship=relationship,
