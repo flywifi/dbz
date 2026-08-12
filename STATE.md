@@ -21,7 +21,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 ## Phase ledger
 | # | Phase | Commit | Date | Outcome |
 |---|---|---|---|---|
-| 19 | Master mapping database | `d8c0d15` | 2026-07-03 | Private-sector audits merged into one any-to-any surface |
+| 19 | Master mapping database | `d8c0d15` | 2026-07-03 | Private-sector audits merged into one master surface (60 stored pairs; any-to-any answered on demand by overlap) |
 | 20 | SCF + CCM spine projection | `eabfc21` | 2026-07-04 | Meta-frameworks join via owner_stated tier |
 | 21 | STIG application layer | `e6449ab` | 2026-07-04 | 383 benchmarks / 19,667 rules as CCI application evidence |
 | 22 | Full CCI dictionary | `98eea12` | 2026-07-04 | All 5,137 DISA CCIs + multi-source corroboration |

@@ -616,7 +616,7 @@
         "domains[].controls[].title": "control_title",
         "domains[].controls[].specification": "control_text"
       },
-      "notes": "YAML structure: {name, version, url, domains: [{id, title, controls: [{id, title, specification}]}]}. 17 domains. License: CC-BY. JSON equivalent at CCM/primary-dataset.json. NIST 800-53 mapping in CCM/mappings/ (if present) or CAIQ dataset. ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
+      "notes": "YAML structure: {name, version, url, domains: [{id, title, controls: [{id, title, specification}]}]}. 17 domains. License: CC-BY. JSON equivalent at CCM/primary-dataset.json. NIST 800-53 mapping in CCM/mappings/ (if present) or CAIQ dataset. ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,683 distinct CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
       "authority_scope": "csa_star_only",
       "upstream_available": "CCM v4.1 catalog/CAIQ published 2026-01; cross-framework MAPPINGS NOT yet released by CSA (v4.1 'Scope Applicability (Mappings)' sheet reads 'This dataset is not available yet'; OSCAL mappings empty). v4.0.13 remains the latest CCM mappings that exist. STAR: v4.1-only from Mar 2026, v4.0.x withdrawn Jan 2028 — mappings must land before then. Tracked in anticipated_updates (au-csa-ccm)."
     },
@@ -704,7 +704,7 @@
       "retrieved": "2026-07-02",
       "role": "csa_ccm",
       "sha256_prefix": "15ed274945743019",
-      "notes": "User-provided CSA STAR bundle. Supersedes the older CCM v4.0.x file as the freshest CCM artifact on disk; CCM v4.1 (2026-01-28) remains registration-gated — registry tracks it as current. ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
+      "notes": "User-provided CSA STAR bundle. Supersedes the older CCM v4.0.x file as the freshest CCM artifact on disk; CCM v4.1 (2026-01-28) remains registration-gated — registry tracks it as current. ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,683 distinct CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
       "authority_scope": "csa_star_only",
       "upstream_available": "CCM v4.1 catalog/CAIQ published 2026-01; cross-framework MAPPINGS NOT yet released by CSA (v4.1 'Scope Applicability (Mappings)' sheet reads 'This dataset is not available yet'; OSCAL mappings empty). v4.0.13 remains the latest CCM mappings that exist. STAR: v4.1-only from Mar 2026, v4.0.x withdrawn Jan 2028 — mappings must land before then. Tracked in anticipated_updates (au-csa-ccm)."
     },
@@ -716,10 +716,10 @@
       "retrieved": "2026-07-02",
       "role": "csa_ccm_oscal",
       "sha256_prefix": "876714a4412996c9",
-      "notes": "Machine-readable OSCAL rendition of CCM + mappings — candidate loader input for a future CCM spine projection (structured, no xlsx parsing needed). ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog. Phase 20: CCM is a spine framework ('CSA CCM v4') from this OSCAL mapping-collection.",
+      "notes": "Machine-readable OSCAL rendition of CCM + mappings — candidate loader input for a future CCM spine projection (structured, no xlsx parsing needed). ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,683 distinct CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog. Phase 20: CCM is a spine framework ('CSA CCM v4') from this OSCAL mapping-collection.",
       "authority_scope": "csa_star_only",
       "structure": {
-        "mapping_collection": "ccm-oscal-mappings.json: 2 mappings — CCM->800-53 r5 (195 maps, 1,684 expanded pairs, source-stated equivalent-to/superset-of) and CCM->CIS 8.1 (94 maps, 165 pairs)",
+        "mapping_collection": "ccm-oscal-mappings.json: 2 mappings — CCM->800-53 r5 (195 maps, 1,683 distinct expanded pairs (1,684 raw — the source repeats LOG-09 -> AU-12(3)), source-stated equivalent-to/superset-of) and CCM->CIS 8.1 (94 maps, 165 pairs)",
         "id_forms": "sources 'A_A-01' (underscore encodes A&A only) -> display 'A&A-01'; 53 targets OSCAL lowercase ('ca-2.1' -> CA-2(1) via oscal_control_id)",
         "loaders": "spine_loader.load_ccm_projection (ccm_oscal 0.85, CSA-STAR-scope acceptance) + collect_ccm_cis_pairs"
       },
@@ -733,7 +733,7 @@
       "retrieved": "2026-07-02",
       "role": "csa_aicm",
       "sha256_prefix": "afebba6d2c9ede42",
-      "notes": "CSA STAR for AI: AI Controls Matrix v1.1 + AI-CAIQ questionnaire + Level 1 submission guide. CURRENT as of upload (June 2026). ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
+      "notes": "CSA STAR for AI: AI Controls Matrix v1.1 + AI-CAIQ questionnaire + Level 1 submission guide. CURRENT as of upload (June 2026). ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,683 distinct CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
       "authority_scope": "csa_star_only"
     },
     {
@@ -743,7 +743,7 @@
       "version": "CAIQ v4.0.3 (2024-05-20)",
       "retrieved": "2026-07-02",
       "role": "csa_caiq",
-      "notes": "STAR self-assessment questionnaire matching CCM v4.0.x. CAIQ v4.1 (283 questions) is registration-gated; registry tracks it. ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,684 CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
+      "notes": "STAR self-assessment questionnaire matching CCM v4.0.x. CAIQ v4.1 (283 questions) is registration-gated; registry tracks it. ACCEPTANCE-AUTHORITY MODEL: CSA's mappings are the acceptance rules for CSA STAR audits/certifications — e.g. CSA stating 800-53 control X maps to CCM requirement Y means CSA accepts X as satisfying Y for STAR purposes. Not a claim about what NIST accepts; never modifies other standards' data. Third-party views of CCM (e.g. SCF's CCM column) are bundled-crosswalk tier below CSA's own mappings for CCM questions. Id-level check 2026-07-02: all 1,683 distinct CCM->800-53 OSCAL targets resolve in the r5.2.0 catalog.",
       "authority_scope": "csa_star_only"
     },
     {
