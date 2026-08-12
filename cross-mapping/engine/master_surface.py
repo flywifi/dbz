@@ -312,26 +312,58 @@ def assemble(conn, csf2_pairs: Optional[List[dict]] = None,
     stats["skipped_consensus_single"] = conn.execute(
         "SELECT COUNT(*) FROM consensus_edges WHERE tier='single'").fetchone()[0]
 
+    # 3b. Shared 800-53 anchors for CROSS pairs (phase-36 finding F-8).
+    #
+    # An anchor is the r5 control BOTH sides of a cross-framework pair project onto —
+    # the concrete answer to "why do you think these two are related?". It is only a
+    # meaningful concept for cross edges: on a spoke edge (X <-> a NIST control) the
+    # control is an endpoint, not a shared pivot, so writing it into shared_anchors
+    # would be circular. Spoke evidence is carried by source_ref instead.
+    #
+    # Computed from framework_projection, which is where both sides' spine footprints
+    # already live — no new source, no new judgment.
+    _proj_anchor_cache: Dict[str, Dict[str, Set[str]]] = {}
+
+    def _anchors_for(fw: str, native: str) -> Set[str]:
+        by_native = _proj_anchor_cache.get(fw)
+        if by_native is None:
+            by_native = {}
+            for n, ctrl in conn.execute(
+                    "SELECT native_id, r5_control FROM framework_projection WHERE framework=?",
+                    (fw,)):
+                by_native.setdefault(str(n), set()).add(str(ctrl))
+            _proj_anchor_cache[fw] = by_native
+        return by_native.get(str(native), set())
+
+    def shared_anchors(fw_a: str, id_a: str, fw_b: str, id_b: str) -> List[str]:
+        if fw_a == NIST_LABEL or fw_b == NIST_LABEL:
+            return []
+        return sorted(_anchors_for(fw_a, id_a) & _anchors_for(fw_b, id_b))
+
     # 4. OLIR CSF-2.0 pairs (PCI / ISO / 171r3 <-> CSF2) + AICPA TSP <-> HITRUST.
     for p in csf2_pairs or []:
         col.add(labels.canon(p["fw"]), p["native"], "NIST CSF 2.0", p["csf2_id"],
                 provenance="olir_csf2_pair", relationship="intersect",
                 relationship_basis="source_stated", confidence=0.85, hop_count=1,
-                needs_confirmation=0, source_ref=f"cprt_csf2_olir:{p['olir_name']}")
+                needs_confirmation=0, source_ref=f"cprt_csf2_olir:{p['olir_name']}",
+                anchors=shared_anchors(labels.canon(p["fw"]), p["native"],
+                                       "NIST CSF 2.0", p["csf2_id"]))
         stats["olir_pair_rows"] += 1
     for p in tsp_pairs or []:
         col.add("SOC 2", p["tsc_id"], "HITRUST CSF", p["hitrust_id"],
                 provenance="aicpa_tsp_hub", relationship="intersect",
                 relationship_basis="co_membership", confidence=0.65, hop_count=1,
                 needs_confirmation=1,
-                source_ref="Mapping-of-2017-AICPA-TSP-to-HITRUST-CSFv11.4.0.xlsx")
+                source_ref="Mapping-of-2017-AICPA-TSP-to-HITRUST-CSFv11.4.0.xlsx",
+                anchors=shared_anchors("SOC 2", p["tsc_id"], "HITRUST CSF", p["hitrust_id"]))
         stats["tsp_pair_rows"] += 1
     # CCM <-> CIS 8.1 from CSA's OSCAL mapping-collection (owner-stated, Phase 20)
     for p in ccm_cis_pairs or []:
         col.add("CSA CCM v4", p["ccm_id"], "CIS CSC v8.0", p["cis_id"],
                 provenance="ccm_oscal", relationship=p["relationship"],
                 relationship_basis="source_stated", confidence=0.85, hop_count=1,
-                needs_confirmation=0, source_ref="ccm-oscal-mappings.json")
+                needs_confirmation=0, source_ref="ccm-oscal-mappings.json",
+                anchors=shared_anchors("CSA CCM v4", p["ccm_id"], "CIS CSC v8.0", p["cis_id"]))
         stats["ccm_cis_pair_rows"] = stats.get("ccm_cis_pair_rows", 0) + 1
 
     # 5. ER production aggregates — public-id frameworks only, counts only.
@@ -355,7 +387,8 @@ def assemble(conn, csf2_pairs: Optional[List[dict]] = None,
                     provenance="production_aggregate", relationship="unspecified",
                     relationship_basis="production_cooccurrence", confidence=None,
                     hop_count=None, needs_confirmation=1,
-                    source_ref="er_mappings:aggregate")
+                    source_ref="er_mappings:aggregate",
+                    anchors=shared_anchors(fw_a, id_a, fw_b, id_b))
         stats["er_aggregate_pairs"] += 1
 
     rows = col.rows()
