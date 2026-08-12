@@ -463,6 +463,54 @@ def _master_fw_set(conn: sqlite3.Connection, name: str) -> tuple[list[str], str]
     return labels, ""
 
 
+def _master_pair_gap(conn, fas: list[str], fbs: list[str], fmt: str) -> int | None:
+    """Both frameworks are real, but this PAIR has no stored master rows.
+
+    Returns the structured gap (same shape as _master_soc1_gap / _master_declared_gap)
+    and points at `overlap`, which computes the pair from the spine on demand. Returns
+    None if a spine-level signal cannot be offered, so the caller falls back to its
+    normal zero-row header rather than over-promising."""
+    a, b = fas[0], fbs[0]
+    try:
+        import spine_overlap
+        reg = _alias_registry(conn)
+        pa = spine_overlap.resolve_framework(conn, a)
+        pb = spine_overlap.resolve_framework(conn, b)
+    except Exception:
+        pa = pb = None
+    # measured, never hardcoded — the stored/possible pair counts move as data lands
+    stored = conn.execute(
+        "SELECT COUNT(*) FROM (SELECT DISTINCT fw_a, fw_b FROM master_mappings)").fetchone()[0]
+    nfw = conn.execute(
+        "SELECT COUNT(*) FROM (SELECT fw_a f FROM master_mappings "
+        "UNION SELECT fw_b FROM master_mappings)").fetchone()[0]
+    possible = nfw * (nfw - 1) // 2
+    gap = {
+        "tool": "master-crosswalk",
+        "framework_a": a,
+        "framework_b": b,
+        "data_gap": "no_stored_pair_rows",
+        "stored_pairs": stored,
+        "possible_pairs": possible,
+        "explanation": (
+            f"The master surface stores id-level rows for {stored} of {possible} possible "
+            f"framework pairs; {a} <-> {b} is not one of them. This is an absence of stored "
+            f"id-level mappings, NOT evidence that the frameworks are unrelated."),
+        "human_review_required": True,
+    }
+    if pa and pb:
+        gap["next_step"] = (
+            f"dbz_query overlap --framework-a {a!r} --framework-b {b!r} — computes this "
+            f"pair from the 800-53 spine on demand, with its own confidence and caveats.")
+    if fmt == "json":
+        print(json.dumps(gap, indent=2, ensure_ascii=False))
+    else:
+        print(f"[data gap] {a} <-> {b}: {gap['explanation']}")
+        if "next_step" in gap:
+            print(f"  next: {gap['next_step']}")
+    return 0
+
+
 def _master_declared_gap(conn, name: str, fmt: str) -> int | None:
     """A registry-declared framework/surface data gap answered as a structured gap
     rather than 'unknown framework' — the difference between "we know this framework
@@ -562,6 +610,15 @@ def cmd_master(args, conn: sqlite3.Connection) -> int:
             ORDER BY CASE tier {tier_case} END, fw_a, native_a, fw_b, native_b
             LIMIT ?""", (*fas, *fbs, *fbs, *fas, max_rank, *ev_params, limit)).fetchall()
         notes = "; ".join(n for n in (note_a, note_b) if n)
+        # Both frameworks resolved but the pair carries no stored rows: answer with a
+        # structured pair-gap instead of a bare "0". The master surface stores 60 of
+        # 595 possible pairs; `overlap` still answers this pair from the spine, and a
+        # user who only sees "0" concludes there is no relationship (phase-36 F-2 —
+        # the same silent-empty class fixed for `fedramp` in phase 35).
+        if not rows:
+            rc = _master_pair_gap(conn, fas, fbs, args.format)
+            if rc is not None:
+                return rc
         header = f"{' + '.join(fas)} <-> {' + '.join(fbs)}: {len(rows)} master mapping(s)" + \
                  (f" [{notes}]" if notes else "")
     elif fa_in and (getattr(args, "fedramp", None) or getattr(args, "cui", False)
