@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.14"  # v3.14: regulatory-provenance columns on anticipated_updates (enum-enforced); v3.13: evidence_state ladder on master_mappings; v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
+SCHEMA_VERSION = "3.15"  # v3.15: edge_semantic on master_mappings (what an edge CLAIMS); v3.14: regulatory-provenance columns on anticipated_updates (enum-enforced); v3.13: evidence_state ladder on master_mappings; v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
 
 CHUNK = 500  # executemany batch size
 
@@ -490,6 +490,11 @@ CREATE TABLE IF NOT EXISTS master_mappings (
     shared_anchors     TEXT,            -- JSON capped list of r5 anchors under the pair
     anchor_count       INTEGER,
     corroboration      TEXT,            -- JSON minority report (non-winning surfaces)
+    edge_semantic      TEXT NOT NULL DEFAULT 'informs',
+                                        -- v3.15: what the edge CLAIMS (orthogonal to
+                                        -- confidence/tier): equivalent|supports|
+                                        -- co_referenced|informs. Vocabulary + derivation:
+                                        -- framework_vocab.json -> edge_semantics
     evidence_state     TEXT NOT NULL DEFAULT 'asserted_by_source',
                                         -- derived ladder (v3.13): oracle_confirmed|cross_validated|columns_aligned|asserted_by_source
     source_ref         TEXT NOT NULL,
@@ -1856,12 +1861,12 @@ def build_db(
             (fw_a, native_a, fw_b, native_b, relationship, relationship_basis,
              tier, provenance, confidence, hop_count, needs_confirmation,
              uncertainty_id, votes, production_support, shared_anchors,
-             anchor_count, corroboration, evidence_state, source_ref)
+             anchor_count, corroboration, edge_semantic, evidence_state, source_ref)
         VALUES
             (:fw_a, :native_a, :fw_b, :native_b, :relationship, :relationship_basis,
              :tier, :provenance, :confidence, :hop_count, :needs_confirmation,
              :uncertainty_id, :votes, :production_support, :shared_anchors,
-             :anchor_count, :corroboration, :evidence_state, :source_ref)
+             :anchor_count, :corroboration, :edge_semantic, :evidence_state, :source_ref)
     """, master_rows, "master_mappings")
     conn.commit()
     print(f"  master_mappings: rows={master_stats['rows']} by_tier={master_stats['by_tier']} "

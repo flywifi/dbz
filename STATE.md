@@ -6,7 +6,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 [docs/cross-mapping-architecture.md](docs/cross-mapping-architecture.md).
 
 ## Live status
-- **DB schema:** 3.14 (adds regulatory-provenance columns on `anticipated_updates`; 3.13 added the `evidence_state` ladder) (`grc.db`, deterministic build, double-build digest check)
+- **DB schema:** 3.15 (adds `edge_semantic` on `master_mappings` — what an edge CLAIMS; 3.14 added regulatory-provenance columns on `anticipated_updates`) (`grc.db`, deterministic build, double-build digest check)
 - **Gate battery:** rebuild ×2 identical digests · `test_spine.py` · `validate_spine.py` ·
   `health_audit.py --scan/--full` 100/100 (including the artifacts-hidden CI condition) ·
   `sync_check.py` (15 invariants) · golden self-test · `benchmark_oracles.py --check` ·

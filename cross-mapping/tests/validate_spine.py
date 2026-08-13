@@ -670,6 +670,61 @@ def main() -> int:
              f"{len(ev_counts)} states {dict(sorted(ev_counts.items()))} "
              "(vocabulary exact; monotonic; 500-row independent recomputation matches)")
 
+    # 15. Edge-semantic model (Phase 37, schema 3.15) — what an edge CLAIMS.
+    #     Phase-36 finding F-10: weak "relates to" links were stored identically to
+    #     strong "satisfies" links and then reported as shared audit work. The class is
+    #     derived mechanically, so this check asserts the derivation is TOTAL (every row
+    #     classified), SINGLE-VALUED (vocabulary exact), and independently reproducible.
+    sbad = []
+    with open(ROOT / "canonical-sources" / "framework_vocab.json", encoding="utf-8") as f:
+        _vocab_sem = json.load(f).get("edge_semantics", {}).get("classes", {})
+    allowed = set(_vocab_sem)
+    if not allowed:
+        sbad.append("framework_vocab.json declares no edge_semantics.classes")
+    sem_counts = dict(conn.execute(
+        "SELECT edge_semantic, COUNT(*) FROM master_mappings GROUP BY 1").fetchall())
+    unknown = set(sem_counts) - allowed
+    if unknown:
+        sbad.append(f"undeclared edge_semantic value(s): {sorted(unknown)}")
+    n_null = conn.execute(
+        "SELECT COUNT(*) FROM master_mappings WHERE edge_semantic IS NULL "
+        "OR TRIM(edge_semantic)=''").fetchone()[0]
+    if n_null:
+        sbad.append(f"{n_null} rows without an edge_semantic (derivation not total)")
+    # a co_membership edge must NEVER be classified as shared work — that is the exact
+    # conflation F-10 recorded
+    n_conflate = conn.execute(
+        "SELECT COUNT(*) FROM master_mappings WHERE relationship_basis='co_membership' "
+        "AND edge_semantic IN ('equivalent','supports')").fetchone()[0]
+    if n_conflate:
+        sbad.append(f"{n_conflate} co_membership edges classified as shared work (F-10 regression)")
+    # independent recomputation over a deterministic sample
+    n_mis = 0
+    for (basis, rel, sem) in conn.execute(
+            "SELECT relationship_basis, relationship, edge_semantic FROM master_mappings "
+            "ORDER BY fw_a, native_a, fw_b, native_b LIMIT 500"):
+        if basis == "source_stated":
+            want = "equivalent" if rel == "equal" else "supports"
+        elif basis == "multi_source_consensus":
+            want = "supports"
+        elif basis in ("co_membership", "production_cooccurrence"):
+            want = "co_referenced"
+        else:
+            want = "informs"
+        if want != sem:
+            n_mis += 1
+    if n_mis:
+        sbad.append(f"{n_mis}/500 sampled rows disagree with the independent derivation")
+    if sbad:
+        fail("edge-semantic model malformed: " + "; ".join(sbad[:6]))
+    else:
+        shared = sum(n for s, n in sem_counts.items()
+                     if _vocab_sem.get(s, {}).get("counts_as_shared_work"))
+        tot_sem = sum(sem_counts.values())
+        note(f"edge-semantic model: {tot_sem} rows across {len(sem_counts)} classes "
+             f"{dict(sorted(sem_counts.items()))}; {shared} ({100*shared/tot_sem:.1f}%) count as "
+             "shared work (vocabulary exact; total; 500-row independent recomputation matches)")
+
     conn.close()
 
     print("SPINE VALIDATION:", "FAIL" if FAILS else "PASS")

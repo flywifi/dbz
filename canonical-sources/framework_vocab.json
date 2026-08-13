@@ -1,6 +1,6 @@
 {
   "_purpose": "Controlled vocabularies the health auditor validates against, so a typo or a fabricated identifier is caught before it corrupts a query. Deterministic allow-lists only — never fabricate an entry to make a check pass; add the real canonical name.",
-  "_version": "1.2.0",
+  "_version": "1.3.0",
   "_generated": "2026-07-02",
   "framework_names": {
     "_note": "Canonical framework names as they must appear in crosswalk/catalog data. A name not on this list (e.g. 'ISO 27001' missing the '/IEC') is flagged so overlap queries don't silently miss it.",
@@ -346,5 +346,34 @@
       "ORPHAN_CONFIRMED",
       "CIRCULAR_UNRESOLVED"
     ]
+  },
+  "edge_semantics": {
+    "_note": "What a master edge CLAIMS — orthogonal to confidence, which says how SURE we are. Phase 36 (finding F-10) found the repo stored a source's weak 'relates to' link in the same shape as a strong 'satisfies' link, and the overlap engine then reported the result as shared audit work. This vocabulary makes strength explicit. Classes are DERIVED MECHANICALLY from relationship_basis + relationship — no per-edge judgment is applied and no new data is invented; validate_spine asserts the derivation is total and single-valued.",
+    "classes": {
+      "equivalent": {
+        "rank": 1,
+        "counts_as_shared_work": true,
+        "definition": "A source states the two requirements are the same requirement.",
+        "derived_from": "relationship_basis=source_stated AND relationship=equal"
+      },
+      "supports": {
+        "rank": 2,
+        "counts_as_shared_work": true,
+        "definition": "A source states a directional or partial satisfaction relationship (subset/superset/intersect), or several independent sources agree the pair is related.",
+        "derived_from": "relationship_basis=source_stated AND relationship in (subset,superset,intersect); or relationship_basis=multi_source_consensus"
+      },
+      "co_referenced": {
+        "rank": 3,
+        "counts_as_shared_work": false,
+        "definition": "One hub requirement (or one production evidence request) cited both sides. Topical co-occurrence, NOT a stated claim that doing one contributes to the other.",
+        "derived_from": "relationship_basis in (co_membership, production_cooccurrence)"
+      },
+      "informs": {
+        "rank": 4,
+        "counts_as_shared_work": false,
+        "definition": "Structural or bibliographic association only — co-citation in a compiled crosswalk, or a relationship inferred from cardinality rather than stated.",
+        "derived_from": "relationship_basis in (co_citation, derived_cardinality)"
+      }
+    }
   }
 }

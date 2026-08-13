@@ -567,6 +567,11 @@ def cmd_master(args, conn: sqlite3.Connection) -> int:
     ev_state = getattr(args, "evidence_state", None)
     ev_cond = " AND evidence_state = ?" if ev_state else ""
     ev_params = (ev_state,) if ev_state else ()
+    # v3.15 edge_semantic filter — what the edge CLAIMS, not how sure we are
+    sem = getattr(args, "semantic", None)
+    if sem:
+        ev_cond += " AND edge_semantic = ?"
+        ev_params = (*ev_params, sem)
 
     control = getattr(args, "control", None)
     fw_single = getattr(args, "framework", None)
@@ -615,7 +620,24 @@ def cmd_master(args, conn: sqlite3.Connection) -> int:
         # 595 possible pairs; `overlap` still answers this pair from the spine, and a
         # user who only sees "0" concludes there is no relationship (phase-36 F-2 —
         # the same silent-empty class fixed for `fedramp` in phase 35).
+        # Only a genuinely unstored pair gets the gap response. If the pair HAS rows and
+        # a filter (--semantic / --evidence-state / --min-tier) emptied the result, say
+        # that instead — claiming "not stored" would be false.
         if not rows:
+            stored_any = conn.execute(
+                f"""SELECT COUNT(*) FROM master_mappings
+                    WHERE ((fw_a IN ({pha}) AND fw_b IN ({phb}))
+                        OR (fw_a IN ({phb}) AND fw_b IN ({pha})))""",
+                (*fas, *fbs, *fbs, *fas)).fetchone()[0]
+            if stored_any:
+                filters = [f for f in (
+                    f"--semantic {sem}" if sem else "",
+                    f"--evidence-state {ev_state}" if ev_state else "",
+                    f"--min-tier {getattr(args, 'min_tier', None)}"
+                    if getattr(args, "min_tier", None) else "") if f]
+                print(f"{' + '.join(fas)} <-> {' + '.join(fbs)}: 0 of {stored_any:,} stored "
+                      f"master mapping(s) match {' '.join(filters) or 'the filters'}")
+                return 0
             rc = _master_pair_gap(conn, fas, fbs, args.format)
             if rc is not None:
                 return rc
@@ -722,7 +744,8 @@ def cmd_master(args, conn: sqlite3.Connection) -> int:
         if d["corroboration"]:
             corr = f" (+{len(json.loads(d['corroboration']))} corroborating surface(s))"
         ev = f" ev={d['evidence_state']}" if d.get("evidence_state") else ""
-        print(f"[{d['tier']}:{d['provenance']}{conf}{ev}] {d['fw_a']} {d['native_a']} <-> "
+        sem = f" claims={d['edge_semantic']}" if d.get("edge_semantic") else ""
+        print(f"[{d['tier']}:{d['provenance']}{conf}{sem}{ev}] {d['fw_a']} {d['native_a']} <-> "
               f"{d['fw_b']} {d['native_b']} ({d['relationship']}){votes}{prod}{anch}{corr}")
     return 0
 
@@ -1703,6 +1726,11 @@ def build_parser() -> argparse.ArgumentParser:
     mst.add_argument("--family", help="audit-scope mode: NIST family filter (e.g. IA)")
     mst.add_argument("--min-tier", choices=list(_MASTER_TIER_ORDER),
                      help="only tiers at or above this rank")
+    mst.add_argument("--semantic",
+                     choices=["equivalent", "supports", "co_referenced", "informs"],
+                     help="filter by what the edge CLAIMS (v3.15). equivalent/supports are "
+                          "source-stated shared work; co_referenced/informs are topical "
+                          "association only (framework_vocab.json -> edge_semantics)")
     mst.add_argument("--evidence-state",
                      choices=["oracle_confirmed", "cross_validated",
                               "columns_aligned", "asserted_by_source"],

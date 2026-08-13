@@ -167,6 +167,33 @@ class _Claims:
             self.anchors.setdefault(key, set()).update(anchors)
 
     @staticmethod
+    def _edge_semantic(relationship_basis: str, relationship: str) -> str:
+        """What the edge CLAIMS (schema 3.15) — orthogonal to `confidence` (how sure)
+        and to `tier` (how it was established). Vocabulary + rules:
+        framework_vocab.json -> edge_semantics.
+
+        Phase-36 finding F-10: a source's weak "relates to" link was stored in the same
+        shape as a strong "satisfies" link, and `overlap` then reported the result as
+        shared audit work. This makes the strength explicit so the shared-work metric
+        can count only what a source actually asserts.
+
+        Derived mechanically from fields the build already populates — no per-edge
+        judgment, no new data. validate_spine asserts totality and single-valuedness.
+        """
+        basis = (relationship_basis or "").strip()
+        rel = (relationship or "").strip()
+        if basis == "source_stated":
+            return "equivalent" if rel == "equal" else "supports"
+        if basis == "multi_source_consensus":
+            return "supports"
+        if basis in ("co_membership", "production_cooccurrence"):
+            return "co_referenced"
+        if basis in ("co_citation", "derived_cardinality"):
+            return "informs"
+        # Unknown basis must not be silently classified as a strong claim.
+        return "informs"
+
+    @staticmethod
     def _evidence_state(tier: str, votes, production, corroborating: int) -> str:
         """Derived evidence-strength ladder (schema 3.13) — orthogonal to the
         provenance tier: the tier says HOW the edge was established, the state
@@ -220,6 +247,8 @@ class _Claims:
                     [{k: c[k] for k in ("provenance", "tier", "confidence",
                                         "relationship", "source")} for c in rest],
                     sort_keys=True) if rest else None,
+                "edge_semantic": self._edge_semantic(
+                    primary["relationship_basis"], primary["relationship"]),
                 "evidence_state": self._evidence_state(
                     primary["tier"], self.votes.get(key),
                     self.production.get(key, 0), len(rest)),
