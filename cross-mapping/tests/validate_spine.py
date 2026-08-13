@@ -767,6 +767,40 @@ def main() -> int:
              f"shared-id bar for authority-vs-hub corroboration ({'; '.join(detail)}); "
              f"phase-36 baseline was 1")
 
+    # 17. Identifier hygiene (Phase 37) — phase-36 finding F-7: assessment-objective
+    #     PROSE was stored in native_id at the top confidence tier, so 100% of page 1
+    #     of the obvious 800-171 query showed sentences where control ids belong.
+    #     A native_id is an identifier: short, and never a sentence.
+    idbad = []
+    for col in ("native_a", "native_b"):
+        for (fw, nid, prov) in conn.execute(
+                f"SELECT fw_a, {col}, provenance FROM master_mappings "
+                f"WHERE LENGTH({col}) > 80 OR {col} LIKE '% if %' OR {col} LIKE '%;%'"):
+            # HITRUST writes 'id + title' by convention (159 of 226 ids) — allowed,
+            # because the identifier still leads the string.
+            if str(fw).startswith("HITRUST") or re.match(r"^\d{2}\.[a-z]\s", str(nid) or ""):
+                continue
+            idbad.append(f"{fw}:{str(nid)[:40]}... ({prov})")
+    if idbad:
+        fail(f"{len(idbad)} master row(s) store prose where a control identifier belongs "
+             f"(F-7 regression): {idbad[:3]}")
+    else:
+        note("identifier hygiene: no master row stores sentence-shaped native ids")
+
+    # 18. Anchor retention (Phase 37) — phase-36 finding F-8: cross-framework edges
+    #     recorded no shared 800-53 anchors, so a user could not ask why a pair was
+    #     believed related. Spoke edges are exempt: there the control is an endpoint.
+    ANCHOR_FLOOR = 1000          # measured 2026-08-13: 1,379 cross rows carry anchors
+    n_anch = conn.execute(
+        "SELECT COUNT(*) FROM master_mappings WHERE fw_a<>? AND fw_b<>? AND anchor_count>0",
+        ("NIST 800-53", "NIST 800-53")).fetchone()[0]
+    if n_anch < ANCHOR_FLOOR:
+        fail(f"anchor retention regressed: {n_anch} cross edges carry shared anchors "
+             f"(floor {ANCHOR_FLOOR}; phase-36 baseline was 117)")
+    else:
+        note(f"anchor retention: {n_anch} cross edges carry their shared 800-53 anchors "
+             f"(phase-36 baseline 117)")
+
     conn.close()
 
     print("SPINE VALIDATION:", "FAIL" if FAILS else "PASS")
