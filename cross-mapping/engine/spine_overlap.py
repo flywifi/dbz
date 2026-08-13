@@ -198,6 +198,55 @@ def footprint_subparts(conn, fw: str) -> Set[str]:
     return out
 
 
+# Bases whose edges represent SOURCE-STATED shared work. Everything else
+# (co_membership, production_cooccurrence, co_citation, derived_cardinality) is
+# topical co-reference: real association, but no source claims that doing one
+# contributes to satisfying the other. See framework_vocab -> edge_semantics.
+_SHARED_WORK_BASES = ("source_stated", "multi_source_consensus")
+
+# Provenances whose PUBLISHER is an authority for the mapping (owner_direct /
+# nist_stated / owner_stated tiers). NIST's OLIR exports land with
+# relationship_basis=derived_cardinality because they supply no relationship TYPE,
+# so filtering on basis alone would wrongly exclude NIST's own mappings.
+_SHARED_WORK_PROVENANCES = (
+    "cmmc171", "direct_olir", "direct_800_66", "direct_csf2",
+    "direct_cprt_171r3", "direct_cprt_172r3", "olir_csf2_pair",
+    "ccm_oscal", "scf_direct")
+
+
+def footprint_controls_strict(conn, fw: str) -> Set[str]:
+    """Spine footprint restricted to source-stated shared-work edges (phase-37).
+
+    Phase-36 finding F-11: the shipped overlap percentage is computed from a
+    projection that is ~95% co_membership, then reported as "shared audit work".
+    This is the strict counterpart — it counts only what a source actually states.
+    It is EXPECTED to be zero for frameworks whose projection is entirely
+    hub-composed (SOC 2, CIS); a zero here means "no source states shared work for
+    this pair", which is a fact worth reporting, not a failure."""
+    qb = ",".join("?" * len(_SHARED_WORK_BASES))
+    qp = ",".join("?" * len(_SHARED_WORK_PROVENANCES))
+    return {r[0] for r in conn.execute(
+        f"SELECT DISTINCT r5_control FROM framework_projection "
+        f"WHERE framework=? AND {_NOT_REFUTED} "
+        f"AND (relationship_basis IN ({qb}) OR provenance IN ({qp}))",
+        (fw, *_SHARED_WORK_BASES, *_SHARED_WORK_PROVENANCES))}
+
+
+def strict_shared_work(conn, a: str, b: str) -> dict:
+    """Source-stated shared-work metrics for a pair, alongside the co-reference
+    figure. Control-level basis only — the strict subset is too sparse for
+    sub-part/CCI granularity to be meaningful."""
+    sa, sb = footprint_controls_strict(conn, a), footprint_controls_strict(conn, b)
+    m = _jaccard(sa, sb)
+    return {
+        "shared_work_pct": m["jaccard_pct"],
+        "shared_work_shared_count": m["shared_count"],
+        "shared_work_a_count": m["a_count"],
+        "shared_work_b_count": m["b_count"],
+        "shared_work_basis": "control (source-stated edges only)",
+    }
+
+
 def footprint_ccis(conn, fw: str) -> Set[str]:
     """Finest-granularity testable atoms a framework reaches: DISA CCIs plus 800-53A
     assessment-objective ids, both anchored at the sub-part (or control) level.  The
@@ -633,6 +682,26 @@ def compute(conn, a_in: str, b_in: str, want_per_control: bool = False,
         "caveats": caveats,
         "human_review_required": True,
     }
+    # Two labeled numbers (phase-37, finding F-11): `overlap_pct` is TOPICAL
+    # CO-REFERENCE — it counts every spine coordinate the two frameworks share,
+    # ~95% of which come from one hub requirement citing both. `shared_work_pct`
+    # counts only source-stated edges. Neither replaces the other and the
+    # co-reference value is unchanged from previous releases.
+    out.update(strict_shared_work(conn, a, b))
+    # Disclose single-source dependency per side (phase-37, finding F-11): the audit
+    # found SOC 2's projection is 100% hub-derived and HIPAA's 98%, while the caveat
+    # line said only "hub-mediated". Measured per pair, never hardcoded.
+    for side, fw in (("a", a), ("b", b)):
+        tot = conn.execute("SELECT COUNT(*) FROM framework_projection WHERE framework=?",
+                           (fw,)).fetchone()[0]
+        hub = conn.execute("SELECT COUNT(*) FROM framework_projection WHERE framework=? "
+                           "AND provenance='hitrust_hub'", (fw,)).fetchone()[0]
+        pct = round(100.0 * hub / tot, 1) if tot else 0.0
+        out[f"framework_{side}_hub_derived_pct"] = pct
+        if pct >= 50.0:
+            out["caveats"].append(
+                f"{fw}: {pct}% of its spine footprint derives from one licensed artifact "
+                f"(HITRUST CSF cross-reference), composed rather than stated by that framework's owner")
     if relationship_basis:
         out["relationship_basis"] = relationship_basis
     if want_per_control and result_basis in ("cci", "subpart", "control"):

@@ -348,19 +348,19 @@
     ]
   },
   "edge_semantics": {
-    "_note": "What a master edge CLAIMS — orthogonal to confidence, which says how SURE we are. Phase 36 (finding F-10) found the repo stored a source's weak 'relates to' link in the same shape as a strong 'satisfies' link, and the overlap engine then reported the result as shared audit work. This vocabulary makes strength explicit. Classes are DERIVED MECHANICALLY from relationship_basis + relationship — no per-edge judgment is applied and no new data is invented; validate_spine asserts the derivation is total and single-valued.",
+    "_note": "What a master edge CLAIMS — orthogonal to confidence, which says how SURE we are. Phase 36 (finding F-10) found the repo stored a source's weak 'relates to' link in the same shape as a strong 'satisfies' link, and the overlap engine then reported the result as shared audit work. This vocabulary makes strength explicit. Classes are DERIVED MECHANICALLY from relationship_basis + relationship — no per-edge judgment is applied and no new data is invented; validate_spine asserts the derivation is total and single-valued. NOTE (phase 37): authority is read from the TIER, not from relationship_basis. NIST's own OLIR exports carry relationship_basis=derived_cardinality because the export supplies no relationship TYPE — but NIST published the mapping, so those edges are source-stated and must not be demoted to 'informs'.",
     "classes": {
       "equivalent": {
         "rank": 1,
         "counts_as_shared_work": true,
         "definition": "A source states the two requirements are the same requirement.",
-        "derived_from": "relationship_basis=source_stated AND relationship=equal"
+        "derived_from": "tier in (owner_direct, nist_stated, owner_stated) AND relationship=equal — the source published the mapping AND states the two are the same requirement"
       },
       "supports": {
         "rank": 2,
         "counts_as_shared_work": true,
         "definition": "A source states a directional or partial satisfaction relationship (subset/superset/intersect), or several independent sources agree the pair is related.",
-        "derived_from": "relationship_basis=source_stated AND relationship in (subset,superset,intersect); or relationship_basis=multi_source_consensus"
+        "derived_from": "tier in (owner_direct, nist_stated, owner_stated) — the source published the mapping (a stated relationship type may or may not accompany it); or relationship_basis=multi_source_consensus (several independent sources agree)"
       },
       "co_referenced": {
         "rank": 3,
@@ -372,7 +372,7 @@
         "rank": 4,
         "counts_as_shared_work": false,
         "definition": "Structural or bibliographic association only — co-citation in a compiled crosswalk, or a relationship inferred from cardinality rather than stated.",
-        "derived_from": "relationship_basis in (co_citation, derived_cardinality)"
+        "derived_from": "everything else — a compiled/bundled crosswalk (co_citation) or a relationship inferred from cardinality with no publishing authority behind it"
       }
     }
   }

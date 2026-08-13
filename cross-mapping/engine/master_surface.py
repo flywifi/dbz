@@ -167,7 +167,7 @@ class _Claims:
             self.anchors.setdefault(key, set()).update(anchors)
 
     @staticmethod
-    def _edge_semantic(relationship_basis: str, relationship: str) -> str:
+    def _edge_semantic(relationship_basis: str, relationship: str, tier: str = "") -> str:
         """What the edge CLAIMS (schema 3.15) — orthogonal to `confidence` (how sure)
         and to `tier` (how it was established). Vocabulary + rules:
         framework_vocab.json -> edge_semantics.
@@ -182,7 +182,12 @@ class _Claims:
         """
         basis = (relationship_basis or "").strip()
         rel = (relationship or "").strip()
-        if basis == "source_stated":
+        # Authority is carried by the TIER, not by relationship_basis: NIST's own OLIR
+        # exports arrive with basis=derived_cardinality because the export supplies no
+        # relationship TYPE, yet NIST published the mapping. Reading only the basis
+        # would demote every NIST/CSA authority edge to "informs".
+        if (tier or "") in ("owner_direct", "nist_stated", "owner_stated") \
+                or basis == "source_stated":
             return "equivalent" if rel == "equal" else "supports"
         if basis == "multi_source_consensus":
             return "supports"
@@ -248,7 +253,8 @@ class _Claims:
                                         "relationship", "source")} for c in rest],
                     sort_keys=True) if rest else None,
                 "edge_semantic": self._edge_semantic(
-                    primary["relationship_basis"], primary["relationship"]),
+                    primary["relationship_basis"], primary["relationship"],
+                    primary["tier"]),
                 "evidence_state": self._evidence_state(
                     primary["tier"], self.votes.get(key),
                     self.production.get(key, 0), len(rest)),

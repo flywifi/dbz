@@ -310,11 +310,24 @@ def cmd_overlap(args, conn: sqlite3.Connection) -> int:
     print(f"Framework B : {result['framework_b']}")
     _rb = f", relationship_basis: {result['relationship_basis']}" if result.get("relationship_basis") else ""
     print(f"Basis       : {result['basis']}  (provenance: {result.get('provenance')}{_rb})")
-    print(f"Overlap     : {result['overlap_pct']}%  (Jaccard)")
+    # Two labeled numbers (phase-37, finding F-11). The first counts every shared
+    # spine coordinate — mostly hub co-references — and is UNCHANGED in value; it is
+    # simply no longer called "shared audit work". The second counts only edges a
+    # source actually states, and is legitimately 0 where no source states any.
+    print(f"Co-reference: {result['overlap_pct']}%  (Jaccard over all shared spine "
+          f"coordinates — topical association, not stated shared work)")
     print(f"A covers B  : {result.get('a_covers_b_pct')}%")
     print(f"B covers A  : {result.get('b_covers_a_pct')}%")
     print(f"Shared      : {result.get('shared_count')}  "
           f"(A={result.get('framework_a_count')}, B={result.get('framework_b_count')})")
+    if result.get("shared_work_pct") is not None:
+        sw = result["shared_work_pct"]
+        print(f"Shared work : {sw}%  (source-stated edges only: "
+              f"{result.get('shared_work_shared_count')} shared of "
+              f"A={result.get('shared_work_a_count')}, B={result.get('shared_work_b_count')})")
+        if sw == 0.0:
+            print("              ^ 0% means NO SOURCE STATES shared work for this pair — "
+                  "not that the frameworks are unrelated (see Co-reference above).")
     print(f"Confidence  : {result.get('confidence')} ({result.get('confidence_score')})  "
           f"needs_confirmation={result.get('needs_confirmation')}")
     _cs = result.get("consensus_support") or {}

@@ -112,6 +112,29 @@ def main() -> int:
     check(any("NIST SP 800-171 r2" in (r.get("fw_a"), r.get("fw_b")) for r in rows11),
           "scenario 11: answer includes r2-labeled rows (the exact shipped regression)")
 
+    # 12. Two labeled overlap metrics (phase-37, finding F-11). The co-reference figure
+    #     must keep its previous value (nothing silently re-valued), and the strict
+    #     source-stated figure must be present, lower, and honest about zeros.
+    d12 = json.loads(q("overlap", "--framework-a", "SOC 2",
+                       "--framework-b", "ISO 27001/2 (2022)", "--format", "json"))
+    check(d12.get("shared_work_pct") is not None,
+          "scenario 12: overlap reports a source-stated shared_work_pct alongside co-reference")
+    check(48.0 <= (d12.get("overlap_pct") or 0) <= 60.0,
+          f"scenario 12: co-reference value unchanged by the split "
+          f"(measured 54.2; got {d12.get('overlap_pct')})")
+    check((d12.get("shared_work_pct") or 0) == 0.0,
+          f"scenario 12: SOC2xISO shared work is 0 — SOC 2's projection is entirely "
+          f"hub-composed, so no source states shared work (got {d12.get('shared_work_pct')})")
+    # a pair where BOTH sides carry authority coverage must be non-zero (measured 46.8;
+    # band +-15% — measure-then-pin, never aspirational)
+    d12b = json.loads(q("overlap", "--framework-a", "ISO 27001/2 (2022)",
+                        "--framework-b", "NIST CSF 2.0", "--format", "json"))
+    sw = d12b.get("shared_work_pct") or 0
+    check(39.8 <= sw <= 53.8,
+          f"scenario 12: ISOxCSF2 shared work in band (measured 46.8; got {sw})")
+    check(sw <= (d12b.get("overlap_pct") or 0),
+          "scenario 12: strict shared work never exceeds co-reference")
+
     c.close()
     print("\nSCENARIO BATTERY:", "PASS" if not FAILS else f"FAIL ({len(FAILS)})")
     return 1 if FAILS else 0

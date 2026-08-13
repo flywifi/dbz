@@ -695,15 +695,16 @@ def main() -> int:
     # conflation F-10 recorded
     n_conflate = conn.execute(
         "SELECT COUNT(*) FROM master_mappings WHERE relationship_basis='co_membership' "
-        "AND edge_semantic IN ('equivalent','supports')").fetchone()[0]
+        "AND edge_semantic IN ('equivalent','supports') "
+        "AND tier NOT IN ('owner_direct','nist_stated','owner_stated')").fetchone()[0]
     if n_conflate:
         sbad.append(f"{n_conflate} co_membership edges classified as shared work (F-10 regression)")
     # independent recomputation over a deterministic sample
     n_mis = 0
-    for (basis, rel, sem) in conn.execute(
-            "SELECT relationship_basis, relationship, edge_semantic FROM master_mappings "
+    for (basis, rel, sem, tier) in conn.execute(
+            "SELECT relationship_basis, relationship, edge_semantic, tier FROM master_mappings "
             "ORDER BY fw_a, native_a, fw_b, native_b LIMIT 500"):
-        if basis == "source_stated":
+        if tier in ("owner_direct", "nist_stated", "owner_stated") or basis == "source_stated":
             want = "equivalent" if rel == "equal" else "supports"
         elif basis == "multi_source_consensus":
             want = "supports"
