@@ -3,6 +3,68 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.7.0] — 2026-08-13 (phase 37 — remediation of the phase-36 accuracy audit)
+
+Closes all eleven findings (F-1 … F-11) from `docs/audits/phase-36-master-accuracy-audit.md`,
+plus one found during remediation (F-12). Per the approved plan: **no master or projection row
+was deleted and no tier was re-rated** — the hub block is annotated, not pruned.
+
+### Fixed
+- **F-7 (HIGH) — prose stored as control identifiers** (`49047ee`). `cmmc171` wrote the 800-171A
+  assessment-objective *sentence* into `native_id` at the top confidence tier (0.95); 100% of
+  page 1 of the obvious 800-171 query showed sentences where ids belong. The crosswalk has no
+  800-171 id column, but the CMMC practice id encodes the same objective, so
+  `normalize_171_objective_id()` derives `AC.L1-3.1.1(a.)` → `3.1.1[a]` — the exact form the
+  HITRUST hub already used. Shared native ids between authority and hub went **0 → 313**, which
+  also created the second hub-vs-authority comparison now recorded in `docs/BENCHMARK.md`.
+  Prose stays recoverable: every row carries `source_file`/`source_sheet`/`source_row`.
+- **F-2 (MED) — bare-zero answers** (`6bb93f0`). A resolvable pair with no stored rows returned
+  `0 master mapping(s)` while `overlap` answered 6.8% for the same pair. It now returns a
+  structured gap with measured stored-pair coverage and a pointer to `overlap`. A filter that
+  empties a *stored* pair reports that distinctly — claiming "not stored" would be false.
+- **F-8 (MED) — discarded composition evidence** (`53e0bd3`). Cross-framework edges now carry
+  the shared 800-53 anchors both sides project onto: **117 → 1,379 rows**. Spoke edges are
+  deliberately excluded — there the control is an endpoint, not a shared pivot.
+- **F-1 / F-4 / F-5** (`146ec31`). The README no longer calls the surface "any-to-any" (60 of
+  595 pairs are stored); README and architecture doc now disclose that 84.6% of edges derive
+  from one licensed artifact; the CCM manifest entries say 1,683 distinct pairs, not 1,684
+  (the source repeats `LOG-09 → AU-12(3)`).
+- **F-6 (HIGH) — the hub block was almost unauditable** (`8153945`). Authority and hub wrote
+  incompatible id dialects, so 82,825 hub rows could be checked on 52 native ids.
+  `corroboration_key()` collapses both sides to a shared granularity for comparison only —
+  never overwriting stored ids. Frameworks clearing the 20-shared-id bar: **1 → 3**.
+- **F-12 (LOW, found during remediation)** — 18 HITRUST control stems appear under 2+ title
+  variants ("User Auth. for Ext. Connections" vs the full title), fragmenting 242 rows. The
+  coarse key collapses them for corroboration.
+
+### Added
+- **F-10 (HIGH, keystone) — the edge-semantic model** (`8576485`). Schema **3.15** adds
+  `edge_semantic` to `master_mappings`: `equivalent` / `supports` / `co_referenced` / `informs`,
+  derived mechanically with no per-edge judgment, vocabulary in `framework_vocab.json`. Exposed
+  in `master` output and as `--semantic`. **12.6% of edges are source-stated shared work; 82.6%
+  are hub co-references.** A correction landed mid-phase: authority is read from the *tier*, not
+  `relationship_basis`, because NIST's own OLIR exports arrive as `derived_cardinality` and were
+  being demoted to `informs` (that fix moved the figure from 9.5% to 12.6%).
+- **F-11 / F-9 (HIGH) — two labeled overlap metrics** (`82e2567`). The shipped percentage keeps
+  its value but is renamed **co-reference** (topical association). A new **shared work %** counts
+  only source-stated edges. SOC 2 × ISO: co-reference **54.2%** (unchanged), shared work **0.0%**
+  — SOC 2's projection is 100% hub-derived, so no source states shared work for that pair, and
+  the output says so explicitly rather than hiding the zero. ISO × CSF 2.0 shows 46.8%. Overlap
+  also now discloses per side how much of a footprint is single-source.
+- **Regression gates** (`bb47665`), each **proven red against corrupted data** before acceptance:
+  identifier hygiene (F-7), semantic totality + the co-membership conflation guard (F-10),
+  anchor retention (F-8), auditability floor (F-6). Plus scenario 12 pinning both overlap
+  metrics.
+
+### Not done (deliberate, per the approved plan)
+- **No pruning and no re-tiering** of the 82,825 hub rows. F-9's 63.2% is conditional on a
+  semantic that this phase only just defined, and deleting licensed-source data on a 65-edge
+  self-labeled sample would be indefensible.
+- **The consensus stratum (3,422 rows) remains unadjudicated** — phase 36 labeled 65 of 220
+  sampled edges. Since the flagship stored pairs are consensus-tier, this is the highest-value
+  next audit.
+- **No independent re-label** of F-9's sample; the author-as-labeler limit stands.
+
 ## [0.6.0] — 2026-08-10 (phase 35 — alias-resolution correctness, the missing phase-34 audit, carried-over regulatory items)
 
 Phase 34 closed the phase-33 findings as written, but B-1 was written as an instance and the

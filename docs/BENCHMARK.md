@@ -63,6 +63,33 @@ carries provider-proprietary identifiers, so only the ER layer is joinable.
 
 <!-- BENCHMARK-TABLE:END -->
 
+## Hub-vs-authority corroboration (phase 36 measured, phase 37 extended)
+
+Where a framework carries BOTH hub coverage and an authoritative mapping under the same
+canonical label, the hub method can be scored against the authority. Phase 36 found only one
+such comparison existed; phase 37's identifier fix (finding F-7) created a second and much
+larger one. Restricted to native ids both sides cover:
+
+| Framework | Authority | Shared ids | Hub recall of authority | Hub corroboration | Fan-out |
+|---|---|---|---|---|---|
+| HIPAA Security | NIST SP 800-66r2 OLIR | 52 | 0.762 | 0.026 | 29.6x |
+| NIST SP 800-171 r2 | CMMC/800-171 crosswalk | 313 | 0.744 | 0.034 | 21.6x |
+
+**Read these correctly.** *Corroboration* is deliberately not called precision: these
+authorities are SELECTIVE mappings, so a hub edge they omit is **unconfirmed, not wrong**. What
+the pair of rows does establish, consistently across two independent frameworks, is that the
+hub asserts 20-30x more relationship than the authority agrees with, while recovering roughly
+three quarters of what the authority states.
+
+**Conditional adjudicated figure.** Phase 36 adjudicated a seeded sample of hub edges against
+source text: **63.2% UNSUPPORTED (n=38 decidable, 95% CI [47.9%, 78.5%])** versus 25.0% for
+authoritative control strata (two-proportion z = 2.32, p ~ 0.02). This figure is **conditional
+on the strong reading** of what an edge claims — "doing X contributes to satisfying Y". Under
+the weak reading ("X and Y concern related subject matter") most of those edges are defensible.
+That ambiguity is exactly what the `edge_semantic` column (schema 3.15) now resolves per edge.
+The labeler also built the pipeline; the seeded sample keys are recorded for independent
+re-labeling. Full method and limits: `docs/audits/phase-36-master-accuracy-audit.md`.
+
 ## Regression policy (measure-then-pin)
 
 Thresholds in `benchmark_oracles.py` (`MIN_LAYER1` / `MIN_LAYER2`) are pinned 2–3 points

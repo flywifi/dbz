@@ -309,6 +309,62 @@
       "sha": "b2d3796",
       "date": "2026-08-10",
       "known_good": true
+    },
+    {
+      "phase": "37-1",
+      "name": "F-7 prose control identifiers",
+      "sha": "49047ee",
+      "date": "2026-08-13",
+      "known_good": true
+    },
+    {
+      "phase": "37-2",
+      "name": "F-2 structured pair gap",
+      "sha": "6bb93f0",
+      "date": "2026-08-13",
+      "known_good": true
+    },
+    {
+      "phase": "37-3",
+      "name": "F-8 cross-edge anchors",
+      "sha": "53e0bd3",
+      "date": "2026-08-13",
+      "known_good": true
+    },
+    {
+      "phase": "37-4",
+      "name": "F-1/F-4/F-5 documentation accuracy",
+      "sha": "146ec31",
+      "date": "2026-08-13",
+      "known_good": true
+    },
+    {
+      "phase": "37-5",
+      "name": "F-10 edge-semantic model (schema 3.15)",
+      "sha": "8576485",
+      "date": "2026-08-13",
+      "known_good": true
+    },
+    {
+      "phase": "37-6",
+      "name": "F-6 corroboration key + auditability floor",
+      "sha": "8153945",
+      "date": "2026-08-13",
+      "known_good": true
+    },
+    {
+      "phase": "37-7",
+      "name": "F-11/F-9 two labeled overlap metrics",
+      "sha": "82e2567",
+      "date": "2026-08-13",
+      "known_good": true
+    },
+    {
+      "phase": "37-8",
+      "name": "Regression gates (red-then-green)",
+      "sha": "bb47665",
+      "date": "2026-08-13",
+      "known_good": true
     }
   ]
 }
