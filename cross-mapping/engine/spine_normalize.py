@@ -498,6 +498,54 @@ def normalize_cmmc_id(raw: str) -> Optional[str]:
         if ".L" in s else None
 
 
+def corroboration_key(framework: str, native_id: str) -> Optional[str]:
+    """
+    A COARSE identity for cross-surface corroboration only — never a stored id.
+
+    Phase-36 finding F-6: the same control is written in different dialects by different
+    surfaces, so an authority edge and a hub edge for the same requirement never met:
+
+      ISO        authority '10.2'            hub '10.2 a.1'      (clause vs sub-part)
+      CMMC 2.0   authority 'AC.L1-3.1.1(a.)' hub 'AC.L1.3.1.1'   (objective vs control)
+
+    This collapses both sides to the coarsest shared granularity so they can CORROBORATE
+    each other. It is deliberately lossy and must never overwrite `native_id`: the stored
+    ids keep their full precision, and only the minority report joins on this key.
+
+    Returns None when no coarsening applies (the exact id is already the join key).
+    """
+    if not isinstance(native_id, str) or not native_id.strip():
+        return None
+    s = native_id.strip()
+    fw = (framework or "").strip()
+
+    if fw.startswith("ISO"):
+        # '10.2 a.1' / '10.2 b' -> '10.2'   (clause identity; drop the sub-part tail)
+        m = re.match(r"^(?:A\.)?(\d{1,2}(?:\.\d{1,2})?)", s)
+        return m.group(1) if m else None
+
+    if fw.startswith("CMMC"):
+        return normalize_cmmc_id(s)
+
+    if fw.startswith("NIST SP 800-171"):
+        # '3.1.10[a]' -> '3.1.10'  (control identity across objective letters)
+        m = re.match(r"^(\d+\.\d+\.\d+)", s)
+        return m.group(1) if m else None
+
+    if fw.startswith("HITRUST"):
+        # '01.j User Auth. for Ext. Connections' -> '01.j'  (F-12: the same control is
+        # written with abbreviated and full titles, fragmenting the id space)
+        m = re.match(r"^(\d{2}\.[a-z])\b", s)
+        return m.group(1) if m else None
+
+    if fw.startswith("HIPAA"):
+        # '164.308(a)(1)(i)' -> '164.308(a)(1)'  (paragraph identity)
+        m = re.match(r"^(\d{3}\.\d{3}(?:\([a-z0-9]+\)){0,2})", s)
+        return m.group(1) if m else None
+
+    return None
+
+
 def parse_cui_sort_id(raw: str) -> Optional[Tuple[str, int]]:
     """
     Parse a CUI-overlay sort id 'FAMILY-CTRL-ENH-PART' into (control_id, part_ordinal).

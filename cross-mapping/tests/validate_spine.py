@@ -725,6 +725,47 @@ def main() -> int:
              f"{dict(sorted(sem_counts.items()))}; {shared} ({100*shared/tot_sem:.1f}%) count as "
              "shared work (vocabulary exact; total; 500-row independent recomputation matches)")
 
+    # 16. Auditability floor (Phase 37) — phase-36 finding F-6 measured that the hub
+    #     block (82,825 rows) could be checked against an authority on 52 native ids
+    #     total, because the two sides wrote ids in different dialects. This pins the
+    #     recovered auditability so it cannot silently regress.
+    #
+    #     Join rule: EXACT ids first; fall back to the coarse corroboration key only when
+    #     exact sharing is weaker. Coarsening is lossy (it helps ISO/CMMC but discards
+    #     real precision for 800-171 and HIPAA), so it is a fallback, never a default.
+    sys.path.insert(0, str(ROOT / "cross-mapping" / "engine"))
+    from spine_normalize import corroboration_key  # noqa: E402
+    MIN_SHARED = 20
+    AUDITABLE_FLOOR = 3          # measured 2026-08-13: 4 frameworks clear; pinned below
+    pairs_clearing, detail = 0, []
+    for fw, prov in (("ISO 27001/2 (2022)", "direct_olir"),
+                     ("CMMC 2.0", "cmmc171"),
+                     ("NIST SP 800-171 r2", "cmmc171"),
+                     ("HIPAA Security", "direct_800_66")):
+        D = {r[0] for r in conn.execute(
+            "SELECT DISTINCT native_id FROM framework_projection WHERE framework=? AND provenance=?",
+            (fw, prov))}
+        H = {r[0] for r in conn.execute(
+            "SELECT DISTINCT native_id FROM framework_projection WHERE framework=? "
+            "AND provenance='hitrust_hub'", (fw,))}
+        if not D or not H:
+            continue
+        exact = len(D & H)
+        Dc = {corroboration_key(fw, x) for x in D} - {None}
+        Hc = {corroboration_key(fw, x) for x in H} - {None}
+        shared = max(exact, len(Dc & Hc))
+        detail.append(f"{fw}={shared}")
+        if shared >= MIN_SHARED:
+            pairs_clearing += 1
+    if pairs_clearing < AUDITABLE_FLOOR:
+        fail(f"auditability regressed: only {pairs_clearing} framework(s) clear the "
+             f">={MIN_SHARED}-shared-id bar (floor {AUDITABLE_FLOOR}); phase-36 F-6 "
+             f"recorded 1 — a drop means an id dialect was reintroduced [{'; '.join(detail)}]")
+    else:
+        note(f"auditability floor: {pairs_clearing} framework(s) clear the >={MIN_SHARED} "
+             f"shared-id bar for authority-vs-hub corroboration ({'; '.join(detail)}); "
+             f"phase-36 baseline was 1")
+
     conn.close()
 
     print("SPINE VALIDATION:", "FAIL" if FAILS else "PASS")
