@@ -1,6 +1,6 @@
 {
   "_purpose": "Controlled vocabularies the health auditor validates against, so a typo or a fabricated identifier is caught before it corrupts a query. Deterministic allow-lists only — never fabricate an entry to make a check pass; add the real canonical name.",
-  "_version": "1.3.0",
+  "_version": "1.4.0",
   "_generated": "2026-07-02",
   "framework_names": {
     "_note": "Canonical framework names as they must appear in crosswalk/catalog data. A name not on this list (e.g. 'ISO 27001' missing the '/IEC') is flagged so overlap queries don't silently miss it.",
@@ -374,6 +374,34 @@
         "definition": "Structural or bibliographic association only — co-citation in a compiled crosswalk, or a relationship inferred from cardinality rather than stated.",
         "derived_from": "everything else — a compiled/bundled crosswalk (co_citation) or a relationship inferred from cardinality with no publishing authority behind it"
       }
+    }
+  },
+  "cci_confirmation": {
+    "_note": "Verdict on a framework->CCI mapping: is it WITNESSED or merely reachable? The point of this repository is convergence onto confirmed CCI mappings; before phase 38 frameworks reached CCIs only by transitive join (framework -> r5 sub-part -> cci_bridge), which asserts a path exists, never that anyone checked it. Witnesses are independent by construction and the verdict is derived mechanically (cci_confirm.py); validate_spine asserts totality. 'reachable' must never be presented as a mapping.",
+    "classes": {
+      "confirmed": {
+        "rank": 1,
+        "definition": "The CCI's own 800-53 anchor is multi-witness confirmed AND at least two independent agreement witnesses exist, at least one of them CCI-level (a second publisher on this anchor, or a STIG rule exercising this CCI)."
+      },
+      "corroborated": {
+        "rank": 2,
+        "definition": "The CCI anchor is confirmed and exactly one agreement witness exists."
+      },
+      "reachable": {
+        "rank": 3,
+        "definition": "The transitive join holds and the CCI anchor is confirmed, but nothing independently corroborates the framework's claim. NOT a mapping — this is the state everything was in before phase 38."
+      },
+      "weak": {
+        "rank": 4,
+        "definition": "The CCI's own 800-53 anchor is disa_only or candidate, so nothing above it can be confirmed."
+      }
+    },
+    "witnesses": {
+      "w_framework_sources": "distinct mapping publishers placing this control on this anchor (framework_projection.provenance); CCI-level",
+      "w_cci_anchor_confirmed": "cci_mapping_corroboration.verdict='confirmed' — the CCI->800-53 link is itself multi-witness; prerequisite",
+      "w_stig_exercised": "a real STIG rule exercises this CCI (stig_cci_usage); CCI-level",
+      "w_consensus": "another framework independently agrees on this control (consensus_edges strong/moderate). Matched at CONTROL granularity, so it supports but never alone carries a confirmation",
+      "w_subpart_precision": "anchored at sub-part rather than whole control — a precision signal, never an agreement witness"
     }
   }
 }

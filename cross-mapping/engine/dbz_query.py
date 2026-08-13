@@ -1172,6 +1172,43 @@ def cmd_cci(args, conn: sqlite3.Connection) -> int:
     dictionary (definitions), the mapping corroboration layer, and coverage."""
     import json as _json
 
+    # --framework: the framework -> CCI confirmation layer (v3.16). A verdict of
+    # `reachable` means the transitive join holds but nothing corroborates it — it is
+    # deliberately NOT presented as a mapping.
+    fw_in = getattr(args, "framework", None)
+    if fw_in:
+        fw = _master_canon_fw(conn, fw_in) or fw_in
+        want = getattr(args, "verdict", None)
+        counts = dict(conn.execute(
+            "SELECT verdict, COUNT(*) FROM framework_cci_confirmation WHERE framework=? "
+            "GROUP BY 1", (fw,)).fetchall())
+        if not counts:
+            print(f"[data gap] {fw}: no framework->CCI rows. The framework may not project "
+                  f"onto the spine, or its anchors reach no bridged CCI.")
+            return 0
+        q = ("SELECT native_id, cci_id, verdict, witnesses FROM framework_cci_confirmation "
+             "WHERE framework=?" + (" AND verdict=?" if want else "") +
+             " ORDER BY native_id, cci_id LIMIT ?")
+        lim = getattr(args, "limit", None) or 40
+        params = (fw, want, lim) if want else (fw, lim)
+        rows = [dict(r) for r in conn.execute(q, params)]
+        if args.format == "json":
+            print(_json.dumps({"tool": "cci-confirmation", "framework": fw,
+                               "verdict_counts": counts, "rows": rows,
+                               "human_review_required": True}, indent=2, ensure_ascii=False))
+            return 0
+        total = sum(counts.values())
+        print(f"{fw}: {total:,} framework->CCI pairs")
+        for v in ("confirmed", "corroborated", "reachable", "weak"):
+            if counts.get(v):
+                print(f"  {v:14} {counts[v]:8,}  ({100*counts[v]/total:.1f}%)")
+        print("  note: 'reachable' is a transitive join with no independent corroboration — "
+              "not a confirmed mapping.\n")
+        for r in rows:
+            print(f"  [{r['verdict']:12}] {r['native_id']:26} -> {r['cci_id']}  "
+                  f"{', '.join(_json.loads(r['witnesses']))}")
+        return 0
+
     # --coverage: dictionary completeness + corroboration summary
     if getattr(args, "coverage", False):
         n_cci, n_def = conn.execute(
@@ -1833,6 +1870,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     # cci
     cci_p = subs.add_parser("cci", help="Query DISA CCI dictionary, definitions, and mapping corroboration")
+    cci_p.add_argument("--framework", metavar="FW",
+                       help="show this framework's CCI mappings with their confirmation "
+                            "verdict and witnesses (v3.16)")
+    cci_p.add_argument("--verdict",
+                       choices=["confirmed", "corroborated", "reachable", "weak"],
+                       help="filter --framework results by confirmation verdict")
     cci_p.add_argument("--id", metavar="CCI_ID", help="CCI ID (e.g. CCI-000001)")
     cci_p.add_argument("--control", metavar="CTRL",
                        help="NIST control ID (e.g. AC-2) — shows all CCIs mapping to it")

@@ -90,6 +90,32 @@ That ambiguity is exactly what the `edge_semantic` column (schema 3.15) now reso
 The labeler also built the pipeline; the seeded sample keys are recorded for independent
 re-labeling. Full method and limits: `docs/audits/phase-36-master-accuracy-audit.md`.
 
+## Framework → CCI confirmation (phase 38)
+
+The repository's objective is convergence onto **confirmed CCI mappings**. Verdicts are derived
+from independent witnesses (`cci_confirm.py`; vocabulary in `framework_vocab.json →
+cci_confirmation`), measured 2026-08-13 over **478,610** framework→CCI pairs:
+
+| Verdict | Pairs | Meaning |
+|---|---|---|
+| `confirmed` | **53,046** | CCI anchor multi-witness confirmed + ≥2 agreement witnesses, ≥1 CCI-level |
+| `corroborated` | 81,933 | anchor confirmed + exactly one agreement witness |
+| `reachable` | 286,642 | transitive join only — **not a mapping** |
+| `weak` | 56,989 | the CCI's own anchor is `disa_only`/`candidate` |
+
+Per framework (`confirmed`): NIST SP 800-171 r2 **23,003** · HIPAA Security **25,231** ·
+ISO 27001/2 (2022) 1,936 · CIS CSC v8.0 1,399 · PCI DSS v4.0 1,136 · NIST CSF 2.0 341.
+Frameworks with a single mapping publisher and no STIG-exercised CCIs cap at `corroborated`
+by construction — CSA CCM, GDPR, CMMC 2.0 and FedRAMP r5 show 0 confirmed, which is the honest
+ceiling of their current evidence, not a defect.
+
+**Witness independence** is the load-bearing property: a second publisher on the same anchor, a
+STIG rule that actually exercises the CCI, and another framework agreeing via consensus are
+different kinds of evidence. The consensus witness matches at control granularity, so it may
+support a confirmation but can never carry one alone — `validate_spine` check 19 enforces that,
+along with the rule that a `confirmed` row's CCI anchor must itself be confirmed. Floor pinned
+at 40,000 (measured 53,046).
+
 ## Regression policy (measure-then-pin)
 
 Thresholds in `benchmark_oracles.py` (`MIN_LAYER1` / `MIN_LAYER2`) are pinned 2–3 points

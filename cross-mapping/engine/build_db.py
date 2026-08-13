@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.15"  # v3.15: edge_semantic on master_mappings (what an edge CLAIMS); v3.14: regulatory-provenance columns on anticipated_updates (enum-enforced); v3.13: evidence_state ladder on master_mappings; v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
+SCHEMA_VERSION = "3.16"  # v3.16: framework_cci_confirmation (witnessed framework->CCI verdicts); v3.15: edge_semantic on master_mappings (what an edge CLAIMS); v3.14: regulatory-provenance columns on anticipated_updates (enum-enforced); v3.13: evidence_state ladder on master_mappings; v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
 
 CHUNK = 500  # executemany batch size
 
@@ -472,6 +472,22 @@ CREATE INDEX IF NOT EXISTS idx_fl_canonical ON framework_labels(canonical);
 -- ── Master mapping surface (Phase 19): the all-in-one union ────────────────────
 -- One row per unordered canonical pair; strongest tier wins the primary row and
 -- every losing surface's claim is preserved in `corroboration` (minority report).
+CREATE TABLE IF NOT EXISTS framework_cci_confirmation (
+    framework              TEXT NOT NULL,
+    native_id              TEXT NOT NULL,
+    cci_id                 TEXT NOT NULL,
+    w_framework_sources    INTEGER NOT NULL DEFAULT 0,
+    w_cci_anchor_confirmed INTEGER NOT NULL DEFAULT 0,
+    w_stig_exercised       INTEGER NOT NULL DEFAULT 0,
+    w_consensus            INTEGER NOT NULL DEFAULT 0,
+    w_subpart_precision    INTEGER NOT NULL DEFAULT 0,
+    verdict                TEXT NOT NULL,   -- confirmed|corroborated|reachable|weak
+    witnesses              TEXT NOT NULL,   -- JSON list, sorted
+    PRIMARY KEY (framework, native_id, cci_id)
+);
+CREATE INDEX IF NOT EXISTS idx_fcc_verdict ON framework_cci_confirmation(verdict);
+CREATE INDEX IF NOT EXISTS idx_fcc_cci ON framework_cci_confirmation(cci_id);
+
 CREATE TABLE IF NOT EXISTS master_mappings (
     fw_a               TEXT NOT NULL,   -- canonical labels; (fw_a,native_a) <= (fw_b,native_b)
     native_a           TEXT NOT NULL,
@@ -1872,6 +1888,25 @@ def build_db(
     print(f"  master_mappings: rows={master_stats['rows']} by_tier={master_stats['by_tier']} "
           f"(fedramp baseline-annotation natives excluded: {master_stats['skipped_fedramp']}; "
           f"single-voter consensus pairs excluded: {master_stats['skipped_consensus_single']})")
+
+    # ── framework -> CCI confirmation (Phase 38) ────────────────────────────────
+    # The repository's objective: converge every framework onto CONFIRMED CCI mappings.
+    # Runs after the projection and the CCI corroboration layer, both of which it reads.
+    print("\n[cci] Deriving framework -> CCI confirmation verdicts")
+    import cci_confirm as _cc  # type: ignore
+    fcc_rows, fcc_stats = _cc.build_rows(conn)
+    _executemany_chunked(conn, """
+        INSERT OR REPLACE INTO framework_cci_confirmation
+            (framework, native_id, cci_id, w_framework_sources, w_cci_anchor_confirmed,
+             w_stig_exercised, w_consensus, w_subpart_precision, verdict, witnesses)
+        VALUES
+            (:framework, :native_id, :cci_id, :w_framework_sources, :w_cci_anchor_confirmed,
+             :w_stig_exercised, :w_consensus, :w_subpart_precision, :verdict, :witnesses)
+    """, fcc_rows, "framework_cci_confirmation")
+    conn.commit()
+    print(f"  framework_cci_confirmation: pairs={fcc_stats['pairs']} "
+          f"confirmed={fcc_stats['confirmed']} corroborated={fcc_stats['corroborated']} "
+          f"reachable={fcc_stats['reachable']} weak={fcc_stats['weak']}")
 
     print("\n[overlap] Precomputing overlap_matrix over spine frameworks")
     import spine_overlap as _so  # type: ignore

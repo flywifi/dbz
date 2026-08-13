@@ -801,6 +801,57 @@ def main() -> int:
         note(f"anchor retention: {n_anch} cross edges carry their shared 800-53 anchors "
              f"(phase-36 baseline 117)")
 
+    # 19. Framework -> CCI confirmation layer (Phase 38, schema 3.16) — the repository's
+    #     objective is convergence onto CONFIRMED CCI mappings. This asserts the verdict
+    #     derivation is total, the vocabulary exact, the witness rules honoured, and that
+    #     `reachable` is never dressed up as a confirmation.
+    cbad = []
+    with open(ROOT / "canonical-sources" / "framework_vocab.json", encoding="utf-8") as f:
+        _cv = json.load(f).get("cci_confirmation", {}).get("classes", {})
+    allowed_v = set(_cv)
+    v_counts = dict(conn.execute(
+        "SELECT verdict, COUNT(*) FROM framework_cci_confirmation GROUP BY 1").fetchall())
+    if not allowed_v:
+        cbad.append("framework_vocab.json declares no cci_confirmation.classes")
+    unknown_v = set(v_counts) - allowed_v
+    if unknown_v:
+        cbad.append(f"undeclared verdict(s): {sorted(unknown_v)}")
+    n_nullv = conn.execute(
+        "SELECT COUNT(*) FROM framework_cci_confirmation WHERE verdict IS NULL "
+        "OR TRIM(verdict)=''").fetchone()[0]
+    if n_nullv:
+        cbad.append(f"{n_nullv} rows without a verdict (derivation not total)")
+    # a verdict of `confirmed` REQUIRES the CCI's own anchor to be confirmed
+    n_badanchor = conn.execute(
+        "SELECT COUNT(*) FROM framework_cci_confirmation "
+        "WHERE verdict='confirmed' AND w_cci_anchor_confirmed=0").fetchone()[0]
+    if n_badanchor:
+        cbad.append(f"{n_badanchor} confirmed rows whose CCI anchor is not itself confirmed")
+    # consensus is control-granularity: it may support a confirmation but never carry one
+    n_consonly = conn.execute(
+        "SELECT COUNT(*) FROM framework_cci_confirmation WHERE verdict='confirmed' "
+        "AND w_framework_sources < 2 AND w_stig_exercised = 0").fetchone()[0]
+    if n_consonly:
+        cbad.append(f"{n_consonly} confirmed rows rest on consensus alone with no CCI-level "
+                    f"witness (a second publisher or a STIG exercising the CCI)")
+    # every confirmed row must be traceable to its witnesses
+    n_nowit = conn.execute(
+        "SELECT COUNT(*) FROM framework_cci_confirmation WHERE verdict='confirmed' "
+        "AND (witnesses IS NULL OR witnesses IN ('', '[]'))").fetchone()[0]
+    if n_nowit:
+        cbad.append(f"{n_nowit} confirmed rows carry no witness list (untraceable verdict)")
+    CONFIRMED_FLOOR = 40000      # measured 2026-08-13: 53,046; pinned below (measure-then-pin)
+    if v_counts.get("confirmed", 0) < CONFIRMED_FLOOR:
+        cbad.append(f"confirmed framework->CCI mappings regressed: "
+                    f"{v_counts.get('confirmed', 0):,} < floor {CONFIRMED_FLOOR:,}")
+    if cbad:
+        fail("framework->CCI confirmation malformed: " + "; ".join(cbad[:6]))
+    else:
+        tot_v = sum(v_counts.values())
+        note(f"framework->CCI confirmation: {tot_v:,} pairs across {len(v_counts)} verdicts "
+             f"{dict(sorted(v_counts.items()))}; every confirmed row has a confirmed CCI anchor, "
+             "a CCI-level witness, and a traceable witness list")
+
     conn.close()
 
     print("SPINE VALIDATION:", "FAIL" if FAILS else "PASS")

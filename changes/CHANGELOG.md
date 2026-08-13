@@ -3,6 +3,40 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.8.0] — 2026-08-13 (phase 38 — the framework→CCI confirmation layer)
+
+Delivers the repository's stated objective: converge every framework onto **confirmed CCI
+mappings** rather than reachable ones.
+
+### Added
+- **`framework_cci_confirmation`** (schema **3.16**) — one row per (framework, native_id,
+  cci_id) with independent witness counts and a derived verdict. **478,610 pairs:
+  53,046 confirmed · 81,933 corroborated · 286,642 reachable · 56,989 weak.**
+  Before this, frameworks reached CCIs only by transitive join (framework → r5 sub-part →
+  `cci_bridge`), which asserts a path exists but never that anyone checked it. The convergence
+  machinery already existed one layer down (`cci_mapping_corroboration`, 4,285 confirmed
+  CCI→800-53 anchors); nothing had ever combined it with the framework layer.
+- **Witnesses, independent by construction** (`cross-mapping/engine/cci_confirm.py`):
+  a second mapping publisher on the same anchor · the CCI's own anchor being multi-witness
+  confirmed · a STIG rule actually exercising the CCI · another framework agreeing via
+  consensus · sub-part precision. The consensus witness matches at control granularity, so it
+  may support a confirmation but never carry one alone.
+- **`dbz_query cci --framework <fw> [--verdict ...]`** — per-framework verdict breakdown and
+  per-CCI witness lists. Output states plainly that `reachable` is not a mapping.
+- **`validate_spine` check 19** — verdict vocabulary exact, derivation total, every `confirmed`
+  row has a confirmed CCI anchor plus a CCI-level witness plus a traceable witness list, and a
+  confirmed-count floor pinned at 40,000 (measured 53,046). Proven to fail two ways against
+  corrupted data before acceptance.
+
+### Notes
+- Frameworks with one publisher and no STIG-exercised CCIs cap at `corroborated` — CSA CCM,
+  GDPR, CMMC 2.0 and FedRAMP r5 report 0 confirmed. That is the honest ceiling of their present
+  evidence (phase-36 finding F-4), not a defect, and it is visible rather than implied.
+- A label-dialect bug was caught during development: consensus writes `CIS v8` / `SOC 2 (TSC)`
+  while the projection writes `CIS CSC v8.0` / `SOC 2`, so the consensus witness silently never
+  fired. Fixed by routing through the master surface's own canonical map — the same F-6 class
+  phase 37 addressed.
+
 ## [0.7.0] — 2026-08-13 (phase 37 — remediation of the phase-36 accuracy audit)
 
 Closes all eleven findings (F-1 … F-11) from `docs/audits/phase-36-master-accuracy-audit.md`,
