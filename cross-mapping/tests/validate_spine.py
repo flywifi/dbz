@@ -832,15 +832,28 @@ def main() -> int:
         "SELECT COUNT(*) FROM framework_cci_confirmation WHERE verdict='confirmed' "
         "AND w_framework_sources < 2 AND w_stig_exercised = 0").fetchone()[0]
     if n_consonly:
-        cbad.append(f"{n_consonly} confirmed rows rest on consensus alone with no CCI-level "
-                    f"witness (a second publisher or a STIG exercising the CCI)")
+        cbad.append(f"{n_consonly} confirmed rows rest on control-granularity witnesses alone "
+                    f"(consensus/baseline/olir) with no CCI-level witness "
+                    f"(a second same-anchor publisher or a STIG exercising the CCI)")
     # every confirmed row must be traceable to its witnesses
     n_nowit = conn.execute(
         "SELECT COUNT(*) FROM framework_cci_confirmation WHERE verdict='confirmed' "
         "AND (witnesses IS NULL OR witnesses IN ('', '[]'))").fetchone()[0]
     if n_nowit:
         cbad.append(f"{n_nowit} confirmed rows carry no witness list (untraceable verdict)")
-    CONFIRMED_FLOOR = 40000      # measured 2026-08-13: 53,046; pinned below (measure-then-pin)
+    # Re-pinned phase 39: the per-anchor publisher rule corrected a phase-38 overcount
+    # (anchor-blind counting credited two publishers of a control to every CCI it could
+    # reach). Measured after correction + FedRAMP baseline derivation + OLIR witness:
+    # 23,339. Floor below it, never aspirational.
+    CONFIRMED_FLOOR = 18000
+    # FedRAMP is derived from the owner's baseline flags — every row must say so, and
+    # no FedRAMP row may carry the old hub-graded shape.
+    n_fed_bad = conn.execute(
+        "SELECT COUNT(*) FROM framework_cci_confirmation "
+        "WHERE framework='FedRAMP r5' AND w_baseline_authoritative=0").fetchone()[0]
+    if n_fed_bad:
+        cbad.append(f"{n_fed_bad} FedRAMP rows lack the baseline_authoritative witness "
+                    f"(hub-graded shape reintroduced)")
     if v_counts.get("confirmed", 0) < CONFIRMED_FLOOR:
         cbad.append(f"confirmed framework->CCI mappings regressed: "
                     f"{v_counts.get('confirmed', 0):,} < floor {CONFIRMED_FLOOR:,}")
