@@ -41,7 +41,7 @@ carries a tag saying which, so you always know how strong a match is.
 
 **Under the hood:** raw framework sources → the 800-53 projection spine → a `master_mappings`
 surface + a precomputed `overlap_matrix`, all assembled deterministically into `grc.db` (SQLite,
-~40 tables, schema 3.16) and queried with `dbz_query.py`. Full technical detail:
+~40 tables, schema 3.17) and queried with `dbz_query.py`. Full technical detail:
 [`docs/cross-mapping-architecture.md`](docs/cross-mapping-architecture.md).
 
 ## Quick start

@@ -6,7 +6,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 [docs/cross-mapping-architecture.md](docs/cross-mapping-architecture.md).
 
 ## Live status
-- **DB schema:** 3.16 (adds `framework_cci_confirmation` — witnessed framework→CCI verdicts; 3.15 added `edge_semantic` on `master_mappings`) (`grc.db`, deterministic build, double-build digest check)
+- **DB schema:** 3.17 (adds baseline/OLIR witnesses on `framework_cci_confirmation`; 3.16 added the witnessed framework→CCI verdict layer) (`grc.db`, deterministic build, double-build digest check)
 - **Gate battery:** rebuild ×2 identical digests · `test_spine.py` · `validate_spine.py` ·
   `health_audit.py --scan/--full` 100/100 (including the artifacts-hidden CI condition) ·
   `sync_check.py` (15 invariants) · golden self-test · `benchmark_oracles.py --check` ·
@@ -54,11 +54,11 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 | 32-6 | Closing adversarial audit | see `changes/CHANGELOG.md` | 2026-08-09 | `docs/audits/phase-32-adversarial-audit.md`: 75 of 76 URLs re-fetched (one empty, later repaired), pins re-hashed, 3 findings fixed, adversary output + residual risk |
 | 33 | Independent 24-hour change audit (read-only) | `b7e0369` (audited head) | 2026-08-09 | 7 passes over the phase-32 series: 0 CRITICAL / 1 HIGH / 4 MED / 5 LOW; no repo changes made |
 | 34 | Audit remediation | `49aedce`, `38b69f0`, `cd1449c`, `74f022a`, `28ff354` | 2026-08-09 | CMMC alias fan-out + scenario 11, three record repairs, build-time URL validation, standards-watch fresh-checkout fix + rehearsal mode, record-keeping closures |
-
 | 35 | Alias correctness + carried-over regulatory items | `ae99dd7`, `c84f509`, `7737b26`, `55ffa93`, `3399a48`, `1b7b8f3` | 2026-08-10 | One alias authority + contract test (the csf/fedramp/nist-csf class), sibling disclosure, the phase-34 audit, FedRAMP re-pin, 18 HIPAA verbatims, two overdue records resolved |
 | 36 | Master-table accuracy audit (read-only) | `b2d3796` (audited head) | 2026-08-10 | 11 findings F-1..F-11 over 97,906 edges; no fabrication in 3 re-derived sources; 82% single-source concentration and undefined edge semantics surfaced |
 | 37 | Audit remediation | `49047ee`, `6bb93f0`, `53e0bd3`, `146ec31`, `8576485`, `8153945`, `82e2567`, `bb47665` | 2026-08-13 | All 11 findings closed + F-12; schema 3.15 `edge_semantic`; two labeled overlap metrics; auditability 1->3 frameworks; 4 new gates proven red-then-green; no rows deleted |
-| 38 | Framework→CCI confirmation layer | (this phase) | 2026-08-13 | Schema 3.16 `framework_cci_confirmation`: 478,610 framework→CCI pairs verdicted from independent witnesses — **53,046 confirmed**, 81,933 corroborated; `reachable` no longer passes as a mapping |
+| 38 | Framework→CCI confirmation layer | `a602016` | 2026-08-13 | Schema 3.16 `framework_cci_confirmation`: framework→CCI pairs verdicted from independent witnesses; `reachable` no longer passes as a mapping (headline count corrected in phase 39) |
+| 39 | Confirmation-layer remediation + correction | `92b7d46` (head) | 2026-08-13 | Per-anchor publisher rule corrects the phase-38 overcount (53,046→**23,339 confirmed** of 180,413); FedRAMP derived from baseline flags (252,917 noise rows→2,777 authoritative); coarse-key publishers + OLIR-composed witness; ceilings stated |
 
 Phases 1–18 built the foundations (catalog ingestion, ER engine, spine normalization, CCI/ODP
 bridge, consensus detection, publication hygiene, health auditor); their commits precede

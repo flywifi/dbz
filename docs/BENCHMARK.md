@@ -90,31 +90,41 @@ That ambiguity is exactly what the `edge_semantic` column (schema 3.15) now reso
 The labeler also built the pipeline; the seeded sample keys are recorded for independent
 re-labeling. Full method and limits: `docs/audits/phase-36-master-accuracy-audit.md`.
 
-## Framework → CCI confirmation (phase 38)
+## Framework → CCI confirmation (phases 38–39)
 
 The repository's objective is convergence onto **confirmed CCI mappings**. Verdicts are derived
 from independent witnesses (`cci_confirm.py`; vocabulary in `framework_vocab.json →
-cci_confirmation`), measured 2026-08-13 over **478,610** framework→CCI pairs:
+cci_confirmation`). Measured 2026-08-13 after the phase-39 remediation, over **180,413** pairs:
 
 | Verdict | Pairs | Meaning |
 |---|---|---|
-| `confirmed` | **53,046** | CCI anchor multi-witness confirmed + ≥2 agreement witnesses, ≥1 CCI-level |
-| `corroborated` | 81,933 | anchor confirmed + exactly one agreement witness |
-| `reachable` | 286,642 | transitive join only — **not a mapping** |
-| `weak` | 56,989 | the CCI's own anchor is `disa_only`/`candidate` |
+| `confirmed` | **23,339** | CCI anchor multi-witness confirmed + ≥2 agreement witnesses, ≥1 CCI-level (same-anchor second publisher or STIG exercise) |
+| `corroborated` | 101,031 | anchor confirmed + exactly one agreement witness |
+| `reachable` | 27,145 | transitive join only — **not a mapping** |
+| `weak` | 28,898 | the CCI's own anchor is `disa_only`/`candidate` |
 
-Per framework (`confirmed`): NIST SP 800-171 r2 **23,003** · HIPAA Security **25,231** ·
-ISO 27001/2 (2022) 1,936 · CIS CSC v8.0 1,399 · PCI DSS v4.0 1,136 · NIST CSF 2.0 341.
-Frameworks with a single mapping publisher and no STIG-exercised CCIs cap at `corroborated`
-by construction — CSA CCM, GDPR, CMMC 2.0 and FedRAMP r5 show 0 confirmed, which is the honest
-ceiling of their current evidence, not a defect.
+**CORRECTION of the phase-38 headline.** Phase 38 reported 53,046 confirmed. That number was
+overcounted: the publisher witness was anchor-blind — two publishers of a control were credited
+to every CCI the control could reach, not only to CCIs under the 800-53 control both publishers
+actually named. The phase-39 per-anchor rule corrects it; **23,339 is the number of record.**
+(The same phase also *added* witnesses — FedRAMP baseline flags, the OLIR-composed path, coarse-
+key publisher matching — so the two figures are not directly comparable; the correction dominates.)
 
-**Witness independence** is the load-bearing property: a second publisher on the same anchor, a
-STIG rule that actually exercises the CCI, and another framework agreeing via consensus are
-different kinds of evidence. The consensus witness matches at control granularity, so it may
-support a confirmation but can never carry one alone — `validate_spine` check 19 enforces that,
-along with the rule that a `confirmed` row's CCI anchor must itself be confirmed. Floor pinned
-at 40,000 (measured 53,046).
+Per framework (`confirmed`): ISO 27001/2 (2022) 8,264 · HIPAA Security 7,043 ·
+NIST SP 800-171 r2 4,390 · CIS CSC v8.0 1,399 · PCI DSS v4.0 1,136 · NIST CSF 2.0 341 ·
+FedRAMP r5 302 · CSA CCM v4 247 · NIST SP 800-171 r3 99 · SCF 2026.1 63 · CMMC 2.0 55.
+FedRAMP is derived from the owner's baseline flags (2,777 authoritative rows), not graded as a
+foreign framework — its previous 252,917 hub-graded `reachable` rows were noise by the master
+surface's own documented design.
+
+**Honest ceilings (stated, not patched):**
+- `weak` (28,898) is an **anchor-layer** fact: those CCIs' own 800-53 anchors are
+  `disa_only`/`candidate` in `cci_mapping_corroboration`. Raising them needs new anchor
+  witnesses (data acquisition), not code.
+- **GDPR, SOC 2, NIST SP 800-172 r3: 0 confirmed** — single publisher and no same-anchor second
+  witness. Their ceiling is `corroborated` until a second mapping source exists.
+- **STIG exercise covers 539 CCIs** — re-extracted and verified complete: that is every CCI any
+  of the 19,667 STIG rules cites. Not extendable from data on hand.
 
 ## Regression policy (measure-then-pin)
 

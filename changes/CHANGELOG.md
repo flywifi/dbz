@@ -3,6 +3,42 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.9.0] — 2026-08-13 (phase 39 — confirmation-layer remediation and correction)
+
+Remediates why 286,642 of phase 38's pairs were unconfirmed — and corrects phase 38's own
+headline in the process.
+
+### Corrected
+- **Phase 38's 53,046 confirmed was overcounted.** Its publisher witness was anchor-blind:
+  two publishers of a control were credited to every CCI the control could reach. Publishers now
+  count **per anchor control** (both must have placed the coarse control on the same 800-53
+  control the CCI hangs under). **The number of record is 23,339 confirmed** of 180,413 pairs.
+  Recorded here and in `docs/BENCHMARK.md`, never smoothed over.
+
+### Fixed
+- **FedRAMP graded as a foreign framework** — 252,917 of the 286,642 reachable rows (88%). It is
+  now derived from the owner's own `baseline_low/moderate/high` flags per the master surface's
+  documented design: 2,777 authoritative rows (302 confirmed via STIG exercise, 1,840
+  corroborated), witness `w_baseline_authoritative`.
+- **Publisher counting defeated by the F-6 id-dialect class** — exact-`native_id` keying meant
+  CMMC's two publishers never met (0 multi-publisher natives exact vs 17 via
+  `spine_normalize.corroboration_key`; ISO 4 vs 23). Counting now joins through the coarse key
+  (witness join only; stored ids untouched). CMMC gains its first confirmed rows (55).
+
+### Added
+- **`w_olir_composed`** — NIST-published X↔CSF-2.0 OLIR pairs composed with NIST's own
+  CSF-2.0→800-53 mapping, matched per anchor. Control granularity: supports, never carries.
+  CSA CCM 0→247 confirmed, NIST SP 800-171 r3 0→99, SCF 0→63; reachable overall
+  286,642→27,145.
+- **Gate extensions (check 19)**, both proven red against tampered data: FedRAMP rows must carry
+  the baseline witness; control-granularity witnesses (consensus/baseline/olir) still cannot
+  carry a confirmation alone. Confirmed floor re-pinned at 18,000 (measured 23,339).
+
+### Honest ceilings (stated, not patched)
+`weak` (28,898) is an anchor-layer fact needing new anchor witnesses; GDPR / SOC 2 / 800-172 r3
+stay at 0 confirmed until a second mapping publisher exists; STIG coverage of 539 CCIs is
+verified complete. All three are data-acquisition items, not code.
+
 ## [0.8.0] — 2026-08-13 (phase 38 — the framework→CCI confirmation layer)
 
 Delivers the repository's stated objective: converge every framework onto **confirmed CCI

@@ -379,6 +379,13 @@
       "sha": "a602016",
       "date": "2026-08-13",
       "known_good": true
+    },
+    {
+      "phase": "39-close",
+      "name": "Phase-39 confirmation-layer remediation",
+      "sha": "92b7d46",
+      "date": "2026-08-13",
+      "known_good": true
     }
   ]
 }
