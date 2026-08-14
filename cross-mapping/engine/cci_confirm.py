@@ -95,7 +95,8 @@ def _consensus_controls(conn, canon: Dict[str, str]) -> Dict[Tuple[str, str], in
     return {k: len(v - {k[0]}) for k, v in out.items()}
 
 
-def _verdict(w_sources: int, anchor_confirmed: int, stig: int, consensus: int) -> str:
+def _verdict(w_sources: int, anchor_confirmed: int, stig: int, consensus: int,
+             baseline: int = 0, olir: int = 0) -> str:
     """Derived mechanically — no per-row judgment.
 
     Agreement witnesses are: a second independent PUBLISHER, a STIG that actually exercises
@@ -109,7 +110,10 @@ def _verdict(w_sources: int, anchor_confirmed: int, stig: int, consensus: int) -
     # confirmation but never carry one alone. (Measured 2026-08-13: no confirmed row rests on
     # consensus alone; this rule makes that a guarantee rather than a property of the data.)
     cci_level = (1 if w_sources >= 2 else 0) + (1 if stig else 0)
-    agreement = cci_level + (1 if consensus else 0)
+    # baseline (owner scope statement) and olir_composed (two-hop NIST-published path)
+    # are CONTROL-granularity like consensus: they support, never carry alone.
+    agreement = (cci_level + (1 if consensus else 0)
+                 + (1 if baseline else 0) + (1 if olir else 0))
     if not anchor_confirmed:
         # the CCI's own anchor is disa_only / candidate — nothing above it can be confirmed
         return "weak"
@@ -150,13 +154,15 @@ def build_rows(conn) -> Tuple[List[dict], dict]:
             SELECT DISTINCT fp.framework, fp.native_id, cb.cci_id
             FROM framework_projection fp
             JOIN cci_bridge cb ON cb.r5_subpart = fp.r5_subpart
-            WHERE fp.r5_subpart IS NOT NULL AND fp.status <> 'refuted'"""):
+            WHERE fp.r5_subpart IS NOT NULL AND fp.status <> 'refuted'
+              AND fp.framework <> 'FedRAMP r5'"""):
         pairs[(str(fw), str(nat), str(cci))] = True
     for fw, nat, cci in conn.execute("""
             SELECT DISTINCT fp.framework, fp.native_id, cb.cci_id
             FROM framework_projection fp
             JOIN cci_bridge cb ON cb.r5_control = fp.r5_control
-            WHERE fp.r5_subpart IS NULL AND fp.status <> 'refuted'"""):
+            WHERE fp.r5_subpart IS NULL AND fp.status <> 'refuted'
+              AND fp.framework <> 'FedRAMP r5'"""):
         pairs.setdefault((str(fw), str(nat), str(cci)), False)
 
     rows: List[dict] = []
@@ -170,7 +176,7 @@ def build_rows(conn) -> Tuple[List[dict], dict]:
             stats["anchor_unknown"] += 1
         stig = 1 if cci in stig_ccis else 0
         cons = consensus.get((fw, consensus_key(nat)), 0)
-        verdict = _verdict(w_sources, a_conf, stig, cons)
+        verdict = _verdict(w_sources, a_conf, stig, cons, baseline=0, olir=0)
         witnesses = []
         if w_sources >= 2:
             witnesses.append(f"framework_sources:{w_sources}")
@@ -189,6 +195,45 @@ def build_rows(conn) -> Tuple[List[dict], dict]:
             "w_stig_exercised": stig,
             "w_consensus": cons,
             "w_subpart_precision": 1 if subpart else 0,
+            "w_baseline_authoritative": 0,
+            "w_olir_composed": 0,
+            "verdict": verdict,
+            "witnesses": json.dumps(sorted(witnesses)),
+        })
+        stats[verdict] += 1
+        stats["pairs"] += 1
+    # ── FedRAMP r5: derived from the OWNER's baseline flags, not graded as a foreign
+    # framework (phase-39 WS-1). FedRAMP-as-audit IS the 800-53 baseline
+    # (master_surface docstring); the authoritative scope statement is the
+    # baseline_low/moderate/high flags on controls+enhancements. The 91,690 hub rows
+    # with baseline-annotated natives are redundant re-statements and are excluded above.
+    fed_pairs: Dict[Tuple[str, str], Set[str]] = {}   # (control_id, cci) -> baseline levels
+    for table in ("controls", "enhancements"):
+        idcol = "nist_id" if table == "controls" else "id"
+        for level in ("low", "moderate", "high"):
+            for (ctl, cci) in conn.execute(
+                    f"SELECT t.{idcol}, cb.cci_id FROM {table} t "
+                    f"JOIN cci_bridge cb ON cb.r5_control = t.{idcol} "
+                    f"WHERE t.baseline_{level} = 1"):
+                fed_pairs.setdefault((str(ctl), str(cci)), set()).add(level)
+    for (ctl, cci), levels in sorted(fed_pairs.items()):
+        a_conf = 1 if cci in anchor_confirmed else 0
+        stig = 1 if cci in stig_ccis else 0
+        verdict = _verdict(1, a_conf, stig, 0, baseline=1)
+        witnesses = [f"baseline:{lv}" for lv in sorted(levels)]
+        if a_conf:
+            witnesses.append("cci_anchor_confirmed")
+        if stig:
+            witnesses.append("stig_exercised")
+        rows.append({
+            "framework": "FedRAMP r5", "native_id": ctl, "cci_id": cci,
+            "w_framework_sources": 1,
+            "w_cci_anchor_confirmed": a_conf,
+            "w_stig_exercised": stig,
+            "w_consensus": 0,
+            "w_subpart_precision": 0,
+            "w_baseline_authoritative": 1,
+            "w_olir_composed": 0,
             "verdict": verdict,
             "witnesses": json.dumps(sorted(witnesses)),
         })

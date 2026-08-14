@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.16"  # v3.16: framework_cci_confirmation (witnessed framework->CCI verdicts); v3.15: edge_semantic on master_mappings (what an edge CLAIMS); v3.14: regulatory-provenance columns on anticipated_updates (enum-enforced); v3.13: evidence_state ladder on master_mappings; v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
+SCHEMA_VERSION = "3.17"  # v3.17: w_baseline_authoritative + w_olir_composed witnesses on framework_cci_confirmation; v3.16: framework_cci_confirmation (witnessed framework->CCI verdicts); v3.15: edge_semantic on master_mappings (what an edge CLAIMS); v3.14: regulatory-provenance columns on anticipated_updates (enum-enforced); v3.13: evidence_state ladder on master_mappings; v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
 
 CHUNK = 500  # executemany batch size
 
@@ -481,6 +481,8 @@ CREATE TABLE IF NOT EXISTS framework_cci_confirmation (
     w_stig_exercised       INTEGER NOT NULL DEFAULT 0,
     w_consensus            INTEGER NOT NULL DEFAULT 0,
     w_subpart_precision    INTEGER NOT NULL DEFAULT 0,
+    w_baseline_authoritative INTEGER NOT NULL DEFAULT 0,  -- v3.17: owner baseline flag (FedRAMP)
+    w_olir_composed        INTEGER NOT NULL DEFAULT 0,    -- v3.17: NIST OLIR X<->CSF2 composed path
     verdict                TEXT NOT NULL,   -- confirmed|corroborated|reachable|weak
     witnesses              TEXT NOT NULL,   -- JSON list, sorted
     PRIMARY KEY (framework, native_id, cci_id)
@@ -1898,10 +1900,12 @@ def build_db(
     _executemany_chunked(conn, """
         INSERT OR REPLACE INTO framework_cci_confirmation
             (framework, native_id, cci_id, w_framework_sources, w_cci_anchor_confirmed,
-             w_stig_exercised, w_consensus, w_subpart_precision, verdict, witnesses)
+             w_stig_exercised, w_consensus, w_subpart_precision,
+             w_baseline_authoritative, w_olir_composed, verdict, witnesses)
         VALUES
             (:framework, :native_id, :cci_id, :w_framework_sources, :w_cci_anchor_confirmed,
-             :w_stig_exercised, :w_consensus, :w_subpart_precision, :verdict, :witnesses)
+             :w_stig_exercised, :w_consensus, :w_subpart_precision,
+             :w_baseline_authoritative, :w_olir_composed, :verdict, :witnesses)
     """, fcc_rows, "framework_cci_confirmation")
     conn.commit()
     print(f"  framework_cci_confirmation: pairs={fcc_stats['pairs']} "
