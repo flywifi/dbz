@@ -140,13 +140,55 @@ def build_rows(conn) -> Tuple[List[dict], dict]:
         _C2C = {}
     consensus = _consensus_controls(conn, dict(_C2C))
 
-    # framework control -> distinct publishers on each anchor, and the anchors themselves
-    # (sub-part when present, else whole control — the same rule footprint_ccis uses)
-    pubs: Dict[Tuple[str, str], Set[str]] = {}
-    for fw, nat, prov in conn.execute(
-            "SELECT framework, native_id, provenance FROM framework_projection "
+    # framework control -> distinct publishers, counted at COARSE control granularity
+    # (phase-39 WS-2). Exact native_id keying was defeated by the F-6 id-dialect class:
+    # cmmc171 writes 'AC.L1-3.1.1(a.)' while the hub writes 'AC.L1.3.1.1', so the same
+    # control's two publishers never met (measured: CMMC 0 multi-publisher natives exact,
+    # 17 via the coarse key; ISO 4 vs 23). The coarse key is a WITNESS join only —
+    # stored ids are untouched (the phase-37 discipline).
+    from spine_normalize import corroboration_key  # type: ignore
+    # Keyed PER ANCHOR CONTROL: a second publisher counts only if it placed the same
+    # (coarse) framework control on the SAME 800-53 control the CCI hangs under —
+    # "both mapped this control somewhere" is not agreement. (This also tightens a
+    # latent phase-38 imprecision that exact-id keying happened to mask.)
+    pubs: Dict[Tuple[str, str, str], Set[str]] = {}
+    for fw, nat, r5c, prov in conn.execute(
+            "SELECT framework, native_id, r5_control, provenance FROM framework_projection "
             "WHERE status <> 'refuted'"):
-        pubs.setdefault((str(fw), str(nat)), set()).add(str(prov))
+        k = corroboration_key(str(fw), str(nat)) or str(nat)
+        pubs.setdefault((str(fw), k, str(r5c)), set()).add(str(prov))
+    cci_anchor_ctls: Dict[str, Set[str]] = {}
+    for cci, r5c in conn.execute("SELECT cci_id, r5_control FROM cci_bridge"):
+        cci_anchor_ctls.setdefault(str(cci), set()).add(str(r5c))
+
+    # OLIR-composed witness (phase-39 WS-3): X <-> CSF-2.0 pairs NIST published (OLIR),
+    # composed with NIST's own CSF-2.0 -> 800-53 mapping. Two hops, both NIST-published,
+    # matched per anchor: the witness fires only when the composed path lands on the SAME
+    # 800-53 control this CCI hangs under. Control-granularity -> supports, never carries.
+    olir_x: Dict[Tuple[str, str], Set[str]] = {}
+    for fa, na, fb, nb in conn.execute(
+            "SELECT fw_a, native_a, fw_b, native_b FROM master_mappings "
+            "WHERE provenance='olir_csf2_pair'"):
+        if fa == "NIST CSF 2.0":
+            fw_x, nat_x, csf = str(fb), str(nb), str(na)
+        elif fb == "NIST CSF 2.0":
+            fw_x, nat_x, csf = str(fa), str(na), str(nb)
+        else:
+            continue
+        k = corroboration_key(fw_x, nat_x) or nat_x
+        olir_x.setdefault((fw_x, k), set()).add(csf)
+    csf2_ctls: Dict[str, Set[str]] = {}
+    for nat, r5c in conn.execute(
+            "SELECT native_id, r5_control FROM framework_projection "
+            "WHERE framework='NIST CSF 2.0' AND provenance='direct_csf2'"):
+        csf2_ctls.setdefault(str(nat), set()).add(str(r5c))
+
+    def olir_witness(fw: str, ck_nat: str, cci: str) -> int:
+        anchors = cci_anchor_ctls.get(cci, set())
+        for csf in olir_x.get((fw, ck_nat), ()):
+            if csf2_ctls.get(csf, set()) & anchors:
+                return 1
+        return 0
 
     # (framework, native, cci) -> subpart_anchored?
     pairs: Dict[Tuple[str, str, str], bool] = {}
@@ -170,13 +212,16 @@ def build_rows(conn) -> Tuple[List[dict], dict]:
     stats["pairs"] = 0
     stats["anchor_unknown"] = 0
     for (fw, nat, cci), subpart in sorted(pairs.items()):
-        w_sources = len(pubs.get((fw, nat), ()))
+        ck_nat = corroboration_key(fw, nat) or nat
+        w_sources = max((len(pubs.get((fw, ck_nat, a), ()))
+                         for a in cci_anchor_ctls.get(cci, ())), default=0)
         a_conf = 1 if cci in anchor_confirmed else 0
         if cci not in anchor_known:
             stats["anchor_unknown"] += 1
         stig = 1 if cci in stig_ccis else 0
         cons = consensus.get((fw, consensus_key(nat)), 0)
-        verdict = _verdict(w_sources, a_conf, stig, cons, baseline=0, olir=0)
+        olir = olir_witness(fw, ck_nat, cci)
+        verdict = _verdict(w_sources, a_conf, stig, cons, baseline=0, olir=olir)
         witnesses = []
         if w_sources >= 2:
             witnesses.append(f"framework_sources:{w_sources}")
@@ -186,6 +231,8 @@ def build_rows(conn) -> Tuple[List[dict], dict]:
             witnesses.append("stig_exercised")
         if cons:
             witnesses.append(f"consensus:{cons}")
+        if olir:
+            witnesses.append("olir_composed")
         if subpart:
             witnesses.append("subpart_precision")
         rows.append({
@@ -196,7 +243,7 @@ def build_rows(conn) -> Tuple[List[dict], dict]:
             "w_consensus": cons,
             "w_subpart_precision": 1 if subpart else 0,
             "w_baseline_authoritative": 0,
-            "w_olir_composed": 0,
+            "w_olir_composed": olir,
             "verdict": verdict,
             "witnesses": json.dumps(sorted(witnesses)),
         })
