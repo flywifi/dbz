@@ -102,6 +102,11 @@ def _drift_check():
 
 
 def main():
+    # Doctor line (phase 41): the pre-push hook only protects installed clones.
+    import subprocess as _sp
+    _hp = _sp.run(["git", "config", "core.hooksPath"], capture_output=True, text=True).stdout.strip()
+    if _hp != "tools/hooks":
+        print("WARN: pre-push hook not installed — run: git config core.hooksPath tools/hooks")
     watch = "--standards-watch" in sys.argv
     steps, yml = (WATCH_STEPS, "standards-watch.yml") if watch else (STEPS, "health.yml")
     tracked = subprocess.run(

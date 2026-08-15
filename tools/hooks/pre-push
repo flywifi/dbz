@@ -1,0 +1,34 @@
+#!/bin/sh
+# pre-push — runs the CI rehearsal before any push leaves this machine (phase 41).
+#
+# Why this exists: at phase 40 one push skipped the prose-mandated rehearsal and shipped
+# a red CI run (schema-version doc drift that count_truth catches). This hook converts
+# that discipline into a mechanism: the rehearsal is no longer skippable silently.
+#
+# Install (one time per clone):   git config core.hooksPath tools/hooks
+# Emergency bypass (always loud): DBZ_SKIP_REHEARSAL=1 git push
+#
+# The hook never runs in CI — GitHub checkouts do not set core.hooksPath, and health.yml
+# runs the same battery directly.
+
+set -u
+REPO_ROOT="$(git rev-parse --show-toplevel)" || exit 1
+cd "$REPO_ROOT" || exit 1
+
+if [ "${DBZ_SKIP_REHEARSAL:-}" = "1" ]; then
+    echo "=============================================================="
+    echo "WARNING: pre-push rehearsal BYPASSED (DBZ_SKIP_REHEARSAL=1)."
+    echo "The standing rule is ci_rehearsal before every push; this hook"
+    echo "exists because skipping it once shipped a red CI run (phase 40)."
+    echo "=============================================================="
+    exit 0
+fi
+
+echo "[pre-push] running tools/ci_rehearsal.py (bypass: DBZ_SKIP_REHEARSAL=1)"
+if python3 tools/ci_rehearsal.py; then
+    echo "[pre-push] rehearsal PASS — push proceeding"
+    exit 0
+fi
+echo "[pre-push] rehearsal FAILED — push refused. Fix the failure above,"
+echo "[pre-push] or bypass deliberately with DBZ_SKIP_REHEARSAL=1 git push"
+exit 1
