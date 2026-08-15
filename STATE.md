@@ -66,9 +66,15 @@ bridge, consensus detection, publication hygiene, health auditor); their commits
 `d8c0d15` in `git log` and their outcomes are documented throughout `docs/`.
 
 ## Next planned work
-- Candidate UX backlog from `docs/persona-audit.md`: a gap-list convenience on overlap, a
-  validated brief output format, inline voter breakdown on consensus edges. Ongoing:
-  standards-currency refresh cadence per `docs/standards-refresh-runbook.md`.
+- **GDPR second publisher** — the last framework at 0 confirmed CCI mappings; needs an
+  independent GDPR→800-53 mapping source (data acquisition, phase-40 ceiling note).
+- **Consensus-stratum adjudication** — the 3,422 consensus-tier master rows behind the
+  flagship stored pairs remain unadjudicated (phase-36 residual risk #2).
+- **Anchor-layer witnesses** — 28,898 `weak` framework→CCI pairs sit on `disa_only`/`candidate`
+  CCI anchors; raising them needs new anchor corroboration sources.
+- Candidate UX backlog from `docs/persona-audit.md`; standards-currency refresh cadence per
+  `docs/standards-refresh-runbook.md`. Near-term horizon: `au-cmmc-taskforce-report` window
+  opens ~2026-09-11 and unfreezes the deferred ODP baseline work.
 
 ## Recovery package (fresh clone → working state)
 1. Read `CLAUDE.md` (conventions) + this file (state) + `changes/CHANGELOG.md` (history).
