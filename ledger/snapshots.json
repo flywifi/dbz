@@ -386,6 +386,13 @@
       "sha": "92b7d46",
       "date": "2026-08-13",
       "known_good": true
+    },
+    {
+      "phase": "40-pre",
+      "name": "Pre-phase-40 baseline (phase-39 close)",
+      "sha": "f931868",
+      "date": "2026-08-14",
+      "known_good": true
     }
   ]
 }
