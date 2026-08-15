@@ -399,7 +399,8 @@
       "name": "Phase-40 SCF fan-out witness (data commit)",
       "sha": "ac6e2f7",
       "date": "2026-08-14",
-      "known_good": true
+      "known_good": false,
+      "note": "CI red at this sha: count_truth caught schema_version 3.18 not yet stated in docs/fedramp-modernization.md (doc drift, healed at 6a91653). Data content is sound, but do not roll back TO this sha — use 6a91653. Process cause: pushed without the mandatory ci_rehearsal."
     }
   ]
 }
