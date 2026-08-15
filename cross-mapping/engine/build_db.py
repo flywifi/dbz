@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.17"  # v3.17: w_baseline_authoritative + w_olir_composed witnesses on framework_cci_confirmation; v3.16: framework_cci_confirmation (witnessed framework->CCI verdicts); v3.15: edge_semantic on master_mappings (what an edge CLAIMS); v3.14: regulatory-provenance columns on anticipated_updates (enum-enforced); v3.13: evidence_state ladder on master_mappings; v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
+SCHEMA_VERSION = "3.18"  # v3.18: scf_composed_edges (SCF fan-out witness); v3.17: w_baseline_authoritative + w_olir_composed witnesses on framework_cci_confirmation; v3.16: framework_cci_confirmation (witnessed framework->CCI verdicts); v3.15: edge_semantic on master_mappings (what an edge CLAIMS); v3.14: regulatory-provenance columns on anticipated_updates (enum-enforced); v3.13: evidence_state ladder on master_mappings; v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
 
 CHUNK = 500  # executemany batch size
 
@@ -472,6 +472,13 @@ CREATE INDEX IF NOT EXISTS idx_fl_canonical ON framework_labels(canonical);
 -- ── Master mapping surface (Phase 19): the all-in-one union ────────────────────
 -- One row per unordered canonical pair; strongest tier wins the primary row and
 -- every losing surface's claim is preserved in `corroboration` (minority report).
+CREATE TABLE IF NOT EXISTS scf_composed_edges (
+    framework   TEXT NOT NULL,   -- canonical label of the fan-out column
+    native_id   TEXT NOT NULL,   -- normalized framework-native id
+    r5_control  TEXT NOT NULL,   -- 800-53 anchor via SCF's own R5 column
+    PRIMARY KEY (framework, native_id, r5_control)
+);
+
 CREATE TABLE IF NOT EXISTS framework_cci_confirmation (
     framework              TEXT NOT NULL,
     native_id              TEXT NOT NULL,
@@ -483,6 +490,7 @@ CREATE TABLE IF NOT EXISTS framework_cci_confirmation (
     w_subpart_precision    INTEGER NOT NULL DEFAULT 0,
     w_baseline_authoritative INTEGER NOT NULL DEFAULT 0,  -- v3.17: owner baseline flag (FedRAMP)
     w_olir_composed        INTEGER NOT NULL DEFAULT 0,    -- v3.17: NIST OLIR X<->CSF2 composed path
+    w_scf_composed         INTEGER NOT NULL DEFAULT 0,    -- v3.18: SCF fan-out composed path
     verdict                TEXT NOT NULL,   -- confirmed|corroborated|reachable|weak
     witnesses              TEXT NOT NULL,   -- JSON list, sorted
     PRIMARY KEY (framework, native_id, cci_id)
@@ -1894,6 +1902,18 @@ def build_db(
     # ── framework -> CCI confirmation (Phase 38) ────────────────────────────────
     # The repository's objective: converge every framework onto CONFIRMED CCI mappings.
     # Runs after the projection and the CCI corroboration layer, both of which it reads.
+    print("\n[scf] Loading SCF fan-out columns (composed witness)")
+    _scf_edges, _scf_stats = spine_loader.load_scf_fanout(catalog_ids)
+    if _scf_edges:
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO scf_composed_edges (framework, native_id, r5_control)
+            VALUES (:framework, :native_id, :r5_control)
+        """, _scf_edges, "scf_composed_edges")
+        conn.commit()
+    print(f"  scf_composed_edges: {_scf_stats.get('rows', 0)} rows "
+          f"per_framework={_scf_stats.get('per_framework')} "
+          f"dropped_tokens={_scf_stats.get('dropped_tokens')}")
+
     print("\n[cci] Deriving framework -> CCI confirmation verdicts")
     import cci_confirm as _cc  # type: ignore
     fcc_rows, fcc_stats = _cc.build_rows(conn)
@@ -1901,11 +1921,11 @@ def build_db(
         INSERT OR REPLACE INTO framework_cci_confirmation
             (framework, native_id, cci_id, w_framework_sources, w_cci_anchor_confirmed,
              w_stig_exercised, w_consensus, w_subpart_precision,
-             w_baseline_authoritative, w_olir_composed, verdict, witnesses)
+             w_baseline_authoritative, w_olir_composed, w_scf_composed, verdict, witnesses)
         VALUES
             (:framework, :native_id, :cci_id, :w_framework_sources, :w_cci_anchor_confirmed,
              :w_stig_exercised, :w_consensus, :w_subpart_precision,
-             :w_baseline_authoritative, :w_olir_composed, :verdict, :witnesses)
+             :w_baseline_authoritative, :w_olir_composed, :w_scf_composed, :verdict, :witnesses)
     """, fcc_rows, "framework_cci_confirmation")
     conn.commit()
     print(f"  framework_cci_confirmation: pairs={fcc_stats['pairs']} "

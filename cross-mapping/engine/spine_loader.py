@@ -1009,6 +1009,113 @@ _CCM_OSCAL_JSON = (Path(__file__).resolve().parent.parent.parent / "canonical-so
 _CCM_REL_MAP = {"equivalent-to": "equal", "superset-of": "superset"}
 
 
+def load_scf_fanout(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
+    """SCF's OTHER framework columns composed with its 800-53 column (phase 40).
+
+    The workbook maps each SCF control to ~45 frameworks; only the 800-53 column was
+    ever loaded. Composing SCF->X with SCF->800-53 yields X->800-53 rows with SCF as
+    the publisher of both hops — but the COMPOSITION is ours, so downstream these are
+    a supports-only witness (w_scf_composed), never a publisher and never a stored id.
+
+    Column roles come from source_manifest.json (structure.fanout_columns) — never
+    hardcoded. Every token is gated by a normalizer; unparseable tokens are dropped
+    and counted in the stats, never guessed.
+    """
+    import json as _json
+    src = "scf-controls"
+    try:
+        path = source_path(src)
+    except Exception:
+        return [], {"skipped": "not registered"}
+    if not path.exists():
+        return [], {"skipped": "artifact not on disk"}
+    manifest = _json.loads((REPO_ROOT / "canonical-sources" / "source_manifest.json")
+                           .read_text(encoding="utf-8"))
+    entry = None
+    def _walk(o):
+        nonlocal entry
+        if isinstance(o, dict):
+            if o.get("id") == src:
+                entry = o
+            for v in o.values():
+                _walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                _walk(v)
+    _walk(manifest)
+    st = (entry or {}).get("structure", {})
+    fan_cols = st.get("fanout_columns", {})
+    if not fan_cols:
+        return [], {"skipped": "no fanout_columns in manifest structure"}
+    df = pd.read_excel(path, sheet_name=st.get("fanout_sheet", "SCF 2026.1"))
+    cols = {str(c): c for c in df.columns}
+    id_col = cols.get(st.get("fanout_id_column", "SCF #"))
+    r5_col = cols.get(st.get("fanout_r5_column", ""))
+    if id_col is None or r5_col is None:
+        return [], {"skipped": "id/r5 column not found"}
+
+    from spine_normalize import (normalize_gdpr_article, normalize_172_id,
+                                 normalize_cmmc_id)
+
+    def norm_for(fw: str, tok: str):
+        tok = tok.strip()
+        if not tok or tok.lower() == "nan":
+            return None
+        if fw == "SOC 2":
+            return normalize_tsc_id(tok)
+        if fw == "HIPAA Security":
+            return normalize_hipaa_citation(tok)
+        if fw == "GDPR":
+            return normalize_gdpr_article(tok)
+        if fw == "NIST SP 800-172 r3":
+            return normalize_172_id(tok)
+        if fw == "ISO 27001/2 (2022)":
+            nid, _kind = normalize_iso_id(tok)
+            return nid
+        if fw == "PCI DSS v4.0":
+            return normalize_pci_id(tok)
+        if fw.startswith("CMMC"):
+            return normalize_cmmc_id(tok)
+        if fw in ("CIS CSC v8.0", "NIST SP 800-171 r2", "NIST SP 800-171 r3",
+                  "NIST CSF 2.0", "CSA CCM v4"):
+            # dotted / native forms pass through verbatim; the witness join in
+            # cci_confirm goes through corroboration_key anyway
+            return tok
+        return None
+
+    edges: List[dict] = []
+    seen: Set[Tuple[str, str, str]] = set()
+    stats: dict = {"rows": 0, "dropped_tokens": {}, "per_framework": {}}
+    for _i, row in df.iterrows():
+        r5_raw = str(row.get(r5_col) or "")
+        r5s = {normalize_control_id(t) for t in re.split(r"[\n,;]+", r5_raw)}
+        r5s = {r for r in r5s if r and r in catalog_ids}
+        if not r5s:
+            continue
+        for header, fw in fan_cols.items():
+            c = cols.get(header)
+            if c is None:
+                continue
+            cell = row.get(c)
+            if cell is None or (isinstance(cell, float) and pd.isna(cell)):
+                continue
+            for tok in re.split(r"[\n;]+", str(cell)):
+                nid = norm_for(fw, tok)
+                if nid is None:
+                    if tok.strip() and tok.strip().lower() != "nan":
+                        stats["dropped_tokens"][fw] = stats["dropped_tokens"].get(fw, 0) + 1
+                    continue
+                for r5 in sorted(r5s):
+                    key = (fw, nid, r5)
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    edges.append({"framework": fw, "native_id": nid, "r5_control": r5})
+                    stats["per_framework"][fw] = stats["per_framework"].get(fw, 0) + 1
+    stats["rows"] = len(edges)
+    return edges, stats
+
+
 def load_scf_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
     """SCF controls -> 800-53 r5, from SCF's own 'NIST 800-53 R5' column in the
     2026.1.1 workbook.  Owner co-citation (the xlsx carries no per-mapping STRM

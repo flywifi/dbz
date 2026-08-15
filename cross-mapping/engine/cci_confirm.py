@@ -96,7 +96,7 @@ def _consensus_controls(conn, canon: Dict[str, str]) -> Dict[Tuple[str, str], in
 
 
 def _verdict(w_sources: int, anchor_confirmed: int, stig: int, consensus: int,
-             baseline: int = 0, olir: int = 0) -> str:
+             baseline: int = 0, olir: int = 0, scf: int = 0) -> str:
     """Derived mechanically — no per-row judgment.
 
     Agreement witnesses are: a second independent PUBLISHER, a STIG that actually exercises
@@ -113,7 +113,7 @@ def _verdict(w_sources: int, anchor_confirmed: int, stig: int, consensus: int,
     # baseline (owner scope statement) and olir_composed (two-hop NIST-published path)
     # are CONTROL-granularity like consensus: they support, never carry alone.
     agreement = (cci_level + (1 if consensus else 0)
-                 + (1 if baseline else 0) + (1 if olir else 0))
+                 + (1 if baseline else 0) + (1 if olir else 0) + (1 if scf else 0))
     if not anchor_confirmed:
         # the CCI's own anchor is disa_only / candidate — nothing above it can be confirmed
         return "weak"
@@ -183,6 +183,21 @@ def build_rows(conn) -> Tuple[List[dict], dict]:
             "WHERE framework='NIST CSF 2.0' AND provenance='direct_csf2'"):
         csf2_ctls.setdefault(str(nat), set()).add(str(r5c))
 
+    # SCF fan-out witness (phase-40): SCF->X composed with SCF->800-53, per anchor.
+    # Same honesty rule as olir_composed: the composition is ours -> supports-only.
+    scf_x: Dict[Tuple[str, str], Set[str]] = {}
+    try:
+        for fw_x, nat_x, r5c in conn.execute(
+                "SELECT framework, native_id, r5_control FROM scf_composed_edges"):
+            k = corroboration_key(str(fw_x), str(nat_x)) or str(nat_x)
+            scf_x.setdefault((str(fw_x), k), set()).add(str(r5c))
+    except Exception:
+        pass
+
+    def scf_witness(fw: str, ck_nat: str, cci: str) -> int:
+        anchors = cci_anchor_ctls.get(cci, set())
+        return 1 if scf_x.get((fw, ck_nat), set()) & anchors else 0
+
     def olir_witness(fw: str, ck_nat: str, cci: str) -> int:
         anchors = cci_anchor_ctls.get(cci, set())
         for csf in olir_x.get((fw, ck_nat), ()):
@@ -221,7 +236,8 @@ def build_rows(conn) -> Tuple[List[dict], dict]:
         stig = 1 if cci in stig_ccis else 0
         cons = consensus.get((fw, consensus_key(nat)), 0)
         olir = olir_witness(fw, ck_nat, cci)
-        verdict = _verdict(w_sources, a_conf, stig, cons, baseline=0, olir=olir)
+        scf = scf_witness(fw, ck_nat, cci)
+        verdict = _verdict(w_sources, a_conf, stig, cons, baseline=0, olir=olir, scf=scf)
         witnesses = []
         if w_sources >= 2:
             witnesses.append(f"framework_sources:{w_sources}")
@@ -233,6 +249,8 @@ def build_rows(conn) -> Tuple[List[dict], dict]:
             witnesses.append(f"consensus:{cons}")
         if olir:
             witnesses.append("olir_composed")
+        if scf:
+            witnesses.append("scf_composed")
         if subpart:
             witnesses.append("subpart_precision")
         rows.append({
@@ -244,6 +262,7 @@ def build_rows(conn) -> Tuple[List[dict], dict]:
             "w_subpart_precision": 1 if subpart else 0,
             "w_baseline_authoritative": 0,
             "w_olir_composed": olir,
+            "w_scf_composed": scf,
             "verdict": verdict,
             "witnesses": json.dumps(sorted(witnesses)),
         })
@@ -281,6 +300,7 @@ def build_rows(conn) -> Tuple[List[dict], dict]:
             "w_subpart_precision": 0,
             "w_baseline_authoritative": 1,
             "w_olir_composed": 0,
+            "w_scf_composed": 0,
             "verdict": verdict,
             "witnesses": json.dumps(sorted(witnesses)),
         })

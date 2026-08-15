@@ -543,7 +543,54 @@ def corroboration_key(framework: str, native_id: str) -> Optional[str]:
         m = re.match(r"^(\d{3}\.\d{3}(?:\([a-z0-9]+\)){0,2})", s)
         return m.group(1) if m else None
 
+    if fw.startswith("SOC 2"):
+        # 'AICPA 2017 CC1.1' and 'CC1.1' are the same criterion — the hub loader stored
+        # the prefixed raw form while normalize_tsc_id strips it (phase-40; F-6 class)
+        return normalize_tsc_id(s)
+
     return None
+
+
+_GDPR_ART_RE = re.compile(
+    r"^Art(?:icle)?\.?\s*(\d+)(?:\.(\d+))?\s*(?:\(([a-z])\))?\s*$", re.IGNORECASE)
+
+
+def normalize_gdpr_article(raw: str) -> Optional[str]:
+    """'Article 24.2' -> '24(2)'; 'Article 12.5(b)' -> '12(5)b'; 'Article 10' -> '10'.
+
+    Matches the hub's GDPR native form ('11(1)', '12(5)b') so the SCF fan-out column
+    (phase 40) can witness-join the projection. Returns None for anything that is not a
+    plain article citation — never guesses."""
+    if not isinstance(raw, str):
+        return None
+    m = _GDPR_ART_RE.match(raw.strip())
+    if not m:
+        return None
+    art, para, sub = m.groups()
+    out = art
+    if para:
+        out += f"({int(para)})"
+    if sub:
+        out += sub.lower()
+    return out
+
+
+_NIST172_RE = re.compile(r"^(\d{1,2})\.(\d{1,2})\.(\d{1,2})\s*[eE]$")
+
+
+def normalize_172_id(raw: str) -> Optional[str]:
+    """'3.1.2e' -> '03.01.02E' — the zero-padded form the 800-172 r3 projection uses.
+
+    The SCF column carries 2021-edition numbering; the requirement numbering carried into
+    r3, so this is a version-caveated WITNESS join (recorded in the manifest note), never
+    a stored identifier."""
+    if not isinstance(raw, str):
+        return None
+    m = _NIST172_RE.match(raw.strip())
+    if not m:
+        return None
+    a, b, c = (int(x) for x in m.groups())
+    return f"{a:02d}.{b:02d}.{c:02d}E"
 
 
 def parse_cui_sort_id(raw: str) -> Optional[Tuple[str, int]]:
