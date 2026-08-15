@@ -36,6 +36,8 @@ Plus the ledger, export, scoreboard, and registry invariants:
      tools/registry_io.py (undeclared writers are flagged).
  15. Skill-asset copies of overlap-data files hash-match the canonical overlap-data/ copy
      (silently diverged copies skew the analyzer skill against the engine).
+ 16. tools/hooks/pre-push exists, is executable, and still invokes ci_rehearsal (guards the
+     phase-41 push enforcement against deletion or being edited into a no-op).
 
 Run:   python3 tools/sync_check.py
 Exit:  0 if every invariant holds, 1 (with a report) otherwise.
@@ -288,6 +290,22 @@ def main() -> int:
                             f"overlap-data copy: {asset.relative_to(ROOT)} (resync from "
                             f"overlap-data/{asset.name}; never edit the per-skill copy)")
 
+    # Invariant 16: the pre-push hook is committed, executable, and still runs the
+    # rehearsal. Phase 41: the hook is the mechanism that stops a skipped rehearsal from
+    # shipping a red run; a deleted or defanged hook must fail the drift guard.
+    _hook = ROOT / "tools" / "hooks" / "pre-push"
+    if not _hook.exists():
+        failures.append("  ✗ Invariant 16 — tools/hooks/pre-push is missing (phase-41 push "
+                        "enforcement deleted)")
+    else:
+        import os as _os
+        if not _os.access(_hook, _os.X_OK):
+            failures.append("  ✗ Invariant 16 — tools/hooks/pre-push is not executable "
+                            "(chmod +x tools/hooks/pre-push)")
+        if "ci_rehearsal" not in _hook.read_text(encoding="utf-8"):
+            failures.append("  ✗ Invariant 16 — tools/hooks/pre-push no longer invokes "
+                            "ci_rehearsal (edited into a no-op)")
+
     print(f"GRC drift check — {len(atom_dirs)} atom(s) + orchestration bucket + health auditor\n")
     if failures:
         print("DRIFT DETECTED:\n")
@@ -295,7 +313,7 @@ def main() -> int:
         print(f"\n{len(failures)} invariant(s) failed.")
         return 1
 
-    print(f"OK — all 15 invariants pass across {len(atom_dirs)} atom(s) + the orchestration "
+    print(f"OK — all 16 invariants pass across {len(atom_dirs)} atom(s) + the orchestration "
           f"bucket + the health auditor + the platform export.")
     return 0
 

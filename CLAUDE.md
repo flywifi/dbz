@@ -46,6 +46,8 @@ dbz/
 - Combination crosswalks (e.g. `SOC 2 T2 & ISO 27001.csv`) are **overlap oracles** for validation.
 
 ## Branching & git
+- One-time setup per clone: `git config core.hooksPath tools/hooks` — the pre-push hook runs
+  the CI rehearsal; bypass only with `DBZ_SKIP_REHEARSAL=1`, always a deliberate, logged act.
 - Develop on the designated feature branch. **Never push to `main`.**
 - Push with `git push -u origin <branch>`; retry network failures with backoff.
 - Do not open a PR unless explicitly asked.
@@ -82,3 +84,12 @@ Describe the change and reference the affected component (ingestion loader, over
   The data files themselves are the private canonical data and stay confined to their mapping
   directories.
 - `tools/health_audit.py` enforces the file-side rules on every scan.
+
+## Session mechanics (phase 41 — each rule encodes a real incident)
+- GitHub state is read through the GitHub MCP tools or `tools/ci_status.py` — never raw
+  `curl` to `api.github.com`: the session proxy intercepts it with an error body that naive
+  parsers read as "no runs". `ci_status.py` makes error/empty/data distinct exit codes.
+- Schema bumps go through `tools/bump_schema.py`, never by hand — the version is restated in
+  every doc `doc_claims.json` cites, and a half-landed bump shipped a red CI run once.
+- GitHub schedules a workflow run 1–10 minutes after a push; absence of a run inside that
+  window is not evidence of failure.
