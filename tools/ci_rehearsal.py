@@ -42,6 +42,7 @@ HIDE_DIRS = ("cross-mapping/output", "cross-mapping/nist-catalog/output")
 STEPS = [
     ("secret-scan backstop", "python3 tools/secret_scan.py --range c3192c8..HEAD"),
     ("drift guard (sync_check)", "python3 tools/sync_check.py"),
+    ("ci-status selftest", "python3 tools/ci_status.py --selftest"),
     ("health audit — scan", "python3 tools/health_audit.py --scan"),
     ("health audit — full", "python3 tools/health_audit.py --full"),
     ("auditor golden self-test", "python3 skills/health-auditor/tests/run_golden.py"),

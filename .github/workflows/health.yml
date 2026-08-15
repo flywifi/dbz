@@ -24,6 +24,9 @@ jobs:
       - name: Drift guard (sync_check)
         run: python3 tools/sync_check.py
 
+      - name: CI-status selftest
+        run: python3 tools/ci_status.py --selftest
+
       - name: Health audit — scan (reference integrity + layout)
         run: python3 tools/health_audit.py --scan
 
