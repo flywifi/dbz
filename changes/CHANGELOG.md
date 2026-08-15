@@ -3,6 +3,42 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.10.1] — 2026-08-15 (phase 41 — the phase-40 failure classes, made structural)
+
+### Incident record (researched with proofs; disconfirmed hypotheses listed so they are never re-chased)
+- **Red CI at the phase-40 data commit**: the schema version moved in code while four docs
+  restating it lagged; `count_truth` blocked in CI as designed. Layered causes: the push that
+  shipped it skipped the prose-mandated rehearsal (nothing mechanical prevented that — no
+  hook existed), and the 5-file manual bump ritual had opened the same drift window four
+  times in one session before finally escaping.
+- **False "CI not scheduled" reports**: the session proxy intercepts raw `curl` to
+  `api.github.com` with a JSON error body, and the ad-hoc pollers' `.get('workflow_runs', [])`
+  made a blocked API indistinguishable from zero runs. Compounded by GitHub's real 1–10 minute
+  run-scheduling latency and by the proxy's behavior changing mid-session. Disconfirmed:
+  rate limiting (auth-injected limit 15,000, unused) and head_sha filter semantics (the API
+  was never reached). Live re-test during this phase: the REST path is blocked with HTTP 403
+  even with the shell's bearer token — the GitHub MCP tools are the only working in-session
+  path, and the new status reader reports exactly that instead of a false negative.
+
+### Prevention shipped
+- **`tools/hooks/pre-push`** runs the full CI rehearsal and refuses the push on failure;
+  bypass (`DBZ_SKIP_REHEARSAL=1`) is deliberate and loud. Proven refusing the reproduced
+  incident (schema drifted → push blocked) and passing a clean tree. Install is recovery step
+  0 and a conventions rule; the rehearsal prints a reminder when the hook path is unset.
+- **`tools/bump_schema.py`** bumps the code constant and every doc `doc_claims.json` cites,
+  all-or-nothing with ambiguity refusal, finishing with the checker it exists to satisfy.
+  Proven: incident reproduced red, tool green across 5 files, refusal leaves nothing written.
+- **`tools/ci_status.py`** — error / empty / data as distinct exit codes; the captured proxy
+  payload is pinned in a selftest wired into CI and the rehearsal mirror; `--wait` prints the
+  scheduling-latency expectation up front; sha filtering is client-side by full-sha prefix.
+- **Drift invariant 16** fails if the hook is deleted, non-executable, or edited to skip the
+  rehearsal (proven red against a defanged hook). Conventions gain a session-mechanics
+  section; the invariant count restatements move 15 → 16.
+
+### What did not change
+No data, no schema (3.18 stands), no query surface. `grc.db` content is untouched by this
+phase; the build was not re-run because nothing feeding it changed.
+
 ## [0.10.0] — 2026-08-14 (phase 40 — the SCF fan-out witness)
 
 Phase 39 closed calling the single-publisher ceilings "data acquisition, not code." One unchecked

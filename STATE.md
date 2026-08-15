@@ -61,6 +61,8 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 | 39 | Confirmation-layer remediation + correction | `92b7d46` (head) | 2026-08-13 | Per-anchor publisher rule corrects the phase-38 overcount (53,046→**23,339 confirmed** of 180,413); FedRAMP derived from baseline flags (252,917 noise rows→2,777 authoritative); coarse-key publishers + OLIR-composed witness; ceilings stated |
 
 | 40 | SCF fan-out witness | `ac6e2f7` + close | 2026-08-14 | Schema 3.18: SCF workbook's 45 framework columns composed with its 800-53 column into a supports-only witness (8,626 edges); SOC 2 0→69 confirmed, 800-172 r3 0→5, GDPR 96→303 corroborated; overall 23,485 confirmed |
+| 41 | Push + status hardening | `4852bf6` + close | 2026-08-15 | Pre-push hook (rehearsal enforced, loud bypass), atomic bump_schema, three-state ci_status with the captured proxy payload pinned in a selftest, drift invariant 16; every checker proven red-then-green |
+
 Phases 1–18 built the foundations (catalog ingestion, ER engine, spine normalization, CCI/ODP
 bridge, consensus detection, publication hygiene, health auditor); their commits precede
 `d8c0d15` in `git log` and their outcomes are documented throughout `docs/`.

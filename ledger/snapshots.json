@@ -408,6 +408,13 @@
       "sha": "ea03cf7",
       "date": "2026-08-15",
       "known_good": true
+    },
+    {
+      "phase": "41-close",
+      "name": "Phase-41 push + status hardening (gates commit)",
+      "sha": "4852bf6",
+      "date": "2026-08-15",
+      "known_good": true
     }
   ]
 }
