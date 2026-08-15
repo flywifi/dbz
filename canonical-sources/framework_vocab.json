@@ -1,6 +1,6 @@
 {
   "_purpose": "Controlled vocabularies the health auditor validates against, so a typo or a fabricated identifier is caught before it corrupts a query. Deterministic allow-lists only — never fabricate an entry to make a check pass; add the real canonical name.",
-  "_version": "1.5.0",
+  "_version": "1.6.0",
   "_generated": "2026-07-02",
   "framework_names": {
     "_note": "Canonical framework names as they must appear in crosswalk/catalog data. A name not on this list (e.g. 'ISO 27001' missing the '/IEC') is flagged so overlap queries don't silently miss it.",
@@ -403,7 +403,8 @@
       "w_consensus": "another framework independently agrees on this control (consensus_edges strong/moderate). Matched at CONTROL granularity, so it supports but never alone carries a confirmation",
       "w_subpart_precision": "anchored at sub-part rather than whole control — a precision signal, never an agreement witness",
       "w_baseline_authoritative": "the framework OWNER's baseline flag places this 800-53 control in scope (FedRAMP low/moderate/high on controls+enhancements). Control granularity: supports, never carries alone. FedRAMP is derived from these flags, not graded as a foreign framework",
-      "w_olir_composed": "a NIST-published X<->CSF-2.0 OLIR pair composed with NIST's CSF-2.0->800-53 mapping lands on the same 800-53 control this CCI hangs under. Two hops, both NIST-published, matched per anchor. Control granularity: supports, never carries alone"
+      "w_olir_composed": "a NIST-published X<->CSF-2.0 OLIR pair composed with NIST's CSF-2.0->800-53 mapping lands on the same 800-53 control this CCI hangs under. Two hops, both NIST-published, matched per anchor. Control granularity: supports, never carries alone",
+      "w_scf_composed": "an SCF workbook row maps the same SCF control to this framework AND to the 800-53 control this CCI hangs under (source_manifest structure.fanout_columns). The X->800-53 composition is ours, not SCF's — control granularity: supports, never carries alone"
     }
   }
 }

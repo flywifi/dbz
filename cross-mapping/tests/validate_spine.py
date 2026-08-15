@@ -833,7 +833,7 @@ def main() -> int:
         "AND w_framework_sources < 2 AND w_stig_exercised = 0").fetchone()[0]
     if n_consonly:
         cbad.append(f"{n_consonly} confirmed rows rest on control-granularity witnesses alone "
-                    f"(consensus/baseline/olir) with no CCI-level witness "
+                    f"(consensus/baseline/olir/scf) with no CCI-level witness "
                     f"(a second same-anchor publisher or a STIG exercising the CCI)")
     # every confirmed row must be traceable to its witnesses
     n_nowit = conn.execute(

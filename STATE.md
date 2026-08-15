@@ -6,12 +6,12 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 [docs/cross-mapping-architecture.md](docs/cross-mapping-architecture.md).
 
 ## Live status
-- **DB schema:** 3.17 (adds baseline/OLIR witnesses on `framework_cci_confirmation`; 3.16 added the witnessed framework→CCI verdict layer) (`grc.db`, deterministic build, double-build digest check)
+- **DB schema:** 3.18 (adds `scf_composed_edges` + the SCF fan-out witness; 3.17 added baseline/OLIR witnesses) (`grc.db`, deterministic build, double-build digest check)
 - **Gate battery:** rebuild ×2 identical digests · `test_spine.py` · `validate_spine.py` ·
   `health_audit.py --scan/--full` 100/100 (including the artifacts-hidden CI condition) ·
   `sync_check.py` (15 invariants) · golden self-test · `benchmark_oracles.py --check` ·
   twelve-scenario battery (`run_scenarios.py`) · alias contract (`test_alias_contract.py`) ·
-  pre-commit selftests (output validator, scorer, secret scan) — all green as of 2026-08-13 (incl. the phase-38 framework→CCI confirmation gate; rehearse CI pre-push with tools/ci_rehearsal.py). Authority list: `protocol-layer/quality-gates.md`.
+  pre-commit selftests (output validator, scorer, secret scan) — all green as of 2026-08-14 (incl. the phase-40 SCF fan-out witness; rehearse CI pre-push with tools/ci_rehearsal.py). Authority list: `protocol-layer/quality-gates.md`.
 - **CI:** `health` workflow green on every push; `standards-watch` (monthly) runs the drift
   check + a fresh-build oracle benchmark regression check.
 - **Accuracy record:** see [docs/BENCHMARK.md](docs/BENCHMARK.md) (measured, pinned).
@@ -60,6 +60,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 | 38 | Framework→CCI confirmation layer | `a602016` | 2026-08-13 | Schema 3.16 `framework_cci_confirmation`: framework→CCI pairs verdicted from independent witnesses; `reachable` no longer passes as a mapping (headline count corrected in phase 39) |
 | 39 | Confirmation-layer remediation + correction | `92b7d46` (head) | 2026-08-13 | Per-anchor publisher rule corrects the phase-38 overcount (53,046→**23,339 confirmed** of 180,413); FedRAMP derived from baseline flags (252,917 noise rows→2,777 authoritative); coarse-key publishers + OLIR-composed witness; ceilings stated |
 
+| 40 | SCF fan-out witness | `ac6e2f7` + close | 2026-08-14 | Schema 3.18: SCF workbook's 45 framework columns composed with its 800-53 column into a supports-only witness (8,626 edges); SOC 2 0→69 confirmed, 800-172 r3 0→5, GDPR 96→303 corroborated; overall 23,485 confirmed |
 Phases 1–18 built the foundations (catalog ingestion, ER engine, spine normalization, CCI/ODP
 bridge, consensus detection, publication hygiene, health auditor); their commits precede
 `d8c0d15` in `git log` and their outcomes are documented throughout `docs/`.

@@ -393,6 +393,13 @@
       "sha": "f931868",
       "date": "2026-08-14",
       "known_good": true
+    },
+    {
+      "phase": "40-close",
+      "name": "Phase-40 SCF fan-out witness (data commit)",
+      "sha": "ac6e2f7",
+      "date": "2026-08-14",
+      "known_good": true
     }
   ]
 }

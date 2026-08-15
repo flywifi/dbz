@@ -3,6 +3,30 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.10.0] — 2026-08-14 (phase 40 — the SCF fan-out witness)
+
+Phase 39 closed calling the single-publisher ceilings "data acquisition, not code." One unchecked
+assumption made that premature: the SCF workbook on disk carries 45 framework mapping columns, and
+only the 800-53 column had ever been loaded.
+
+### Added
+- **`scf_composed_edges`** (schema **3.18**) — 8,626 edges from SCF→X columns composed with
+  SCF→800-53, column roles pinned in `source_manifest.json` (`structure.fanout_columns`), every
+  token gated by an existing normalizer (unparseable tokens dropped AND counted: SOC 2's 788
+  are `-POF` points-of-focus, correctly rejected). New normalizers: `normalize_gdpr_article`
+  ('Article 24.2' → '24(2)'), `normalize_172_id` ('3.1.2e' → '03.01.02E', version-caveated in
+  the manifest note).
+- **`w_scf_composed`** — supports-only witness (the X→800-53 composition is ours, not SCF's;
+  same honesty rule as `w_olir_composed`), matched per anchor. Results: **SOC 2 0→69 confirmed**
+  (SCF + STIG + confirmed anchor; spot-check: A1.1 availability → SC-5 denial-of-service CCIs),
+  **800-172 r3 0→5**, GDPR 96→303 corroborated, CCM 318, overall confirmed 23,339→**23,485**.
+- One more F-6 instance fixed en route: projection SOC 2 natives carry an `AICPA 2017 ` prefix
+  the SCF side lacks; `corroboration_key` gained a SOC 2 branch through `normalize_tsc_id`.
+
+### Honest ceiling that remains
+GDPR stays 0 confirmed: the SCF witness is control-granularity and GDPR has no CCI-level witness
+anywhere, so `corroborated` (303) is its ceiling until a second publisher maps it to 800-53.
+
 ## [0.9.0] — 2026-08-13 (phase 39 — confirmation-layer remediation and correction)
 
 Remediates why 286,642 of phase 38's pairs were unconfirmed — and corrects phase 38's own

@@ -94,19 +94,19 @@ re-labeling. Full method and limits: `docs/audits/phase-36-master-accuracy-audit
 
 The repository's objective is convergence onto **confirmed CCI mappings**. Verdicts are derived
 from independent witnesses (`cci_confirm.py`; vocabulary in `framework_vocab.json →
-cci_confirmation`). Measured 2026-08-13 after the phase-39 remediation, over **180,413** pairs:
+cci_confirmation`). Measured 2026-08-14 after phases 39–40, over **180,413** pairs:
 
 | Verdict | Pairs | Meaning |
 |---|---|---|
-| `confirmed` | **23,339** | CCI anchor multi-witness confirmed + ≥2 agreement witnesses, ≥1 CCI-level (same-anchor second publisher or STIG exercise) |
-| `corroborated` | 101,031 | anchor confirmed + exactly one agreement witness |
-| `reachable` | 27,145 | transitive join only — **not a mapping** |
+| `confirmed` | **23,485** | CCI anchor multi-witness confirmed + ≥2 agreement witnesses, ≥1 CCI-level (same-anchor second publisher or STIG exercise) |
+| `corroborated` | 102,497 | anchor confirmed + exactly one agreement witness |
+| `reachable` | 25,533 | transitive join only — **not a mapping** |
 | `weak` | 28,898 | the CCI's own anchor is `disa_only`/`candidate` |
 
 **CORRECTION of the phase-38 headline.** Phase 38 reported 53,046 confirmed. That number was
 overcounted: the publisher witness was anchor-blind — two publishers of a control were credited
 to every CCI the control could reach, not only to CCIs under the 800-53 control both publishers
-actually named. The phase-39 per-anchor rule corrects it; **23,339 is the number of record.**
+actually named. The phase-39 per-anchor rule corrects it; **the corrected figure (23,339, now 23,485 with the phase-40 SCF witness) is the number of record.**
 (The same phase also *added* witnesses — FedRAMP baseline flags, the OLIR-composed path, coarse-
 key publisher matching — so the two figures are not directly comparable; the correction dominates.)
 
@@ -121,8 +121,10 @@ surface's own documented design.
 - `weak` (28,898) is an **anchor-layer** fact: those CCIs' own 800-53 anchors are
   `disa_only`/`candidate` in `cci_mapping_corroboration`. Raising them needs new anchor
   witnesses (data acquisition), not code.
-- **GDPR, SOC 2, NIST SP 800-172 r3: 0 confirmed** — single publisher and no same-anchor second
-  witness. Their ceiling is `corroborated` until a second mapping source exists.
+- **SOC 2 and NIST SP 800-172 r3 gained their first confirmed rows in phase 40** (69 and 5) via the
+  SCF fan-out witness plus STIG exercise. **GDPR remains 0 confirmed** — the SCF witness moved 207
+  pairs to `corroborated`, but GDPR has no CCI-level witness anywhere, so `corroborated` is still its
+  ceiling until a second publisher maps it.
 - **STIG exercise covers 539 CCIs** — re-extracted and verified complete: that is every CCI any
   of the 19,667 STIG rules cites. Not extendable from data on hand.
 

@@ -50,7 +50,7 @@ any-framework. (Before Phase 19 these were two separate crosswalks; they are now
                      build_db.py
               ┌──────────────────────────────┐
               │   grc.db (SQLite, ~40 tables) │  ← query layer; deterministic rebuild
-              │   schema 3.17, indexed        │
+              │   schema 3.18, indexed        │
               └────────┬─────────────────────┘
                        ▼
                  dbz_query.py  (CLI: master, overlap, reverse, forward, scope,
