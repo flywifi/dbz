@@ -1988,8 +1988,16 @@ def build_cci_corroboration(cci_bridge_rows: List[dict], conn) -> Tuple[List[dic
     not independent authority; STIG usage is the one independent witness.
 
     Verdict per edge: confirmed (in our bridge AND >=1 republication) /
-    disa_only (bridge, no republication) / candidate (republication asserts an
-    edge our bridge lacks — a gain to review, never auto-promoted).
+    disa_only (bridge, no republication) / candidate (a republication cites a control id our
+    bridge does not use for this CCI).
+
+    `candidate` is NOT a gain list. Phase 44 adjudicated all 231 against DISA's own Rev-5
+    references and found ZERO gains: 214 are pre-Rev-5 identifiers where DISA's own r5 ref
+    points elsewhere and our bridge already follows it (CM-2(1)->CM-2, AC-12(1)->AC-12(2),
+    SC-34(3)->SC-51, ...), and 17 are Appendix-J privacy enhancement ids with no r5 reference
+    at all. Phase 43 had claimed 18 gaps here by matching CCI text against control TITLES
+    without checking the authority; that finding is retracted in
+    docs/audits/phase-43-adjudication.md.
     Deterministic: sorted output. Returns (rows, stats)."""
     acas_r5 = _load_acasehs("acasehs_rev5.json")
     acas_r4 = _load_acasehs("acasehs_rev4.json")

@@ -102,18 +102,53 @@ policy controls (`AC-1`, `AT-1`, `PM-1`) that would "support" almost any pair.
 
 ## Part 2 — The 231 `candidate` CCI anchors (complete, not sampled)
 
+> ### RETRACTION (phase 44, 2026-08-16) — finding B-2 below is WRONG
+>
+> **What this section claimed:** 18 genuine bridge gaps, two of them STIG-exercised and
+> "the highest-value items in the whole candidate set".
+>
+> **What is true:** there are **zero** bridge gaps. All 231 candidates are stale-identifier
+> artifacts — **214** where DISA's own Rev-5 reference points somewhere other than the
+> republication's claim *and our bridge already follows DISA*, and **17** Appendix-J privacy
+> enhancement CCIs with no Rev-5 reference at all.
+>
+> **The probe that overturned it:** comparing each candidate's claimed control against
+> `disa_ccis.nist_rev5_refs` (the pinned DISA XML) and against our `cci_bridge` row. Worked
+> examples: CCI-000297 — republication claims `CM-2(1)`, DISA's Rev-5 reference is **`CM-2`**,
+> our bridge anchors `CM-2` sub-part `CM-2 b.2`. CCI-002364 — claims `AC-12(1)`, DISA says
+> **`AC-12(2)`**, ours anchors `AC-12(2)`. CCI-002508–2512 — claim `SC-34(3)`, DISA says
+> **`SC-51`**, ours anchors `SC-51`. The two "STIG-exercised gaps" are therefore not gaps:
+> both CCIs are anchored, just not where the republication says.
+>
+> **Why the error happened:** each pair was judged by whether the CCI's text matched the claimed
+> control's *title*. It did — `CM-2(1)` is "Baseline Configuration | Reviews and Updates" and
+> the CCI text is about reviewing and updating baselines. What was never checked is whether the
+> **authority** placed it there. Text plausibility is not authority; that rule is now
+> `protocol-layer/planning-standard.md` §5.
+>
+> **Also of note:** this document's own residual risk #4 named the disconfirming probe and did
+> not run it. Running it is now §4 of the planning standard.
+>
+> Findings B-1 and B-3 are restated below with corrected numbers. The worksheet
+> (`docs/audits/data/phase-43-candidate-anchors.json`) has been re-dispositioned in place, with
+> `authority_checked: true` on every row. No data was ever changed on the strength of B-2.
+
 All 231 were adjudicated; worksheet at `docs/audits/data/phase-43-candidate-anchors.json`.
+
+**Corrected dispositions (phase 44):**
 
 | Disposition | n | Meaning |
 |---|---|---|
-| `STALE_R4_APPENDIX_J` | **209 (90.5%)** | the claimed target is a Rev-4 Appendix-J privacy control id that does not exist in Rev 5 |
-| `BRIDGE_GAP` | 18 | the CCI text matches the claimed r5 control verbatim — a real gap in our bridge |
-| `TRANSPOSED` | 2 | two CCIs whose targets are swapped in the republications |
-| `MISMATCH` | 1 | the claimed enhancement is the wrong one for the CCI's text |
-| `GRANULARITY` | 1 | the claimed target is the base control where the text names an enhancement |
+| `STALE_R4_REFERENCE` | **214 (92.6%)** | DISA's own Rev-5 reference points elsewhere and our bridge follows it; the republication cites a pre-Rev-5 id |
+| `UNBRIDGED_APPENDIX_J` | **17 (7.4%)** | Appendix-J privacy *enhancement* id with no Rev-5 reference at all — definition-only by design |
+| genuine bridge gaps | **0** | — |
 
-**Finding B-1 (HIGH) — the `candidate` class is overwhelmingly stale Rev-4 identifiers, not
-gains.** 209 of 231 target ids in the Appendix-J privacy families: `AR` 68, `TR` 32, `DM` 31,
+*Superseded phase-43 dispositions, kept for the record: `STALE_R4_APPENDIX_J` 209 ·
+`BRIDGE_GAP` 18 · `TRANSPOSED` 2 · `MISMATCH` 1 · `GRANULARITY` 1.*
+
+**Finding B-1 (HIGH, corrected in phase 44) — the `candidate` class is *entirely* stale
+identifiers, not gains — 231 of 231, not 209.** Of those, 209 target ids in the Appendix-J
+privacy families: `AR` 68, `TR` 32, `DM` 31,
 `IP` 25, `DI` 23, `SE` 12, `UL` 10, `AP` 8. Appendix J was withdrawn in Rev 5 and absorbed into
 the PT/PM families, which our DISA bridge already handles through its `appj_absorption` basis
 (441 anchors). The republications simply retain the pre-Rev-5 ids. The code's comment — "a gain
@@ -122,7 +157,10 @@ optimistically: nine in ten candidates are not gains at all. **Recommended (not 
 classify these separately from genuine candidates so the count stops implying 231 reviewable
 gains.**
 
-**Finding B-2 (MED) — 18 genuine bridge gaps, two of them STIG-exercised.** Where the target
+**Finding B-2 — RETRACTED IN FULL (see the retraction block at the head of this Part). The
+text below is preserved verbatim as the record of the error, and must not be acted on.**
+
+~~**Finding B-2 (MED) — 18 genuine bridge gaps, two of them STIG-exercised.**~~ Where the target
 does exist in Rev 5, the CCI text matches it verbatim in 18 cases: `CM-2(1)` ×4 (baseline
 review/update and its two ODP halves), `SC-34(3)` ×5 (hardware write-protect), `SC-42(3)` ×2,
 `SA-22(1)` ×2, and one each of `PE-13(3)`, `AU-5(3)`, `AC-12(1)`, `MP-7(1)`, `SC-37(1)`. Two
@@ -130,7 +168,10 @@ are STIG-exercised — **CCI-000297 → CM-2(1)** and **CCI-002364 → AC-12(1)*
 STIG rule tests a CCI our bridge does not anchor. Those two are the highest-value items in the
 whole candidate set and the natural first change of a future phase.
 
-**Finding B-3 (MED) — two CCIs are transposed in the republications.**
+**Finding B-3 (MED) — two CCIs are transposed in the republications. STRENGTHENED in phase 44:
+the transposition is now corroborated against the primary source — DISA's Rev-5 references say
+`CCI-002231 → AC-6(7)` and `CCI-002331 → AC-19(5)`, and our bridge follows exactly that, so the
+swap is unambiguously an error in the republished data rather than a reading of the titles.**
 - `CCI-002231` reads *"reassign or remove privileges … to reflect organizational mission and
   business needs"* — that is **AC-6(7) Review of User Privileges** — but is claimed against
   **AC-19(5) Full Device or Container-based Encryption**.

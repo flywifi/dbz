@@ -1,6 +1,6 @@
 {
   "_purpose": "Controlled vocabularies the health auditor validates against, so a typo or a fabricated identifier is caught before it corrupts a query. Deterministic allow-lists only — never fabricate an entry to make a check pass; add the real canonical name.",
-  "_version": "1.7.0",
+  "_version": "1.8.0",
   "_generated": "2026-07-02",
   "framework_names": {
     "_note": "Canonical framework names as they must appear in crosswalk/catalog data. A name not on this list (e.g. 'ISO 27001' missing the '/IEC') is flagged so overlap queries don't silently miss it.",
@@ -406,5 +406,11 @@
       "w_olir_composed": "a NIST-published X<->CSF-2.0 OLIR pair composed with NIST's CSF-2.0->800-53 mapping lands on the same 800-53 control this CCI hangs under. Two hops, both NIST-published, matched per anchor. Control granularity: supports, never carries alone",
       "w_scf_composed": "an SCF workbook row maps the same SCF control to this framework AND to the 800-53 control this CCI hangs under (source_manifest structure.fanout_columns). The X->800-53 composition is ours, not SCF's — control granularity: supports, never carries alone"
     }
+  },
+  "cci_anchor_verdicts": {
+    "_note": "Verdict on a CCI->800-53 anchor edge (cci_mapping_corroboration), derived by spine_loader.build_cci_corroboration. The witnesses are the DISA bridge plus DERIVED REPUBLICATIONS of the same DISA list (acasehs r4/r5, trackr), so agreement verifies transcription fidelity, not independent authority; STIG usage is the one independent witness. Phase 44 adjudicated the whole `candidate` class against DISA's own Rev-5 references and found ZERO gains, retracting a phase-43 finding that had claimed 18.",
+    "confirmed": "In our DISA bridge AND asserted by at least one republication — transcription-verified, not independently sourced.",
+    "disa_only": "In our DISA bridge, no republication carries it.",
+    "candidate": "A republication cites a control id our bridge does not use for this CCI. NOT a gain list: measured 2026-08-16 over all 231 — 214 are pre-Rev-5 identifiers where DISA's own Rev-5 reference points elsewhere and our bridge follows it, 17 are Appendix-J privacy enhancement ids with no Rev-5 reference. Never auto-promoted."
   }
 }

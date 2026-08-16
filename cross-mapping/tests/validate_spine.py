@@ -485,7 +485,8 @@ def main() -> int:
             fail(f"CCI corroboration: {bad_v} rows with an unknown verdict")
         else:
             note(f"CCI corroboration: {vd.get('confirmed',0)} confirmed / "
-                 f"{vd.get('disa_only',0)} disa-only / {vd.get('candidate',0)} candidate-gain "
+                 f"{vd.get('disa_only',0)} disa-only / {vd.get('candidate',0)} candidate "
+                 "(stale pre-r5 republication ids — adjudicated phase 44, zero gains) "
                  "(acasehs+trackr are derived republications — transcription/gap witnesses, "
                  "not independent authority)")
 
