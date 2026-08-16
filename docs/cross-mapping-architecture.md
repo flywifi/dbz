@@ -41,7 +41,7 @@ any-framework. (Before Phase 19 these were two separate crosswalks; they are now
                            │
                            ▼
               ONE UNIFIED SURFACE
-              master_mappings (35 frameworks, 7 provenance tiers)
+              master_mappings (36 frameworks, 7 provenance tiers)
               + overlap_matrix (120 precomputed pairs = shared-work %)
               + depth layers: cci_bridge / disa_ccis (5,137) · stig_* ·
                 olir_hub_edges · fedramp_ksi_* (FedRAMP 2026 KSIs)
@@ -140,7 +140,7 @@ it is registered in `source_manifest.json` with that gap recorded. Per-voter lea
 sensitivity: `cross-mapping/tests/consensus_sensitivity.py`; the numbers and the independence
 analysis are published in `docs/BENCHMARK.md`.
 
-**Evidence concentration (measured, phase 36).** 82,587 of 97,668 master edges (84.6%) derive from a single licensed artifact — the HITRUST CSF v11.4 Cross-Reference — composed through the hub rather than stated by a source; `unified_mappings` is 87% `transitive_via_hitrust`. Sixty framework pairs carry stored id-level rows (of 595 possible); any-to-any comparison is answered on demand by the overlap engine, not by stored rows. Every edge carries its tier, confidence and `needs_confirmation` flag so a consumer can tell an owner-stated edge from a hub-composed one. Accuracy measurements and their limits: `docs/audits/phase-36-master-accuracy-audit.md`.
+**Evidence concentration (measured, phase 36).** 82,587 of 97,668 master edges (84.6%) derive from a single licensed artifact — the HITRUST CSF v11.4 Cross-Reference — composed through the hub rather than stated by a source; `unified_mappings` is 87% `transitive_via_hitrust`. Sixty-eight framework pairs carry stored id-level rows (of 630 possible; the phase-36 figure was 60 of 595, before phase 44 split the HIPAA label by subpart); any-to-any comparison is answered on demand by the overlap engine, not by stored rows. Every edge carries its tier, confidence and `needs_confirmation` flag so a consumer can tell an owner-stated edge from a hub-composed one. Accuracy measurements and their limits: `docs/audits/phase-36-master-accuracy-audit.md`.
 
 Phase 20 promoted the meta-frameworks onto the spine under a new `owner_stated` tier
 (owner-of-source mapping to a foreign target, scope-relative per the acceptance-authority

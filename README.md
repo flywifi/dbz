@@ -23,7 +23,7 @@ overlapping controls listed. It's **one unified map**, not a shelf of separate c
 | Layer | What it gives you |
 |---|---|
 | **800-53 r5 spine** | The common yardstick — 324 controls + 872 enhancements every framework maps onto |
-| **Master mapping surface** | 35 frameworks; **60 framework pairs stored** at control-id level (of 595 possible), each edge tagged by how it was established. Any-to-any comparison is answered on demand by the overlap engine + `overlap_matrix`, not by stored rows. |
+| **Master mapping surface** | 36 frameworks; **68 framework pairs stored** at control-id level (of 630 possible), each edge tagged by how it was established. Any-to-any comparison is answered on demand by the overlap engine + `overlap_matrix`, not by stored rows. |
 | **Evidence concentration** | **82,587 of 97,668 master edges (84.6%) derive from one licensed artifact** (HITRUST CSF v11.4 Cross-Reference), composed through the hub rather than stated by a source; `unified_mappings` is 87% transitive-via-HITRUST. Tier and confidence are on every row. |
 | **Overlap matrix** | 120 precomputed framework pairs (the 16 canonical frameworks) with shared-work % |
 | **CCI dictionary** | 5,137 DISA control-correlation identifiers with definitions + multi-source corroboration |

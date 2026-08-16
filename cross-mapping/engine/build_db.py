@@ -1846,7 +1846,8 @@ def build_db(
     """, consensus_rows, "consensus_edges")
     conn.commit()
     print(f"  consensus_edges: pairs={cd_stats['pairs']} tiers={cd_stats['tiers']} "
-          f"production_corroborated={cd_stats['with_production_support']}")
+          f"production_corroborated={cd_stats['with_production_support']} "
+          f"intra_regulation_suppressed={cd_stats.get('suppressed_intra_regulation', 0)}")
 
     # Precompute the pairwise overlap matrix across all spine frameworks.
     # consensus_tier=False: the persisted matrix never depends on the

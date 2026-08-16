@@ -62,7 +62,9 @@ _ISO_TEXT_SHEET = "Official Annex A Controls"
 FW_TSC = "SOC 2 (TSC)"
 FW_ISO = "ISO 27001/2 (2022)"
 FW_PCI = "PCI DSS"
-FW_HIPAA = "HIPAA Security"
+FW_HIPAA = "HIPAA Security"               # 45 CFR 164 Subpart C
+FW_HIPAA_PRIV = "HIPAA Privacy Rule"      # Subpart E — already a master_mappings label
+FW_HIPAA_BREACH = "HIPAA Breach Notification"  # Subpart D — new in phase 44
 FW_CIS = "CIS v8"
 FW_CSF = "NIST CSF 2.0"
 FW_53 = "NIST 800-53"
@@ -140,11 +142,58 @@ class _Collector:
             {"derivation": derivation, "strength": strength, "source": source})
 
 
+_HIPAA_SECTION_RE = re.compile(r"^164\.(\d{3})")
+_HIPAA_FAMILY = {FW_HIPAA, FW_HIPAA_PRIV, FW_HIPAA_BREACH}
+# Counters published in the run summary — phase 44 could not measure the intra-regulation
+# suppression read-only (it depends on per-source-row groupings that exist only while the
+# collectors run), so the build prints it rather than leaving it assumed.
+_SUPPRESSED: Dict[str, int] = {"intra_regulation": 0}
+
+
+def _hipaa_label(native: str) -> str:
+    """45 CFR Part 164 names its own subpart, and the framework label must follow the citation:
+    C 164.302-318 Security · D 164.400-414 Breach Notification · E 164.500-534 Privacy.
+
+    Before phase 44 every 164.x citation was labelled 'HIPAA Security', which put 95 Privacy
+    Rule and 23 Breach Notification citations under the Security Rule in master_mappings."""
+    m = _HIPAA_SECTION_RE.match(str(native))
+    if not m:
+        return FW_HIPAA
+    s = int(m.group(1))
+    if 400 <= s <= 414:
+        return FW_HIPAA_BREACH
+    if 500 <= s <= 534:
+        return FW_HIPAA_PRIV
+    return FW_HIPAA
+
+
+def _route_hipaa(per_fw: Dict[str, Set[str]]) -> Dict[str, Set[str]]:
+    """Split one HIPAA bucket into its subpart labels. Loss-free and idempotent."""
+    ids = per_fw.get(FW_HIPAA)
+    if not ids:
+        return per_fw
+    out = {k: v for k, v in per_fw.items() if k != FW_HIPAA}
+    for n in ids:
+        out.setdefault(_hipaa_label(n), set()).add(n)
+    return {k: v for k, v in out.items() if v}
+
+
+def _same_regulation(fa: str, fb: str) -> bool:
+    """Subparts of one regulation never witness each other. Without this guard, splitting the
+    HIPAA label makes the cross-product below emit 'HIPAA Security x HIPAA Privacy Rule' edges —
+    a manufactured agreement between two subparts of one rule, in a table that had zero."""
+    return fa in _HIPAA_FAMILY and fb in _HIPAA_FAMILY
+
+
 def _row_pairs(collector: _Collector, per_fw: Dict[str, Set[str]],
                voter: str, derivation: str, strength: Optional[str], source: str) -> None:
+    per_fw = _route_hipaa(per_fw)          # phase 44: the label follows the citation's subpart
     fws = sorted(per_fw)
     for i, fa in enumerate(fws):
         for fb in fws[i + 1:]:
+            if _same_regulation(fa, fb):   # phase 44: never pair a regulation with itself
+                _SUPPRESSED["intra_regulation"] += 1
+                continue
             for a in sorted(per_fw[fa]):
                 for b in sorted(per_fw[fb]):
                     collector.add(fa, a, fb, b, voter, derivation, strength, source)
@@ -586,6 +635,9 @@ def detect(conn) -> Tuple[List[dict], dict]:
 
     stats["pairs"] = len(rows)
     stats["tiers"] = tier_counts
+    # phase 44: how many cross-products were suppressed because both sides were subparts of
+    # one regulation. Published because it could not be measured before the fix landed.
+    stats["suppressed_intra_regulation"] = _SUPPRESSED["intra_regulation"]
     stats["with_production_support"] = sum(1 for r in rows if r["production_support"])
     stats["text_confirmation"] = {
         k: sum(1 for r in rows if r["text_confirmation"] == k)

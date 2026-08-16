@@ -113,6 +113,17 @@ implementation specification. Excluding them, the stratum is 59.2% supported and
 unsupported. Full findings, adversary output and residual risk:
 `docs/audits/phase-43-adjudication.md`.
 
+**Phase-44 follow-up.** Both HIPAA findings traced to the same three lines
+(`consensus_detector._canon`, which accepted any `164.xxx` and truncated it to the section).
+Phase 44 **fixed the label defect**: 45 CFR Part 164 has three subparts, each its own rule, and
+the label now follows the citation — 95 Privacy Rule and 23 Breach Notification citations left
+the "HIPAA Security" label (118 master rows), and a guard added at the same time suppressed
+**38** manufactured intra-regulation pairs that splitting the label would otherwise have
+created. Phase 44 **deliberately did not fix the granularity**: the consensus surface still
+stores `164.308` where the projection carries `164.308(a)(1)(ii)(A)`, because `consensus_key`
+coarsens to that level on purpose and re-granularising moves `w_consensus`, `master_mappings`,
+the overlap metrics and the scenario pins together. It stays open with its blast radius stated.
+
 ## Consensus-voter provenance and sensitivity (phase 43)
 
 The consensus tier feeds `w_consensus`, the master surface's consensus rows, and — through the

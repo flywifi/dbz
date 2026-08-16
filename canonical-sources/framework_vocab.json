@@ -1,6 +1,6 @@
 {
   "_purpose": "Controlled vocabularies the health auditor validates against, so a typo or a fabricated identifier is caught before it corrupts a query. Deterministic allow-lists only — never fabricate an entry to make a check pass; add the real canonical name.",
-  "_version": "1.8.0",
+  "_version": "1.9.0",
   "_generated": "2026-07-02",
   "framework_names": {
     "_note": "Canonical framework names as they must appear in crosswalk/catalog data. A name not on this list (e.g. 'ISO 27001' missing the '/IEC') is flagged so overlap queries don't silently miss it.",
@@ -206,14 +206,15 @@
       }
     },
     "deliberately_distinct": {
-      "_note": "Labels that LOOK like aliases but are different frameworks or unpinned versions — resolved to themselves, never merged.",
+      "_note": "Labels that LOOK like aliases but are different frameworks or unpinned versions — resolved to themselves, never merged. Phase 44: 45 CFR Part 164 has three subparts and each is its own rule — Security (C), Breach Notification (D), Privacy (E). A citation names its subpart, so the label must too; before phase 44 all three were labelled 'HIPAA Security'.",
       "labels": [
         "ISO/IEC 27001",
         "ISO/IEC 27002",
         "NIST CSF",
         "HIPAA Privacy Rule",
         "NIST 800-172",
-        "NIST SP 800-53 Rev 4 (Appendix J)"
+        "NIST SP 800-53 Rev 4 (Appendix J)",
+        "HIPAA Breach Notification"
       ]
     },
     "ambiguous": {
