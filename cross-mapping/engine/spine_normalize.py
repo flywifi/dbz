@@ -317,13 +317,22 @@ def normalize_tsc_id(raw: str) -> Optional[str]:
     Canonicalize an AICPA Trust Services Criteria id: 'CC6.1', 'AICPA 2017 CC6.1',
     'cc 6.1' -> 'CC6.1'.  Series: CC, A, C, PI, P.  Returns None when the string is
     not a TSC criterion (e.g. a firm-local control id) — never guess.
+
+    A '.0' minor is a CATEGORY heading ('P4.0' = Disposal of Personal Information), not a
+    criterion: the published series run CC1.1-CC9.2, A1.1-A1.3, C1.1-C1.2, PI1.1-PI1.5 and
+    P1.1-P8.1, none with a zero minor. Phase 44 rejects them — 11 master rows and 173 consensus
+    edges were asserting a category as if it were a criterion, which phase 43's adjudication hit
+    directly (PCI 9.4.7 paired with 'SOC 2 P4.0' where the real counterpart is P4.3).
     """
     if not isinstance(raw, str):
         return None
     m = _TSC_RE.match(raw.strip())
     if not m:
         return None
-    return f"{m.group(1).upper()}{int(m.group(2))}.{int(m.group(3))}"
+    major, minor = int(m.group(2)), int(m.group(3))
+    if minor == 0:
+        return None
+    return f"{m.group(1).upper()}{major}.{minor}"
 
 
 _PCI_RE = re.compile(r"^(?:Req(?:uirement)?\.?\s*)?(\d{1,2})((?:\.\d{1,3}){0,3})\s*$",
