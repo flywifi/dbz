@@ -2032,7 +2032,7 @@
       "detection": {
         "url": "https://security.cms.gov/policy-guidance/cms-acceptable-risk-safeguards-ars",
         "method": "poll_landing",
-        "match": ""
+        "match": "KNOWN MISMATCH: this URL is the CMS ARS policy page and can only evidence ARS, never ARC-AMPE. A valid target would be a CMS page that names ARC-AMPE and its applicability date; none was locatable in phases 32, 35 or 42. Re-point when one is found."
       },
       "poll_frequency": "quarterly",
       "source_urls": [
@@ -2041,12 +2041,12 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 45,
-      "last_checked": "2026-08-10",
+      "last_checked": "2026-08-16",
       "last_change_detected": null,
-      "notes": "Chased at origin 2026-08-10 and DOWNGRADED honestly. The record's own detection URL is the CMS ARS policy page: it is live (reviewed 7/16/2026, ARS 5.2 current) but says nothing about ARC-AMPE, so it cannot evidence this artifact — a watcher pointed at the wrong page. The ARC-AMPE publication page was not locatable this pass (cms.gov candidates 404; the Federal Register has zero ARC-AMPE documents), and the Vol I v1.02 PDF read in phase 32 had no re-locatable stable URL. The claimed 2026-03-04 mandatory date therefore has no reachable origin and the dated window is withdrawn rather than left to escalate on unverifiable grounds. Re-point detection at an ARC-AMPE page when one is found; until then this is a THIN watch on the ARS page only.",
+      "notes": "Chased at origin 2026-08-10 and DOWNGRADED honestly. The record's own detection URL is the CMS ARS policy page: it is live (reviewed 7/16/2026, ARS 5.2 current) but says nothing about ARC-AMPE, so it cannot evidence this artifact — a watcher pointed at the wrong page. The ARC-AMPE publication page was not locatable this pass (cms.gov candidates 404; the Federal Register has zero ARC-AMPE documents), and the Vol I v1.02 PDF read in phase 32 had no re-locatable stable URL. The claimed 2026-03-04 mandatory date therefore has no reachable origin and the dated window is withdrawn rather than left to escalate on unverifiable grounds. Re-point detection at an ARC-AMPE page when one is found; until then this is a THIN watch on the ARS page only. Phase 43: the detection mismatch is now recorded in detection.match as well as here, so a future reader cannot mistake a live ARS page for evidence about ARC-AMPE.",
       "provenance": {
         "primary_source_url": "https://security.cms.gov/policy-guidance/cms-acceptable-risk-safeguards-ars",
-        "retrieved_at": "2026-08-10",
+        "retrieved_at": "2026-08-16",
         "verbatim": "Current version of the ARS: ARS 5.2 … Last Reviewed: 7/16/2026",
         "support": "THIN",
         "terminal_state": "ORIGIN"
@@ -2256,7 +2256,7 @@
         "basis": "fedramp.gov/2026/timeline/"
       },
       "confidence": "high",
-      "trigger_signal": "no new FedRAMP Ready submissions accepted",
+      "trigger_signal": "the fedramp.gov/2026/timeline/ entry for this milestone changing or being removed",
       "detection": {
         "url": "https://www.fedramp.gov/2026/timeline/",
         "method": "poll_landing",
@@ -2271,7 +2271,7 @@
       "escalate_after_days": 30,
       "last_checked": "2026-08-16",
       "last_change_detected": "2026-08-16",
-      "notes": "Closed 2026-08-16 on schedule elapse. The authority's own timeline still carries the milestone verbatim and unchanged 19 days after the date, so the schedule was not amended. STATED LIMIT: FedRAMP publishes no completion notice for timeline milestones — /legacy and /20x carry no 'FedRAMP Ready' state sentence, the certification-path page 404s, and the marketplace is a JS app with no fetchable state — so this closure rests on an elapsed, unamended schedule, not on a state confirmation. Providers are directed to 20x Class A certification instead.",
+      "notes": "Closed 2026-08-16 on schedule elapse. The authority's own timeline still carries the milestone verbatim and unchanged 19 days after the date, so the schedule was not amended. STATED LIMIT: FedRAMP publishes no completion notice for timeline milestones — /legacy and /20x carry no 'FedRAMP Ready' state sentence, the certification-path page 404s, and the marketplace is a JS app with no fetchable state — so this closure rests on an elapsed, unamended schedule, not on a state confirmation. Providers are directed to 20x Class A certification instead. Phase 43: the original trigger_signal named a state no FedRAMP page publishes (verified in phase 42 — the certification-path page 404s, /legacy and /20x carry no state sentence, and the marketplace is a JavaScript shell). It is replaced with something an observer can actually check: the timeline entry itself. The closure basis is unchanged.",
       "provenance": {
         "primary_source_url": "https://www.fedramp.gov/2026/timeline/",
         "retrieved_at": "2026-08-16",
@@ -2332,7 +2332,7 @@
         "basis": "fedramp.gov/2026/timeline/"
       },
       "confidence": "high",
-      "trigger_signal": "Ready Conversion + Lost Sponsor pipelines open (Rev5 B/C without agency sponsor)",
+      "trigger_signal": "the fedramp.gov/2026/timeline/ entry for this milestone changing or being removed",
       "detection": {
         "url": "https://www.fedramp.gov/2026/timeline/",
         "method": "poll_landing",
@@ -2347,7 +2347,7 @@
       "escalate_after_days": 30,
       "last_checked": "2026-08-16",
       "last_change_detected": "2026-08-16",
-      "notes": "Closed 2026-08-16 on schedule elapse. Same page read as au-fedramp-ready-sunset: the timeline still states the milestone verbatim and unchanged six days after the date. Same stated limit — no completion notice is published for timeline milestones, so this rests on an elapsed, unamended schedule. Transition-window mechanism for existing Rev5 providers (Ready Conversion and Lost Sponsor pipelines, Rev5 Class B/C without an agency sponsor).",
+      "notes": "Closed 2026-08-16 on schedule elapse. Same page read as au-fedramp-ready-sunset: the timeline still states the milestone verbatim and unchanged six days after the date. Same stated limit — no completion notice is published for timeline milestones, so this rests on an elapsed, unamended schedule. Transition-window mechanism for existing Rev5 providers (Ready Conversion and Lost Sponsor pipelines, Rev5 Class B/C without an agency sponsor). Phase 43: the original trigger_signal named a state no FedRAMP page publishes (verified in phase 42 — the certification-path page 404s, /legacy and /20x carry no state sentence, and the marketplace is a JavaScript shell). It is replaced with something an observer can actually check: the timeline entry itself. The closure basis is unchanged.",
       "provenance": {
         "primary_source_url": "https://www.fedramp.gov/2026/timeline/",
         "retrieved_at": "2026-08-16",

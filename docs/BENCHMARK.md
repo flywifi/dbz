@@ -169,6 +169,16 @@ FedRAMP is derived from the owner's baseline flags (2,777 authoritative rows), n
 foreign framework — its previous 252,917 hub-graded `reachable` rows were noise by the master
 surface's own documented design.
 
+**GDPR's zero, and a lead that is closed (phase 43).** GDPR has **0 rows** with two or more
+publishers on the same anchor and **0** STIG witnesses; its 303 corroborated rows rest on
+`w_scf_composed` (207) and `w_consensus` (96), both supports-only, so `confirmed` is
+structurally 0 with the data on hand. Raising it needs an independent GDPR→800-53 publisher.
+Two GDPR workbooks in `canonical-sources/source_data/` are **not** that publisher and are
+deliberately unregistered: their columns are `GDPR Control(s) | Thoropass Action Item | … |
+GDPR Article`, keyed by a vendor's own control ids (`CA-02-GDPR`, `CA-S-019`) rather than NIST
+800-53, and they are provider-proprietary. They cannot be composed onto the spine and must not
+be ingested. This is recorded so the lead is not re-chased.
+
 **Honest ceilings (stated, not patched):**
 - `weak` (28,898) is an **anchor-layer** fact: those CCIs' own 800-53 anchors are
   `disa_only`/`candidate` in `cci_mapping_corroboration`. Raising them needs new anchor
