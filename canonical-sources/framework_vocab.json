@@ -1,6 +1,6 @@
 {
   "_purpose": "Controlled vocabularies the health auditor validates against, so a typo or a fabricated identifier is caught before it corrupts a query. Deterministic allow-lists only — never fabricate an entry to make a check pass; add the real canonical name.",
-  "_version": "1.6.0",
+  "_version": "1.7.0",
   "_generated": "2026-07-02",
   "framework_names": {
     "_note": "Canonical framework names as they must appear in crosswalk/catalog data. A name not on this list (e.g. 'ISO 27001' missing the '/IEC') is flagged so overlap queries don't silently miss it.",
@@ -377,7 +377,7 @@
     }
   },
   "cci_confirmation": {
-    "_note": "Verdict on a framework->CCI mapping: is it WITNESSED or merely reachable? The point of this repository is convergence onto confirmed CCI mappings; before phase 38 frameworks reached CCIs only by transitive join (framework -> r5 sub-part -> cci_bridge), which asserts a path exists, never that anyone checked it. Witnesses are independent by construction and the verdict is derived mechanically (cci_confirm.py); validate_spine asserts totality. 'reachable' must never be presented as a mapping. CORRECTION (phase 39): w_framework_sources is counted PER ANCHOR CONTROL — two publishers of a control are agreement only where they placed it on the same 800-53 control. Phase 38 counted anchor-blind, which overcounted confirmed (53,046 -> honest 23,339).",
+    "_note": "Verdict on a framework->CCI mapping: is it WITNESSED or merely reachable? The point of this repository is convergence onto confirmed CCI mappings; before phase 38 frameworks reached CCIs only by transitive join (framework -> r5 sub-part -> cci_bridge), which asserts a path exists, never that anyone checked it. The framework-level witnesses are independent OF EACH OTHER, and `confirmed` additionally requires a CCI-level witness — a second same-anchor publisher, or a STIG rule exercising the CCI — neither of which derives from the DISA list. The anchor PREREQUISITE does rest on republications of that one list (see w_cci_anchor_confirmed), so the anchor layer's own 'confirmed' means transcription-verified; the headline count does not inherit that dependency. The verdict is derived mechanically (cci_confirm.py); validate_spine check 19 asserts totality and check 20 asserts every stored verdict re-derives from its own witness columns (phase 43, after the vocabulary was found describing a rule the engine does not implement). 'reachable' must never be presented as a mapping. CORRECTION (phase 39): w_framework_sources is counted PER ANCHOR CONTROL — two publishers of a control are agreement only where they placed it on the same 800-53 control. Phase 38 counted anchor-blind, which overcounted confirmed (53,046 -> honest 23,339).",
     "classes": {
       "confirmed": {
         "rank": 1,
@@ -385,7 +385,7 @@
       },
       "corroborated": {
         "rank": 2,
-        "definition": "The CCI anchor is confirmed and exactly one agreement witness exists."
+        "definition": "The CCI anchor is confirmed and at least one agreement witness exists, but the combination `confirmed` requires (two or more agreements including at least one CCI-level witness) is absent. Measured 2026-08-16: 18,338 of 102,497 corroborated rows carry two or more agreement witnesses — 'exactly one' was never the rule the engine implements (cci_confirm._verdict)."
       },
       "reachable": {
         "rank": 3,
@@ -398,7 +398,7 @@
     },
     "witnesses": {
       "w_framework_sources": "distinct mapping publishers placing this control on this anchor (framework_projection.provenance); CCI-level",
-      "w_cci_anchor_confirmed": "cci_mapping_corroboration.verdict='confirmed' — the CCI->800-53 link is itself multi-witness; prerequisite",
+      "w_cci_anchor_confirmed": "cci_mapping_corroboration.verdict='confirmed' — the CCI's own 800-53 anchor agrees across the DISA bridge and at least one DERIVED REPUBLICATION of that same list (acasehs r4/r5, trackr; each snapshot's own _meta says derived_republication_of_disa_cci_list). That is transcription fidelity, not independent authority: STIG usage is the one independent anchor witness and covers 541 of 5,592 anchor rows (disa 5,361 · acasehs_r5 3,815 · acasehs_r4 2,938 · trackr 2,913). Prerequisite, never an agreement witness. Model: docs/cross-mapping-architecture.md.",
       "w_stig_exercised": "a real STIG rule exercises this CCI (stig_cci_usage); CCI-level",
       "w_consensus": "another framework independently agrees on this control (consensus_edges strong/moderate). Matched at CONTROL granularity, so it supports but never alone carries a confirmation",
       "w_subpart_precision": "anchored at sub-part rather than whole control — a precision signal, never an agreement witness",

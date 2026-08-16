@@ -857,6 +857,37 @@ def main() -> int:
     if v_counts.get("confirmed", 0) < CONFIRMED_FLOOR:
         cbad.append(f"confirmed framework->CCI mappings regressed: "
                     f"{v_counts.get('confirmed', 0):,} < floor {CONFIRMED_FLOOR:,}")
+
+    # 20. Verdict re-derivability (phase 43). Phase 43 found the vocabulary describing a rule
+    #     the engine does not implement — `corroborated` was defined as "exactly one agreement
+    #     witness" while 18,338 corroborated rows carry two or more. Prose cannot be gated, but
+    #     the DERIVATION can: every stored verdict must be exactly what the documented rule
+    #     produces from that row's own stored witness columns. This deliberately mirrors
+    #     cci_confirm._verdict — it gates DRIFT between the stored data and the documented rule
+    #     (a hand-edited row, a half-applied rule change), not the rule's correctness, which is
+    #     what the vocabulary prose and the adjudication audits are for.
+    def _rederive(ws, anchor, stig, cons, base, olir, scf):
+        cci_level = (1 if ws >= 2 else 0) + (1 if stig else 0)
+        agreement = (cci_level + (1 if cons else 0) + (1 if base else 0)
+                     + (1 if olir else 0) + (1 if scf else 0))
+        if not anchor:
+            return "weak"
+        if agreement >= 2 and cci_level >= 1:
+            return "confirmed"
+        return "corroborated" if agreement >= 1 else "reachable"
+
+    n_mismatch = 0
+    for ws, anchor, stig, cons, base, olir, scf, stored in conn.execute(
+            "SELECT w_framework_sources, w_cci_anchor_confirmed, w_stig_exercised, "
+            "w_consensus, w_baseline_authoritative, w_olir_composed, w_scf_composed, verdict "
+            "FROM framework_cci_confirmation"):
+        if _rederive(ws, anchor, stig, cons, base, olir, scf) != stored:
+            n_mismatch += 1
+    if n_mismatch:
+        cbad.append(f"{n_mismatch} rows whose stored verdict does not match the documented "
+                    f"derivation from their own witness columns (cci_confirm._verdict and "
+                    f"framework_vocab.cci_confirmation have diverged)")
+
     if cbad:
         fail("framework->CCI confirmation malformed: " + "; ".join(cbad[:6]))
     else:

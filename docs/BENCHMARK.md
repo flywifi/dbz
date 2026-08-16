@@ -126,13 +126,28 @@ measurable on demand, and the re-weighting decision is left to a later, delibera
 ## Framework → CCI confirmation (phases 38–39)
 
 The repository's objective is convergence onto **confirmed CCI mappings**. Verdicts are derived
-from independent witnesses (`cci_confirm.py`; vocabulary in `framework_vocab.json →
-cci_confirmation`). Measured 2026-08-14 after phases 39–40, over **180,413** pairs:
+mechanically (`cci_confirm.py`; vocabulary in `framework_vocab.json → cci_confirmation`), and
+`validate_spine` check 20 asserts every stored verdict re-derives from its own witness columns
+(180,413 of 180,413 at the phase-43 measurement).
+
+**What the anchor prerequisite does and does not mean (corrected in phase 43).** A CCI's
+800-53 anchor counts as `confirmed` when the DISA bridge and at least one republication agree
+— and acasehs r4/r5 and trackr are *derived republications of that same DISA list*
+(`derived_republication_of_disa_cci_list` in each snapshot's own metadata). That is
+transcription fidelity, not independent authority. Coverage across the 5,592 anchor rows:
+disa 5,361 · acasehs_r5 3,815 · acasehs_r4 2,938 · trackr 2,913 · **STIG 541** — STIG usage
+being the one genuinely independent anchor witness. The headline `confirmed` count does **not**
+inherit that dependency: it additionally requires a CCI-level witness — a second same-anchor
+publisher or a STIG rule — neither of which derives from the DISA list. The vocabulary
+previously said the witnesses were "independent by construction", which oversold the
+prerequisite; no count changed when the wording was corrected.
+
+Measured 2026-08-14 after phases 39–40, over **180,413** pairs:
 
 | Verdict | Pairs | Meaning |
 |---|---|---|
 | `confirmed` | **23,485** | CCI anchor multi-witness confirmed + ≥2 agreement witnesses, ≥1 CCI-level (same-anchor second publisher or STIG exercise) |
-| `corroborated` | 102,497 | anchor confirmed + exactly one agreement witness |
+| `corroborated` | 102,497 | anchor confirmed + ≥1 agreement witness, but not the ≥2-with-a-CCI-level-witness combination `confirmed` requires (18,338 of these carry two or more agreements — "exactly one" was never the implemented rule; corrected in phase 43) |
 | `reachable` | 25,533 | transitive join only — **not a mapping** |
 | `weak` | 28,898 | the CCI's own anchor is `disa_only`/`candidate` |
 
