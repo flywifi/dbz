@@ -452,6 +452,13 @@
       "sha": "b0e69a1",
       "date": "2026-08-16",
       "known_good": true
+    },
+    {
+      "phase": "44-pre",
+      "name": "Pre-phase-44 baseline (phase-43 close)",
+      "sha": "b0e69a1",
+      "date": "2026-08-16",
+      "known_good": true
     }
   ]
 }
