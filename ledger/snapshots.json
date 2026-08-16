@@ -445,6 +445,13 @@
       "sha": "56c4ef8",
       "date": "2026-08-16",
       "known_good": true
+    },
+    {
+      "phase": "43-close",
+      "name": "Phase-43 close (voter provenance, vocabulary corrections, check 20, two adjudications, 0.11.0)",
+      "sha": "b0e69a1",
+      "date": "2026-08-16",
+      "known_good": true
     }
   ]
 }
