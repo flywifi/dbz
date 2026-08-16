@@ -459,6 +459,13 @@
       "sha": "b0e69a1",
       "date": "2026-08-16",
       "known_good": true
+    },
+    {
+      "phase": "44-close",
+      "name": "Phase-44 close (B-2 retraction, HIPAA subpart routing, TSC category ids, vocab gate, planning standard, 0.12.0)",
+      "sha": "742d938",
+      "date": "2026-08-16",
+      "known_good": true
     }
   ]
 }
