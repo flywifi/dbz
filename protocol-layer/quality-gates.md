@@ -45,6 +45,9 @@ diff. The audit's four passes and the provenance rules it checks are defined in
 - **Residual risk:** which specific claims are most likely still wrong and why. Never an
   all-clear; a clean self-audit is evidence about the audit, not the data.
 
+Obligations are tracked in `docs/audits/INDEX.md`; a phase that creates one adds its row in
+the same change.
+
 ## Critical non-overridables
 
 - **A fabricated id is a critical failure.** No composite score, reviewer preference, or

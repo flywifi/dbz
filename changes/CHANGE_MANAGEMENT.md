@@ -24,6 +24,20 @@ hidden; guaranteed restoration). The authoritative release-gate list lives in
 `protocol-layer/quality-gates.md`. CI (`health` workflow) must be green on the pushed sha
 before a phase is declared done.
 
+## Phase close-out checklist (added phase 42 — both prior misses were archaeology-discovered)
+Run at every phase close, in this order; the first item is the one that was missed twice:
+1. **Audit gate:** did this phase touch `feed_registry.json`, `anticipated_updates.json`,
+   `framework_changelog.json`, or regulatory claims in `docs/`? If yes, the closing
+   adversarial-audit doc must exist under `docs/audits/` and its row must be added to
+   `docs/audits/INDEX.md` in the same change.
+2. Schema bumps only via `tools/bump_schema.py` (never by hand).
+3. `changes/CHANGELOG.md` entry + `STATE.md` phase row.
+4. Ledger anchor in `ledger/snapshots.json` at a **green** sha (cut the pre-phase anchor
+   before the first data-touching commit).
+5. `tools/metrics.py` regen + `tools/count_truth.py` green.
+6. Push through the installed pre-push hook (rehearsal runs mechanically).
+7. CI verdict read via the GitHub MCP tools or `tools/ci_status.py` — never raw curl.
+
 ## Secret-scan policy boundary
 `policy_boundary_sha: c3192c8` — the CI secret-scan backstop
 (`tools/secret_scan.py --range c3192c8..HEAD` in `health.yml`) scans every commit AFTER this
