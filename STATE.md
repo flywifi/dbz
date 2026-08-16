@@ -62,6 +62,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 
 | 40 | SCF fan-out witness | `ac6e2f7` + close | 2026-08-14 | Schema 3.18: SCF workbook's 45 framework columns composed with its 800-53 column into a supports-only witness (8,626 edges); SOC 2 0→69 confirmed, 800-172 r3 0→5, GDPR 96→303 corroborated; overall 23,485 confirmed |
 | 41 | Push + status hardening | `4852bf6` + close | 2026-08-15 | Pre-push hook (rehearsal enforced, loud bypass), atomic bump_schema, three-state ci_status with the captured proxy payload pinned in a selftest, drift invariant 16; every checker proven red-then-green |
+| 42 | Tidy-up sweep | `b897d62`, `a8b89be`, `9179db7` + close | 2026-08-16 | The owed phase-35 closing audit (three phases late, stated) + `docs/audits/INDEX.md` obligation ledger so the twice-missed gate fails visibly; five elapsed horizon windows resolved at origin (two FedRAMP milestones closed, CMMC RFI closed, DISA + SWIFT walls re-confirmed and rolled on cadence); rollback path repaired to a green sha |
 
 Phases 1–18 built the foundations (catalog ingestion, ER engine, spine normalization, CCI/ODP
 bridge, consensus detection, publication hygiene, health auditor); their commits precede
@@ -75,8 +76,10 @@ bridge, consensus detection, publication hygiene, health auditor); their commits
 - **Anchor-layer witnesses** — 28,898 `weak` framework→CCI pairs sit on `disa_only`/`candidate`
   CCI anchors; raising them needs new anchor corroboration sources.
 - Candidate UX backlog from `docs/persona-audit.md`; standards-currency refresh cadence per
-  `docs/standards-refresh-runbook.md`. Near-term horizon: `au-cmmc-taskforce-report` window
-  opens ~2026-09-11 and unfreezes the deferred ODP baseline work.
+  `docs/standards-refresh-runbook.md`. Near-term horizon: `au-fedramp-class-bc` (2026-08-31)
+  and `au-cmmc-taskforce-report` (~2026-09-11) — the latter unfreezes the deferred ODP baseline
+  work. Audit obligations are tracked in `docs/audits/INDEX.md`; the phase close-out checklist
+  is in `changes/CHANGE_MANAGEMENT.md`.
 
 ## Recovery package (fresh clone → working state)
 0. `git config core.hooksPath tools/hooks` — installs the pre-push rehearsal hook (phase 41).

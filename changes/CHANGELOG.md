@@ -3,6 +3,78 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.10.2] — 2026-08-16 (phase 42 — the tidy-up sweep: every missed item, closed with evidence)
+
+PATCH: audit records, registry currency, and ledger hygiene. No schema change, no query-surface
+change, no mapping data changed.
+
+### The owed audit, and why it was late
+- **`docs/audits/phase-35-adversarial-audit.md`** — the closing adversarial audit the
+  regulatory-phase gate required when phase 35 shipped on 2026-08-10. It was never written and
+  the omission surfaced only in this phase's missed-items sweep. **This was the second
+  occurrence of the identical miss**: phase 34 shipped without its audit and was cited for it
+  (finding 34-B, written by phase 35 — which then repeated it). The document says so in its
+  first line. Its scope covers the phase-35 registry surface and this phase's own registry
+  writes jointly, so the gate is satisfied once for both.
+- Results of record: both pins re-fetched live and **byte-identical**
+  (`fedramp-consolidated-rules.json` 567,435 B; the govinfo FR PDF 1,067,294 B); 18/18 HIPAA
+  Federal-Register verbatims re-assert in the pinned extraction; the FedRAMP re-pin's
+  guidance-only claim re-verified by structural recount (KSI 10 families / 46 indicators / 373
+  control refs, FRR 17, CTL 14); conformance walk over all 76 records with 0 violations; trap
+  sweep clean (its 2 grep hits are the phase-34 audit describing its own sweep); 0 frozen
+  `au-cmmc-*` lines touched; commit hygiene clean across all 6 phase-35 commits.
+- Adversary result: the pre-named claim — that the ITSG-33 withdrawal and ARC-AMPE downgrade
+  chose cadences that would bury both records — is **refuted**; both return as `DUE_REVIEW` at
+  2027-02-15. The nuance kept rather than dropped: a "quarterly" `no_fixed_date` record
+  resurfaces at ~180 days, not ~90, because the monitor uses twice the poll cadence.
+- **`docs/audits/INDEX.md`** — the corrective for a rule that failed twice unobserved: an
+  obligation ledger for phases 32→42, with rows 34 and 35 permanently marked `satisfied-late`
+  and the discovering phase named. Unfilled obligations appear as visible GAP rows. Honestly
+  labelled procedural — no CI-evaluable hook exists without git-history heuristics — but both
+  prior misses happened precisely because no list existed. A phase close-out checklist in
+  `CHANGE_MANAGEMENT.md` puts the gate question first, and `quality-gates.md` now points at
+  the ledger.
+
+### The five elapsed horizon windows, resolved at origin
+Each had a window in the past with `last_checked` predating its close; the monitor read clean
+only because escalation grace had not caught up.
+- `au-fedramp-ready-sunset` (2026-07-28) and `au-fedramp-rev5-bc-temp` (2026-08-10) — one read
+  of the authority's own timeline serves both: it still carries each milestone verbatim and
+  unamended after the date. Both close **materialized on elapsed, unamended schedule**, with
+  the limit stated in the record: FedRAMP publishes no completion notice for timeline
+  milestones (the certification-path page 404s, `/legacy` and `/20x` carry no state sentence,
+  the marketplace is a JS shell), so this is an inference from schedule elapse, not a state
+  confirmation.
+- `au-cmmc-rfi` — the comment period closed 2026-08-14; the record closes on that elapse. The
+  war.gov release answered **HTTP 403** on re-attempt, so no closure or extension statement
+  could be read and the record says so; its due-date sourcing remains THIN. Tied forward to
+  `au-cmmc-taskforce-report` (~2026-09-11), whose window this phase does not alter and which
+  is the unfreeze event for the deferred ODP baseline work. Frozen CMMC records untouched.
+- `au-disa-cci-quarterly` — public.cyber.mil answers HTTP 200 with the DoD Login Portal ADFS
+  page, so the recorded SSO wall is **re-confirmed, not resolved**; the July window closed
+  unobserved and rolls to 2026-10-31 on the record's own quarterly cadence — a re-date with
+  basis, never a date claimed from an authority.
+- `au-swift-cscf-2026` — swift.com does not respond from this environment (Wayback errored
+  too); DEAD_END re-confirmed and the annual window rolls to July 2027 on the same basis.
+  `current_version` stays CSCF v2025: no v2026 publication has been observed.
+- `au-fedramp-class-bc` (2026-08-31) has **not** elapsed; it gained only a fresh observation
+  and no window change.
+- Resurfacing proven, not assumed: the rolled records return as OVERDUE at 2026-12-15 (DISA)
+  and 2027-10-15 (SWIFT), i.e. past each record's own grace period.
+
+### Ledger hygiene
+- `40-close` pointed at `ac6e2f7`, the sha this session itself flagged `known_good: false`
+  (red CI). Added `40-close-clean` → `ea03cf7` as the verified-green phase-40 restore point and
+  cross-referenced it from the red entry; noted the true phase-41 close (`08bdd16`) on the
+  `41-close` anchor, which names the gates commit. Additive only — no history rewritten. Every
+  `known_good: false` entry now names its green alternative.
+
+### What did not change
+No mapping data, no schema, no query surface. The registry edit moved exactly one table digest
+(`anticipated_updates`) — enumerated, not silent — and the build remains deterministic
+(double-build identical across all 42 tables). Record count stays 76; `count_truth` 13 claims
+green; benchmark metrics at or above pins.
+
 ## [0.10.1] — 2026-08-15 (phase 41 — the phase-40 failure classes, made structural)
 
 ### Incident record (researched with proofs; disconfirmed hypotheses listed so they are never re-chased)
