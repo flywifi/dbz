@@ -131,6 +131,15 @@ deterministic via `grc_manifest.json → table_digests`. SOC 1 is a structured d
 (no public control layer); FedRAMP participates as baseline scope, not pair rows.
 Full tier model + rules: `docs/overlap-spine.md`.
 
+**Consensus voters and their provenance.** The strong+moderate `consensus_edges` that feed this
+surface come from seven voters — `scf`, `master`, `csa`, `hitrust`, `olir`, `cmmc171`,
+`pci_iso` (`consensus_detector.py`). Six are pinned, versioned artifacts. The seventh,
+`master`, reads `canonical-sources/crosswalk_80053_master.json`, which has **no upstream URL,
+edition or retrieval date** and contributes 1,062 mapping assertions found nowhere else here;
+it is registered in `source_manifest.json` with that gap recorded. Per-voter leave-one-out
+sensitivity: `cross-mapping/tests/consensus_sensitivity.py`; the numbers and the independence
+analysis are published in `docs/BENCHMARK.md`.
+
 **Evidence concentration (measured, phase 36).** 82,587 of 97,668 master edges (84.6%) derive from a single licensed artifact — the HITRUST CSF v11.4 Cross-Reference — composed through the hub rather than stated by a source; `unified_mappings` is 87% `transitive_via_hitrust`. Sixty framework pairs carry stored id-level rows (of 595 possible); any-to-any comparison is answered on demand by the overlap engine, not by stored rows. Every edge carries its tier, confidence and `needs_confirmation` flag so a consumer can tell an owner-stated edge from a hub-composed one. Accuracy measurements and their limits: `docs/audits/phase-36-master-accuracy-audit.md`.
 
 Phase 20 promoted the meta-frameworks onto the spine under a new `owner_stated` tier

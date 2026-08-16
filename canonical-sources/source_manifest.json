@@ -1273,6 +1273,18 @@
       "sha256_prefix": "d5e1ec4107308e5e",
       "role": "reference_only",
       "notes": "The HIPAA Security Rule NPRM as published, pinned so the 18 proposed items in docs/hipaa-security-rule-transition.md quote regulatory text rather than the agency fact sheet. hhs.gov refuses this environment (403); govinfo serves the Federal Register original, which is the better origin anyway. Extracted with pdfminer.six 20260107. Proposed rule — binds no one; the 2013 Omnibus rule remains the enforceable standard."
+    },
+    {
+      "id": "crosswalk-80053-master",
+      "file": "canonical-sources/crosswalk_80053_master.json",
+      "format": "json",
+      "version": "unversioned — the file records no edition, date or upstream identifier",
+      "retrieved": "unknown — committed 2026-07-01 in 5eb3dfe as material staged for future ingestion",
+      "source_url": null,
+      "sha256_prefix": "d16b7492387bba40",
+      "role": "consensus_voter_crosswalk",
+      "authority_scope": "unattributed",
+      "notes": "PROVENANCE GAP, registered in phase 43 rather than papered over. 812 NIST 800-53 r5 controls with SOC 2 TSC / ISO 27001:2022 / NIST CSF v2.0 / PCI DSS v4.0 / HIPAA (45 CFR) / NIST 800-171r3 / SCF columns. Consumed as the 'master' voter by consensus_detector.collect_master, which reads six of those columns (the SCF column is NOT read). No upstream URL, edition or retrieval date is known for it. INFLUENCE (measured 2026-08-16): it votes in 4,071 of the 6,842 strong/moderate consensus edges; dropping the voter takes strong+moderate 6,842 -> 3,537 and strong 910 -> 148. INDEPENDENCE (measured 2026-08-16, per column, against the loaded projections): PCI DSS v4.0 is 1,348 of 1,351 assertions already present from other loaded sources (a restatement, so its vote is not independent there); SOC 2 TSC 548 of 832, HIPAA 360 of 448, NIST 800-171r3 116 of 122 and ISO 27001:2022 35 of 66 assertions appear NOWHERE else in the repository — 1,062 original mapping claims of unrecorded origin. NIST CSF v2.0 is empty. Re-weighting or excluding this voter would move w_consensus, master_mappings, overlap and the confirmation counts in one step; that decision is deliberately NOT made here — the sensitivity is measured and reproducible via cross-mapping/tests/consensus_sensitivity.py."
     }
   ],
   "staged_reference_sources": {

@@ -90,6 +90,39 @@ That ambiguity is exactly what the `edge_semantic` column (schema 3.15) now reso
 The labeler also built the pipeline; the seeded sample keys are recorded for independent
 re-labeling. Full method and limits: `docs/audits/phase-36-master-accuracy-audit.md`.
 
+## Consensus-voter provenance and sensitivity (phase 43)
+
+The consensus tier feeds `w_consensus`, the master surface's consensus rows, and — through the
+projection — the overlap metrics. Its inputs are seven voters, and they are not equally
+weighted or equally sourced. Leave-one-out sensitivity on the strong+moderate population
+(6,842 edges), measured 2026-08-16 and reproducible with
+`cross-mapping/tests/consensus_sensitivity.py`:
+
+| Voter | Edges voted | strong+moderate without it | Delta |
+|---|---|---|---|
+| `scf` | 15,927 | 1,464 | −5,378 |
+| **`master`** | **6,431** | **3,537** | **−3,305** |
+| `csa` | 24,411 | 4,401 | −2,441 |
+| `hitrust` | 1,929 | 6,436 | −406 |
+| `olir` | 643 | 6,607 | −235 |
+| `cmmc171` | 478 | 6,782 | −60 |
+| `pci_iso` | 111 | 6,803 | −39 |
+
+**Provenance gap, stated because it is one.** The `master` voter reads
+`canonical-sources/crosswalk_80053_master.json`, which was committed on 2026-07-01 as material
+"staged for future ingestion", was never registered in `source_manifest.json` until phase 43,
+and carries **no upstream URL, edition or retrieval date**. Measured per column against the
+loaded projections: its PCI DSS column is 1,348 of 1,351 assertions already present from other
+loaded sources — a restatement, so its vote is not independent there — while SOC 2 TSC (548 of
+832), HIPAA (360 of 448), 800-171r3 (116 of 122) and ISO (35 of 66) contribute **1,062 original
+mapping assertions that appear nowhere else in this repository**. Its NIST CSF column is empty,
+and its SCF column is not read by the voter at all.
+
+Nothing has been re-weighted on the strength of this. Excluding the voter would move
+`w_consensus`, `master_mappings`, the overlap metrics and the confirmation counts in a single
+unreviewed step; the file is now registered with its gap recorded, the sensitivity is
+measurable on demand, and the re-weighting decision is left to a later, deliberate change.
+
 ## Framework → CCI confirmation (phases 38–39)
 
 The repository's objective is convergence onto **confirmed CCI mappings**. Verdicts are derived
