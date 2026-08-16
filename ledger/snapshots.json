@@ -431,6 +431,13 @@
       "sha": "08bdd16",
       "date": "2026-08-16",
       "known_good": true
+    },
+    {
+      "phase": "42-close",
+      "name": "Phase-42 tidy-up sweep (owed audit, window outcomes, ledger repair, 0.10.2)",
+      "sha": "56c4ef8",
+      "date": "2026-08-16",
+      "known_good": true
     }
   ]
 }
