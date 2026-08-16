@@ -10,6 +10,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 - **Gate battery:** rebuild ×2 identical digests · `test_spine.py` · `validate_spine.py` ·
   `health_audit.py --scan/--full` 100/100 (including the artifacts-hidden CI condition) ·
   `sync_check.py` (16 invariants, incl. the pre-push hook guard) · golden self-test · `benchmark_oracles.py --check` ·
+  `validate_spine` check 20 (every stored confirmation verdict re-derives from its own witness columns) ·
   twelve-scenario battery (`run_scenarios.py`) · alias contract (`test_alias_contract.py`) ·
   pre-commit selftests (output validator, scorer, secret scan) — all green as of 2026-08-14 (incl. the phase-40 SCF fan-out witness; rehearse CI pre-push with tools/ci_rehearsal.py). Authority list: `protocol-layer/quality-gates.md`.
 - **CI:** `health` workflow green on every push; `standards-watch` (monthly) runs the drift
@@ -63,6 +64,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 | 40 | SCF fan-out witness | `ac6e2f7` + close | 2026-08-14 | Schema 3.18: SCF workbook's 45 framework columns composed with its 800-53 column into a supports-only witness (8,626 edges); SOC 2 0→69 confirmed, 800-172 r3 0→5, GDPR 96→303 corroborated; overall 23,485 confirmed |
 | 41 | Push + status hardening | `4852bf6` + close | 2026-08-15 | Pre-push hook (rehearsal enforced, loud bypass), atomic bump_schema, three-state ci_status with the captured proxy payload pinned in a selftest, drift invariant 16; every checker proven red-then-green |
 | 42 | Tidy-up sweep | `b897d62`, `a8b89be`, `9179db7` + close | 2026-08-16 | The owed phase-35 closing audit (three phases late, stated) + `docs/audits/INDEX.md` obligation ledger so the twice-missed gate fails visibly; five elapsed horizon windows resolved at origin (two FedRAMP milestones closed, CMMC RFI closed, DISA + SWIFT walls re-confirmed and rolled on cadence); rollback path repaired to a green sha |
+| 43 | Everything still open | `fa9bb39`, `e17737b`, `b5d2018`, `c445e66`, `03e28e2`, `6601fd2` + close | 2026-08-16 | The consensus layer's biggest voter registered with its provenance gap and −48% sensitivity measured (no re-weighting); two vocabulary statements the engine contradicts corrected with no number changed, plus check 20 re-deriving 180,413/180,413 verdicts; manifest row counts derived not hand-kept (40→42 keys) and the two headline figures finally under `count_truth` (15 claims); the phase-36 frame + 220 keys committed; consensus stratum adjudicated (n=120, 20.2% unsupported, indistinguishable from the authoritative tier) and all 231 candidate anchors (209 stale Rev-4 Appendix-J, 18 real bridge gaps, 2 transposed) |
 
 Phases 1–18 built the foundations (catalog ingestion, ER engine, spine normalization, CCI/ODP
 bridge, consensus detection, publication hygiene, health auditor); their commits precede
@@ -71,8 +73,11 @@ bridge, consensus detection, publication hygiene, health auditor); their commits
 ## Next planned work
 - **GDPR second publisher** — the last framework at 0 confirmed CCI mappings; needs an
   independent GDPR→800-53 mapping source (data acquisition, phase-40 ceiling note).
-- **Consensus-stratum adjudication** — the 3,422 consensus-tier master rows behind the
-  flagship stored pairs remain unadjudicated (phase-36 residual risk #2).
+- **Consensus-voter re-weighting decision** — `crosswalk_80053_master.json` is registered with
+  its provenance gap; whether to down-weight or exclude it (strong+moderate would fall 6,842 →
+  3,537) is a deliberate change this phase deliberately did not make.
+- **Act on the 18 confirmed bridge gaps** (phase-43 part 2), starting with the two
+  STIG-exercised anchors, after re-verifying each against the DISA source.
 - **Anchor-layer witnesses** — 28,898 `weak` framework→CCI pairs sit on `disa_only`/`candidate`
   CCI anchors (939 distinct CCIs: 556 `legacy_r3_identity`, 441 `appj_absorption`, 79 r4/r5
   identity, 231 `candidate`); raising them needs new anchor corroboration sources.

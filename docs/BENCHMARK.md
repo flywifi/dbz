@@ -90,6 +90,29 @@ That ambiguity is exactly what the `edge_semantic` column (schema 3.15) now reso
 The labeler also built the pipeline; the seeded sample keys are recorded for independent
 re-labeling. Full method and limits: `docs/audits/phase-36-master-accuracy-audit.md`.
 
+## Consensus-stratum accuracy (phase 43, adjudicated)
+
+The consensus cross stratum (3,422 edges) had been unadjudicated since phase 36 flagged it as
+residual risk #2 — while the customer-facing pairs sit on that tier. A seeded sample of
+**n=120** (seed 20430816; frame and worksheet at `docs/audits/data/`) was adjudicated against
+the two sides' control texts:
+
+| Verdict | n | Rate (of 119 decidable) | 95% CI |
+|---|---|---|---|
+| `SUPPORTED` | 59 | 49.6% | [40.8, 58.4] |
+| `SCOPE_MISMATCH` | 36 | 30.3% | [22.7, 39.0] |
+| `UNSUPPORTED` | 24 | **20.2%** | [13.9, 28.3] |
+| `UNDECIDABLE` | 1 | — | — |
+
+Against the phase-36 reference points — hub tier **63.2%** unsupported (n=38), authoritative
+control stratum **25.0%** (n=12) — the consensus tier is significantly better than the hub
+(**z = −5.01**) and statistically indistinguishable from the authoritative stratum
+(**z = −0.39**). The failures concentrate: **20 of 21 HIPAA-side edges fail**, because every
+HIPAA identifier in this stratum is a whole 45 CFR section rather than a standard or
+implementation specification. Excluding them, the stratum is 59.2% supported and 17.3%
+unsupported. Full findings, adversary output and residual risk:
+`docs/audits/phase-43-adjudication.md`.
+
 ## Consensus-voter provenance and sensitivity (phase 43)
 
 The consensus tier feeds `w_consensus`, the master surface's consensus rows, and — through the

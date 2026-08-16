@@ -3,6 +3,92 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.11.0] — 2026-08-16 (phase 43 — everything still open: measured, coded, and gated)
+
+MINOR: new registered claims, a new validator check, new manifest keys, committed audit
+evidence, and two adjudications. No breaking change, no schema bump, and **no mapping row was
+mutated, promoted, re-tiered or deleted**.
+
+### The consensus layer's biggest voter had no provenance
+- `canonical-sources/crosswalk_80053_master.json` was committed on 2026-07-01 as material
+  "staged for future ingestion", was never registered in `source_manifest.json`, and carries
+  **no upstream URL, edition or retrieval date** — while voting in **4,071 of the 6,842
+  strong/moderate consensus edges**. Dropping the voter would take strong+moderate 6,842 →
+  3,537 and `strong` 910 → 148.
+- Measured per column against the loaded projections: its PCI column is 1,348 of 1,351
+  assertions already present from other sources (a restatement, so not an independent vote
+  there), while SOC 2 TSC, HIPAA, 800-171r3 and ISO contribute **1,062 original mapping
+  assertions that appear nowhere else in this repository**. Its SCF column is not read by the
+  voter at all.
+- **Nothing was re-weighted.** The file is registered with the gap recorded, the sensitivity is
+  reproducible via the new `cross-mapping/tests/consensus_sensitivity.py`, and the decision is
+  left to a later deliberate change. Published in `docs/BENCHMARK.md`.
+
+### Two vocabulary statements the engine contradicts — corrected, with no number changed
+- `framework_vocab.json` claimed the confirmation witnesses were "independent by construction".
+  They are not, at the anchor layer: acasehs r4/r5 and trackr are **derived republications of
+  the same DISA list** (their own metadata says so), which is transcription fidelity, not
+  independent authority. STIG usage is the one independent anchor witness and covers **541 of
+  5,592** anchor rows against the DISA bridge's 5,361. **The 23,485 headline does not inherit
+  this**: `confirmed` additionally requires a CCI-level witness — a second same-anchor publisher
+  or a STIG rule — neither derived from DISA.
+- The vocabulary defined `corroborated` as "exactly one agreement witness". **18,338 of 102,497
+  corroborated rows carry two or more.** The definition now states the rule the engine
+  implements.
+- **`validate_spine` check 20** re-derives every stored verdict from that row's own witness
+  columns: 180,413 of 180,413 match. Proven red against a tampered copy before acceptance.
+
+### Manifest coverage was hand-kept and had drifted
+- `build_db`'s `row_counts` was a literal 40-name tuple; the digest block beside it had been
+  derived from `sqlite_master` since phase 31-2 precisely because "a hand-kept list is how
+  coverage gaps arise". It had: `framework_cci_confirmation` (180,413) and `scf_composed_edges`
+  (8,626) were missing since phases 38 and 40. Counts are now derived from the same source and
+  exclusion list — 40 → **42 keys**, two additions, zero removals.
+- With the manifest key finally present, the two headline figures are registered with
+  `count_truth` (**15 claims**): `cci_confirmation_pairs` and `cci_confirmed_count`, both proven
+  red against drifted docs. They cite `docs/BENCHMARK.md` only — STATE and CHANGELOG state these
+  numbers inside historical phase records, and citing those would force a future legitimate
+  change to rewrite history to satisfy a checker.
+- Two stale per-framework figures corrected (CIS 1,399 → 1,400; CSA CCM 247 → 318), and the
+  claim mechanism's real limit recorded in `doc_claims.json`: a claim asserts a doc states the
+  value *somewhere*, not that every restatement agrees.
+
+### The phase-36 audit evidence was one container-death from gone
+- Its seeded frame, all **220 sample keys** and the 40-row worksheet lived only in a session
+  scratchpad, while STATE parked an "independent re-label" item pointing at that file. All 220
+  keys were verified to still resolve and are now committed under `docs/audits/data/` with a
+  README. The worksheet ships with its verdict field **null**, as it always was — the 65
+  verdicts exist only as prose in the phase-36 report, and an empty worksheet is the better
+  starting point for an independent labeler anyway.
+
+### Two adjudications, both deferred for six phases (`docs/audits/phase-43-adjudication.md`)
+- **Consensus cross stratum**, seeded n=120 of 3,422: **49.6% supported, 30.3% scope-mismatch,
+  20.2% unsupported** (CI [13.9, 28.3]). Against phase 36's reference points the tier is
+  significantly better than the hub (63.2%, **z = −5.01**) and statistically indistinguishable
+  from the authoritative stratum (25.0%, z = −0.39). Failures concentrate: **20 of 21
+  HIPAA-side edges fail** because every HIPAA identifier in this stratum is a whole 45 CFR
+  section; three edges carry `164.530`, a Privacy Rule section, under the label "HIPAA
+  Security".
+- **All 231 `candidate` CCI anchors**: **209 (90.5%) are stale Rev-4 Appendix-J privacy ids**
+  (AR/TR/DM/IP/DI/SE/UL/AP) that do not exist in Rev 5 — not gains, despite the code calling
+  the class "a gain to review". **18 are genuine bridge gaps** whose CCI text matches the
+  claimed control verbatim, two of them STIG-exercised (`CCI-000297 → CM-2(1)`,
+  `CCI-002364 → AC-12(1)`). **Two are transposed in the republications**: CCI-002231 and
+  CCI-002331 each match the other's claimed control exactly.
+
+### Registry truth
+- Two closed FedRAMP records carried `trigger_signal`s naming a state **no FedRAMP page
+  publishes** (phase 42 measured this); they now name the timeline entry an observer can check.
+  The ARC-AMPE detection mismatch is recorded in the detection block itself, not only in notes.
+- The GDPR second-publisher lead is **closed as refuted**: the two on-disk GDPR workbooks are
+  keyed by a vendor's own control ids rather than 800-53, are provider-proprietary, and cannot
+  serve. GDPR's zero stands and its cause is stated.
+
+### What did not change
+No schema, no query surface, no mapping data. The registry edit moved exactly one table digest
+(`anticipated_updates`); every other digest is identical to the phase-42 close, and the build is
+deterministic across a double rebuild of all 42 tables.
+
 ## [0.10.2] — 2026-08-16 (phase 42 — the tidy-up sweep: every missed item, closed with evidence)
 
 PATCH: audit records, registry currency, and ledger hygiene. No schema change, no query-surface

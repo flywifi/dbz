@@ -25,6 +25,7 @@ heuristics. The corrective is visibility, not automation.
 | 40 | none | no | — | n/a |
 | 41 | none (tooling + docs) | no | — | n/a |
 | 42 | five elapsed-window outcome checks in `anticipated_updates.json` (WS-2) | YES | `phase-35-adversarial-audit.md` (its scope line covers the 35+42 registry surface jointly) | satisfied |
+| 43 | trigger/detection corrections in `anticipated_updates.json` (WS-5) | YES | `phase-43-adjudication.md` (its scope line covers the two adjudications and this phase's registry writes jointly) | satisfied |
 
 `feed_registry.json` and `framework_changelog.json` have zero touches since the gate has
 existed (verified by per-file `git log`, 2026-08-15), so no hidden obligations exist beyond
