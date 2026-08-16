@@ -26,6 +26,7 @@ heuristics. The corrective is visibility, not automation.
 | 41 | none (tooling + docs) | no | — | n/a |
 | 42 | five elapsed-window outcome checks in `anticipated_updates.json` (WS-2) | YES | `phase-35-adversarial-audit.md` (its scope line covers the 35+42 registry surface jointly) | satisfied |
 | 43 | trigger/detection corrections in `anticipated_updates.json` (WS-5) | YES | `phase-43-adjudication.md` (its scope line covers the two adjudications and this phase's registry writes jointly) | satisfied |
+| 44 | no regulatory-currency registry touched; `framework_vocab.json` labels + claims about 45 CFR Part 164's subpart structure | YES (voluntarily — the phase makes checkable claims about a regulation) | `phase-44-adjudication.md` | satisfied |
 
 `feed_registry.json` and `framework_changelog.json` have zero touches since the gate has
 existed (verified by per-file `git log`, 2026-08-15), so no hidden obligations exist beyond

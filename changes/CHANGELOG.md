@@ -3,6 +3,75 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.12.0] — 2026-08-16 (phase 44 — a retraction, three identifier defects, and a permanent planning standard)
+
+MINOR: a new framework label, corrected data, two new gates. No schema bump, no query-surface
+break.
+
+### RETRACTION — phase-43 finding B-2 was wrong
+- **Claimed:** 18 genuine CCI bridge gaps, two of them STIG-exercised. **True: zero gaps.** All
+  231 `candidate` anchors are stale-identifier artifacts — **214** where DISA's own Rev-5
+  reference points elsewhere and our bridge already follows it, **17** Appendix-J privacy
+  enhancement ids with no Rev-5 reference at all.
+- **The probe:** each candidate's claimed control compared against `disa_ccis.nist_rev5_refs`
+  and our `cci_bridge` row. CCI-000297 claims `CM-2(1)`, DISA says **`CM-2`**; CCI-002364 claims
+  `AC-12(1)`, DISA says **`AC-12(2)`**; CCI-002508–2512 claim `SC-34(3)`, DISA says **`SC-51`**.
+- **Why it happened:** each pair was judged on whether the CCI's text matched the claimed
+  control's *title* — it did, every time — without consulting the authority. **Text
+  plausibility is not authority.**
+- **No number moves with the retraction**: `candidate` anchors already produce `weak` framework
+  rows, and no data was ever changed on B-2's strength. Finding B-3 (two transposed CCIs) is
+  *strengthened* — DISA's references confirm the republications have them swapped.
+- The worksheet is re-dispositioned in place with `authority_checked` on all 231; the loader
+  docstring and validator label no longer call the class a "gain"; the anchor verdicts are now
+  defined in `framework_vocab.json`.
+
+### HIPAA citations now carry the label of the rule they cite
+- 45 CFR Part 164 has three subparts and each is its own rule. `consensus_detector._canon`
+  accepted any `164.xxx` and labelled all of it "HIPAA Security", putting **95 Privacy Rule and
+  23 Breach Notification citations under the Security Rule** (118 master rows: SOC 2 47 · PCI 35
+  · 800-53 25 · ISO 9 · 800-171 2).
+- Routing added at `_row_pairs`, the single choke point all four voters pass through.
+  `HIPAA Breach Notification` is a new label registered as deliberately distinct;
+  `master_frameworks` moves **35 → 36** and the stored-pair space **60 of 595 → 68 of 630**.
+- **A guard added at the same time suppressed 38 manufactured pairs** between subparts of one
+  regulation, which splitting the label would otherwise have created. The count is printed at
+  build time because it could not be measured before the fix existed.
+- **Not fixed, and said so:** the consensus surface still stores `164.308` where the projection
+  carries `164.308(a)(1)(ii)(A)`. `consensus_key` coarsens to that level deliberately, and
+  re-granularising moves `w_consensus`, `master_mappings`, overlap and the scenario pins
+  together.
+
+### Two more identifier defects closed
+- **SOC 2 category headings rejected:** `normalize_tsc_id` accepted a `.0` minor, so `P4.0` (a
+  category) was treated as a criterion in **11 master rows and 173 consensus edges**. No
+  published criterion has a zero minor. Master rows 97,668 → 97,657.
+- **Framework-name vocabulary reconciled and gated:** 25 labels the build emits were undeclared
+  in `framework_names.allowed` — including `HIPAA Security` itself — while `HIPAA Security Rule`
+  was declared and used by nothing. New **validator check 21** fails on any emitted-but-
+  undeclared label (declared-but-unused stays legal), proven red by removing a live label.
+
+### The adversary re-draw, run rather than described
+The phase-43 audit named its most-likely-wrong claim and the probe that would overturn it. Phase
+44 ran it: an equal-allocation draw of **146 edges across 26 pairs** (79 reusing phase-43
+verdicts, 67 newly adjudicated). **Unsupported holds — 20.5% vs 20.2%, z = 0.08** — so the
+headline survives, and the tier remains statistically indistinguishable from the authoritative
+stratum (z = −0.36) and far better than the hub (z = −5.14). **Supported does not hold: 49.6% →
+39.0%**, the difference moving into `SCOPE_MISMATCH`, so that figure must always be quoted with
+its allocation.
+
+### The planning standard is now permanent
+`protocol-layer/planning-standard.md` — the seven questions per workstream, a research record
+where every number names its probe, **code executed read-only before it enters a plan**, and an
+adversarial check that is run rather than described. Every rule cites the failure in this
+repository that it prevents. Cited from `CLAUDE.md`, the quality gate and the recovery package;
+a compact copy in the user-level conventions file governs plans in every repository.
+
+### What did not change
+No schema. The confirmation headline is unmoved at **23,485 of 180,413**. Moved digests:
+`consensus_edges`, `master_mappings`, `framework_labels`, `framework_cci_confirmation`,
+`scf_composed_edges`, `anticipated_updates`.
+
 ## [0.11.0] — 2026-08-16 (phase 43 — everything still open: measured, coded, and gated)
 
 MINOR: new registered claims, a new validator check, new manifest keys, committed audit

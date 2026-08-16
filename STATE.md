@@ -10,7 +10,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 - **Gate battery:** rebuild ×2 identical digests · `test_spine.py` · `validate_spine.py` ·
   `health_audit.py --scan/--full` 100/100 (including the artifacts-hidden CI condition) ·
   `sync_check.py` (16 invariants, incl. the pre-push hook guard) · golden self-test · `benchmark_oracles.py --check` ·
-  `validate_spine` check 20 (every stored confirmation verdict re-derives from its own witness columns) ·
+  `validate_spine` checks 20-21 (verdicts re-derive from their witness columns; every emitted framework label is vocabulary-declared) ·
   twelve-scenario battery (`run_scenarios.py`) · alias contract (`test_alias_contract.py`) ·
   pre-commit selftests (output validator, scorer, secret scan) — all green as of 2026-08-14 (incl. the phase-40 SCF fan-out witness; rehearse CI pre-push with tools/ci_rehearsal.py). Authority list: `protocol-layer/quality-gates.md`.
 - **CI:** `health` workflow green on every push; `standards-watch` (monthly) runs the drift
@@ -65,6 +65,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 | 41 | Push + status hardening | `4852bf6` + close | 2026-08-15 | Pre-push hook (rehearsal enforced, loud bypass), atomic bump_schema, three-state ci_status with the captured proxy payload pinned in a selftest, drift invariant 16; every checker proven red-then-green |
 | 42 | Tidy-up sweep | `b897d62`, `a8b89be`, `9179db7` + close | 2026-08-16 | The owed phase-35 closing audit (three phases late, stated) + `docs/audits/INDEX.md` obligation ledger so the twice-missed gate fails visibly; five elapsed horizon windows resolved at origin (two FedRAMP milestones closed, CMMC RFI closed, DISA + SWIFT walls re-confirmed and rolled on cadence); rollback path repaired to a green sha |
 | 43 | Everything still open | `fa9bb39`, `e17737b`, `b5d2018`, `c445e66`, `03e28e2`, `6601fd2` + close | 2026-08-16 | The consensus layer's biggest voter registered with its provenance gap and −48% sensitivity measured (no re-weighting); two vocabulary statements the engine contradicts corrected with no number changed, plus check 20 re-deriving 180,413/180,413 verdicts; manifest row counts derived not hand-kept (40→42 keys) and the two headline figures finally under `count_truth` (15 claims); the phase-36 frame + 220 keys committed; consensus stratum adjudicated (n=120, 20.2% unsupported, indistinguishable from the authoritative tier) and all 231 candidate anchors (209 stale Rev-4 Appendix-J, 18 real bridge gaps, 2 transposed) |
+| 44 | Retraction, identifier defects, planning standard | `206ab46`, `bb2e39c`, `842ff3c`, `71d845e`, `31f8e61`, `3624234` + close | 2026-08-16 | Phase-43 finding B-2 retracted — all 231 candidate anchors are stale pre-Rev-5 identifiers, zero bridge gaps, because titles had been accepted in place of the authority; HIPAA citations routed to the subpart they name (118 master rows; new `HIPAA Breach Notification` label; 38 manufactured intra-regulation pairs suppressed); SOC 2 category headings rejected (11 rows); framework-name vocabulary reconciled and gated (check 21); the adversary re-draw run — unsupported holds at 20.5% vs 20.2%, supported is allocation-dependent; `protocol-layer/planning-standard.md` made permanent |
 
 Phases 1–18 built the foundations (catalog ingestion, ER engine, spine normalization, CCI/ODP
 bridge, consensus detection, publication hygiene, health auditor); their commits precede
@@ -73,6 +74,10 @@ bridge, consensus detection, publication hygiene, health auditor); their commits
 ## Next planned work
 - **GDPR second publisher** — the last framework at 0 confirmed CCI mappings; needs an
   independent GDPR→800-53 mapping source (data acquisition, phase-40 ceiling note).
+- **Consensus granularity** — the consensus surface stores `164.308` where the projection
+  carries `164.308(a)(1)(ii)(A)`; 40.4% of the phase-44 equal draw is `SCOPE_MISMATCH` largely
+  because of it. Re-granularising moves `consensus_key`, `master_mappings`, overlap and the
+  scenario pins together (phase-44 out-of-scope note).
 - **Consensus-voter re-weighting decision** — `crosswalk_80053_master.json` is registered with
   its provenance gap; whether to down-weight or exclude it (strong+moderate would fall 6,842 →
   3,537) is a deliberate change this phase deliberately did not make.
