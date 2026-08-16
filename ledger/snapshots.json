@@ -400,7 +400,15 @@
       "sha": "ac6e2f7",
       "date": "2026-08-14",
       "known_good": false,
-      "note": "CI red at this sha: count_truth caught schema_version 3.18 not yet stated in docs/fedramp-modernization.md (doc drift, healed at 6a91653). Data content is sound, but do not roll back TO this sha \u2014 use 6a91653. Process cause: pushed without the mandatory ci_rehearsal."
+      "note": "CI red at this sha: count_truth caught schema_version 3.18 not yet stated in docs/fedramp-modernization.md (doc drift, healed at 6a91653). Data content is sound, but do not roll back TO this sha \u2014 use 6a91653. Process cause: pushed without the mandatory ci_rehearsal. Roll back instead to the 40-close-clean anchor (ea03cf7) recorded below."
+    },
+    {
+      "phase": "40-close-clean",
+      "name": "Phase-40 verified-clean close (rollback target for phase 40)",
+      "sha": "ea03cf7",
+      "date": "2026-08-15",
+      "known_good": true,
+      "note": "The green phase-40 close. Use this, not ac6e2f7, as the phase-40 restore point; 6a91653 is the intermediate sha where the doc drift was healed."
     },
     {
       "phase": "41-pre",
@@ -414,7 +422,8 @@
       "name": "Phase-41 push + status hardening (gates commit)",
       "sha": "4852bf6",
       "date": "2026-08-15",
-      "known_good": true
+      "known_good": true,
+      "note": "Anchors the gates commit. The phase actually closed one commit later at 08bdd16 (CHANGELOG 0.10.1 / STATE rows), also green \u2014 either sha is a safe restore point; 08bdd16 is the complete phase."
     },
     {
       "phase": "42-pre",
