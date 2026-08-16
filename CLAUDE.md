@@ -64,6 +64,13 @@ The formal authority for evidence, conflict, quality, and recovery rules lives i
 `failure-recovery.md`). Those files formalize the rules below and elsewhere — cite them rather
 than restating policy.
 
+### Planning
+`protocol-layer/planning-standard.md` is the required shape of a plan before work starts: the
+seven questions per workstream (why/who-what/where/when/how/ripple/risks), a research record
+where every number names its probe, **code that has been executed read-only before it enters the
+plan**, and an adversarial check that is *run* rather than described. Each rule cites the
+failure in this repository that it prevents.
+
 ## Non-negotiables
 - Never fabricate framework control IDs, citations, or crosswalk relationships. Leave uncertain fields blank.
 - Source precedence: explicit report text > source-provided mappings > bundled crosswalks > blank.

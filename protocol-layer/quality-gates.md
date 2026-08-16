@@ -48,6 +48,14 @@ diff. The audit's four passes and the provenance rules it checks are defined in
 Obligations are tracked in `docs/audits/INDEX.md`; a phase that creates one adds its row in
 the same change.
 
+## Planning gate
+
+A phase begins from a plan conforming to `planning-standard.md`: the seven questions answered
+per workstream, every number carrying its probe, every code block already executed read-only
+against the real data, and the adversarial check **run** rather than described. A plan whose
+disconfirming probe was written but not executed is treated as not checked — the phase-43
+finding retracted in phase 44 is the standing example.
+
 ## Critical non-overridables
 
 - **A fabricated id is a critical failure.** No composite score, reviewer preference, or

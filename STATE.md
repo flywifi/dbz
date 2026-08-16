@@ -92,7 +92,8 @@ bridge, consensus detection, publication hygiene, health auditor); their commits
 
 ## Recovery package (fresh clone → working state)
 0. `git config core.hooksPath tools/hooks` — installs the pre-push rehearsal hook (phase 41).
-1. Read `CLAUDE.md` (conventions) + this file (state) + `changes/CHANGELOG.md` (history).
+1. Read `CLAUDE.md` (conventions) + this file (state) + `changes/CHANGELOG.md` (history);
+   `protocol-layer/planning-standard.md` before writing any plan.
 2. `pip install -r requirements.txt`, then `python3 cross-mapping/engine/build_db.py`.
 3. Run the gate battery (see Live status above; commands in
    `docs/standards-refresh-runbook.md`).
