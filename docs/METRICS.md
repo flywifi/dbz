@@ -6,12 +6,12 @@ A regenerable one-screen summary of what dbz contains and how honest its evidenc
 
 ## Contents
 
-- **grc.db** schema 3.18, 40 tables
+- **grc.db** schema 3.18, 42 tables
 - **Spine:** 324 controls + 872 enhancements (800-53 r5)
 - **Master surface:** 97668 edges across 35 frameworks; matrix 120 pairs
 - **Depth:** 5137 CCIs · 383 STIG benchmarks / 19667 rules · 46 FedRAMP KSIs (373 stated edges) · 1870 OLIR-hub composed edges
 - **Keep-current:** 161 feeds (8 auto-fetch) · 76 horizon records
-- **Tooling:** 22 atoms · 3 overlays · 13 machine-checked doc claims
+- **Tooling:** 22 atoms · 3 overlays · 15 machine-checked doc claims
 
 ## Master edges by provenance tier
 

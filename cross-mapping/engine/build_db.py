@@ -1994,29 +1994,10 @@ def build_db(
         conn.execute("VACUUM")
         conn.commit()
 
-    # Row counts
-    counts = {}
-    for tbl in ("controls", "enhancements", "parameters", "unified_mappings",
-                "er_controls", "er_mappings", "framework_registry", "changelog", "announcements",
-                "cisa_kev", "cfr_requirements", "attack_techniques", "edgar_cyber_incidents",
-                "nvd_cves", "disa_ccis", "eurlex_articles",
-                "nist_800_63b_requirements", "fips_140_validations",
-                "nist_subparts", "cci_bridge", "control_odps", "assessment_objectives",
-                "framework_projection", "hitrust_hub", "odp_values", "overlap_matrix",
-                "consensus_edges", "framework_labels", "master_mappings",
-                "stig_catalog", "stig_rules", "stig_cci_usage",
-                "cci_mapping_corroboration", "anticipated_updates", "olir_hub_edges",
-                "fedramp_ksi", "fedramp_ksi_controls", "fedramp_rules", "fedramp_odp_pins",
-                "fedramp_ctl_guidance"):
-        row = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
-        counts[tbl] = row[0]
-
-    # Logical content digests — the determinism comparator across rebuilds
-    # (the raw SQLite file hash varies with page layout; these do not).
-    # Coverage is DERIVED from sqlite_master so a new table is digested the day it
-    # is created — a hand-kept list is how coverage gaps arise. Exclusions only,
-    # each with a reason; a stale exclusion (naming a table that no longer exists)
-    # is itself drift and warns.
+    # Table coverage for BOTH the row counts and the digests below is DERIVED from
+    # sqlite_master so a new table is covered the day it is created — a hand-kept list is
+    # how coverage gaps arise. Exclusions only, each with a reason; a stale exclusion
+    # (naming a table that no longer exists) is itself drift and warns.
     _DIGEST_EXCLUDE = {
         "sqlite_sequence": "SQLite AUTOINCREMENT bookkeeping — not content",
         "sqlite_stat1": "SQLite ANALYZE statistics — not content",
@@ -2031,6 +2012,17 @@ def build_db(
         "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")]
     for stale in sorted(set(_DIGEST_EXCLUDE) - set(all_tables)):
         print(f"  [warn] digest exclusion names a missing table: {stale} — prune the exclusion")
+
+    # Row counts. Phase 43: this was a literal 40-name tuple and it had drifted —
+    # framework_cci_confirmation (phase 38) and scf_composed_edges (phase 40) never reached
+    # it, so the confirmation layer's own size was absent from the manifest for four phases,
+    # and doc_claims could not register the number this repository exists to produce. Same
+    # derivation and same exclusion list as the digests, for the same reason.
+    counts = {}
+    for tbl in all_tables:
+        if tbl in _DIGEST_EXCLUDE:
+            continue
+        counts[tbl] = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()[0]
     table_digests = {}
     for tbl in all_tables:
         if tbl in _DIGEST_EXCLUDE:

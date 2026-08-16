@@ -72,6 +72,17 @@ def _resolve_value(key: str):
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
         return mod.WEIGHTS, None
+    if key == "db:cci_confirmed":
+        # The repository's headline deliverable. Registered in phase 43: it had been restated
+        # by hand in the docs while count_truth guarded thirteen lesser numbers, because the
+        # manifest's row_counts list was hand-kept and never learned the table.
+        if not DB_PATH.exists():
+            return None, "grc.db not built (fresh checkout)"
+        conn = sqlite3.connect(DB_PATH)
+        n = conn.execute("SELECT COUNT(*) FROM framework_cci_confirmation "
+                         "WHERE verdict='confirmed'").fetchone()[0]
+        conn.close()
+        return n, None
     if key == "db:master_frameworks":
         if not DB_PATH.exists():
             return None, "grc.db not built (fresh checkout)"

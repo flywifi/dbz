@@ -159,8 +159,12 @@ actually named. The phase-39 per-anchor rule corrects it; **the corrected figure
 key publisher matching — so the two figures are not directly comparable; the correction dominates.)
 
 Per framework (`confirmed`): ISO 27001/2 (2022) 8,264 · HIPAA Security 7,043 ·
-NIST SP 800-171 r2 4,390 · CIS CSC v8.0 1,399 · PCI DSS v4.0 1,136 · NIST CSF 2.0 341 ·
-FedRAMP r5 302 · CSA CCM v4 247 · NIST SP 800-171 r3 99 · SCF 2026.1 63 · CMMC 2.0 55.
+NIST SP 800-171 r2 4,390 · CIS CSC v8.0 1,400 · PCI DSS v4.0 1,136 · NIST CSF 2.0 341 ·
+CSA CCM v4 318 · FedRAMP r5 302 · NIST SP 800-171 r3 99 · SOC 2 69 · SCF 2026.1 63 ·
+CMMC 2.0 55 · NIST SP 800-172 r3 5 · GDPR 0. (Re-measured 2026-08-16: CIS was stated as 1,399
+and CSA CCM as 247 — both predated the phase-40 SCF fan-out and neither is a registered claim,
+so nothing caught the drift. Only the two headline figures are machine-checked; this per-
+framework list is not.)
 FedRAMP is derived from the owner's baseline flags (2,777 authoritative rows), not graded as a
 foreign framework — its previous 252,917 hub-graded `reachable` rows were noise by the master
 surface's own documented design.

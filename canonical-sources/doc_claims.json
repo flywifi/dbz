@@ -1,6 +1,6 @@
 {
   "_schema_version": "1.0",
-  "_purpose": "Registry of load-bearing numbers cited in docs. tools/count_truth.py recomputes each value from its authoritative source and fails when a cited file no longer states the current value. The checker NEVER edits docs - drift is fixed by a human doc edit.",
+  "_purpose": "Registry of load-bearing numbers cited in docs. tools/count_truth.py recomputes each value from its authoritative source and fails when a cited file no longer states the current value. The checker NEVER edits docs - drift is fixed by a human doc edit. STATED LIMIT (measured phase 43): a claim asserts that a cited file states the current value SOMEWHERE, not that every restatement in that file agrees. A doc carrying the same number twice stays green if one copy drifts. That is deliberate — several docs restate a historical figure beside the current one on purpose (e.g. the phase-38 correction narrative) — but it means count_truth is a floor, not a proof of internal consistency.",
   "claims": {
     "feeds_count": {
       "value_from": "feeds_count",
@@ -100,6 +100,18 @@
         "README.md",
         "docs/overlap-spine.md",
         "docs/source-inventory.md"
+      ]
+    },
+    "cci_confirmation_pairs": {
+      "value_from": "manifest:framework_cci_confirmation",
+      "cited_in": [
+        "docs/BENCHMARK.md"
+      ]
+    },
+    "cci_confirmed_count": {
+      "value_from": "db:cci_confirmed",
+      "cited_in": [
+        "docs/BENCHMARK.md"
       ]
     }
   }
