@@ -1,0 +1,2501 @@
+[
+ {
+  "key": "CIS CSC v8.0|6.2|HIPAA Security|164.308",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "6.2",
+  "fw_b": "HIPAA Security",
+  "native_b": "164.308",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"hitrust\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "CIS 6.2 access-revoking process vs the whole of 164.308 Administrative safeguards; the real counterpart is 164.308(a)(3)(ii)(C) termination procedures, one implementation spec inside a section holding ~20."
+ },
+ {
+  "key": "CIS CSC v8.0|15.5|HIPAA Security|164.308",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "15.5",
+  "fw_b": "HIPAA Security",
+  "native_b": "164.308",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"hitrust\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "CIS 15.5 assess service providers vs all of 164.308; counterpart is 164.308(b) business-associate contracts only."
+ },
+ {
+  "key": "CIS CSC v8.0|13.6|HIPAA Security|164.308",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "13.6",
+  "fw_b": "HIPAA Security",
+  "native_b": "164.308",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"hitrust\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "CIS 13.6 network flow logging vs all of 164.308; nearest counterpart 164.308(a)(1)(ii)(D) information system activity review."
+ },
+ {
+  "key": "CIS CSC v8.0|15.5|ISO 27001/2 (2022)|A.5.19",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "15.5",
+  "fw_b": "ISO 27001/2 (2022)",
+  "native_b": "A.5.19",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 15.5 assess service providers = ISO A.5.19 information security in supplier relationships."
+ },
+ {
+  "key": "CIS CSC v8.0|17.3|ISO 27001/2 (2022)|A.6.8",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "17.3",
+  "fw_b": "ISO 27001/2 (2022)",
+  "native_b": "A.6.8",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 17.3 incident reporting process = ISO A.6.8 information security event reporting."
+ },
+ {
+  "key": "CIS CSC v8.0|16.12|ISO 27001/2 (2022)|A.8.25",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "16.12",
+  "fw_b": "ISO 27001/2 (2022)",
+  "native_b": "A.8.25",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 16.12 code-level security checks sits within ISO A.8.25 secure development life cycle."
+ },
+ {
+  "key": "CIS CSC v8.0|15.6|NIST CSF 2.0|GV.SC-7",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "15.6",
+  "fw_b": "NIST CSF 2.0",
+  "native_b": "GV.SC-7",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 15.6 monitor service providers = CSF GV.SC-07 supplier risk monitored over the relationship."
+ },
+ {
+  "key": "CIS CSC v8.0|15.6|NIST CSF 2.0|ID.IM-2",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "15.6",
+  "fw_b": "NIST CSF 2.0",
+  "native_b": "ID.IM-2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 15.6 monitor service providers vs ID.IM-02 improvements identified from tests and exercises; the supplier mention in ID.IM-02 is incidental, not the control's subject."
+ },
+ {
+  "key": "CIS CSC v8.0|8.2|NIST CSF 2.0|DE.CM-9",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "8.2",
+  "fw_b": "NIST CSF 2.0",
+  "native_b": "DE.CM-9",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 8.2 collect audit logs is the evidence base for CSF DE.CM-09 monitoring of hardware/software/runtime."
+ },
+ {
+  "key": "CIS CSC v8.0|4.2|NIST CSF 2.0|PR.PS-1",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "4.2",
+  "fw_b": "NIST CSF 2.0",
+  "native_b": "PR.PS-1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 4.2 secure configuration process = CSF PR.PS-01 configuration management practices."
+ },
+ {
+  "key": "CIS CSC v8.0|11.2|NIST SP 800-171 r2|3.8.9",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "11.2",
+  "fw_b": "NIST SP 800-171 r2",
+  "native_b": "3.8.9",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"hitrust\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "CIS 11.2 perform automated backups vs 3.8.9 protect the CONFIDENTIALITY of backup CUI; overlapping objects, different obligations."
+ },
+ {
+  "key": "CIS CSC v8.0|16.9|NIST SP 800-171 r2|3.2.2",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "16.9",
+  "fw_b": "NIST SP 800-171 r2",
+  "native_b": "3.2.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"hitrust\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 16.9 secure-coding training is a subset of 3.2.2 personnel trained for assigned security duties."
+ },
+ {
+  "key": "CIS CSC v8.0|3.3|NIST SP 800-171 r2|3.1.2",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "3.3",
+  "fw_b": "NIST SP 800-171 r2",
+  "native_b": "3.1.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"hitrust\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 3.3 data access control lists = 3.1.2 limit access to permitted transactions and functions."
+ },
+ {
+  "key": "CIS CSC v8.0|15.6|PCI DSS v4.0|12.8.4",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "15.6",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "12.8.4",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 15.6 monitor service providers = PCI 12.8.4 monitor TPSP compliance status annually."
+ },
+ {
+  "key": "CIS CSC v8.0|14.9|PCI DSS v4.0|12.6.3.1",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "14.9",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "12.6.3.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 14.9 role-specific training = PCI 12.6.3.1 awareness training content."
+ },
+ {
+  "key": "CIS CSC v8.0|5.1|PCI DSS v4.0|7.2.4",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "5.1",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "7.2.4",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "CIS 5.1 maintain an account inventory vs PCI 7.2.4 six-monthly account review; the inventory enables the review but is not the same obligation."
+ },
+ {
+  "key": "CIS CSC v8.0|18.2|PCI DSS v4.0|11.4.3",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "18.2",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "11.4.3",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 18.2 periodic external penetration tests = PCI 11.4.3 annual external penetration testing."
+ },
+ {
+  "key": "CIS CSC v8.0|3.5|SOC 2|P4.3",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "3.5",
+  "fw_b": "SOC 2",
+  "native_b": "P4.3",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 3.5 securely dispose of data = SOC 2 P4.3 disposal of personal information."
+ },
+ {
+  "key": "CIS CSC v8.0|3.1|SOC 2|CC1.4",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "3.1",
+  "fw_b": "SOC 2",
+  "native_b": "CC1.4",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"hitrust\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 3.1 data management process vs CC1.4 attracting/developing/retaining competent individuals; COSO competence has no data-handling content."
+ },
+ {
+  "key": "CIS CSC v8.0|4.2|SOC 2|CC6.8",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "4.2",
+  "fw_b": "SOC 2",
+  "native_b": "CC6.8",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"hitrust\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 4.2 network configuration process vs CC6.8 prevention/detection of unauthorized or malicious software; different subjects."
+ },
+ {
+  "key": "CIS CSC v8.0|14.4|SOC 2|CC2.2",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "14.4",
+  "fw_b": "SOC 2",
+  "native_b": "CC2.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"hitrust\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "CIS 14.4 data-handling training vs CC2.2 internal communication of control responsibilities; training is one channel of that communication."
+ },
+ {
+  "key": "CIS CSC v8.0|6.2|SOC 2|CC6.3",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "6.2",
+  "fw_b": "SOC 2",
+  "native_b": "CC6.3",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"hitrust\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CIS 6.2 access revoking = CC6.3 authorizes, modifies, or removes access."
+ },
+ {
+  "key": "CIS CSC v8.0|3.1|SOC 2|P4.2",
+  "fw_a": "CIS CSC v8.0",
+  "native_a": "3.1",
+  "fw_b": "SOC 2",
+  "native_b": "P4.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"hitrust\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "CIS 3.1 data management process vs P4.2 retention of personal information; retention is one element of the broader process."
+ },
+ {
+  "key": "HIPAA Security|164.530|ISO 27001/2 (2022)|10.1",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.530",
+  "fw_b": "ISO 27001/2 (2022)",
+  "native_b": "10.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "164.530 is a PRIVACY RULE administrative section (sanctions, complaints, mitigation) carried under the label 'HIPAA Security'; ISO 10.1 is continual improvement. No shared obligation."
+ },
+ {
+  "key": "HIPAA Security|164.306|ISO 27001/2 (2022)|6.1.1",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.306",
+  "fw_b": "ISO 27001/2 (2022)",
+  "native_b": "6.1.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "164.306 general rules (flexibility, risk analysis basis) vs ISO 6.1.1 actions to address risks and opportunities; related at whole-section granularity only."
+ },
+ {
+  "key": "HIPAA Security|164.310|NIST SP 800-171 r2|3.1.1",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.310",
+  "fw_b": "NIST SP 800-171 r2",
+  "native_b": "3.1.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"hitrust\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "164.310 Physical safeguards vs 3.1.1 limit SYSTEM access to authorized users; physical and logical access are different control domains."
+ },
+ {
+  "key": "HIPAA Security|164.308|NIST SP 800-171 r2|3.14.3",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.308",
+  "fw_b": "NIST SP 800-171 r2",
+  "native_b": "3.14.3",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"hitrust\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "All of 164.308 vs 3.14.3 monitor security alerts and advisories; the counterpart is at most 164.308(a)(6) security incident procedures."
+ },
+ {
+  "key": "HIPAA Security|164.308|PCI DSS v4.0|7.3.2",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.308",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "7.3.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "All of 164.308 vs PCI 7.3.2 access control system enforcing per-role permissions; counterpart is 164.308(a)(4) information access management."
+ },
+ {
+  "key": "HIPAA Security|164.316|PCI DSS v4.0|8.3.8",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.316",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "8.3.8",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "164.316 documentation requirements vs PCI 8.3.8 authentication policies documented and communicated; both concern documented policy but at very different extents."
+ },
+ {
+  "key": "HIPAA Security|164.312|PCI DSS v4.0|8.6",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.312",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "8.6",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "All of 164.312 Technical safeguards vs PCI 8.6 application/system account authentication; counterpart is 164.312(a)(2)(i)/(d) only."
+ },
+ {
+  "key": "HIPAA Security|164.530|PCI DSS v4.0|12.1.3",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.530",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "12.1.3",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "164.530 (Privacy Rule section, mislabelled Security) vs PCI 12.1.3 defined security roles; 164.530(a) personnel designation is the nearest fragment."
+ },
+ {
+  "key": "HIPAA Security|164.308|PCI DSS v4.0|12.1",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.308",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "12.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "All of 164.308 vs PCI 12.1 comprehensive security policy; counterpart is 164.308(a)(1) security management process."
+ },
+ {
+  "key": "HIPAA Security|164.316|PCI DSS v4.0|A3.1.2",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.316",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "A3.1.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "164.316 documentation requirements vs PCI A3.1.2 designated-entity scope validation; scope validation is not a documentation-retention obligation."
+ },
+ {
+  "key": "HIPAA Security|164.308|PCI DSS v4.0|12.4.2.1",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.308",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "12.4.2.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "All of 164.308 vs PCI 12.4.2.1 independent review of personnel task performance; counterpart is 164.308(a)(8) evaluation."
+ },
+ {
+  "key": "HIPAA Security|164.316|PCI DSS v4.0|2.1.1",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.316",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "2.1.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "164.316 policies and documentation = PCI 2.1.1 policies and procedures documented, current, in use and known; the same documentation obligation."
+ },
+ {
+  "key": "HIPAA Security|164.308|PCI DSS v4.0|8.2.3",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.308",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "8.2.3",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "All of 164.308 (administrative) vs PCI 8.2.3 service-provider unique authentication factors per customer; a technical authentication requirement with no administrative counterpart."
+ },
+ {
+  "key": "HIPAA Security|164.530|SOC 2|P5.2",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.530",
+  "fw_b": "SOC 2",
+  "native_b": "P5.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "164.530 vs SOC 2 P5.2 correction/amendment of personal information; the HIPAA counterpart to P5.2 is 164.526, not 164.530."
+ },
+ {
+  "key": "HIPAA Security|164.308|SOC 2|CC8.1",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.308",
+  "fw_b": "SOC 2",
+  "native_b": "CC8.1",
+  "votes": 3,
+  "consensus_tier": "strong",
+  "voters": "[\"hitrust\", \"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "All of 164.308 vs CC8.1 change management; HIPAA Security has no change-management standard, only the general evaluation duty."
+ },
+ {
+  "key": "HIPAA Security|164.312|SOC 2|CC7.2",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.312",
+  "fw_b": "SOC 2",
+  "native_b": "CC7.2",
+  "votes": 3,
+  "consensus_tier": "strong",
+  "voters": "[\"hitrust\", \"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "All of 164.312 vs CC7.2 anomaly monitoring; counterpart is 164.312(b) audit controls alone."
+ },
+ {
+  "key": "HIPAA Security|164.314|SOC 2|CC6.1",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.314",
+  "fw_b": "SOC 2",
+  "native_b": "CC6.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"hitrust\", \"master\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "164.314 organizational requirements (business-associate contracts) vs CC6.1 logical access security; contractual and technical domains."
+ },
+ {
+  "key": "HIPAA Security|164.316|SOC 2|P4.2",
+  "fw_a": "HIPAA Security",
+  "native_a": "164.316",
+  "fw_b": "SOC 2",
+  "native_b": "P4.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"hitrust\", \"master\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "164.316(b)(2)(i) retains POLICY DOCUMENTATION six years; P4.2 retains PERSONAL INFORMATION. A keyword collision on retention with different objects."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|5.3|NIST CSF 2.0|GV.RR-2",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "5.3",
+  "fw_b": "NIST CSF 2.0",
+  "native_b": "GV.RR-2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "PM-19",
+   "PM-2",
+   "PM-29"
+  ],
+  "shared_anchor_titles": {
+   "PM-19": "Privacy Program Leadership Role",
+   "PM-2": "Information Security Program Leadership Role",
+   "PM-29": "Risk Management Program Leadership Roles"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO 5.3 organizational roles and authorities = CSF GV.RR-02 roles, responsibilities and authorities established and communicated."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.5.19|NIST CSF 2.0|GV.OC-3",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.5.19",
+  "fw_b": "NIST CSF 2.0",
+  "native_b": "GV.OC-3",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "SR-1"
+  ],
+  "shared_anchor_titles": {
+   "SR-1": "Policy and Procedures"
+  },
+  "anchor_evidence": true,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "ISO A.5.19 supplier relationships vs GV.OC-03 legal, regulatory and contractual requirements understood; contracts are the only overlap."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|6.1.2|NIST CSF 2.0|GV.SC-5",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "6.1.2",
+  "fw_b": "NIST CSF 2.0",
+  "native_b": "GV.SC-5",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "SR-3"
+  ],
+  "shared_anchor_titles": {
+   "SR-3": "Supply Chain Controls and Processes"
+  },
+  "anchor_evidence": true,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "ISO 6.1.2 risk assessment vs GV.SC-05 supply-chain security requirements; risk assessment is the input, not the requirement-setting."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.5.22|NIST CSF 2.0|GV.SC-8",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.5.22",
+  "fw_b": "NIST CSF 2.0",
+  "native_b": "GV.SC-8",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "SA-9"
+  ],
+  "shared_anchor_titles": {
+   "SA-9": "External System Services"
+  },
+  "anchor_evidence": true,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "ISO A.5.22 monitoring supplier services vs GV.SC-08 suppliers included in incident planning and response; adjacent supplier obligations, different acts."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.5.25|NIST CSF 2.0|RS.MA-1",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.5.25",
+  "fw_b": "NIST CSF 2.0",
+  "native_b": "RS.MA-1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO A.5.25 assessment and decision on security events = CSF RS.MA-01 incident response executed once an incident is declared."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.8.26|NIST CSF 2.0|PR.IR-1",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.8.26",
+  "fw_b": "NIST CSF 2.0",
+  "native_b": "PR.IR-1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "AC-3"
+  ],
+  "shared_anchor_titles": {
+   "AC-3": "Access Enforcement"
+  },
+  "anchor_evidence": true,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO A.8.26 application security requirements vs PR.IR-01 network protection from unauthorized logical access; the AC-3 anchor is generic and does not connect them."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|10.1|NIST SP 800-171 r2|3.12.1",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "10.1",
+  "fw_b": "NIST SP 800-171 r2",
+  "native_b": "3.12.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"hitrust\", \"scf\"]",
+  "shared_anchors": [
+   "AC-17",
+   "AC-24",
+   "AC-3(3)",
+   "AT-3(2)",
+   "AT-6",
+   "CA-1",
+   "CA-2",
+   "CA-6",
+   "CM-1",
+   "CM-12",
+   "CM-9",
+   "CP-1",
+   "IA-1",
+   "IR-1",
+   "IR-4",
+   "IR-4(12)",
+   "IR-8(1)",
+   "MA-1",
+   "MP-1",
+   "PE-1",
+   "PE-3",
+   "PL-1",
+   "PL-10",
+   "PL-11",
+   "PL-2",
+   "PM-17",
+   "PM-18",
+   "PM-19",
+   "PM-30",
+   "PS-1",
+   "PT-1",
+   "PT-2",
+   "RA-1",
+   "SA-1",
+   "SA-11(4)",
+   "SA-15(1)",
+   "SA-2",
+   "SC-1",
+   "SI-1",
+   "SI-3(10)",
+   "SI-4(17)",
+   "SR-1",
+   "SR-2",
+   "SR-3"
+  ],
+  "shared_anchor_titles": {
+   "AC-17": "Remote Access",
+   "AC-24": "Access Control Decisions",
+   "AC-3(3)": null,
+   "AT-3(2)": null,
+   "AT-6": "Training Feedback",
+   "CA-1": "Policy and Procedures",
+   "CA-2": "Control Assessments",
+   "CA-6": "Authorization"
+  },
+  "anchor_evidence": true,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "ISO 10.1 continual improvement vs 3.12.1 periodic control assessment; assessment feeds improvement but is a distinct obligation. The reconstructed anchors (AC-17, AC-24) are remote-access controls and do not support the pair."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|5.3|PCI DSS v4.0|5.1.2",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "5.3",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "5.1.2",
+  "votes": 3,
+  "consensus_tier": "strong",
+  "voters": "[\"csa\", \"master\", \"scf\"]",
+  "shared_anchors": [
+   "PM-2",
+   "PM-29",
+   "PM-6"
+  ],
+  "shared_anchor_titles": {
+   "PM-2": "Information Security Program Leadership Role",
+   "PM-29": "Risk Management Program Leadership Roles",
+   "PM-6": "Measures of Performance"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO 5.3 roles and authorities = PCI 5.1.2 documented, assigned and understood roles for Requirement 5."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.8.24|PCI DSS v4.0|3.7.5",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.8.24",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "3.7.5",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO A.8.24 use of cryptography covers PCI 3.7.5 key retirement and replacement."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.8.24|PCI DSS v4.0|3.7.1",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.8.24",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "3.7.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO A.8.24 use of cryptography covers PCI 3.7.1 key-generation procedures."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|5.1|PCI DSS v4.0|10.1.1",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "5.1",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "10.1.1",
+  "votes": 3,
+  "consensus_tier": "strong",
+  "voters": "[\"csa\", \"master\", \"scf\"]",
+  "shared_anchors": [
+   "PM-1"
+  ],
+  "shared_anchor_titles": {
+   "PM-1": "Information Security Program Plan"
+  },
+  "anchor_evidence": true,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "ISO 5.1 leadership and commitment vs PCI 10.1.1 role assignment for Requirement 10; leadership is the broader duty."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|7.3|PCI DSS v4.0|10.1.2",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "7.3",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "10.1.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "ISO 7.3 awareness vs PCI 10.1.2 roles understood; understanding one's role is a fragment of the awareness obligation."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.5.24|PCI DSS v4.0|12.10.6",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.5.24",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "12.10.6",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO A.5.24 incident management planning = PCI 12.10.6 IR plan evolved per lessons learned."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.8.32|PCI DSS v4.0|6.5",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.8.32",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "6.5",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"pci_iso\", \"scf\"]",
+  "shared_anchors": [
+   "CM-3"
+  ],
+  "shared_anchor_titles": {
+   "CM-3": "Configuration Change Control"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO A.8.32 change management = PCI 6.5 changes to system components managed securely."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.8.9|PCI DSS v4.0|2.2.1",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.8.9",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "2.2.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "CM-2",
+   "CM-6"
+  ],
+  "shared_anchor_titles": {
+   "CM-2": "Baseline Configuration",
+   "CM-6": "Configuration Settings"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO A.8.9 configuration management = PCI 2.2.1 configuration standards developed and maintained."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.8.24|PCI DSS v4.0|3.6.1.3",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.8.24",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "3.6.1.3",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO A.8.24 use of cryptography covers PCI 3.6.1.3 restricting access to cleartext key components."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|7.5.3|PCI DSS v4.0|1.1.1",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "7.5.3",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "1.1.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "PM-1",
+   "SA-8(32)",
+   "SC-38"
+  ],
+  "shared_anchor_titles": {
+   "PM-1": "Information Security Program Plan",
+   "SA-8(32)": null,
+   "SC-38": "Operations Security"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO 7.5.3 control of documented information = PCI 1.1.1 policies documented, current, in use, known."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|5.3|PCI DSS v4.0|8.1.2",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "5.3",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "8.1.2",
+  "votes": 3,
+  "consensus_tier": "strong",
+  "voters": "[\"csa\", \"master\", \"scf\"]",
+  "shared_anchors": [
+   "PM-2",
+   "PM-29",
+   "PM-6"
+  ],
+  "shared_anchor_titles": {
+   "PM-2": "Information Security Program Leadership Role",
+   "PM-29": "Risk Management Program Leadership Roles",
+   "PM-6": "Measures of Performance"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO 5.3 roles and authorities = PCI 8.1.2 documented, assigned roles for Requirement 8."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|7.5.2|PCI DSS v4.0|12.1.1",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "7.5.2",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "12.1.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "PM-1"
+  ],
+  "shared_anchor_titles": {
+   "PM-1": "Information Security Program Plan"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO 7.5.2 creating and updating documented information = PCI 12.1.1 annual policy review and update."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.8.15|PCI DSS v4.0|10.4.1",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.8.15",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "10.4.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "AU-2",
+   "AU-6"
+  ],
+  "shared_anchor_titles": {
+   "AU-2": "Event Logging",
+   "AU-6": "Audit Record Review, Analysis, and Reporting"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO A.8.15 logging = PCI 10.4.1 daily audit-log review."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|7.3|PCI DSS v4.0|7.1.2",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "7.3",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "7.1.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "ISO 7.3 awareness vs PCI 7.1.2 roles documented and understood; same fragment relationship as edge 52."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|5.1|PCI DSS v4.0|8.3.8",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "5.1",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "8.3.8",
+  "votes": 3,
+  "consensus_tier": "strong",
+  "voters": "[\"csa\", \"master\", \"scf\"]",
+  "shared_anchors": [
+   "AC-1",
+   "AT-1",
+   "AT-3(2)",
+   "IA-1",
+   "PM-1"
+  ],
+  "shared_anchor_titles": {
+   "AC-1": "Policy and Procedures",
+   "AT-1": "Policy and Procedures",
+   "AT-3(2)": null,
+   "IA-1": "Policy and Procedures",
+   "PM-1": "Information Security Program Plan"
+  },
+  "anchor_evidence": true,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO 5.1 leadership and commitment vs PCI 8.3.8 authentication policies communicated to users; the AT-1/AC-1 anchors are policy boilerplate common to almost everything."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|7.3|PCI DSS v4.0|12.6.3",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "7.3",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "12.6.3",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "AT-2"
+  ],
+  "shared_anchor_titles": {
+   "AT-2": "Literacy Training and Awareness"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO 7.3 awareness = PCI 12.6.3 personnel receive security awareness training."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|9.1|PCI DSS v4.0|12.4.2",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "9.1",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "12.4.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "CA-2",
+   "RA-3"
+  ],
+  "shared_anchor_titles": {
+   "CA-2": "Control Assessments",
+   "RA-3": "Risk Assessment"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO 9.1 monitoring, measurement and evaluation = PCI 12.4.2 reviews confirming personnel perform tasks per policy."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.8.8|SOC 2|CC4.1",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.8.8",
+  "fw_b": "SOC 2",
+  "native_b": "CC4.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "RA-3",
+   "RA-5"
+  ],
+  "shared_anchor_titles": {
+   "RA-3": "Risk Assessment",
+   "RA-5": "Vulnerability Monitoring and Scanning"
+  },
+  "anchor_evidence": true,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "ISO A.8.8 technical vulnerability management vs CC4.1 evaluations that internal-control components are present and functioning; the RA-3/RA-5 anchors blend risk assessment with vulnerability scanning."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.5.14|SOC 2|CC6.7",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.5.14",
+  "fw_b": "SOC 2",
+  "native_b": "CC6.7",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "AC-20",
+   "AC-4",
+   "SC-15"
+  ],
+  "shared_anchor_titles": {
+   "AC-20": "Use of External Systems",
+   "AC-4": "Information Flow Enforcement",
+   "SC-15": "Collaborative Computing Devices and Applications"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO A.5.14 information transfer = CC6.7 restricts transmission, movement and removal of information."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|7.2|SOC 2|CC1.3",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "7.2",
+  "fw_b": "SOC 2",
+  "native_b": "CC1.3",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "PM-2",
+   "PM-23",
+   "SA-3"
+  ],
+  "shared_anchor_titles": {
+   "PM-2": "Information Security Program Leadership Role",
+   "PM-23": "Data Governance Body",
+   "SA-3": "System Development Life Cycle"
+  },
+  "anchor_evidence": true,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO 7.2 competence vs CC1.3 structures, reporting lines and authorities; the competence criterion is CC1.4, and this pair maps competence onto org structure."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|5.2|SOC 2|CC2.2",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "5.2",
+  "fw_b": "SOC 2",
+  "native_b": "CC2.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "AT-1",
+   "CA-2",
+   "CA-6",
+   "IR-8(1)",
+   "PL-2",
+   "PL-9",
+   "PM-1",
+   "PM-29",
+   "PT-2",
+   "SA-2",
+   "SI-3(10)"
+  ],
+  "shared_anchor_titles": {
+   "AT-1": "Policy and Procedures",
+   "CA-2": "Control Assessments",
+   "CA-6": "Authorization",
+   "IR-8(1)": null,
+   "PL-2": "System Security and Privacy Plans",
+   "PL-9": "Central Management",
+   "PM-1": "Information Security Program Plan",
+   "PM-29": "Risk Management Program Leadership Roles"
+  },
+  "anchor_evidence": true,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "ISO 5.2 policy vs CC2.2 internal communication of objectives and responsibilities; the policy is one input to that communication."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.5.12|SOC 2|PI1.5",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.5.12",
+  "fw_b": "SOC 2",
+  "native_b": "PI1.5",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO A.5.12 information classification vs PI1.5 complete, accurate and timely storage of inputs and outputs; processing integrity has no classification content."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|5.3|SOC 2|CC5.1",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "5.3",
+  "fw_b": "SOC 2",
+  "native_b": "CC5.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "AC-5",
+   "AT-1",
+   "CA-6",
+   "PM-1",
+   "PM-29"
+  ],
+  "shared_anchor_titles": {
+   "AC-5": "Separation of Duties",
+   "AT-1": "Policy and Procedures",
+   "CA-6": "Authorization",
+   "PM-1": "Information Security Program Plan",
+   "PM-29": "Risk Management Program Leadership Roles"
+  },
+  "anchor_evidence": true,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO 5.3 roles and authorities vs CC5.1 selection and development of control activities; assigning roles is not selecting controls."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.5.29|SOC 2|A1.2",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.5.29",
+  "fw_b": "SOC 2",
+  "native_b": "A1.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "CP-10",
+   "CP-11",
+   "CP-2",
+   "CP-6",
+   "CP-7",
+   "CP-8",
+   "CP-9"
+  ],
+  "shared_anchor_titles": {
+   "CP-10": "System Recovery and Reconstitution",
+   "CP-11": "Alternate Communications Protocols",
+   "CP-2": "Contingency Plan",
+   "CP-6": "Alternate Storage Site",
+   "CP-7": "Alternate Processing Site",
+   "CP-8": "Telecommunications Services",
+   "CP-9": "System Backup"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "ISO A.5.29 information security during disruption = SOC 2 A1.2 backup, recovery and environmental protections."
+ },
+ {
+  "key": "ISO 27001/2 (2022)|A.5.4|SOC 2|CC3.1",
+  "fw_a": "ISO 27001/2 (2022)",
+  "native_a": "A.5.4",
+  "fw_b": "SOC 2",
+  "native_b": "CC3.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "AT-1",
+   "CA-1",
+   "CM-1",
+   "CP-1",
+   "IA-1",
+   "IR-1",
+   "MA-1",
+   "MP-1",
+   "PE-1",
+   "PL-1",
+   "PM-1",
+   "PS-1",
+   "PS-6",
+   "PS-7",
+   "RA-1",
+   "SA-1",
+   "SC-1",
+   "SI-1",
+   "SR-1"
+  ],
+  "shared_anchor_titles": {
+   "AT-1": "Policy and Procedures",
+   "CA-1": "Policy and Procedures",
+   "CM-1": "Policy and Procedures",
+   "CP-1": "Policy and Procedures",
+   "IA-1": "Policy and Procedures",
+   "IR-1": "Policy and Procedures",
+   "MA-1": "Policy and Procedures",
+   "MP-1": "Policy and Procedures"
+  },
+  "anchor_evidence": true,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "ISO A.5.4 management responsibilities vs CC3.1 specification of objectives enabling risk identification; adjacent governance duties, different acts."
+ },
+ {
+  "key": "NIST CSF 2.0|ID.IM-3|PCI DSS v4.0|12.10.6",
+  "fw_a": "NIST CSF 2.0",
+  "native_a": "ID.IM-3",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "12.10.6",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "IR-1"
+  ],
+  "shared_anchor_titles": {
+   "IR-1": "Policy and Procedures"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CSF ID.IM-03 improvements from operational processes = PCI 12.10.6 IR plan modified per lessons learned."
+ },
+ {
+  "key": "NIST CSF 2.0|PR.AT-2|PCI DSS v4.0|12.6.3.1",
+  "fw_a": "NIST CSF 2.0",
+  "native_a": "PR.AT-2",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "12.6.3.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "AT-3"
+  ],
+  "shared_anchor_titles": {
+   "AT-3": "Role-based Training"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CSF PR.AT-02 specialized-role training = PCI 12.6.3.1 training content for threat awareness."
+ },
+ {
+  "key": "NIST CSF 2.0|PR.AT-1|PCI DSS v4.0|1.1.2",
+  "fw_a": "NIST CSF 2.0",
+  "native_a": "PR.AT-1",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "1.1.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "CSF PR.AT-01 personnel awareness and training vs PCI 1.1.2 roles documented and understood for Requirement 1."
+ },
+ {
+  "key": "NIST CSF 2.0|ID.IM-1|PCI DSS v4.0|12.8.4",
+  "fw_a": "NIST CSF 2.0",
+  "native_a": "ID.IM-1",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "12.8.4",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "CSF ID.IM-01 improvements identified from evaluations vs PCI 12.8.4 monitoring third-party compliance status; different subjects."
+ },
+ {
+  "key": "NIST CSF 2.0|PR.DS-10|SOC 2|CC6.1",
+  "fw_a": "NIST CSF 2.0",
+  "native_a": "PR.DS-10",
+  "fw_b": "SOC 2",
+  "native_b": "CC6.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "AC-2",
+   "AC-4",
+   "SC-11",
+   "SC-32",
+   "SC-39",
+   "SC-4",
+   "SC-7"
+  ],
+  "shared_anchor_titles": {
+   "AC-2": "Account Management",
+   "AC-4": "Information Flow Enforcement",
+   "SC-11": "Trusted Path",
+   "SC-32": "System Partitioning",
+   "SC-39": "Process Isolation",
+   "SC-4": "Information in Shared System Resources",
+   "SC-7": "Boundary Protection"
+  },
+  "anchor_evidence": true,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "CSF PR.DS-10 protection of data-IN-USE vs CC6.1 logical access security; CC6.1 is broader and does not specifically address data in use."
+ },
+ {
+  "key": "NIST CSF 2.0|ID.RA-5|SOC 2|CC3.2",
+  "fw_a": "NIST CSF 2.0",
+  "native_a": "ID.RA-5",
+  "fw_b": "SOC 2",
+  "native_b": "CC3.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "RA-3"
+  ],
+  "shared_anchor_titles": {
+   "RA-3": "Risk Assessment"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CSF ID.RA-05 threat/vulnerability/impact analysis informing prioritization = CC3.2 identifies and analyses risks as a basis for management."
+ },
+ {
+  "key": "NIST CSF 2.0|GV.RM-4|SOC 2|CC3.1",
+  "fw_a": "NIST CSF 2.0",
+  "native_a": "GV.RM-4",
+  "fw_b": "SOC 2",
+  "native_b": "CC3.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "PM-30",
+   "SR-2"
+  ],
+  "shared_anchor_titles": {
+   "PM-30": "Supply Chain Risk Management Strategy",
+   "SR-2": "Supply Chain Risk Management Plan"
+  },
+  "anchor_evidence": true,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "CSF GV.RM-04 strategic risk-response direction vs CC3.1 objective specification; both governance-level, different obligations."
+ },
+ {
+  "key": "NIST CSF 2.0|ID.RA-7|SOC 2|CC8.1",
+  "fw_a": "NIST CSF 2.0",
+  "native_a": "ID.RA-7",
+  "fw_b": "SOC 2",
+  "native_b": "CC8.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "CM-3",
+   "CM-4"
+  ],
+  "shared_anchor_titles": {
+   "CM-3": "Configuration Change Control",
+   "CM-4": "Impact Analyses"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CSF ID.RA-07 changes and exceptions managed and assessed for risk = CC8.1 change management."
+ },
+ {
+  "key": "NIST CSF 2.0|PR.IR-2|SOC 2|A1.2",
+  "fw_a": "NIST CSF 2.0",
+  "native_a": "PR.IR-2",
+  "fw_b": "SOC 2",
+  "native_b": "A1.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "CP-2",
+   "PE-10",
+   "PE-11",
+   "PE-12",
+   "PE-14",
+   "PE-18",
+   "PE-23"
+  ],
+  "shared_anchor_titles": {
+   "CP-2": "Contingency Plan",
+   "PE-10": "Emergency Shutoff",
+   "PE-11": "Emergency Power",
+   "PE-12": "Emergency Lighting",
+   "PE-14": "Environmental Controls",
+   "PE-18": "Location of System Components",
+   "PE-23": "Facility Location"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "CSF PR.IR-02 protection from environmental threats = SOC 2 A1.2 environmental protections and recovery infrastructure."
+ },
+ {
+  "key": "NIST SP 800-171 r2|3.5.1|PCI DSS v4.0|8.1",
+  "fw_a": "NIST SP 800-171 r2",
+  "native_a": "3.5.1",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "8.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "IA-2"
+  ],
+  "shared_anchor_titles": {
+   "IA-2": "Identification and Authentication (organizational Users)"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "800-171 3.5.1 identify users, processes and devices = PCI 8.1 processes for identifying users and authenticating access."
+ },
+ {
+  "key": "NIST SP 800-171 r2|3.1.2|PCI DSS v4.0|7.2.1",
+  "fw_a": "NIST SP 800-171 r2",
+  "native_a": "3.1.2",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "7.2.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "AC-1",
+   "AC-2(7)",
+   "AC-3",
+   "AC-6",
+   "SA-8(14)"
+  ],
+  "shared_anchor_titles": {
+   "AC-1": "Policy and Procedures",
+   "AC-2(7)": null,
+   "AC-3": "Access Enforcement",
+   "AC-6": "Least Privilege",
+   "SA-8(14)": null
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "3.1.2 limit access to permitted transactions and functions = PCI 7.2.1 access control model by business need."
+ },
+ {
+  "key": "NIST SP 800-171 r2|3.14.2|PCI DSS v4.0|5.3.2.1",
+  "fw_a": "NIST SP 800-171 r2",
+  "native_a": "3.14.2",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "5.3.2.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "SI-3"
+  ],
+  "shared_anchor_titles": {
+   "SI-3": "Malicious Code Protection"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "3.14.2 protection from malicious code = PCI 5.3.2.1 malware scan frequency per targeted risk analysis."
+ },
+ {
+  "key": "NIST SP 800-171 r2|3.4.1|PCI DSS v4.0|10.6",
+  "fw_a": "NIST SP 800-171 r2",
+  "native_a": "3.4.1",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "10.6",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "CM-2",
+   "CM-6"
+  ],
+  "shared_anchor_titles": {
+   "CM-2": "Baseline Configuration",
+   "CM-6": "Configuration Settings"
+  },
+  "anchor_evidence": true,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "3.4.1 baseline configurations and inventories vs PCI 10.6 time synchronization; the CM-2/CM-6 anchors are generic configuration controls that do not carry this pair."
+ },
+ {
+  "key": "NIST SP 800-171 r2|3.14.2|PCI DSS v4.0|5.2.1",
+  "fw_a": "NIST SP 800-171 r2",
+  "native_a": "3.14.2",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "5.2.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "SI-3"
+  ],
+  "shared_anchor_titles": {
+   "SI-3": "Malicious Code Protection"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "3.14.2 protection from malicious code = PCI 5.2.1 anti-malware deployed on all applicable components."
+ },
+ {
+  "key": "NIST SP 800-171 r2|3.2.1|PCI DSS v4.0|12.6.3",
+  "fw_a": "NIST SP 800-171 r2",
+  "native_a": "3.2.1",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "12.6.3",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "AT-2",
+   "AT-2(6)",
+   "AT-3"
+  ],
+  "shared_anchor_titles": {
+   "AT-2": "Literacy Training and Awareness",
+   "AT-2(6)": null,
+   "AT-3": "Role-based Training"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "3.2.1 make users aware of security risks = PCI 12.6.3 personnel receive awareness training."
+ },
+ {
+  "key": "NIST SP 800-171 r2|3.10.2|PCI DSS v4.0|9.2.1.1",
+  "fw_a": "NIST SP 800-171 r2",
+  "native_a": "3.10.2",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "9.2.1.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "PE-6",
+   "PE-6(1)",
+   "PE-8"
+  ],
+  "shared_anchor_titles": {
+   "PE-6": "Monitoring Physical Access",
+   "PE-6(1)": null,
+   "PE-8": "Visitor Access Records"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "3.10.2 protect and monitor the physical facility = PCI 9.2.1.1 physical access to sensitive areas monitored."
+ },
+ {
+  "key": "NIST SP 800-171 r2|3.4.6|PCI DSS v4.0|2.2.4",
+  "fw_a": "NIST SP 800-171 r2",
+  "native_a": "3.4.6",
+  "fw_b": "PCI DSS v4.0",
+  "native_b": "2.2.4",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "CM-7"
+  ],
+  "shared_anchor_titles": {
+   "CM-7": "Least Functionality"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "3.4.6 least functionality = PCI 2.2.4 unnecessary services, protocols and functions removed or disabled."
+ },
+ {
+  "key": "NIST SP 800-171 r2|3.11.1|SOC 2|CC3.2",
+  "fw_a": "NIST SP 800-171 r2",
+  "native_a": "3.11.1",
+  "fw_b": "SOC 2",
+  "native_b": "CC3.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"hitrust\", \"master\"]",
+  "shared_anchors": [
+   "CA-2",
+   "PL-2",
+   "RA-2(1)",
+   "RA-3",
+   "RA-6",
+   "RA-8",
+   "SA-11(3)"
+  ],
+  "shared_anchor_titles": {
+   "CA-2": "Control Assessments",
+   "PL-2": "System Security and Privacy Plans",
+   "RA-2(1)": null,
+   "RA-3": "Risk Assessment",
+   "RA-6": "Technical Surveillance Countermeasures Survey",
+   "RA-8": "Privacy Impact Assessments",
+   "SA-11(3)": null
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "3.11.1 periodic risk assessment = CC3.2 identifies and analyses risks."
+ },
+ {
+  "key": "NIST SP 800-171 r2|3.13.1|SOC 2|CC6.8",
+  "fw_a": "NIST SP 800-171 r2",
+  "native_a": "3.13.1",
+  "fw_b": "SOC 2",
+  "native_b": "CC6.8",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "AC-4(26)",
+   "AC-4(29)",
+   "AC-4(30)",
+   "AU-5(3)",
+   "SC-50",
+   "SC-7(4)",
+   "SI-4(4)",
+   "SI-8(2)"
+  ],
+  "shared_anchor_titles": {
+   "AC-4(26)": null,
+   "AC-4(29)": null,
+   "AC-4(30)": null,
+   "AU-5(3)": null,
+   "SC-50": "Software-enforced Separation and Policy Enforcement",
+   "SC-7(4)": null,
+   "SI-4(4)": null,
+   "SI-8(2)": null
+  },
+  "anchor_evidence": true,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "3.13.1 boundary communications protection vs CC6.8 unauthorized or malicious software; the AC-4 information-flow anchors do not bridge boundary protection to malware control."
+ },
+ {
+  "key": "NIST SP 800-171 r2|3.6.1|SOC 2|CC7.4",
+  "fw_a": "NIST SP 800-171 r2",
+  "native_a": "3.6.1",
+  "fw_b": "SOC 2",
+  "native_b": "CC7.4",
+  "votes": 3,
+  "consensus_tier": "strong",
+  "voters": "[\"hitrust\", \"master\", \"scf\"]",
+  "shared_anchors": [
+   "IR-3",
+   "IR-3(2)",
+   "IR-4",
+   "IR-4(1)",
+   "IR-4(10)",
+   "IR-4(11)",
+   "IR-4(12)",
+   "IR-4(15)",
+   "IR-4(2)",
+   "IR-5",
+   "IR-6(1)",
+   "IR-6(3)",
+   "IR-7",
+   "IR-7(1)",
+   "IR-8",
+   "IR-9",
+   "IR-9(2)",
+   "IR-9(3)",
+   "IR-9(4)",
+   "MA-5(1)",
+   "PE-17",
+   "RA-10",
+   "RA-3(4)",
+   "SA-15(7)",
+   "SI-3(10)",
+   "SI-3(6)",
+   "SR-11",
+   "SR-7",
+   "SR-8"
+  ],
+  "shared_anchor_titles": {
+   "IR-3": "Incident Response Testing",
+   "IR-3(2)": null,
+   "IR-4": "Incident Handling",
+   "IR-4(1)": null,
+   "IR-4(10)": null,
+   "IR-4(11)": null,
+   "IR-4(12)": null,
+   "IR-4(15)": null
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "3.6.1 operational incident-handling capability = CC7.4 responds to identified security incidents."
+ },
+ {
+  "key": "PCI DSS v4.0|4.2.1.1|SOC 2|CC6.1",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "4.2.1.1",
+  "fw_b": "SOC 2",
+  "native_b": "CC6.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "SC-28(3)"
+  ],
+  "shared_anchor_titles": {
+   "SC-28(3)": null
+  },
+  "anchor_evidence": true,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "PCI 4.2.1.1 inventory of trusted keys and certificates vs CC6.1 logical access security; the inventory is a narrow fragment of CC6.1."
+ },
+ {
+  "key": "PCI DSS v4.0|7.2.3|SOC 2|CC6.1",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "7.2.3",
+  "fw_b": "SOC 2",
+  "native_b": "CC6.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 7.2.3 privileges approved by authorized personnel falls squarely within CC6.1 logical access authorization."
+ },
+ {
+  "key": "PCI DSS v4.0|9.2.2|SOC 2|A1.2",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "9.2.2",
+  "fw_b": "SOC 2",
+  "native_b": "A1.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "PE-18",
+   "PE-23"
+  ],
+  "shared_anchor_titles": {
+   "PE-18": "Location of System Components",
+   "PE-23": "Facility Location"
+  },
+  "anchor_evidence": true,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 9.2.2 restricting use of publicly accessible network jacks vs A1.2 environmental protections and backup; physical network access is not an availability-infrastructure control."
+ },
+ {
+  "key": "PCI DSS v4.0|10.2|SOC 2|CC7.1",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "10.2",
+  "fw_b": "SOC 2",
+  "native_b": "CC7.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "CM-2",
+   "CM-6",
+   "CM-7(9)"
+  ],
+  "shared_anchor_titles": {
+   "CM-2": "Baseline Configuration",
+   "CM-6": "Configuration Settings",
+   "CM-7(9)": null
+  },
+  "anchor_evidence": true,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "PCI 10.2 audit logs supporting anomaly detection vs CC7.1 detection of configuration changes; logging supports but does not equal configuration-change detection."
+ },
+ {
+  "key": "PCI DSS v4.0|3.3.2|SOC 2|CC6.1",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "3.3.2",
+  "fw_b": "SOC 2",
+  "native_b": "CC6.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 3.3.2 encryption of stored sensitive authentication data falls within CC6.1's protection of information at rest."
+ },
+ {
+  "key": "PCI DSS v4.0|8.3.2|SOC 2|CC8.1",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "8.3.2",
+  "fw_b": "SOC 2",
+  "native_b": "CC8.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "CM-2",
+   "CM-6",
+   "SA-15(5)",
+   "SA-8",
+   "SI-7(6)"
+  ],
+  "shared_anchor_titles": {
+   "CM-2": "Baseline Configuration",
+   "CM-6": "Configuration Settings",
+   "SA-15(5)": null,
+   "SA-8": "Security and Privacy Engineering Principles",
+   "SI-7(6)": null
+  },
+  "anchor_evidence": true,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 8.3.2 strong cryptography for authentication factors vs CC8.1 change management; unrelated subjects."
+ },
+ {
+  "key": "PCI DSS v4.0|9.4.7|SOC 2|P4.0",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "9.4.7",
+  "fw_b": "SOC 2",
+  "native_b": "P4.0",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "PCI 9.4.7 media destruction vs SOC 2 'P4.0', which is a privacy CATEGORY heading rather than a criterion; the real counterpart is P4.3. Disposal is genuinely shared, the identifier granularity is not."
+ },
+ {
+  "key": "PCI DSS v4.0|12.7.1|SOC 2|CC1.4",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "12.7.1",
+  "fw_b": "SOC 2",
+  "native_b": "CC1.4",
+  "votes": 3,
+  "consensus_tier": "strong",
+  "voters": "[\"csa\", \"master\", \"scf\"]",
+  "shared_anchors": [
+   "PS-3",
+   "PS-3(1)",
+   "PS-3(3)"
+  ],
+  "shared_anchor_titles": {
+   "PS-3": "Personnel Screening",
+   "PS-3(1)": null,
+   "PS-3(3)": null
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 12.7.1 pre-hire personnel screening = CC1.4 attracting, developing and retaining competent individuals."
+ },
+ {
+  "key": "PCI DSS v4.0|10.7.2|SOC 2|CC7.4",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "10.7.2",
+  "fw_b": "SOC 2",
+  "native_b": "CC7.4",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "CA-2",
+   "IR-4(10)",
+   "RA-3"
+  ],
+  "shared_anchor_titles": {
+   "CA-2": "Control Assessments",
+   "IR-4(10)": null,
+   "RA-3": "Risk Assessment"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 10.7.2 failures of critical security control systems detected and addressed = CC7.4 incident response."
+ },
+ {
+  "key": "PCI DSS v4.0|10.7|SOC 2|CC4.2",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "10.7",
+  "fw_b": "SOC 2",
+  "native_b": "CC4.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "CA-2",
+   "RA-3"
+  ],
+  "shared_anchor_titles": {
+   "CA-2": "Control Assessments",
+   "RA-3": "Risk Assessment"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 10.7 detection and reporting of security-control failures = CC4.2 evaluation and communication of internal-control deficiencies."
+ },
+ {
+  "key": "PCI DSS v4.0|10.1.2|SOC 2|CC1.3",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "10.1.2",
+  "fw_b": "SOC 2",
+  "native_b": "CC1.3",
+  "votes": 3,
+  "consensus_tier": "strong",
+  "voters": "[\"csa\", \"master\", \"scf\"]",
+  "shared_anchors": [
+   "PL-9",
+   "PM-2",
+   "PM-29"
+  ],
+  "shared_anchor_titles": {
+   "PL-9": "Central Management",
+   "PM-2": "Information Security Program Leadership Role",
+   "PM-29": "Risk Management Program Leadership Roles"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 10.1.2 roles and responsibilities = CC1.3 structures, reporting lines, authorities and responsibilities."
+ },
+ {
+  "key": "PCI DSS v4.0|1.4.3|SOC 2|CC7.2",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "1.4.3",
+  "fw_b": "SOC 2",
+  "native_b": "CC7.2",
+  "votes": 3,
+  "consensus_tier": "strong",
+  "voters": "[\"csa\", \"master\", \"scf\"]",
+  "shared_anchors": [
+   "AC-4",
+   "SI-4(1)"
+  ],
+  "shared_anchor_titles": {
+   "AC-4": "Information Flow Enforcement",
+   "SI-4(1)": null
+  },
+  "anchor_evidence": true,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "PCI 1.4.3 anti-spoofing on inbound traffic vs CC7.2 anomaly monitoring; a specific network control against a broad monitoring criterion."
+ },
+ {
+  "key": "PCI DSS v4.0|1.2.6|SOC 2|CC6.6",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "1.2.6",
+  "fw_b": "SOC 2",
+  "native_b": "CC6.6",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "AC-4(21)"
+  ],
+  "shared_anchor_titles": {
+   "AC-4(21)": null
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 1.2.6 security features for insecure services and protocols = CC6.6 logical access protections against external threats."
+ },
+ {
+  "key": "PCI DSS v4.0|8.3.1|SOC 2|CC6.1",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "8.3.1",
+  "fw_b": "SOC 2",
+  "native_b": "CC6.1",
+  "votes": 3,
+  "consensus_tier": "strong",
+  "voters": "[\"csa\", \"master\", \"scf\"]",
+  "shared_anchors": [
+   "IA-5",
+   "IA-5(2)"
+  ],
+  "shared_anchor_titles": {
+   "IA-5": "Authenticator Management",
+   "IA-5(2)": null
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 8.3.1 authentication of all user access = CC6.1 logical access security."
+ },
+ {
+  "key": "PCI DSS v4.0|A3.1.4|SOC 2|CC2.2",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "A3.1.4",
+  "fw_b": "SOC 2",
+  "native_b": "CC2.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"master\"]",
+  "shared_anchors": [
+   "AT-1",
+   "PM-13"
+  ],
+  "shared_anchor_titles": {
+   "AT-1": "Policy and Procedures",
+   "PM-13": "Security and Privacy Workforce"
+  },
+  "anchor_evidence": true,
+  "verdict": "UNDECIDABLE",
+  "evidence": null,
+  "reasoning": "PCI A3.1.4 sits in the designated-entities supplemental appendix and I cannot state its text reliably enough to judge the pair against CC2.2."
+ },
+ {
+  "key": "PCI DSS v4.0|9.2.4|SOC 2|A1.2",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "9.2.4",
+  "fw_b": "SOC 2",
+  "native_b": "A1.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "PE-18",
+   "PE-23",
+   "PE-3(4)"
+  ],
+  "shared_anchor_titles": {
+   "PE-18": "Location of System Components",
+   "PE-23": "Facility Location",
+   "PE-3(4)": null
+  },
+  "anchor_evidence": true,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 9.2.4 locking consoles in sensitive areas vs A1.2 environmental protections and recovery; physical access control, not availability infrastructure."
+ },
+ {
+  "key": "PCI DSS v4.0|11.1.2|SOC 2|CC2.2",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "11.1.2",
+  "fw_b": "SOC 2",
+  "native_b": "CC2.2",
+  "votes": 3,
+  "consensus_tier": "strong",
+  "voters": "[\"csa\", \"master\", \"scf\"]",
+  "shared_anchors": [
+   "PL-9",
+   "PM-13",
+   "PM-29",
+   "PM-6"
+  ],
+  "shared_anchor_titles": {
+   "PL-9": "Central Management",
+   "PM-13": "Security and Privacy Workforce",
+   "PM-29": "Risk Management Program Leadership Roles",
+   "PM-6": "Measures of Performance"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 11.1.2 documented and understood roles = CC2.2 internal communication of control responsibilities."
+ },
+ {
+  "key": "PCI DSS v4.0|6.1.2|SOC 2|CC1.1",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "6.1.2",
+  "fw_b": "SOC 2",
+  "native_b": "CC1.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "PM-13",
+   "PM-6"
+  ],
+  "shared_anchor_titles": {
+   "PM-13": "Security and Privacy Workforce",
+   "PM-6": "Measures of Performance"
+  },
+  "anchor_evidence": true,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 6.1.2 roles for Requirement 6 vs CC1.1 commitment to integrity and ethical values; role assignment is not an ethics control."
+ },
+ {
+  "key": "PCI DSS v4.0|9.1.1|SOC 2|CC2.2",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "9.1.1",
+  "fw_b": "SOC 2",
+  "native_b": "CC2.2",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "PM-1",
+   "SR-7"
+  ],
+  "shared_anchor_titles": {
+   "PM-1": "Information Security Program Plan",
+   "SR-7": "Supply Chain Operations Security"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 9.1.1 policies documented, in use and known = CC2.2 internal communication of responsibilities."
+ },
+ {
+  "key": "PCI DSS v4.0|12.10.2|SOC 2|CC7.4",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "12.10.2",
+  "fw_b": "SOC 2",
+  "native_b": "CC7.4",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"master\"]",
+  "shared_anchors": [
+   "IR-3"
+  ],
+  "shared_anchor_titles": {
+   "IR-3": "Incident Response Testing"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 12.10.2 annual review and testing of the IR plan = CC7.4 incident response."
+ },
+ {
+  "key": "PCI DSS v4.0|12.3.1|SOC 2|CC7.4",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "12.3.1",
+  "fw_b": "SOC 2",
+  "native_b": "CC7.4",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"scf\"]",
+  "shared_anchors": [
+   "RA-3"
+  ],
+  "shared_anchor_titles": {
+   "RA-3": "Risk Assessment"
+  },
+  "anchor_evidence": true,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 12.3.1 documented targeted risk analyses vs CC7.4 incident response; risk analysis is a CC3-series activity."
+ },
+ {
+  "key": "PCI DSS v4.0|8.1.2|SOC 2|CC2.2",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "8.1.2",
+  "fw_b": "SOC 2",
+  "native_b": "CC2.2",
+  "votes": 3,
+  "consensus_tier": "strong",
+  "voters": "[\"csa\", \"master\", \"scf\"]",
+  "shared_anchors": [
+   "PL-9",
+   "PM-13",
+   "PM-29",
+   "PM-6"
+  ],
+  "shared_anchor_titles": {
+   "PL-9": "Central Management",
+   "PM-13": "Security and Privacy Workforce",
+   "PM-29": "Risk Management Program Leadership Roles",
+   "PM-6": "Measures of Performance"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 8.1.2 documented and understood roles = CC2.2 internal communication of responsibilities."
+ },
+ {
+  "key": "PCI DSS v4.0|3.2.1|SOC 2|P4.3",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "3.2.1",
+  "fw_b": "SOC 2",
+  "native_b": "P4.3",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"master\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 3.2.1 minimising stored account data = P4.3 disposal of personal information no longer needed."
+ },
+ {
+  "key": "PCI DSS v4.0|12.1.3|SOC 2|CC2.2",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "12.1.3",
+  "fw_b": "SOC 2",
+  "native_b": "CC2.2",
+  "votes": 3,
+  "consensus_tier": "strong",
+  "voters": "[\"csa\", \"master\", \"scf\"]",
+  "shared_anchors": [
+   "PL-4",
+   "PL-9",
+   "PM-1",
+   "PM-13",
+   "PM-29",
+   "PM-6"
+  ],
+  "shared_anchor_titles": {
+   "PL-4": "Rules of Behavior",
+   "PL-9": "Central Management",
+   "PM-1": "Information Security Program Plan",
+   "PM-13": "Security and Privacy Workforce",
+   "PM-29": "Risk Management Program Leadership Roles",
+   "PM-6": "Measures of Performance"
+  },
+  "anchor_evidence": true,
+  "verdict": "SUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 12.1.3 security policy defining roles with personnel acknowledgement = CC2.2 internal communication of responsibilities."
+ },
+ {
+  "key": "PCI DSS v4.0|6.2.2|SOC 2|CC1.3",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "6.2.2",
+  "fw_b": "SOC 2",
+  "native_b": "CC1.3",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [],
+  "shared_anchor_titles": {},
+  "anchor_evidence": false,
+  "verdict": "UNSUPPORTED",
+  "evidence": null,
+  "reasoning": "PCI 6.2.2 secure-coding training for developers vs CC1.3 structures and reporting lines; the training counterpart is CC1.4."
+ },
+ {
+  "key": "PCI DSS v4.0|1.4.2|SOC 2|CC6.7",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "1.4.2",
+  "fw_b": "SOC 2",
+  "native_b": "CC6.7",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"csa\", \"master\"]",
+  "shared_anchors": [
+   "AC-4"
+  ],
+  "shared_anchor_titles": {
+   "AC-4": "Information Flow Enforcement"
+  },
+  "anchor_evidence": true,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "PCI 1.4.2 restricting inbound traffic from untrusted networks vs CC6.7 restrictions on transmission and movement of information; adjacent but not the same obligation."
+ },
+ {
+  "key": "PCI DSS v4.0|7.1.1|SOC 2|CC5.1",
+  "fw_a": "PCI DSS v4.0",
+  "native_a": "7.1.1",
+  "fw_b": "SOC 2",
+  "native_b": "CC5.1",
+  "votes": 2,
+  "consensus_tier": "moderate",
+  "voters": "[\"master\", \"scf\"]",
+  "shared_anchors": [
+   "PM-1"
+  ],
+  "shared_anchor_titles": {
+   "PM-1": "Information Security Program Plan"
+  },
+  "anchor_evidence": true,
+  "verdict": "SCOPE_MISMATCH",
+  "evidence": null,
+  "reasoning": "PCI 7.1.1 documented Requirement 7 policies vs CC5.1 selection and development of control activities."
+ }
+]
