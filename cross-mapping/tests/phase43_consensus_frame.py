@@ -39,6 +39,12 @@ DB = ROOT / "cross-mapping" / "output" / "grc.db"
 OUT = ROOT / "docs" / "audits" / "data"
 SEED = 20430816
 N_TOTAL = 120
+# Phase 44: the phase-43 audit named its own most-likely-wrong claim — that the 20.2%
+# unsupported rate is a property of the tier rather than of proportional allocation, which put
+# 27 of 120 edges on PCI x SOC 2, the pair whose texts are easiest to judge. `--equal` draws the
+# same stratum with EQUAL allocation per framework pair so thin pairs get their say. Same seed
+# and same ranking rule, so overlapping keys can reuse their recorded verdicts.
+N_PER_PAIR = 6
 
 STRATUM_SQL = ("SELECT fw_a, native_a, fw_b, native_b FROM master_mappings "
                "WHERE provenance='consensus' AND fw_a NOT LIKE 'NIST 800-53%' "
@@ -71,15 +77,19 @@ def main() -> int:
     titles = dict(conn.execute("SELECT nist_id, title FROM controls"))
 
     pairs = Counter((a, c) for a, _, c, _ in rows)
-    alloc, remainder = {}, []
-    for p, n in pairs.items():
-        exact = N_TOTAL * n / len(rows)
-        alloc[p] = max(1, int(exact))
-        remainder.append((exact - int(exact), p))
-    for _, p in sorted(remainder, reverse=True):
-        if sum(alloc.values()) >= N_TOTAL:
-            break
-        alloc[p] += 1
+    equal = "--equal" in sys.argv
+    if equal:
+        alloc = {p: min(N_PER_PAIR, n) for p, n in pairs.items()}
+    else:
+        alloc, remainder = {}, []
+        for p, n in pairs.items():
+            exact = N_TOTAL * n / len(rows)
+            alloc[p] = max(1, int(exact))
+            remainder.append((exact - int(exact), p))
+        for _, p in sorted(remainder, reverse=True):
+            if sum(alloc.values()) >= N_TOTAL:
+                break
+            alloc[p] += 1
 
     frame, sheet = {}, []
     for p, want in sorted(alloc.items()):
@@ -103,10 +113,24 @@ def main() -> int:
             })
 
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / "phase-43-consensus-frame.json").write_text(json.dumps(
+    stem = "phase-44-consensus-equal" if equal else "phase-43-consensus"
+    # Refuse to clobber adjudicated evidence. During phase 44 an unsaved edit meant this script
+    # ran in its old form and overwrote a worksheet holding 120 recorded verdicts; only the fact
+    # that phase 43 had committed it made the loss recoverable.
+    existing = OUT / f"{stem}-worksheet.json"
+    if existing.exists():
+        prior = json.loads(existing.read_text(encoding="utf-8"))
+        if any(e.get("verdict") for e in prior):
+            print(f"refusing to overwrite {existing.name}: it holds "
+                  f"{sum(1 for e in prior if e.get('verdict'))} recorded verdicts. "
+                  "Move it aside deliberately if a re-draw is really intended.", file=sys.stderr)
+            return 2
+    (OUT / f"{stem}-frame.json").write_text(json.dumps(
         {"db": str(DB), "seed": SEED, "stratum_sql": STRATUM_SQL,
+         "allocation": "equal" if equal else "proportional",
+         "n_per_pair": N_PER_PAIR if equal else None,
          "total_rows": len(rows), "sample": frame}, indent=1) + "\n", encoding="utf-8")
-    (OUT / "phase-43-consensus-worksheet.json").write_text(
+    (OUT / f"{stem}-worksheet.json").write_text(
         json.dumps(sheet, indent=1) + "\n", encoding="utf-8")
     print(f"stratum {len(rows):,}; sampled {len(sheet)}; "
           f"with reconstructable anchor evidence {sum(1 for s in sheet if s['anchor_evidence'])}; "
