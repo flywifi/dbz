@@ -269,9 +269,9 @@
       "expected_type": "quarterly_bundle",
       "lifecycle_stage": null,
       "expected_window": {
-        "earliest": "2026-07-31",
-        "latest": "2026-07-31",
-        "basis": "DISA end-of-quarter cadence (Jan/Apr/Jul/Oct); next window end Jul 2026"
+        "earliest": "2026-10-31",
+        "latest": "2026-10-31",
+        "basis": "DISA end-of-quarter cadence (Jan/Apr/Jul/Oct); the Jul-2026 window closed unobserved behind the SSO wall, so the window rolls to the next quarter end on the same cadence basis — not a new authority statement"
       },
       "confidence": "med",
       "trigger_signal": "a new U_CCI_List.zip <version> newer than the committed pin (bundled with the quarterly release)",
@@ -288,13 +288,13 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 30,
-      "last_checked": "2026-08-09",
+      "last_checked": "2026-08-16",
       "last_change_detected": null,
-      "notes": "CCI List only (the definition source — core to this ecosystem). STIGs are explicitly out of scope: no STIG anticipation, no STIG data update. DISA hosts sit behind an SSO/JavaScript wall; the quarterly CCI drop could not be confirmed or refuted this pass — the past-window escalation stands. The pinned CCI List 2025-01-23 artifact is unaffected (committed).",
+      "notes": "Re-attempted at origin 2026-08-16: public.cyber.mil answers HTTP 200 with the DoD Login Portal ADFS page ('Home Realm Discovery' / 'JavaScript required'), i.e. the recorded SSO wall, not content — the obstacle is re-confirmed, not resolved. The Jul-2026 quarterly window therefore closed unobserved; it rolls to the next quarter end (2026-10-31) on the record's own stated cadence, which is a re-date with basis and not a date claimed from any authority. The pinned CCI List 2025-01-23 artifact is unaffected. If the wall ever opens and a post-Jul-2026 list revision exists, a cci_bridge refresh becomes due (noted, not executed here).",
       "provenance": {
         "primary_source_url": "https://public.cyber.mil/stigs/cci/",
-        "retrieved_at": "2026-08-09",
-        "verbatim": "cyber.mil responds 'Home Realm Discovery JavaScript required' — an SSO/JS wall — on 2026-08-09",
+        "retrieved_at": "2026-08-16",
+        "verbatim": "cyber.mil answers HTTP 200 with the DoD Login Portal ADFS page — 'Home Realm Discovery' / 'JavaScript required' — on 2026-08-16",
         "support": "THIN",
         "terminal_state": "DEAD_END"
       }
@@ -2099,9 +2099,9 @@
       "expected_type": "minor_rel",
       "lifecycle_stage": null,
       "expected_window": {
-        "earliest": "2026-07-01",
-        "latest": "2026-07-31",
-        "basis": "SWIFT CSCF annual v-year publication (~July each year)"
+        "earliest": "2027-07-01",
+        "latest": "2027-07-31",
+        "basis": "SWIFT CSCF annual v-year publication (~July each year); the Jul-2026 window closed unobserved behind the network/login wall, so the annual window rolls on the same cadence basis — not a new authority statement"
       },
       "confidence": "med",
       "trigger_signal": "CSCF v2026 published",
@@ -2117,13 +2117,13 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 60,
-      "last_checked": "2026-08-09",
+      "last_checked": "2026-08-16",
       "last_change_detected": null,
-      "notes": "Annual CSCF refresh; v2026 expected ~Jul 2026 (source proxy-gated, verify manually). SWIFT's site is unreachable from this environment (network-level block; CSCF is also login-gated for customers) — the CSCF v2026 release could not be confirmed or refuted; the past-window escalation stands.",
+      "notes": "Re-attempted at origin 2026-08-16: swift.com does not respond from this environment (connection timeout; Wayback also errored), and the CSCF itself is customer-login-gated — the recorded DEAD_END obstacle is re-confirmed. CSCF v2026 can be neither confirmed nor refuted here, so the annual window rolls to Jul 2027 on the record's own cadence basis rather than sitting stale. current_version stays CSCF v2025: no v2026 publication has been observed.",
       "provenance": {
         "primary_source_url": "https://www.swift.com/myswift/customer-security-programme-csp",
-        "retrieved_at": "2026-08-09",
-        "verbatim": "Connection to www2.swift.com failed from this environment on 2026-08-09 (no HTTP response)",
+        "retrieved_at": "2026-08-16",
+        "verbatim": "Connection to www.swift.com timed out from this environment on 2026-08-16 (no HTTP response; Wayback fallback also errored)",
         "support": "THIN",
         "terminal_state": "DEAD_END"
       }
@@ -2247,7 +2247,7 @@
       "feed_id": "fedramp",
       "authority": "FedRAMP (GSA)",
       "artifact": "FedRAMP Ready goes legacy",
-      "current_version": "FedRAMP Ready active",
+      "current_version": "FedRAMP Ready legacy (scheduled sunset 2026-07-28 elapsed)",
       "expected_type": "amendment",
       "lifecycle_stage": "final",
       "expected_window": {
@@ -2267,15 +2267,15 @@
         "https://www.fedramp.gov/2026/timeline/"
       ],
       "dependent_of": null,
-      "status": "watching",
+      "status": "materialized",
       "escalate_after_days": 30,
-      "last_checked": "2026-08-09",
-      "last_change_detected": null,
-      "notes": "Providers directed to 20x Class A certification instead. Scheduled date (2026-07-28) has passed per the live timeline; the timeline entry is a schedule statement, not a completion notice — closure pends a state confirmation (the OVERDUE escalation is the prompt).",
+      "last_checked": "2026-08-16",
+      "last_change_detected": "2026-08-16",
+      "notes": "Closed 2026-08-16 on schedule elapse. The authority's own timeline still carries the milestone verbatim and unchanged 19 days after the date, so the schedule was not amended. STATED LIMIT: FedRAMP publishes no completion notice for timeline milestones — /legacy and /20x carry no 'FedRAMP Ready' state sentence, the certification-path page 404s, and the marketplace is a JS app with no fetchable state — so this closure rests on an elapsed, unamended schedule, not on a state confirmation. Providers are directed to 20x Class A certification instead.",
       "provenance": {
         "primary_source_url": "https://www.fedramp.gov/2026/timeline/",
-        "retrieved_at": "2026-08-09",
-        "verbatim": "July 28, 2026 FedRAMP Ready goes Legacy No FedRAMP Ready submissions will be accepted after this date",
+        "retrieved_at": "2026-08-16",
+        "verbatim": "July 28, 2026 FedRAMP Ready goes Legacy No FedRAMP Ready submissions will be accepted after this date; providers should seek FedRAMP 20x Class A Certification instead.",
         "support": "WELL_SUPPORTED",
         "terminal_state": "ORIGIN"
       }
@@ -2323,7 +2323,7 @@
       "feed_id": "fedramp",
       "authority": "FedRAMP (GSA)",
       "artifact": "Temporary Rev5 Class B/C pipelines open",
-      "current_version": "n/a",
+      "current_version": "Ready Conversion + Lost Sponsor pipelines open (scheduled 2026-08-10 elapsed)",
       "expected_type": "amendment",
       "lifecycle_stage": "final",
       "expected_window": {
@@ -2343,15 +2343,15 @@
         "https://www.fedramp.gov/2026/timeline/"
       ],
       "dependent_of": null,
-      "status": "watching",
+      "status": "materialized",
       "escalate_after_days": 30,
-      "last_checked": "2026-08-09",
-      "last_change_detected": null,
-      "notes": "Transition-window mechanism for existing Rev5 providers.",
+      "last_checked": "2026-08-16",
+      "last_change_detected": "2026-08-16",
+      "notes": "Closed 2026-08-16 on schedule elapse. Same page read as au-fedramp-ready-sunset: the timeline still states the milestone verbatim and unchanged six days after the date. Same stated limit — no completion notice is published for timeline milestones, so this rests on an elapsed, unamended schedule. Transition-window mechanism for existing Rev5 providers (Ready Conversion and Lost Sponsor pipelines, Rev5 Class B/C without an agency sponsor).",
       "provenance": {
         "primary_source_url": "https://www.fedramp.gov/2026/timeline/",
-        "retrieved_at": "2026-08-09",
-        "verbatim": "August 10, 2026 Temporary Rev5 Program Certification Pipelines Open for Class B and C",
+        "retrieved_at": "2026-08-16",
+        "verbatim": "August 10, 2026 Temporary Rev5 Program Certification Pipelines Open for Class B and C The Ready Conversion and Lost Sponsor pipelines open, allowing limited providers to apply for a Rev5 Class B or Class C Program Certification without an agency sponsor.",
         "support": "WELL_SUPPORTED",
         "terminal_state": "ORIGIN"
       }
@@ -2383,12 +2383,12 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 30,
-      "last_checked": "2026-08-09",
+      "last_checked": "2026-08-16",
       "last_change_detected": null,
-      "notes": "",
+      "notes": "Window not yet elapsed. Fresh observation 2026-08-16 during the phase-42 sweep: the timeline still states the 2026-08-31 date unchanged. No window change.",
       "provenance": {
         "primary_source_url": "https://www.fedramp.gov/2026/timeline/",
-        "retrieved_at": "2026-08-09",
+        "retrieved_at": "2026-08-16",
         "verbatim": "August 31, 2026 FedRAMP 20x Class B & C pipeline opens",
         "support": "WELL_SUPPORTED",
         "terminal_state": "ORIGIN"
@@ -2543,9 +2543,9 @@
       "feed_id": "cmmc",
       "authority": "DoW CIO / OUSD(A&S)",
       "artifact": "CMMC Reform Task Force RFI — public comment period closes",
-      "current_version": "RFI open (issued July 2026)",
+      "current_version": "RFI comment period closed 2026-08-14",
       "expected_type": "policy_review",
-      "lifecycle_stage": "rfi_open",
+      "lifecycle_stage": "rfi_closed",
       "expected_window": {
         "earliest": "2026-08-14",
         "latest": "2026-08-14",
@@ -2559,19 +2559,19 @@
         "match": "CMMC Reform Task Force RFI — public comment period closes"
       },
       "poll_frequency": "weekly",
-      "status": "watching",
+      "status": "materialized",
       "escalate_after_days": 14,
-      "last_checked": "2026-08-08",
-      "last_change_detected": null,
+      "last_checked": "2026-08-16",
+      "last_change_detected": "2026-08-16",
       "dependent_of": null,
       "source_urls": [
         "https://sam.gov/opp/9ede1222a8724b7d8afcacac6772f752/view",
         "https://www.war.gov/News/Releases/Release/Article/4542329/forging-the-arsenal-of-freedom-department-of-war-suspends-cmmc-phase-ii-require/"
       ],
-      "notes": "RFI announced alongside the 2026-07-13 Phase 2 suspension: the task force will synthesize 'industry feedback from our public Request for Information (RFI) regarding compliance challenges' (war.gov release). After 2026-08-14 this record goes overdue by design — fold in the outcome.",
+      "notes": "Comment period closed 2026-08-14 (12:00 PM ET) and the record closes on that elapse. Re-attempted the war.gov release at origin 2026-08-16: HTTP 403 bot-wall (Wayback fallback also errored), so no closure or extension statement could be read — the closure rests on the previously recorded due date, whose own sourcing is THIN (SAM.gov is a JS app; the SBA Advocacy page is bot-walled). No extension has been observed, but absence of an observation is not evidence of none. Forward link: the task-force outcome is tracked by au-cmmc-taskforce-report (derived window ~2026-09-11), which this phase does not alter; that report is also the unfreeze event for the deferred ODP baseline work. The frozen CMMC suspension records are untouched.",
       "provenance": {
         "primary_source_url": "https://www.war.gov/News/Releases/Release/Article/4542329/forging-the-arsenal-of-freedom-department-of-war-suspends-cmmc-phase-ii-require/",
-        "retrieved_at": "2026-08-08",
+        "retrieved_at": "2026-08-16",
         "verbatim": "industry feedback from our public Request for Information (RFI) regarding compliance challenges",
         "support": "THIN",
         "terminal_state": "ORIGIN"
