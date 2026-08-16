@@ -8,7 +8,7 @@ A regenerable one-screen summary of what dbz contains and how honest its evidenc
 
 - **grc.db** schema 3.18, 42 tables
 - **Spine:** 324 controls + 872 enhancements (800-53 r5)
-- **Master surface:** 97668 edges across 35 frameworks; matrix 120 pairs
+- **Master surface:** 97657 edges across 36 frameworks; matrix 120 pairs
 - **Depth:** 5137 CCIs · 383 STIG benchmarks / 19667 rules · 46 FedRAMP KSIs (373 stated edges) · 1870 OLIR-hub composed edges
 - **Keep-current:** 161 feeds (8 auto-fetch) · 76 horizon records
 - **Tooling:** 22 atoms · 3 overlays · 15 machine-checked doc claims
@@ -16,7 +16,7 @@ A regenerable one-screen summary of what dbz contains and how honest its evidenc
 ## Master edges by provenance tier
 
 - `hub`: 82822
-- `consensus`: 4495
+- `consensus`: 4484
 - `nist_stated`: 4173
 - `owner_stated`: 2962
 - `production_aggregate`: 1340
@@ -26,7 +26,7 @@ A regenerable one-screen summary of what dbz contains and how honest its evidenc
 ## Master edges by evidence state (corroboration ladder)
 
 - `columns_aligned`: 87924
-- `cross_validated`: 8267
+- `cross_validated`: 8256
 - `oracle_confirmed`: 1467
 - `asserted_by_source`: 10
 
