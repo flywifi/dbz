@@ -400,7 +400,7 @@
       "sha": "ac6e2f7",
       "date": "2026-08-14",
       "known_good": false,
-      "note": "CI red at this sha: count_truth caught schema_version 3.18 not yet stated in docs/fedramp-modernization.md (doc drift, healed at 6a91653). Data content is sound, but do not roll back TO this sha — use 6a91653. Process cause: pushed without the mandatory ci_rehearsal."
+      "note": "CI red at this sha: count_truth caught schema_version 3.18 not yet stated in docs/fedramp-modernization.md (doc drift, healed at 6a91653). Data content is sound, but do not roll back TO this sha \u2014 use 6a91653. Process cause: pushed without the mandatory ci_rehearsal."
     },
     {
       "phase": "41-pre",
@@ -414,6 +414,13 @@
       "name": "Phase-41 push + status hardening (gates commit)",
       "sha": "4852bf6",
       "date": "2026-08-15",
+      "known_good": true
+    },
+    {
+      "phase": "42-pre",
+      "name": "Pre-phase-42 baseline (phase-41 close)",
+      "sha": "08bdd16",
+      "date": "2026-08-16",
       "known_good": true
     }
   ]
