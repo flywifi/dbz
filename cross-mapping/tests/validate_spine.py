@@ -889,6 +889,27 @@ def main() -> int:
                     f"derivation from their own witness columns (cci_confirm._verdict and "
                     f"framework_vocab.cci_confirmation have diverged)")
 
+    # 21. Framework-name vocabulary coverage (phase 44). framework_vocab.framework_names.allowed
+    #     is the controlled vocabulary that makes a fabricated framework label impossible, but it
+    #     was hand-kept and had drifted: 25 labels the build emits were undeclared, including
+    #     'HIPAA Security' itself, while 'HIPAA Security Rule' was declared and used by nothing.
+    #     health_audit validates GENERATED CATALOG FILES against this list, never the database,
+    #     so nothing fired. One-directional by design: declared-but-unused is fine (a framework
+    #     may be declared before its loader lands); emitted-but-undeclared is not.
+    with open(ROOT / "canonical-sources" / "framework_vocab.json", encoding="utf-8") as f:
+        _allowed = set(json.load(f)["framework_names"]["allowed"])
+    _live = {r[0] for r in conn.execute("SELECT DISTINCT framework FROM framework_projection")}
+    _live |= {r[0] for r in conn.execute(
+        "SELECT DISTINCT fw_a FROM master_mappings UNION SELECT DISTINCT fw_b FROM master_mappings")}
+    _undeclared = sorted(_live - _allowed)
+    if _undeclared:
+        fail(f"framework labels emitted by the build but absent from "
+             f"framework_vocab.framework_names.allowed: {_undeclared[:8]}"
+             f"{'…' if len(_undeclared) > 8 else ''} ({len(_undeclared)} total)")
+    else:
+        note(f"framework-name vocabulary: all {len(_live)} emitted labels are declared "
+             f"({len(_allowed)} allowed)")
+
     if cbad:
         fail("framework->CCI confirmation malformed: " + "; ".join(cbad[:6]))
     else:
