@@ -74,7 +74,11 @@ bridge, consensus detection, publication hygiene, health auditor); their commits
 - **Consensus-stratum adjudication** — the 3,422 consensus-tier master rows behind the
   flagship stored pairs remain unadjudicated (phase-36 residual risk #2).
 - **Anchor-layer witnesses** — 28,898 `weak` framework→CCI pairs sit on `disa_only`/`candidate`
-  CCI anchors; raising them needs new anchor corroboration sources.
+  CCI anchors (939 distinct CCIs: 556 `legacy_r3_identity`, 441 `appj_absorption`, 79 r4/r5
+  identity, 231 `candidate`); raising them needs new anchor corroboration sources.
+- **Independent re-label of the phase-36 sample** — the seeded frame, all 220 keys and the
+  worksheet are committed at `docs/audits/data/` (phase 43); the 65 verdicts exist only as
+  prose in the audit report, so a re-label starts from a deliberately empty worksheet.
 - Candidate UX backlog from `docs/persona-audit.md`; standards-currency refresh cadence per
   `docs/standards-refresh-runbook.md`. Near-term horizon: `au-fedramp-class-bc` (2026-08-31)
   and `au-cmmc-taskforce-report` (~2026-09-11) — the latter unfreezes the deferred ODP baseline

@@ -1,0 +1,602 @@
+{
+ "db": "/home/user/dbz/cross-mapping/output/grc.db",
+ "seed": 20360810,
+ "strata_sql": {
+  "spoke_hub_transitive": "(fw_a='NIST 800-53' OR fw_b='NIST 800-53') AND provenance='transitive_unified'",
+  "spoke_hub_hitrust": "(fw_a='NIST 800-53' OR fw_b='NIST 800-53') AND provenance IN ('hitrust_hub','aicpa_tsp_hub')",
+  "spoke_authoritative": "(fw_a='NIST 800-53' OR fw_b='NIST 800-53') AND tier IN ('owner_direct','nist_stated','owner_stated')",
+  "spoke_bundled": "(fw_a='NIST 800-53' OR fw_b='NIST 800-53') AND tier='bundled'",
+  "spoke_other": "(fw_a='NIST 800-53' OR fw_b='NIST 800-53')",
+  "cross_consensus": "fw_a<>'NIST 800-53' AND fw_b<>'NIST 800-53' AND tier='consensus'",
+  "cross_nist_stated": "fw_a<>'NIST 800-53' AND fw_b<>'NIST 800-53' AND tier IN ('nist_stated','owner_direct')",
+  "cross_production": "fw_a<>'NIST 800-53' AND fw_b<>'NIST 800-53' AND tier='production_aggregate'",
+  "cross_other": "fw_a<>'NIST 800-53' AND fw_b<>'NIST 800-53'"
+ },
+ "total_rows": 97668,
+ "strata_counts": {
+  "cross_consensus": 3422,
+  "cross_nist_stated": 2250,
+  "cross_other": 397,
+  "cross_production": 1340,
+  "spoke_authoritative": 5373,
+  "spoke_bundled": 1226,
+  "spoke_hub_hitrust": 27373,
+  "spoke_hub_transitive": 55214,
+  "spoke_other": 1073
+ },
+ "M1": {
+  "total": 97668,
+  "spokes": 90259,
+  "spoke_pct": 92.41,
+  "cross": 7409,
+  "cross_pct": 7.59,
+  "distinct_pairs": 60,
+  "distinct_frameworks": 35,
+  "possible_pairs": 595
+ },
+ "M2": {
+  "provenance": {
+   "transitive_unified": {
+    "rows": 55214,
+    "tier": "hub",
+    "avg_conf": 0.65,
+    "needs_conf": 55214
+   },
+   "hitrust_hub": {
+    "rows": 27373,
+    "tier": "hub",
+    "avg_conf": 0.65,
+    "needs_conf": 27373
+   },
+   "consensus": {
+    "rows": 4495,
+    "tier": "consensus",
+    "avg_conf": null,
+    "needs_conf": 4495
+   },
+   "olir_csf2_pair": {
+    "rows": 2250,
+    "tier": "nist_stated",
+    "avg_conf": 0.85,
+    "needs_conf": 0
+   },
+   "ccm_oscal": {
+    "rows": 1845,
+    "tier": "owner_stated",
+    "avg_conf": 0.85,
+    "needs_conf": 0
+   },
+   "production_aggregate": {
+    "rows": 1340,
+    "tier": "production_aggregate",
+    "avg_conf": null,
+    "needs_conf": 1340
+   },
+   "master_crosswalk": {
+    "rows": 1226,
+    "tier": "bundled",
+    "avg_conf": 0.6,
+    "needs_conf": 1226
+   },
+   "scf_direct": {
+    "rows": 1117,
+    "tier": "owner_stated",
+    "avg_conf": 0.8,
+    "needs_conf": 1117
+   },
+   "direct_csf2": {
+    "rows": 737,
+    "tier": "nist_stated",
+    "avg_conf": 0.85,
+    "needs_conf": 0
+   },
+   "cmmc171": {
+    "rows": 650,
+    "tier": "owner_direct",
+    "avg_conf": 0.95,
+    "needs_conf": 0
+   },
+   "direct_olir": {
+    "rows": 643,
+    "tier": "nist_stated",
+    "avg_conf": 0.85,
+    "needs_conf": 0
+   },
+   "direct_800_66": {
+    "rows": 279,
+    "tier": "nist_stated",
+    "avg_conf": 0.85,
+    "needs_conf": 0
+   },
+   "aicpa_tsp_hub": {
+    "rows": 235,
+    "tier": "hub",
+    "avg_conf": 0.65,
+    "needs_conf": 235
+   },
+   "direct_cprt_171r3": {
+    "rows": 157,
+    "tier": "nist_stated",
+    "avg_conf": 0.85,
+    "needs_conf": 0
+   },
+   "direct_cprt_172r3": {
+    "rows": 107,
+    "tier": "nist_stated",
+    "avg_conf": 0.85,
+    "needs_conf": 0
+   }
+  },
+  "hitrust_dependent_rows": 82587,
+  "hitrust_dependent_pct": 84.56,
+  "unified_total": 60924,
+  "unified_transitive": 53022,
+  "unified_transitive_pct": 87.03
+ },
+ "M3": [
+  {
+   "fw_a": "NIST 800-53",
+   "fw_b": "NIST CSF",
+   "rows": 16139,
+   "other_framework": "NIST CSF",
+   "other_native_ids": 106,
+   "nist_ids": 1011,
+   "fanout_per_native": 152.3
+  },
+  {
+   "fw_a": "NIST 800-53",
+   "fw_b": "PCI DSS v4.0",
+   "rows": 15926,
+   "other_framework": "PCI DSS v4.0",
+   "other_native_ids": 753,
+   "nist_ids": 854,
+   "fanout_per_native": 21.2
+  },
+  {
+   "fw_a": "HIPAA Security",
+   "fw_b": "NIST 800-53",
+   "rows": 9076,
+   "other_framework": "HIPAA Security",
+   "other_native_ids": 101,
+   "nist_ids": 953,
+   "fanout_per_native": 89.9
+  },
+  {
+   "fw_a": "NIST 800-53",
+   "fw_b": "NIST SP 800-171 r2",
+   "rows": 7606,
+   "other_framework": "NIST SP 800-171 r2",
+   "other_native_ids": 750,
+   "nist_ids": 802,
+   "fanout_per_native": 10.1
+  },
+  {
+   "fw_a": "HIPAA Privacy Rule",
+   "fw_b": "NIST 800-53",
+   "rows": 6367,
+   "other_framework": "HIPAA Privacy Rule",
+   "other_native_ids": 568,
+   "nist_ids": 431,
+   "fanout_per_native": 11.2
+  },
+  {
+   "fw_a": "CIS CSC v8.0",
+   "fw_b": "NIST 800-53",
+   "rows": 4490,
+   "other_framework": "CIS CSC v8.0",
+   "other_native_ids": 198,
+   "nist_ids": 721,
+   "fanout_per_native": 22.7
+  },
+  {
+   "fw_a": "ISO 27001/2 (2022)",
+   "fw_b": "NIST 800-53",
+   "rows": 3761,
+   "other_framework": "ISO 27001/2 (2022)",
+   "other_native_ids": 250,
+   "nist_ids": 490,
+   "fanout_per_native": 15.0
+  },
+  {
+   "fw_a": "NIST 800-53",
+   "fw_b": "SOC 2",
+   "rows": 3337,
+   "other_framework": "SOC 2",
+   "other_native_ids": 65,
+   "nist_ids": 923,
+   "fanout_per_native": 51.3
+  },
+  {
+   "fw_a": "NIST 800-53",
+   "fw_b": "NY DFS 23 NYCRR 500",
+   "rows": 2995,
+   "other_framework": "NY DFS 23 NYCRR 500",
+   "other_native_ids": 118,
+   "nist_ids": 510,
+   "fanout_per_native": 25.4
+  },
+  {
+   "fw_a": "ISO/IEC 27001",
+   "fw_b": "NIST 800-53",
+   "rows": 2891,
+   "other_framework": "ISO/IEC 27001",
+   "other_native_ids": 131,
+   "nist_ids": 312,
+   "fanout_per_native": 22.1
+  },
+  {
+   "fw_a": "ISO/IEC 27799 (Health Informatics)",
+   "fw_b": "NIST 800-53",
+   "rows": 2556,
+   "other_framework": "ISO/IEC 27799 (Health Informatics)",
+   "other_native_ids": 112,
+   "nist_ids": 891,
+   "fanout_per_native": 22.8
+  },
+  {
+   "fw_a": "ISO/IEC 27002",
+   "fw_b": "NIST 800-53",
+   "rows": 2388,
+   "other_framework": "ISO/IEC 27002",
+   "other_native_ids": 87,
+   "nist_ids": 826,
+   "fanout_per_native": 27.4
+  },
+  {
+   "fw_a": "CSA CCM v4",
+   "fw_b": "NIST 800-53",
+   "rows": 1683,
+   "other_framework": "CSA CCM v4",
+   "other_native_ids": 195,
+   "nist_ids": 729,
+   "fanout_per_native": 8.6
+  },
+  {
+   "fw_a": "NIST 800-53",
+   "fw_b": "NIST CSF 2.0",
+   "rows": 1559,
+   "other_framework": "NIST CSF 2.0",
+   "other_native_ids": 208,
+   "nist_ids": 248,
+   "fanout_per_native": 7.5
+  },
+  {
+   "fw_a": "HITRUST CSF",
+   "fw_b": "NIST 800-53",
+   "rows": 1327,
+   "other_framework": "HITRUST CSF",
+   "other_native_ids": 139,
+   "nist_ids": 1011,
+   "fanout_per_native": 9.5
+  },
+  {
+   "fw_a": "ISO 27001/2 (2022)",
+   "fw_b": "PCI DSS v4.0",
+   "rows": 1300,
+   "other_framework": "ISO 27001/2 (2022)",
+   "other_native_ids": 109,
+   "nist_ids": 214,
+   "fanout_per_native": 11.9
+  },
+  {
+   "fw_a": "GDPR",
+   "fw_b": "NIST 800-53",
+   "rows": 1248,
+   "other_framework": "GDPR",
+   "other_native_ids": 193,
+   "nist_ids": 134,
+   "fanout_per_native": 6.5
+  },
+  {
+   "fw_a": "NIST 800-53",
+   "fw_b": "NIST AI RMF",
+   "rows": 1126,
+   "other_framework": "NIST AI RMF",
+   "other_native_ids": 72,
+   "nist_ids": 81,
+   "fanout_per_native": 15.6
+  },
+  {
+   "fw_a": "NIST 800-53",
+   "fw_b": "SCF 2026.1",
+   "rows": 1117,
+   "other_framework": "SCF 2026.1",
+   "other_native_ids": 777,
+   "nist_ids": 810,
+   "fanout_per_native": 1.4
+  },
+  {
+   "fw_a": "PCI DSS v4.0",
+   "fw_b": "SOC 2",
+   "rows": 762,
+   "other_framework": "PCI DSS v4.0",
+   "other_native_ids": 273,
+   "nist_ids": 49,
+   "fanout_per_native": 2.8
+  }
+ ],
+ "M5": {
+  "rows_without_anchors": 89248,
+  "pct": 91.38,
+  "transitive_without_anchors": 55149,
+  "rows_with_minority_report": 3899,
+  "minority_pct": 3.99
+ },
+ "M6": {
+  "framework_projection_status": {
+   "open": 135513
+  }
+ },
+ "sample": {
+  "spoke_hub_transitive": {
+   "available": 55214,
+   "requested": 60,
+   "picked": 60,
+   "keys": [
+    "NIST 800-53|SR-2|NIST CSF|PR.IR-01",
+    "HIPAA Privacy Rule|164.504(f)(1)(ii)(B)|NIST 800-53|AU-13(1)",
+    "NIST 800-53|AC-2|PCI DSS v4.0|8.2.4b",
+    "NIST 800-53|SC-42(4)|Singapore PDPA|1(2)",
+    "NIST 800-53|CA-8|PCI DSS v4.0|11.4.5a",
+    "NIST 800-53|CP-7(4)|NIST CSF|GV.OC-05",
+    "NIST 800-53|CA-7|NIST CSF|ID.IM-03",
+    "HIPAA Privacy Rule|164.502(b)(1)|NIST 800-53|RA-3",
+    "NIST 800-53|CP-2|NIST CSF|RS.MA-02",
+    "NIST 800-53|SA-15(3)|PCI DSS v4.0|6.4.1a.vi",
+    "ISO/IEC 27799 (Health Informatics)|ISO/IEC 27799:2016 12.6.1|NIST 800-53|IA-5(17)",
+    "NIST 800-53|PL-7|NIST CSF|ID.RA-10",
+    "NIST 800-53|SI-2(5)|PCI DSS v4.0|11.3.2a",
+    "NIST 800-53|RA-10|PCI DSS v4.0|1.2.4a",
+    "HIPAA Privacy Rule|164.530(b)(2)(i)(C)|NIST 800-53|IR-4",
+    "ISO/IEC 27799 (Health Informatics)|ISO/IEC 27799:2016 17.1.1|NIST 800-53|CA-5",
+    "NIST 800-53|SI-3(4)|NIST CSF|PR.PS-01",
+    "NIST 800-53|SR-5(1)|NIST CSF|GV.SC-01",
+    "ISO/IEC 27002|8(20)|NIST 800-53|AC-17(3)",
+    "Massachusetts 201 CMR 17.00|17.04(7)|NIST 800-53|AC-3(12)",
+    "NIST 800-53|SC-31|NIST CSF|PR.DS-02",
+    "NIST 800-53|AC-18(4)|PCI DSS v4.0|11.5.1d",
+    "NIST 800-53|SA-15(2)|NIST CSF|PR.PS-06",
+    "NIST 800-53|SR-7|NIST CSF|ID.IM-04",
+    "NIST 800-53|AU-12(1)|NIST CSF|RS.AN-07",
+    "NIST 800-53|AU-3(1)|NIST CSF|PR.PS-04",
+    "NIST 800-53|PL-10|NIST CSF|DE.AE-04",
+    "NIST 800-53|SI-7(5)|NIST CSF|ID.IM-03",
+    "NIST 800-53|RA-5(2)|PCI DSS v4.0|11.3.2.1a",
+    "NIST 800-53|CM-8(6)|PCI DSS v4.0|2.2.1e",
+    "NIST 800-53|RA-6|NIST AI RMF|MAP 2.3",
+    "NIST 800-53|SA-4(8)|NIST CSF|PR.IR-01",
+    "NIST 800-53|SA-4(6)|NIST CSF|GV.OC-04",
+    "NIST 800-53|RA-5(4)|PCI DSS v4.0|11.3.1.1a",
+    "NIST 800-53|CP-2(5)|NIST CSF|RC.CO-03",
+    "ISO/IEC 27001|5.3a|NIST 800-53|MA-1",
+    "HIPAA Privacy Rule|164.504(e)(5)|NIST 800-53|SA-4(6)",
+    "NIST 800-53|SI-4(17)|NY DFS 23 NYCRR 500|500.04(d)(2)",
+    "NIST 800-53|IA-12(2)|PCI DSS v4.0|8.3.10.1b",
+    "ISO/IEC 27002|8(14)|NIST 800-53|SA-8(23)",
+    "NIST 800-53|RA-5(3)|PCI DSS v4.0|11.4.5c",
+    "NIST 800-53|PE-6(4)|PCI DSS v4.0|12.4.2.1b",
+    "HIPAA Privacy Rule|164.514(e)(3)(i)|NIST 800-53|AU-13",
+    "NIST 800-53|SI-2(3)|PCI DSS v4.0|6.3.1b",
+    "NIST 800-53|SI-4(13)|PCI DSS v4.0|11.5.2a",
+    "NIST 800-53|AU-6|NIST SP 800-213A (IoT)|CS:AUP(1)",
+    "CCPA/CPRA|1798.130(a)(7)|NIST 800-53|SI-12(1)",
+    "NIST 800-53|SI-1|NIST CSF 2.0|GV.SC-03",
+    "NIST 800-53|IR-4(15)|PCI DSS v4.0|10.7.2h",
+    "ISO/IEC 27002|8(8)|NIST 800-53|SA-11(8)",
+    "NIST 800-53|PE-8|NIST CSF|RS.CO-02",
+    "NIST 800-53|SI-1|NIST CSF|RC.RP-01",
+    "NIST 800-53|AT-1|PCI DSS v4.0|6.1.2",
+    "NIST 800-53|AT-1|NIST CSF|DE.AE-06",
+    "NIST 800-53|SC-40|NIST CSF|ID.RA-07",
+    "HIPAA Privacy Rule|164.528(b)(3)(ii)|NIST 800-53|SI-21",
+    "ISO/IEC 27799 (Health Informatics)|ISO/IEC 27799:2016 12.1.2|NIST 800-53|SA-3(1)",
+    "NIST 800-53|MP-1|NIST AI RMF|MANAGE 4.1",
+    "HIPAA Privacy Rule|164.526(d)(1)(ii)|NIST 800-53|SI-14(2)",
+    "ISO/IEC 27001|9.3.2d1|NIST 800-53|CP-1"
+   ]
+  },
+  "spoke_hub_hitrust": {
+   "available": 27373,
+   "requested": 50,
+   "picked": 50,
+   "keys": [
+    "HIPAA Security|164.314(a)(2)(i)(C)|NIST 800-53|CA-3",
+    "NIST 800-53|SI-4(24)|NIST SP 800-171 r2|3.13.2[b]",
+    "HIPAA Security|164.308(a)(4)(ii)(C)|NIST 800-53|SR-3",
+    "GDPR|15(4)|NIST 800-53|AC-3(14)",
+    "NIST 800-53|SI-3(6)|NIST SP 800-171 r2|3.6.2[a]",
+    "NIST 800-53|SC-40(2)|NIST SP 800-171 r2|3.13.14[b]",
+    "NIST 800-53|PE-2(2)|NIST SP 800-171 r2|3.10.2[b]",
+    "ISO 27001/2 (2022)|8.1 b|NIST 800-53|SA-11(4)",
+    "HIPAA Security|164.308(a)(8)|NIST 800-53|PT-2(1)",
+    "HIPAA Security|164.308(b)(2)|NIST 800-53|AU-13(2)",
+    "CIS CSC v8.0|2.05|NIST 800-53|CM-6(2)",
+    "CIS CSC v8.0|18.01|NIST 800-53|SA-15(3)",
+    "HIPAA Security|164.308(a)(6)(i)|NIST 800-53|RA-3",
+    "GDPR|49(1)c|NIST 800-53|SC-43",
+    "ISO 27001/2 (2022)|6.2 h|NIST 800-53|PS-1",
+    "NIST 800-53|SI-8(2)|NIST SP 800-171 r2|3.1.3[d]",
+    "HIPAA Security|164.308(a)(1)(ii)(B)|NIST 800-53|IR-4(5)",
+    "CIS CSC v8.0|16.02|NIST 800-53|SI-8(2)",
+    "HIPAA Security|164.308(a)(3)(ii)(B)|NIST 800-53|SI-4(19)",
+    "HIPAA Security|164.308(a)(5)(ii)(B)|NIST 800-53|AC-4(23)",
+    "CIS CSC v8.0|9.03|NIST 800-53|SC-7(16)",
+    "NIST 800-53|CM-14|NIST SP 800-171 r2|3.4.1[c]",
+    "HIPAA Security|164.310(a)(2)(iii)|NIST 800-53|AC-4(30)",
+    "HIPAA Security|164.308(a)(6)(i)|NIST 800-53|SI-6(3)",
+    "NIST 800-53|CP-10(6)|SOC 2|A1.2",
+    "NIST 800-53|CA-6(1)|NIST SP 800-171 r2|3.4.1[b]",
+    "GDPR|39(1)c|NIST 800-53|AC-4(24)",
+    "NIST 800-53|SI-4(3)|NIST SP 800-171 r2|3.3.5[b]",
+    "CIS CSC v8.0|18.03|NIST 800-53|RA-5",
+    "CMMC 2.0|IA.L1.3.5.1|NIST 800-53|MA-4",
+    "HIPAA Security|164.308(b)(3)|NIST 800-53|AU-13(2)",
+    "HIPAA Security|164.316(a)|NIST 800-53|AT-6",
+    "HIPAA Security|164.310(d)(2)(iii)|NIST 800-53|PE-8",
+    "NIST 800-53|AC-4(23)|NIST SP 800-171 r2|3.14.6[c]",
+    "CIS CSC v8.0|12.05|NIST 800-53|IA-2(1)",
+    "HIPAA Security|164.308(a)(6)(i)|NIST 800-53|SC-31(2)",
+    "ISO 27001/2 (2022)|7.4 a|NIST 800-53|PM-6",
+    "HIPAA Security|164.316(a)|NIST 800-53|SA-4(5)",
+    "HIPAA Security|164.308(a)(5)(ii)(B)|NIST 800-53|CM-7(9)",
+    "CIS CSC v8.0|7.02|NIST 800-53|SI-8(2)",
+    "NIST 800-53|SR-10|NIST SP 800-171 r2|3.12.2[c]",
+    "ISO 27001/2 (2022)|9.3.2 a|NIST 800-53|CA-2(1)",
+    "NIST 800-53|AC-4(15)|NIST SP 800-171 r2|3.1.5[d]",
+    "NIST 800-53|IR-3|SOC 2|CC3.1",
+    "NIST 800-53|SI-4(1)|SOC 2|CC2.1",
+    "HIPAA Security|164.308(a)(7)(i)|NIST 800-53|PL-8",
+    "HIPAA Security|164.308(a)(7)(ii)(B)|NIST 800-53|CA-7(4)",
+    "ISO 27001/2 (2022)|6.2 j|NIST 800-53|PM-19",
+    "CIS CSC v8.0|10.07|NIST 800-53|AU-6(3)",
+    "NIST 800-53|SC-41|SOC 2|CC7.1"
+   ]
+  },
+  "cross_consensus": {
+   "available": 3422,
+   "requested": 40,
+   "picked": 40,
+   "keys": [
+    "NIST CSF 2.0|DE.CM-9|SOC 2|CC6.8",
+    "PCI DSS v4.0|6.3.3|SOC 2|CC7.1",
+    "HIPAA Security|164.312|PCI DSS v4.0|10.7",
+    "ISO 27001/2 (2022)|A.5.18|PCI DSS v4.0|7.2",
+    "NIST SP 800-171 r2|3.1.3|PCI DSS v4.0|1.4.3",
+    "ISO 27001/2 (2022)|A.8.8|NIST CSF 2.0|ID.IM-2",
+    "ISO 27001/2 (2022)|A.5.18|PCI DSS v4.0|8.2.5",
+    "ISO 27001/2 (2022)|A.5.17|PCI DSS v4.0|8.3.9",
+    "NIST SP 800-171 r2|3.7.5|PCI DSS v4.0|8.2.7",
+    "NIST SP 800-171 r2|3.8.2|SOC 2|C1.1",
+    "ISO 27001/2 (2022)|A.5.21|PCI DSS v4.0|12.9.1",
+    "PCI DSS v4.0|11.2.1|SOC 2|CC6.1",
+    "PCI DSS v4.0|3.2.1|SOC 2|CC6.4",
+    "HIPAA Security|164.312|SOC 2|CC9.1",
+    "HIPAA Security|164.508|SOC 2|P4.1",
+    "PCI DSS v4.0|7.2.3|SOC 2|CC6.2",
+    "ISO 27001/2 (2022)|5.1|NIST CSF 2.0|GV.OC-3",
+    "ISO 27001/2 (2022)|A.6.8|NIST CSF 2.0|GV.SC-8",
+    "CIS CSC v8.0|4.2|SOC 2|CC7.1",
+    "NIST CSF 2.0|GV.RR-2|SOC 2|CC1.3",
+    "CIS CSC v8.0|6.5|SOC 2|CC6.1",
+    "HIPAA Security|164.308|SOC 2|CC3.1",
+    "HIPAA Security|164.308|PCI DSS v4.0|8.3.5",
+    "CIS CSC v8.0|16.6|SOC 2|CC3.1",
+    "NIST CSF 2.0|PR.IR-1|PCI DSS v4.0|1.4.1",
+    "ISO 27001/2 (2022)|7.5|PCI DSS v4.0|8.3.8",
+    "NIST CSF 2.0|DE.AE-6|PCI DSS v4.0|10.4.2.1",
+    "CIS CSC v8.0|3.5|SOC 2|C1.1",
+    "ISO 27001/2 (2022)|A.8.12|SOC 2|CC2.1",
+    "ISO 27001/2 (2022)|A.5.4|SOC 2|CC2.2",
+    "CIS CSC v8.0|13.6|ISO 27001/2 (2022)|A.8.16",
+    "HIPAA Security|164.316|ISO 27001/2 (2022)|5.2",
+    "ISO 27001/2 (2022)|5.1|PCI DSS v4.0|2.1.1",
+    "HIPAA Security|164.308|SOC 2|CC4.1",
+    "ISO 27001/2 (2022)|8.3|PCI DSS v4.0|10.7.1",
+    "HIPAA Security|164.312|PCI DSS v4.0|12.1.3",
+    "PCI DSS v4.0|10.6.2|SOC 2|CC8.1",
+    "PCI DSS v4.0|10.2.1|SOC 2|CC7.1",
+    "NIST CSF 2.0|DE.CM-2|SOC 2|CC6.4",
+    "NIST CSF 2.0|PR.IR-3|SOC 2|A1.2"
+   ]
+  },
+  "cross_production": {
+   "available": 1340,
+   "requested": 25,
+   "picked": 25,
+   "keys": [
+    "ISO 27001/2 (2022)|A.5.1|PCI DSS v4.0|11.1.1",
+    "ISO 27001/2 (2022)|4.4|PCI DSS v4.0|4.1.1",
+    "HITRUST CSF|04.01x1Organizational.5|ISO 27001/2 (2022)|A.8.24 a",
+    "HITRUST CSF|0305.09q1Organizational.12|ISO 27001/2 (2022)|A.8.22",
+    "HITRUST CSF|1634.12b1Organizational.1|ISO 27001/2 (2022)|A.8.14",
+    "ISO 27001/2 (2022)|9.2.1|PCI DSS v4.0|1.1.1",
+    "HITRUST CSF|0305.09q1Organizational.12|ISO 27001/2 (2022)|A.7.10 a",
+    "ISO 27001/2 (2022)|A.8.3|PCI DSS v4.0|3.4.1",
+    "ISO 27001/2 (2022)|6.2|PCI DSS v4.0|5.1.1",
+    "HITRUST CSF|0113.04a1Organizational.2|ISO 27001/2 (2022)|10.1",
+    "HITRUST CSF|0113.04a1Organizational.2|ISO 27001/2 (2022)|A.5.35",
+    "ISO 27001/2 (2022)|A.5.17|PCI DSS v4.0|7.2.5",
+    "ISO 27001/2 (2022)|A.8.10|PCI DSS v4.0|3.1.1",
+    "HITRUST CSF|12148.06i1Organizational.1|ISO 27001/2 (2022)|A.8.15",
+    "ISO 27001/2 (2022)|A.5.15|PCI DSS v4.0|8.2.5",
+    "ISO 27001/2 (2022)|A.5.8|PCI DSS v4.0|10.1.1",
+    "ISO 27001/2 (2022)|9.3.1|PCI DSS v4.0|2.1.1",
+    "ISO 27001/2 (2022)|A.8.3|PCI DSS v4.0|8.2.5",
+    "HITRUST CSF|0305.09q1Organizational.12|PCI DSS v4.0|9.4.2",
+    "HITRUST CSF|0210.01g1Organizational.1|ISO 27001/2 (2022)|A.6.2",
+    "ISO 27001/2 (2022)|4.2|PCI DSS v4.0|10.1.1",
+    "ISO 27001/2 (2022)|A.6.2|PCI DSS v4.0|8.1.1",
+    "HITRUST CSF|0913.09s1Organizational.5|PCI DSS v4.0|4.2.1",
+    "HITRUST CSF|02962.09j1Organizational.5|PCI DSS v4.0|5.2.1",
+    "HITRUST CSF|1636.12b2Organizational.1|ISO 27001/2 (2022)|A.8.14"
+   ]
+  },
+  "spoke_bundled": {
+   "available": 1226,
+   "requested": 20,
+   "picked": 20,
+   "keys": [
+    "NIST 800-53|AC-17|PCI DSS v4.0|12.8.1",
+    "NIST 800-53|PE-22|PCI DSS v4.0|A3.2.5",
+    "NIST 800-53|CM-2|PCI DSS v4.0|10.2.1.7",
+    "NIST 800-53|PM-13|PCI DSS v4.0|7.1.2",
+    "NIST 800-53|SI-6|PCI DSS v4.0|A3.2.2.1",
+    "NIST 800-53|IA-5|PCI DSS v4.0|8.2.4",
+    "NIST 800-53|MA-4|PCI DSS v4.0|8.2.7",
+    "NIST 800-53|SI-12|PCI DSS v4.0|9.4.7",
+    "NIST 800-53|AT-1|PCI DSS v4.0|12.6.1",
+    "NIST 800-53|SI-7(6)|PCI DSS v4.0|8.3.2",
+    "NIST 800-53|PL-9|PCI DSS v4.0|A3.1.1",
+    "NIST 800-53|SI-4(25)|PCI DSS v4.0|1.4.2",
+    "NIST 800-53|SC-7(17)|PCI DSS v4.0|6.4",
+    "NIST 800-53|PM-6|PCI DSS v4.0|3.1.2",
+    "NIST 800-53|SC-7(11)|PCI DSS v4.0|1.4",
+    "NIST 800-53|SR-1|PCI DSS v4.0|12.9",
+    "NIST 800-53|AC-2(9)|PCI DSS v4.0|8.2.2",
+    "NIST 800-53|SA-15(5)|PCI DSS v4.0|8.3.2",
+    "NIST 800-53|SR-1|PCI DSS v4.0|A2.1.3",
+    "NIST 800-53|PM-13|PCI DSS v4.0|A3.1.4"
+   ]
+  },
+  "spoke_authoritative": {
+   "available": 5373,
+   "requested": 15,
+   "picked": 15,
+   "keys": [
+    "NIST 800-53|AC-11(1)|NIST SP 800-171 r3|3.1.10",
+    "CSA CCM v4|CEK-01|NIST 800-53|SA-9",
+    "ISO 27001/2 (2022)|A.6.4|NIST 800-53|PS-8",
+    "NIST 800-53|SI-3|NIST SP 800-171 r2|3.14.5[a]",
+    "CSA CCM v4|BCR-09|NIST 800-53|CP-2(7)",
+    "CSA CCM v4|CCC-03|NIST 800-53|CM-3(3)",
+    "CSA CCM v4|TVM-08|NIST 800-53|SI-2(2)",
+    "ISO 27001/2 (2022)|7.5.2|NIST 800-53|PM-28",
+    "CSA CCM v4|SEF-07|NIST 800-53|AU-13(2)",
+    "NIST 800-53|SR-2|NIST CSF 2.0|ID.IM-4",
+    "CSA CCM v4|IAM-04|NIST 800-53|AC-2(11)",
+    "NIST 800-53|SI-3|NIST CSF 2.0|PR.DS-1",
+    "CSA CCM v4|DSP-03|NIST 800-53|SI-19",
+    "NIST 800-53|CA-7|NIST CSF 2.0|DE.CM-9",
+    "CMMC 2.0|CA.L2-3.12.4(b.)|NIST 800-53|PL-2"
+   ]
+  },
+  "cross_nist_stated": {
+   "available": 2250,
+   "requested": 10,
+   "picked": 10,
+   "keys": [
+    "NIST CSF 2.0|PR.PS-6|PCI DSS v4.0|6.3.2",
+    "NIST CSF 2.0|GV.OC-3|PCI DSS v4.0|3.2.1",
+    "NIST CSF 2.0|PR.DS-2|NIST SP 800-171 r3|3.13.11",
+    "ISO 27001/2 (2022)|A.6.2|NIST CSF 2.0|PR.DS-2",
+    "NIST CSF 2.0|ID.IM-3|NIST SP 800-171 r3|3.17.2",
+    "CSA CCM v4|TVM-10|NIST CSF 2.0|ID.RA-6",
+    "NIST CSF 2.0|RS.CO-3|PCI DSS v4.0|12.10.6",
+    "CSA CCM v4|DCS-01|NIST CSF 2.0|GV.PO-1",
+    "CSA CCM v4|DSP-14|NIST CSF 2.0|GV.SC-5",
+    "NIST CSF 2.0|GV.OC-5|PCI DSS v4.0|12.8.4"
+   ]
+  }
+ },
+ "sample_total": 220
+}
