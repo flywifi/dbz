@@ -32,8 +32,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import re
 import subprocess
 import sys
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -144,8 +147,76 @@ def stage_horizon() -> dict:
     return {"horizon_overdue": overdue, "horizon_due_review": due_review}
 
 
+GITHUB_LATEST = "https://api.github.com/repos/{repo}/releases/latest"
+
+
+def _latest_release_tag(repo: str) -> tuple:
+    """(tag, None) from the GitHub releases API, or (None, reason).
+
+    In CI (standards-watch.yml) GITHUB_TOKEN authenticates the call; in a session
+    environment the proxy intercepts api.github.com with a structured 403 — the
+    caller MUST classify that as check_failed, never as current (the ci_status.py
+    error/empty/data discipline). The releases HTML page and releases.atom both
+    403 scripted fetches (measured 2026-09-19), so the API is the one signal."""
+    headers = {"User-Agent": "dbz-standards-refresh/1.0",
+               "Accept": "application/vnd.github+json"}
+    tok = os.environ.get("GITHUB_TOKEN")
+    if tok:
+        headers["Authorization"] = f"Bearer {tok}"
+    req = urllib.request.Request(GITHUB_LATEST.format(repo=repo), headers=headers)
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            payload = json.loads(r.read().decode("utf-8"))
+        tag = payload.get("tag_name") or payload.get("name")
+        return (tag, None) if tag else (None, "no tag_name in release payload")
+    except Exception as e:  # noqa: BLE001 — classify, never crash the report
+        return None, f"{type(e).__name__}:{getattr(e, 'code', '')}"
+
+
+def _classify_release_feed(current_version: str, tag, err) -> tuple:
+    """current | registry_stale | check_failed for a github_release feed.
+
+    Boundary-guarded match (the count_truth._patterns_for idiom) so a shorter
+    live tag ('2026.1') can never satisfy a longer pin ('2026.1.1'); a missing
+    tag FAILS CLOSED — the fail-open stored-status default was how SCF 2026.2
+    stayed classified 'current' for ten weeks (phase 45, defect T1)."""
+    if tag is None:
+        return "check_failed", err
+    norm = re.sub(r"(?i)^(scf|v)\s*", "", str(tag).strip())
+    if norm and re.search(r"(?<![\d.])" + re.escape(norm) + r"(?![\d.])",
+                          current_version or ""):
+        return "current", f"release tag {tag!r} matches"
+    return "registry_stale", f"live tag {tag!r} not in current_version {current_version!r}"
+
+
+def selftest_release_check() -> int:
+    """Prove the release classifier goes RED on a stale pin and CLOSED on no signal.
+    The first fixture is the real phase-45 incident verbatim: pin 'SCF 2026.1.1'
+    vs live tag '2026.2' (released 2026-07-08), which the stored-status
+    classifier called current for ten weeks."""
+    cases = [
+        ("SCF 2026.1.1 (2026-04-22)", "2026.2", None, "registry_stale"),
+        ("SCF 2026.1.1 (2026-04-22)", "SCF 2026.1.1", None, "current"),
+        ("SCF 2026.1.1 (2026-04-22)", "SCF 2026.1", None, "registry_stale"),  # boundary guard
+        ("SCF 2026.2 (2026-07-08)", "2026.2", None, "current"),
+        ("v4.1", "v4.1", None, "current"),
+        ("v4.1", None, "HTTPError:403", "check_failed"),  # fail closed, never current
+    ]
+    bad = 0
+    for cv, tag, err, want in cases:
+        got, why = _classify_release_feed(cv, tag, err)
+        ok = got == want
+        bad += 0 if ok else 1
+        print(f"  [{'ok' if ok else 'FAIL'}] cv={cv!r} tag={tag!r} -> {got} ({why})")
+    print(f"[selftest] release-check: {len(cases) - bad}/{len(cases)} passed")
+    return 1 if bad else 0
+
+
 def stage_check() -> dict:
-    """Run the monitors, then classify every registry feed."""
+    """Run the monitors, then classify every registry feed. Feeds with
+    check_strategy=github_release get a LIVE version comparison; every other
+    row is explicitly labeled stored_status_only so the report never again
+    reads a stored status as a live verdict (phase 45, defect T1)."""
     monitor_rc, monitor_out = _run([sys.executable, str(ENGINE / "framework_monitor.py"), "--dry-run"])
     ann_rc, ann_out = _run([sys.executable, str(ENGINE / "announcement_monitor.py"), "--dry-run"])
     stig_signal = stage_stig_check()
@@ -156,11 +227,15 @@ def stage_check() -> dict:
     feeds = reg["feeds"]
     rows = []
     for fid, e in sorted(feeds.items()):
-        status = e.get("artifact_status", "metadata_only")
         if not isinstance(e, dict):
             continue
-        cls = status
-        if status == "current" and e.get("auto_fetch") and monitor_rc != 0:
+        status = e.get("artifact_status", "metadata_only")
+        cls, reason, signal = status, None, "stored_status_only"
+        if e.get("check_strategy") == "github_release" and e.get("github_repo"):
+            signal = "github_release_api"
+            tag, err = _latest_release_tag(e["github_repo"])
+            cls, reason = _classify_release_feed(e.get("current_version", ""), tag, err)
+        elif status == "current" and e.get("auto_fetch") and monitor_rc != 0:
             cls = "check_failed"
         rows.append({
             "framework_id": fid,
@@ -170,6 +245,8 @@ def stage_check() -> dict:
             "last_changed": e.get("last_changed"),
             "last_verified": e.get("last_verified"),
             "classification": cls,
+            "signal": signal,
+            "reason": reason,
         })
     report = {
         "generated_at": _now(),
@@ -187,6 +264,10 @@ def stage_check() -> dict:
     REPORT.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(f"[check] monitor rc={monitor_rc} announcements rc={ann_rc}")
     print(f"[check] {len(rows)} feeds -> {report['summary']}")
+    stale = [r for r in rows if r["classification"] == "registry_stale"]
+    for r in stale:
+        print(f"[check] REGISTRY STALE {r['framework_id']}: {r['reason']} — "
+              "re-verify at origin and update the feed via registry_io")
     print(f"[check] report: {REPORT.relative_to(ROOT)}")
     return report
 
@@ -278,7 +359,11 @@ def main() -> int:
     ap.add_argument("--check", action="store_true", help="run monitors + write drift report")
     ap.add_argument("--fetch", action="store_true", help="re-fetch auto_fetch artifacts")
     ap.add_argument("--gate", action="store_true", help="rebuild grc.db + run gate battery")
+    ap.add_argument("--selftest-release-check", action="store_true",
+                    help="prove the github_release classifier fails red/closed (fixtures)")
     args = ap.parse_args()
+    if args.selftest_release_check:
+        return selftest_release_check()
     if not (args.check or args.fetch or args.gate):
         ap.error("choose at least one of --check / --fetch / --gate")
 

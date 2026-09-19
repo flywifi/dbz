@@ -5255,19 +5255,19 @@
       "label": "Secure Controls Framework (SCF)",
       "authority": "primary",
       "framework_id": "scf",
-      "current_version": "SCF 2026.1.1 (2026-04-22)",
+      "current_version": "SCF 2026.2 (2026-07-08)",
       "urls": {
         "landing": "https://github.com/securecontrolsframework/securecontrolsframework",
         "download_page": "https://github.com/securecontrolsframework/securecontrolsframework"
       },
       "check_strategy": "github_release",
       "last_checked": null,
-      "last_changed": "2026-04-22",
-      "notes": "Free CC-licensed meta-framework. On disk: controls xlsx 2026.1.1 (+ ERRATA pinned), Overview & Practitioner Guidebook 2026.2 (docs versioned independently), CAP Body of Knowledge 2026.1 + CAP Ecosystem, 12 per-framework assessment guides, training syllabi, CDPAS/MADSS standards, SCRMS 2026.1 playbook (source_data/scf/). 2026.1 STRM refresh added 13 authoritative sources (incl. OWASP 2025, CJIS v6, IEC 62443 set) and removed others (incl. NIST 800-63B, FedRAMP R4). Quarterly-ish GitHub cadence. ACCEPTANCE-AUTHORITY: SCF's mappings are SCF's acceptance rules — 'SCF #1 maps to control X' means SCF accepts X as satisfying SCF #1 for SCF/CAP purposes. Never a claim about other frameworks' acceptance; never modifies their data. Phase 20: SCF is a spine framework ('SCF 2026.1', scf_direct 0.80, SCF/CAP-scope acceptance) from the xlsx's NIST 800-53 R5 column — a refreshed xlsx flows through standards_refresh.py --gate and regenerates the projection (build artifact, never hand-patched). SCF's per-framework STRM PDFs are the relationship-upgrade path.",
+      "last_changed": "2026-07-08",
+      "notes": "Free CC-licensed meta-framework. On disk: controls xlsx 2026.1.1 (+ ERRATA pinned) — ONE RELEASE BEHIND the 2026.2 registry currency (Quantum Security domain, compensating-controls lists, STRM refresh); ingest is a dedicated phase (see docs/audits/phase-45-adversarial-audit.md scoping), Overview & Practitioner Guidebook 2026.2 (docs versioned independently), CAP Body of Knowledge 2026.1 + CAP Ecosystem, 12 per-framework assessment guides, training syllabi, CDPAS/MADSS standards, SCRMS 2026.1 playbook (source_data/scf/). 2026.1 STRM refresh added 13 authoritative sources (incl. OWASP 2025, CJIS v6, IEC 62443 set) and removed others (incl. NIST 800-63B, FedRAMP R4). Quarterly-ish GitHub cadence. ACCEPTANCE-AUTHORITY: SCF's mappings are SCF's acceptance rules — 'SCF #1 maps to control X' means SCF accepts X as satisfying SCF #1 for SCF/CAP purposes. Never a claim about other frameworks' acceptance; never modifies their data. Phase 20: SCF is a spine framework ('SCF 2026.1', scf_direct 0.80, SCF/CAP-scope acceptance) from the xlsx's NIST 800-53 R5 column — a refreshed xlsx flows through standards_refresh.py --gate and regenerates the projection (build artifact, never hand-patched). SCF's per-framework STRM PDFs are the relationship-upgrade path.",
       "draft_status": "none",
       "auto_fetch": true,
-      "artifact_status": "current",
-      "last_verified": "2026-07-06",
+      "artifact_status": "artifact_stale",
+      "last_verified": "2026-09-19",
       "authority_scope": "scf_only",
       "source_manifest_keys": [
         "scf-controls"

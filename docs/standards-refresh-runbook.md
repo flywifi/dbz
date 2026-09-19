@@ -16,6 +16,15 @@ a human does the confirming.
 1. **check** — `framework_monitor.py` + `announcement_monitor.py` signals, classified per feed:
    `current / registry_stale / artifact_stale / licensed_pinned / metadata_only / on_demand /
    check_failed`. Report: `cross-mapping/output/standards_drift_report.json`.
+   Every row carries a `signal` field saying what its classification is worth:
+   `github_release_api` rows are **live version comparisons** (the 19 `check_strategy:
+   github_release` feeds; latest release tag vs `current_version`, boundary-guarded, failing
+   CLOSED to `check_failed` when the API is unreachable — fixture proof:
+   `standards_refresh.py --selftest-release-check`); `stored_status_only` rows merely echo the
+   stored `artifact_status` and are **not** a live verdict (phase 45: SCF 2026.2 sat behind a
+   "current" echo for ten weeks). A `registry_stale` row is **blocking-until-triaged**:
+   re-verify at origin, update the feed via `registry_io`, and route any artifact impact
+   through the normal human-reviewed loader phase.
 2. **fetch** (`--fetch`) — re-downloads ONLY `auto_fetch: true` feeds (KEV, ATT&CK STIX,
    DISA CCI, 800-53 OSCAL, SCF). Nothing semantic is auto-merged.
 3. **diff** — version transitions land in `framework_changelog.json` as
@@ -110,6 +119,12 @@ watcher: `cross-mapping/engine/horizon_monitor.py`; full model + per-authority s
 - **Act on overdue:** `horizon_monitor.py --overdue` lists records past their window (re-investigate
   the source — did it land? then ingest via the normal human-reviewed loader, and set the record's
   `status` to `materialized`/`superseded`). Materialization is never auto-ingested.
+- **Elapsed-but-open (phase 45):** `--overdue` and `--summary` also surface `elapsed_open` —
+  every open record whose dated window has passed, **regardless of the escalation grace**.
+  Grace exists to pace escalation, not to hide an elapsed window (three elapsed windows sat
+  mechanically "watching" inside grace in September 2026). A nonzero `elapsed_open` at the
+  monthly check means a human decides: materialize, supersede, or re-date from a source —
+  never silence the clock with a derived date.
 - **Add an anticipation (crawl-seed procedure):** whenever a source traversal encounters an
   anticipatable signal — a "not available yet" placeholder, a draft/IPD/FPD status, an ISO DIS ballot,
   a HITRUST advisory, a transition-timeline date, or a PCI "best practice until `<date>`" clause — add
