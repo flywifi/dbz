@@ -3,6 +3,63 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.13.0] — 2026-09-19 (phase 46 — SCF 2026.2 ingested, rollback-tested; the phase-45 versioning miss repaired)
+
+MINOR: the canonical SCF framework name changes on the query surface (alias-preserved) and
+the SCF witness tier expands. No schema bump.
+
+### SCF 2026.2 ingested (released upstream 2026-07-08; on disk since this phase)
+- Workbook + errata swapped for the upstream 2026.2 release (the repo renamed its file set
+  to kebab-case: `secure-controls-framework-scf-2026-2.xlsx`, plain `errata.txt`).
+  Byte-compared re-fetch (sha `9e0a4df4…`) before pinning.
+- **Measured deltas** (probe scripts under the phase-46 audit doc): SCF control ids
+  **+66 / −0** (1,468 → 1,534; new Quantum Security **QTS** domain — the errata enumerates
+  only 65, omitting NET-06.9); the **800-53 projection is IDENTICAL** (1,117 edges / 777
+  controls, +0/−0 — including the errata's "Updated Mapping: SAT-03.2, SAT-03.6" rows,
+  which normalize to the same edges); fan-out witness **8,609 → 8,983** (800-172 R3 +303,
+  800-171 r3 +62, CIS +9); SCF consensus-voter pairs **15,843 → 15,906** (+625/−562,
+  CIS-concentrated); **confirmed 23,485 → 23,551** (+66, witness-supported only —
+  restated in `docs/BENCHMARK.md`).
+- **Label**: canonical `SCF 2026.1` → `SCF 2026.2` (vocab 1.11.0); `SCF 2026.1` remains an
+  alias so existing queries resolve. The loader and the consensus voter now resolve the
+  workbook **path and sheet from `source_manifest.json`** (they were hardcoded — the sheet
+  is renamed every SCF release); the label is spelled once
+  (`spine_loader.SCF_FRAMEWORK_LABEL`). Two renamed fanout headers re-pinned
+  (GDPR "+2016", 800-172 "R3").
+- Registry currency: feed `scf` artifact split closed (artifact_status → current);
+  `au-scf` records the ingest; `framework_changelog.json` gains
+  `chg-scf-2026.1.1-to-2026.2` (minor_revision, human_confirmed, two-origin provenance).
+- Deliberately NOT ingested: the new Focal Documents sheet, maturity-model and
+  compensating-controls criteria — recorded so the omission is never mistaken for an
+  oversight.
+
+### Versioning repair (correction of record — the phase-45 close missed two checklist items)
+- `VERSION` still said 0.12.0 while this changelog said 0.12.1, and no 45-pre/45-close
+  snapshot anchors were cut. Repaired at phase-46 open (`26720f6`): VERSION 0.12.1,
+  retroactive 45-pre/45-close anchors (both CI-green shas), and the 46-pre baseline.
+- Permanent gate: `count_truth` claim `version_current` — the latest changelog heading and
+  `VERSION` must state the same version. Proven **red on the live drift** before the repair,
+  green after; it fires on every future divergence in either direction.
+
+### Rollback (tested, not assumed)
+Anchor `46-pre` = `26720f6` (`ledger/snapshots.json`). To roll the ingest back:
+```
+git checkout 26720f6 -- \
+  "canonical-sources/source_data/Secure Controls Framework (SCF) - 2026.1.1.xlsx" \
+  "canonical-sources/source_data/scf/Errata - SCF 2026.1.1.txt" \
+  canonical-sources/source_manifest.json canonical-sources/framework_vocab.json \
+  canonical-sources/feed_registry.json canonical-sources/anticipated_updates.json \
+  canonical-sources/framework_changelog.json \
+  cross-mapping/engine/spine_loader.py cross-mapping/engine/consensus_detector.py \
+  cross-mapping/tests/test_spine.py cross-mapping/tests/validate_spine.py
+git rm "canonical-sources/source_data/secure-controls-framework-scf-2026-2.xlsx" \
+       "canonical-sources/source_data/scf/Errata - SCF 2026.2.txt"
+# rebuild + full gate battery; record the rollback here (CHANGE_MANAGEMENT.md procedure);
+# docs revert by the same checkout. Rehearsed in a scratch worktree at phase close —
+# the rebuilt 2026.1.1 tree reproduces scf_direct=1,117 / scf_composed_edges=8,609 /
+# label 'SCF 2026.1' (transcript: docs/audits/phase-46-adversarial-audit.md).
+```
+
 ## [0.12.1] — 2026-09-19 (phase 45 — currency sweep: a vacuous checker, a ten-week miss, and the fixes)
 
 PATCH: registry currency + a re-pin + two monitoring fixes. No schema bump, no

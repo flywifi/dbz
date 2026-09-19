@@ -144,7 +144,7 @@ analysis are published in `docs/BENCHMARK.md`.
 
 Phase 20 promoted the meta-frameworks onto the spine under a new `owner_stated` tier
 (owner-of-source mapping to a foreign target, scope-relative per the acceptance-authority
-model): **SCF 2026.1** (scf_direct 0.80 from SCF's own 800-53 column, SCF/CAP scope) and
+model): **SCF 2026.2** (scf_direct 0.80 from SCF's own 800-53 column, SCF/CAP scope) and
 **CSA CCM v4** (ccm_oscal 0.85 with CSA-stated equivalent-to/superset-of from the OSCAL
 mapping-collection, CSA STAR scope) — plus CCM↔CIS 8.1 and CCM/SCF↔CSF 2.0 master pair
 rows. 16 canonical frameworks, 120 matrix pairs.

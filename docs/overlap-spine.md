@@ -58,8 +58,8 @@ control B", but which specific requirement inside a control is shared.
   column (1,348 requirement→control co-citations incl. Appendix A1/A2/A3 ids):
   `master_crosswalk`, confidence 0.60, needs_confirmation=1 — honest bundled tier; the
   Phase 18 consensus tier lifts eligible pairs to 0.85 at query time.
-- **SCF 2026.1 ↔ 800-53 (owner-stated, Phase 20)** — SCF's own `NIST 800-53 R5` column
-  (1,117 co-citations over 777 of 1,468 SCF controls; the rest cite no 800-53
+- **SCF 2026.2 ↔ 800-53 (owner-stated, Phase 20; refreshed at 2026.2 in Phase 46)** — SCF's own `NIST 800-53 R5` column
+  (1,117 co-citations over 777 of 1,534 SCF controls; the rest cite no 800-53
   counterpart): `scf_direct`, confidence 0.80, needs_confirmation=1. SCF/CAP-scope
   acceptance rule (acceptance-authority model); the xlsx carries no per-mapping STRM
   strength — SCF's per-framework STRM PDFs are the future relationship-upgrade path.

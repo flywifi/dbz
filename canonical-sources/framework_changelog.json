@@ -427,6 +427,29 @@
         "support": "WELL_SUPPORTED",
         "terminal_state": "ORIGIN"
       }
+    },
+    {
+      "entry_id": "chg-scf-2026.1.1-to-2026.2",
+      "framework_id": "scf",
+      "old_version": "SCF 2026.1.1 (2026-04-22)",
+      "new_version": "SCF 2026.2 (2026-07-08)",
+      "change_type": "minor_revision",
+      "changed_at": "2026-07-08",
+      "summary": "SCF 2026.2: new Quantum Security (QTS) domain; ~66 new controls (workbook rows 1,468 -> 1,534); 10 renamed and ~21 wordsmithed controls; STRM published for all ~252 focal documents (800-53 Rev4 and SIG excepted); per-control compensating-controls lists (id-set diff measured +66/-0; the errata enumerates 65, omitting NET-06.9); ~75 crosswalk column headers gained year/revision suffixes; workbook renamed to kebab-case. Measured engine effect at ingest (phase 46): NIST 800-53 R5 projection IDENTICAL (1,117 edges / 777 controls, +0/-0 — the errata's SAT-03.2/SAT-03.6 'updated mapping' rows normalize to the same edges); fan-out witness 8,609 -> 8,983 (800-172 R3 +303, 800-171 r3 +62, CIS +9); SCF consensus voter pairs 15,843 -> 15,906 (+625/-562, CIS-concentrated). Canonical label 'SCF 2026.1' -> 'SCF 2026.2' with the old label kept as an alias.",
+      "controls_added": 66,
+      "controls_removed": 0,
+      "controls_modified": 31,
+      "source_url": "https://github.com/securecontrolsframework/securecontrolsframework/releases",
+      "announcement_ref": "errata.txt (2026.2 release notes)",
+      "confirmation_source": "primary_document",
+      "human_confirmed": true,
+      "provenance": {
+        "primary_source_url": "https://github.com/securecontrolsframework/securecontrolsframework/releases",
+        "retrieved_at": "2026-09-19",
+        "verbatim": "The first is the addition of the Quantum Security (QTS) domain to address the threat of Post-Quantum Cryptography (PQC).",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     }
   ]
 }

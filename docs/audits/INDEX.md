@@ -28,7 +28,8 @@ heuristics. The corrective is visibility, not automation.
 | 43 | trigger/detection corrections in `anticipated_updates.json` (WS-5) | YES | `phase-43-adjudication.md` (its scope line covers the two adjudications and this phase's registry writes jointly) | satisfied |
 | 44 | no regulatory-currency registry touched; `framework_vocab.json` labels + claims about 45 CFR Part 164's subpart structure | YES (voluntarily — the phase makes checkable claims about a regulation) | `phase-44-adjudication.md` | satisfied |
 | 45 | horizon currency batch in `anticipated_updates.json` (2 closures, 1 reopening, 2 early signals, 1 new record), FedRAMP re-pin touching `source_manifest.json` + **the first `feed_registry.json` writes under the gate** (fedramp-20x + scf currency) | YES | `phase-45-adversarial-audit.md` | satisfied |
+| 46 | SCF 2026.2 ingest: all three regulatory-currency registries written (feed `scf` artifact split closed; `au-scf` ingest record; **the first `framework_changelog.json` entry under the gate**, `chg-scf-2026.1.1-to-2026.2`) + `source_manifest.json` re-pin + vocab label change | YES | `phase-46-adversarial-audit.md` | satisfied |
 
-`framework_changelog.json` has zero touches since the gate has existed; `feed_registry.json`
-was first touched under the gate by phase 45 (covered by its audit row above). No hidden
+`feed_registry.json` was first touched under the gate by phase 45 and
+`framework_changelog.json` by phase 46 (both covered by their audit rows above). No hidden
 obligations exist beyond this table.

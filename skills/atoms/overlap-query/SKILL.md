@@ -89,7 +89,7 @@ framework **name** returns `overlap_pct: null` with an `error` and `known_framew
 PCI DSS v4.0, NIST CSF 2.0, NIST SP 800-171 r3, and NIST SP 800-172 r3 are spine
 frameworks (PCI at the bundled 0.60 tier from the master crosswalk; the others
 NIST-stated at 0.85), and HIPAA Security's best path is now the NIST SP 800-66r2
-direct projection (0.85). Phase 20 added the meta-frameworks: SCF 2026.1
+direct projection (0.85). Phase 20 added the meta-frameworks: SCF 2026.2 (label tracks the pinned workbook; 2026.1 resolves as an alias)
 (scf_direct 0.80, SCF/CAP-scope owner co-citation) and CSA CCM v4 (ccm_oscal 0.85,
 CSA-stated relationships, STAR-scope) — so "SCF audit × SOC 2 shared work %" is a
 spine question now. SOC 1 remains `inferred_er`-only — it has no public control

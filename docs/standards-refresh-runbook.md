@@ -291,7 +291,7 @@ scope-relative acceptance differences, not errors.
 - `olir_crawler.py` endpoint (`csrc.nist.gov/api/olir/finalized`) 404s — re-point to the
   CPRT OLIR catalog.
 - ~~SCF + CCM OSCAL loaded as pinned artifacts only — spine projection is a future phase~~
-  **CLOSED (Phase 20)**: both are spine frameworks now — `SCF 2026.1` (scf_direct 0.80,
+  **CLOSED (Phase 20)**: both are spine frameworks now — `SCF 2026.2` (scf_direct 0.80,
   SCF/CAP scope) and `CSA CCM v4` (ccm_oscal 0.85 source-stated, CSA STAR scope) — under
   the new `owner_stated` master-surface tier. Remaining upgrades: SCF's per-framework STRM
   PDFs would add relationship semantics to scf_direct; a de-gated CCM v4.1 OSCAL supersedes

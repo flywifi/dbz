@@ -2759,7 +2759,7 @@
       "feed_id": "scf",
       "authority": "Secure Controls Framework Council",
       "artifact": "SCF meta-framework quarterly release",
-      "current_version": "SCF 2026.2 (2026-07-08) published; repo pin still 2026.1.1",
+      "current_version": "SCF 2026.2 (2026-07-08) — ingested 2026-09-19",
       "expected_type": "revision",
       "lifecycle_stage": "final",
       "expected_window": "no_fixed_date",
@@ -2780,7 +2780,7 @@
       "escalate_after_days": 45,
       "last_checked": "2026-09-19",
       "last_change_detected": "2026-09-19",
-      "notes": "Created 2026-09-19 after SCF 2026.2 (Quantum Security domain, compensating-controls lists, STRM refresh) went unnoticed for 10 weeks — the feed check classified from stored status (defect fixed the same phase). Ingest of 2026.2 is a separate phase; this record only guarantees the signal. releases.atom returns 403 to scripted fetch; the HTML releases page is the pollable surface.",
+      "notes": "Created 2026-09-19 after SCF 2026.2 went unnoticed for 10 weeks (phase-45 finding; classifier fixed same phase). 2026.2 INGESTED phase 46: projection identical (1,117 edges), fan-out witness 8,609 -> 8,983, label 'SCF 2026.2'. Upstream renamed its file set at 2026.2 (kebab-case xlsx, plain errata.txt, Archived Versions/ folder) — fetch recipes must use the new names. This record guarantees the release signal; releases.atom 403s scripted fetch, the HTML releases page is the pollable surface.",
       "provenance": {
         "primary_source_url": "https://github.com/securecontrolsframework/securecontrolsframework/releases",
         "retrieved_at": "2026-09-19",

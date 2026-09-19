@@ -66,10 +66,13 @@ FETCHERS = {
     "nist-800-53": {"url": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
                     "dest": "cross-mapping/output/oscal_v5.2.0_cache.json"},
     "scf":        {"note": "SCF releases are versioned FILE SETS, not just the controls xlsx — fetch "
-                           "the FULL repo file set: 'Secure Controls Framework (SCF) - <ver>.xlsx', the "
-                           "'SCF <ver> Errata.txt', the Overview & Practitioner Guidebook (versioned "
-                           "independently!), CDPAS/MADSS, scrms-pig, and the CAP docs. Compare each "
-                           "file's sha — fetching only the xlsx misses errata and doc revisions."},
+                           "the FULL repo file set. Since 2026.2 the repo uses kebab-case names: "
+                           "'secure-controls-framework-scf-<ver-with-dashes>.xlsx' and a plain "
+                           "'errata.txt' at the repo root (older 'Secure Controls Framework (SCF) - "
+                           "<ver>.xlsx' names live under Archived Versions/). Also compare the "
+                           "Overview & Practitioner Guidebook (versioned independently!), CDPAS/MADSS, "
+                           "scrms-pig, and the CAP docs — fetching only the xlsx misses errata and "
+                           "doc revisions."},
 }
 
 
