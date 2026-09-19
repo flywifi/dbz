@@ -47,6 +47,12 @@ from spine_normalize import (  # type: ignore
 REPO_ROOT = _HERE.parent.parent
 OSCAL_PATH = REPO_ROOT / "canonical-sources" / "oscal_v5.2.0_full_extract.json"
 
+# The one place the SCF framework label is spelled (phase 46). It tracks the pinned
+# workbook version in source_manifest.json ('scf-controls'); "SCF 2026.1" remains a
+# query alias in framework_vocab.json. The sheet name is never hardcoded — it comes
+# from the manifest via sheet_name("scf-controls") (it is renamed every SCF release).
+SCF_FRAMEWORK_LABEL = "SCF 2026.2"
+
 _INSERT_RE = re.compile(r"insert:\s*param,\s*([a-z0-9_.\-]+)")
 
 
@@ -673,7 +679,7 @@ def collect_csf2_olir_pairs() -> Tuple[List[dict], dict]:
             if not scf:
                 dropped["scf"] += 1
                 continue
-            targets = [("SCF 2026.1", scf)]
+            targets = [(SCF_FRAMEWORK_LABEL, scf)]
         else:  # ISO: compound dest like 'Annex A Controls: 5.26' / 'Mandatory Clause: None'
             m = _ISO_ANNEX_DEST_RE.search(dest)
             if not m:
@@ -1047,7 +1053,7 @@ def load_scf_fanout(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
     fan_cols = st.get("fanout_columns", {})
     if not fan_cols:
         return [], {"skipped": "no fanout_columns in manifest structure"}
-    df = pd.read_excel(path, sheet_name=st.get("fanout_sheet", "SCF 2026.1"))
+    df = pd.read_excel(path, sheet_name=st.get("fanout_sheet") or sheet_name(src))
     cols = {str(c): c for c in df.columns}
     id_col = cols.get(st.get("fanout_id_column", "SCF #"))
     r5_col = cols.get(st.get("fanout_r5_column", ""))
@@ -1118,8 +1124,9 @@ def load_scf_fanout(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
 
 def load_scf_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
     """SCF controls -> 800-53 r5, from SCF's own 'NIST 800-53 R5' column in the
-    2026.1.1 workbook.  Owner co-citation (the xlsx carries no per-mapping STRM
-    strength — those live in per-framework PDFs not on disk): provenance
+    pinned workbook (source_manifest 'scf-controls'; sheet from the manifest — it is
+    renamed every SCF release).  Owner co-citation (the xlsx carries no per-mapping
+    STRM strength — those live in per-framework STRM files not on disk): provenance
     'scf_direct', confidence 0.80, needs_confirmation=1, relationships filled by
     fan-out cardinality."""
     src = "scf-controls"
@@ -1129,7 +1136,8 @@ def load_scf_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
         return [], {"skipped": "not registered"}
     if not path.exists():
         return [], {"skipped": "artifact not on disk"}
-    df = pd.read_excel(path, sheet_name="SCF 2026.1")
+    sheet = sheet_name(src)
+    df = pd.read_excel(path, sheet_name=sheet)
     cols = list(df.columns)
     id_col = next((c for c in cols if str(c).strip() == "SCF #"), None)
     nist_col = None
@@ -1162,10 +1170,10 @@ def load_scf_projection(catalog_ids: Set[str]) -> Tuple[List[dict], dict]:
                 continue
             seen.add(key)
             edges.append(_projection_row(
-                framework="SCF 2026.1", native_id=scf, r5_control=ctrl,
+                framework=SCF_FRAMEWORK_LABEL, native_id=scf, r5_control=ctrl,
                 granularity="control", provenance="scf_direct", confidence=0.80,
                 needs_confirmation=1, source_file=fname,
-                source_sheet="SCF 2026.1", source_row=int(i),
+                source_sheet=sheet, source_row=int(i),
             ))
     derive_relationships(edges)
     edges.sort(key=lambda r: (r["native_id"], r["r5_control"]))

@@ -180,7 +180,7 @@ Measured 2026-08-14 after phases 39–40, over **180,413** pairs:
 
 | Verdict | Pairs | Meaning |
 |---|---|---|
-| `confirmed` | **23,485** | CCI anchor multi-witness confirmed + ≥2 agreement witnesses, ≥1 CCI-level (same-anchor second publisher or STIG exercise) |
+| `confirmed` | **23,551** | CCI anchor multi-witness confirmed + ≥2 agreement witnesses, ≥1 CCI-level (same-anchor second publisher or STIG exercise) |
 | `corroborated` | 102,497 | anchor confirmed + ≥1 agreement witness, but not the ≥2-with-a-CCI-level-witness combination `confirmed` requires (18,338 of these carry two or more agreements — "exactly one" was never the implemented rule; corrected in phase 43) |
 | `reachable` | 25,533 | transitive join only — **not a mapping** |
 | `weak` | 28,898 | the CCI's own anchor is `disa_only`/`candidate` |
@@ -188,7 +188,7 @@ Measured 2026-08-14 after phases 39–40, over **180,413** pairs:
 **CORRECTION of the phase-38 headline.** Phase 38 reported 53,046 confirmed. That number was
 overcounted: the publisher witness was anchor-blind — two publishers of a control were credited
 to every CCI the control could reach, not only to CCIs under the 800-53 control both publishers
-actually named. The phase-39 per-anchor rule corrects it; **the corrected figure (23,339, now 23,485 with the phase-40 SCF witness) is the number of record.**
+actually named. The phase-39 per-anchor rule corrects it; **the corrected figure (23,339, then 23,485 with the phase-40 SCF witness, now 23,551 with the SCF 2026.2 witness refresh) is the number of record.**
 (The same phase also *added* witnesses — FedRAMP baseline flags, the OLIR-composed path, coarse-
 key publisher matching — so the two figures are not directly comparable; the correction dominates.)
 

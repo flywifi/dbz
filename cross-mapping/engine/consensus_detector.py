@@ -49,7 +49,13 @@ from spine_normalize import (  # type: ignore
 )
 
 REPO_ROOT = _HERE.parent.parent
-SCF_XLSX = REPO_ROOT / "canonical-sources" / "source_data" / "Secure Controls Framework (SCF) - 2026.1.1.xlsx"
+_INGEST = REPO_ROOT / "cross-mapping" / "nist-catalog" / "ingestion"
+if str(_INGEST) not in sys.path:
+    sys.path.insert(0, str(_INGEST))
+from config import source_path, sheet_name  # type: ignore  # manifest-pinned path + sheet
+
+SCF_XLSX = source_path("scf-controls")
+SCF_SHEET = sheet_name("scf-controls")  # the sheet is renamed every SCF release — never hardcode
 CCM_XLSX = REPO_ROOT / "canonical-sources" / "source_data" / "csa-star" / "CCMv4.0.13_Generated-at_2024-10-31.xlsx"
 MASTER_JSON = REPO_ROOT / "canonical-sources" / "crosswalk_80053_master.json"
 PCI_ISO_XLSX = REPO_ROOT / "canonical-sources" / "source_data" / "PCI 4.0 to ISO 27001_2022.xlsx"
@@ -231,7 +237,7 @@ def _find_scf_col(cols: List[str], needle: str) -> Optional[str]:
 def collect_scf(collector: _Collector) -> int:
     if not SCF_XLSX.exists():
         return 0
-    df = pd.read_excel(SCF_XLSX, sheet_name="SCF 2026.1")
+    df = pd.read_excel(SCF_XLSX, sheet_name=SCF_SHEET)
     cols = list(df.columns)
     resolved: List[Tuple[str, str]] = []
     for fw, needle in _SCF_COLS:

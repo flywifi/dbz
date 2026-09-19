@@ -427,15 +427,15 @@ if _DB.exists():
     # ── Phase 19: master mapping surface ────────────────────────────────────────
     _fws = {r[0] for r in _c2.execute("SELECT DISTINCT framework FROM framework_projection")}
     check({"PCI DSS v4.0", "NIST CSF 2.0", "NIST SP 800-171 r3", "NIST SP 800-172 r3",
-           "SCF 2026.1", "CSA CCM v4"} <= _fws
+           "SCF 2026.2", "CSA CCM v4"} <= _fws
           and len(_fws) == 14, f"projection has the 14 frameworks (12 Phase 19 + SCF/CCM Phase 20, got {len(_fws)})")
     # ── Phase 20: SCF + CCM owner-stated projections ────────────────────────────
     _scf = _c2.execute("""SELECT COUNT(*), COUNT(DISTINCT native_id), MAX(confidence)
-        FROM framework_projection WHERE framework='SCF 2026.1'""").fetchone()
+        FROM framework_projection WHERE framework='SCF 2026.2'""").fetchone()
     check(_scf[0] >= 1000 and _scf[1] >= 700 and _scf[2] == 0.80,
           f"SCF projection: >=1000 edges over >=700 controls at 0.80 (got {_scf})")
     _bad_scf = [r[0] for r in _c2.execute(
-        "SELECT DISTINCT native_id FROM framework_projection WHERE framework='SCF 2026.1'")
+        "SELECT DISTINCT native_id FROM framework_projection WHERE framework='SCF 2026.2'")
         if not re.match(r"^[A-Z]{2,4}-\d{2}(\.\d{1,2})?$", r[0])]
     check(not _bad_scf, f"all SCF natives canonical (bad: {_bad_scf[:3]})")
     _ccm = _c2.execute("""SELECT COUNT(*), COUNT(DISTINCT native_id), MAX(confidence),
@@ -478,7 +478,7 @@ if _DB.exists():
     n_mx = _c2.execute("SELECT COUNT(*) FROM overlap_matrix").fetchone()[0]
     check(n_mx == 120, f"overlap_matrix covers all 120 canonical framework pairs (got {n_mx})")
     # SCF and CCM pairs compute on a spine basis
-    for _pa, _pb in (("SCF 2026.1", "SOC 2"), ("CSA CCM v4", "ISO 27001/2 (2022)")):
+    for _pa, _pb in (("SCF 2026.2", "SOC 2"), ("CSA CCM v4", "ISO 27001/2 (2022)")):
         _row = _c2.execute("""SELECT basis, jaccard_pct FROM overlap_matrix
             WHERE (framework_a=? AND framework_b=?) OR (framework_a=? AND framework_b=?)""",
             (_pa, _pb, _pb, _pa)).fetchone()

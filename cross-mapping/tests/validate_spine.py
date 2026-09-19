@@ -354,7 +354,7 @@ def main() -> int:
         except Exception as e:
             note(f"CCM id oracle skipped ({e})")
     proj_scf = {r[0] for r in conn.execute(
-        "SELECT DISTINCT native_id FROM framework_projection WHERE framework='SCF 2026.1'")}
+        "SELECT DISTINCT native_id FROM framework_projection WHERE framework='SCF 2026.2'")}
     if proj_scf:
         master_path = ROOT / "canonical-sources" / "crosswalk_80053_master.json"
         if master_path.exists():

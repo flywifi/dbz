@@ -1,6 +1,6 @@
 {
   "_purpose": "Controlled vocabularies the health auditor validates against, so a typo or a fabricated identifier is caught before it corrupts a query. Deterministic allow-lists only — never fabricate an entry to make a check pass; add the real canonical name.",
-  "_version": "1.10.0",
+  "_version": "1.11.0",
   "_generated": "2026-07-02",
   "framework_names": {
     "_note": "Canonical framework names as they must appear in crosswalk/catalog data. A name not on this list (e.g. 'ISO 27001' missing the '/IEC') is flagged so overlap queries don't silently miss it Phase 44 reconciled this list against the labels the build actually emits: 25 live labels were undeclared (including 'HIPAA Security' itself) and 'HIPAA Security Rule' was declared but used by nothing. validate_spine check 21 now fails on any emitted-but-undeclared label; declared-but-unused is allowed, so a framework may be declared before its loader lands.",
@@ -69,7 +69,7 @@
       "OWASP Top 10:2025",
       "PCI DSS v4.0",
       "PCI DSS v4.0.1",
-      "SCF 2026.1",
+      "SCF 2026.2",
       "SCF CAP",
       "SCRMS",
       "SOC 1",
@@ -202,14 +202,15 @@
           "fedramp"
         ]
       },
-      "SCF 2026.1": {
+      "SCF 2026.2": {
         "aliases": [
+          "SCF 2026.1",
           "SCF",
           "Secure Controls Framework (SCF)",
           "Secure Controls Framework",
           "scf"
         ],
-        "note": "Owner meta-framework; scf_direct projection edges are SCF/CAP-scope acceptance rules (acceptance-authority model)."
+        "note": "Owner meta-framework; scf_direct projection edges are SCF/CAP-scope acceptance rules (acceptance-authority model). Label tracks the pinned workbook (phase 46: 2026.1 -> 2026.2, edge set identical); 'SCF 2026.1' stays as an alias so existing queries resolve."
       },
       "CSA CCM v4": {
         "aliases": [
