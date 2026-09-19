@@ -139,12 +139,15 @@ def stage_horizon() -> dict:
     overdue = int(counts.get("overdue", 0))
     due_review = int(counts.get("due_review", 0))
     draft = int(counts.get("draft_observed", 0))
-    if overdue or due_review:
-        print(f"[check] horizon: {overdue} overdue + {due_review} due-for-review + {draft} "
-              "draft-observed — run `dbz_query.py horizon --overdue` and re-investigate the source")
+    elapsed = int(counts.get("elapsed_open", 0))
+    if overdue or due_review or elapsed:
+        print(f"[check] horizon: {elapsed} elapsed-but-open + {overdue} overdue + {due_review} "
+              f"due-for-review + {draft} draft-observed — run `horizon_monitor.py --overdue` "
+              "and re-investigate the source (an elapsed window is a fact, whatever grace says)")
     else:
-        print(f"[check] horizon: nothing overdue/due ({draft} draft-observed on the horizon)")
-    return {"horizon_overdue": overdue, "horizon_due_review": due_review}
+        print(f"[check] horizon: nothing elapsed/overdue/due ({draft} draft-observed on the horizon)")
+    return {"horizon_overdue": overdue, "horizon_due_review": due_review,
+            "horizon_elapsed_open": elapsed}
 
 
 GITHUB_LATEST = "https://api.github.com/repos/{repo}/releases/latest"

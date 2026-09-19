@@ -142,6 +142,25 @@ def check_materialization(rec: dict) -> dict:
     return result
 
 
+def elapsed_open(records: list[dict], today: date) -> list[dict]:
+    """Every record whose dated window has PASSED while the record is still open,
+    REGARDLESS of the escalation grace. Grace paces escalation; it must never hide
+    an elapsed window (phase 45: three elapsed windows sat mechanically 'watching'
+    inside grace). Visibility only — closing stays a human/phase decision, so no
+    date is ever fabricated to silence the clock. no_fixed_date records are exempt
+    by construction (nothing to elapse)."""
+    out = []
+    for r in records:
+        if r.get("status") in ("materialized", "superseded"):
+            continue
+        lt = _latest(r)
+        if lt is not None and today > lt:
+            out.append({"id": r["id"], "latest": lt.isoformat(),
+                        "days_past": (today - lt).days,
+                        "grace_state": classify(r, today)})
+    return sorted(out, key=lambda x: x["latest"])
+
+
 # ── report ───────────────────────────────────────────────────────────────────
 
 def build_report(records: list[dict], today: date) -> dict:
@@ -174,7 +193,9 @@ def main(argv=None) -> int:
     buckets = build_report(records, today)
 
     if a.summary:
-        print(json.dumps({k: len(v) for k, v in sorted(buckets.items())}))
+        counts = {k: len(v) for k, v in sorted(buckets.items())}
+        counts["elapsed_open"] = len(elapsed_open(records, today))
+        print(json.dumps(counts))
         return 0
 
     if a.check:
@@ -196,12 +217,22 @@ def main(argv=None) -> int:
 
     if a.overdue:
         od = buckets.get("overdue", []) + buckets.get("due_review", [])
+        od_ids = {r["id"] for r in od}
+        # elapsed-but-open rows print FIRST: they are elapsed facts, whatever grace says.
+        # De-duplicated against the overdue/due_review buckets (those keep their bucket).
+        eo = [e for e in elapsed_open(records, today) if e["id"] not in od_ids]
         if a.json:
-            print(json.dumps([{"id": r["id"], "artifact": r["artifact"], "window": _fmt_window(r),
-                               "reason": classify(r, today)} for r in od], indent=1))
+            print(json.dumps(
+                [{"id": e["id"], "window": e["latest"], "reason": "elapsed_open",
+                  "days_past": e["days_past"], "grace_state": e["grace_state"]} for e in eo] +
+                [{"id": r["id"], "artifact": r["artifact"], "window": _fmt_window(r),
+                  "reason": classify(r, today)} for r in od], indent=1))
         else:
-            if not od:
-                print("[horizon] nothing overdue or due for review")
+            if not od and not eo:
+                print("[horizon] nothing overdue, elapsed, or due for review")
+            for e in eo:
+                print(f"  {'ELAPSED':10} {e['id']}  ({e['latest']}, {e['days_past']}d past, "
+                      f"grace says {e['grace_state']})  — decide: materialize / supersede / re-date from a source")
             for r in od:
                 print(f"  {classify(r, today).upper():10} {r['id']}  ({_fmt_window(r)})  {r['artifact']}")
         return 0
