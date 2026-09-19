@@ -3,6 +3,55 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.12.1] — 2026-09-19 (phase 45 — currency sweep: a vacuous checker, a ten-week miss, and the fixes)
+
+PATCH: registry currency + a re-pin + two monitoring fixes. No schema bump, no
+query-surface change, no mapping change.
+
+### The finding about the finder
+- The monthly drift check's "no drift" verdicts (August and September) were **structurally
+  vacuous**: `stage_check` copied each feed's stored `artifact_status` into its
+  classification, so `registry_stale` was unreachable. Proof: **SCF 2026.2** (2026-07-08 —
+  Quantum Security domain, compensating-controls lists, STRM refresh) sat behind a
+  "current" echo for **ten weeks**, `last_verified` two days before the release.
+- Fixed: the 19 `check_strategy: github_release` feeds now get a **live** comparison
+  (releases API tag vs `current_version`, boundary-guarded so a shorter tag can never
+  satisfy a longer pin, failing CLOSED to `check_failed`); every other row is labeled
+  `stored_status_only` so an echo can never again read as a verdict. Red proof:
+  `standards_refresh.py --selftest-release-check` replays the SCF incident (6/6, incl. the
+  fail-closed 403 case).
+
+### Horizon currency (anticipated_updates 76 → 77)
+- **Materialized:** CRA Art. 14 reporting obligations in force 2026-09-11 (EUR-Lex verbatim
+  re-confirmed); FedRAMP 20x Class B&C pipeline open 2026-08-31 (timeline unamended past
+  its date, phase-42 convention).
+- **Reopened undated:** the CMMC task-force report window (2026-07-13 + 60 days) elapsed
+  with **no public outcome** — `no_fixed_date`, THIN single-secondary evidence recorded
+  (DoW CIO: "over 1,100 responses"), **ODP baseline and suspension records stay frozen**.
+- **Early signals (origin-verified):** PCI SSC "beginning the next iteration of PCI DSS"
+  (blog, 2026-06-03; RFC 3 Jun–20 Jul); HITRUST CSF **v11.9** "later this year" (blog,
+  2026-07-31) → window ≤2026-12-31.
+- **New record `au-scf`** (the gap that let 2026.2 go dark); OWASP detection URLs repointed
+  (ASVS old path 404, LLM Top 10 → genai.owasp.org); Gemini cv refreshed; parl.ca 403 and
+  bcn.cl JS-shell walls recorded honestly.
+- **Elapsed-open lens:** `horizon_monitor.py` now reports every open record whose dated
+  window has passed **regardless of grace** (the three above sat mechanically "watching"
+  inside grace); proven against the real registry (3 before the batch, 0 after).
+
+### FedRAMP consolidated rules re-pinned 2026.07.14.01 → 2026.09.13.02
+- Entity sets identical (+0 −0 across KSI/FRR/CTL/FRD; CTL byte-equal); loader-visible
+  delta is **one rule statement** (CCM-OCR-AVL "(if applicable):"). KSI 10/46/373 claims
+  unchanged; double-build digests identical.
+- Two reader-relevant metadata shifts documented (manifest notes + audit): Rev5 continuity
+  grace default **2027-01-01 → 2027-07-01**; **Class A dropped** from CSF/CCL subset
+  applicability. The `fedramp-20x` feed cv (which had drifted to 2026.07.06.01 internally)
+  now matches the manifest pin.
+- SCF 2026.2 **ingest deliberately not done** — scoped in the audit doc as a dedicated
+  phase (SCF is the largest consensus voter; −5,378 edges on removal).
+
+Audit: `docs/audits/phase-45-adversarial-audit.md` (INDEX row added — including the note
+that phase 45 makes the first `feed_registry.json` writes under the closing gate).
+
 ## [0.12.0] — 2026-08-16 (phase 44 — a retraction, three identifier defects, and a permanent planning standard)
 
 MINOR: a new framework label, corrected data, two new gates. No schema bump, no query-surface

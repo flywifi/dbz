@@ -27,7 +27,8 @@ heuristics. The corrective is visibility, not automation.
 | 42 | five elapsed-window outcome checks in `anticipated_updates.json` (WS-2) | YES | `phase-35-adversarial-audit.md` (its scope line covers the 35+42 registry surface jointly) | satisfied |
 | 43 | trigger/detection corrections in `anticipated_updates.json` (WS-5) | YES | `phase-43-adjudication.md` (its scope line covers the two adjudications and this phase's registry writes jointly) | satisfied |
 | 44 | no regulatory-currency registry touched; `framework_vocab.json` labels + claims about 45 CFR Part 164's subpart structure | YES (voluntarily — the phase makes checkable claims about a regulation) | `phase-44-adjudication.md` | satisfied |
+| 45 | horizon currency batch in `anticipated_updates.json` (2 closures, 1 reopening, 2 early signals, 1 new record), FedRAMP re-pin touching `source_manifest.json` + **the first `feed_registry.json` writes under the gate** (fedramp-20x + scf currency) | YES | `phase-45-adversarial-audit.md` | satisfied |
 
-`feed_registry.json` and `framework_changelog.json` have zero touches since the gate has
-existed (verified by per-file `git log`, 2026-08-15), so no hidden obligations exist beyond
-this table.
+`framework_changelog.json` has zero touches since the gate has existed; `feed_registry.json`
+was first touched under the gate by phase 45 (covered by its audit row above). No hidden
+obligations exist beyond this table.
