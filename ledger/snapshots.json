@@ -490,6 +490,14 @@
       "date": "2026-09-19",
       "known_good": true,
       "note": "The SCF rollback anchor. The versioning-repair commit that follows is docs/ledger-only; either sha restores the 2026.1.1 data surface."
+    },
+    {
+      "phase": "46-close",
+      "name": "Phase-46 close (SCF 2026.2 ingest, rollback rehearsed, versioning repair gated, 0.13.0)",
+      "sha": "802a0df",
+      "date": "2026-09-19",
+      "known_good": true,
+      "note": "CI green at 2026-09-19T20:11:26Z (tools/ci_status.py). The rollback recipe to 46-pre (26720f6) was rehearsed in a scratch worktree before this anchor was cut: the rebuilt 2026.1.1 tree reproduced scf_direct=1117 / scf_composed_edges=8609 / confirmed=23485 exactly."
     }
   ]
 }
