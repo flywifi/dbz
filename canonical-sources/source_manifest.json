@@ -1069,12 +1069,12 @@
       "id": "fedramp-consolidated-rules",
       "file": "canonical-sources/source_data/fedramp/fedramp-consolidated-rules.json",
       "format": "json",
-      "version": "2026.07.14.01 (Consolidated Rules for 2026; KSI 10 families/46 indicators/373 control refs; FRR 17 families; CTL 14 groups)",
+      "version": "2026.09.13.02 (Consolidated Rules for 2026; KSI 10 families/46 indicators/373 control refs; FRR 17 families; CTL 14 groups)",
       "retrieved": "2026-08-10",
       "source_url": "https://raw.githubusercontent.com/FedRAMP/rules/main/fedramp-consolidated-rules.json",
       "sha256_prefix": "135707003f0aaa5c",
       "role": "fedramp_rules_canonical",
-      "notes": "Complete verbatim canonical dataset (FedRAMP/rules). FedRAMP's stated machine-readable source of truth for the Consolidated Rules for 2026. KSI indicators carry official 800-53 r5 control arrays (the KSI->800-53 crosswalk). Poll info.version/info.last_updated for currency. Re-harvested 2026-08-10 at version 2026.07.14.01: structural counts unchanged (families/indicators/control refs identical); the delta is guidance text — FedRAMP replaced its hardcoded SP 800-63-3 citations with 'the most recent NIST Digital Identity Guidelines' and renamed the certification package overview artifact."
+      "notes": "Complete verbatim canonical dataset (FedRAMP/rules). FedRAMP's stated machine-readable source of truth for the Consolidated Rules for 2026. KSI indicators carry official 800-53 r5 control arrays (the KSI->800-53 crosswalk). Poll info.version/info.last_updated for currency. Re-harvested 2026-09-19 at version 2026.09.13.02: entity sets identical (+0/-0 across KSI/FRR/CTL/FRD; CTL byte-equal); delta is metadata/guidance — 159 rules' defined-terms cross-references, timeframe_num/timeframe_type encodings of durations already stated in prose (CCM-OCR-AVL, MKT-CAS-RFR, MKT-IIP-DLA), one statement clarification (CCM-OCR-AVL adds '(if applicable):'). Two loader-invisible policy shifts documented for readers: FRR/CPO info .rev5.effective.date.grace.default moved 2027-01-01 -> 2027-07-01, and Class A was dropped from the CSF (FRR/CPO .rev5.subsets) and CCL (FRR/FRC .subsets) applicability classes."
     },
     {
       "id": "fedramp-consolidated-rules-schema",

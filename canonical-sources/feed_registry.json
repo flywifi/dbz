@@ -1728,7 +1728,7 @@
       "label": "FedRAMP Consolidated Rules 2026 / KSIs (canonical machine-readable dataset)",
       "authority": "primary",
       "framework_id": "fedramp-20x",
-      "current_version": "2026.07.06.01 (last_updated 2026-07-06; 10 KSI families / 46 indicators / 373 control refs; Classes A-D)",
+      "current_version": "2026.09.13.02 (last_updated 2026-09-13; 10 KSI families / 46 indicators / 373 control refs; Classes A-D)",
       "urls": {
         "landing": "https://www.fedramp.gov/20x/",
         "rules_json": "https://raw.githubusercontent.com/FedRAMP/rules/main/fedramp-consolidated-rules.json",
@@ -1738,7 +1738,7 @@
       "check_strategy": "api_poll",
       "github_repo": "GSA/fedramp-automation",
       "last_checked": null,
-      "last_changed": "2026-02-25",
+      "last_changed": "2026-09-13",
       "notes": "The canonical machine-readable FedRAMP dataset (FedRAMP/rules). FedRAMP's sources page directs automation to consume this JSON, not the HTML site. KSI indicators carry FedRAMP's own 800-53 r5 control arrays (basis=fedramp_stated; loaded into fedramp_ksi/fedramp_ksi_controls). 2026 Public Preview lifecycle; mandatory adoption 2027-01-01. This is the confirmation/monitoring layer of the same 800-53-derived audit framework — FedRAMP r5 baselines remain the matrix framework.",
       "announcement_feeds": [
         {
@@ -1797,7 +1797,7 @@
       "cci_coverage_notes": "Not-Applicable for KSIs: FedRAMP 20x KSIs are automated evidence artifacts, not control specifications. No DISA CCIs assigned to KSIs yet. The underlying 800-53 controls that KSIs test DO have CCIs (see fedramp entry), but KSI→CCI linkage is Not-Applicable pending FedRAMP 20x final rule.",
       "auto_fetch": false,
       "artifact_status": "current",
-      "last_verified": "2026-07-10",
+      "last_verified": "2026-09-19",
       "tier": "mappable",
       "jurisdiction": "us-federal",
       "next_expected_version": "continuous revisions (poll info.last_updated); Class D pilot FY27 Q1"

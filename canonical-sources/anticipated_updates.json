@@ -2475,7 +2475,7 @@
       "feed_id": "fedramp-20x",
       "authority": "FedRAMP (GSA)",
       "artifact": "Consolidated Rules dataset revision",
-      "current_version": "2026.07.14.01 (pinned dataset re-harvested 2026-08-10)",
+      "current_version": "2026.09.13.02 (pinned dataset re-harvested 2026-09-19)",
       "expected_type": "minor_rel",
       "lifecycle_stage": null,
       "expected_window": "no_fixed_date",
@@ -2493,13 +2493,13 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 90,
-      "last_checked": "2026-08-10",
-      "last_change_detected": "2026-07-14",
-      "notes": "Continuous-revision dataset; re-harvest + re-pin on change. Drift CLOSED 2026-08-10: the pinned dataset is re-harvested at 2026.07.14.01. The revision is guidance-only — KSI families/indicators/control refs and FRR/CTL group counts are byte-for-byte identical; FedRAMP replaced hardcoded SP 800-63-3 citations with 'the most recent NIST Digital Identity Guidelines'.",
+      "last_checked": "2026-09-19",
+      "last_change_detected": "2026-09-19",
+      "notes": "Continuous-revision dataset; re-harvest + re-pin on change. Drift CLOSED 2026-09-19: pinned at 2026.09.13.02 (byte-compared re-fetch). Guidance/metadata-only for the DB — entity sets identical; loader-visible delta is one rule statement (CCM-OCR-AVL '(if applicable):'). Reader-relevant metadata shifts recorded in source_manifest notes: Rev5 grace default 2027-01-01 -> 2027-07-01; Class A dropped from CSF/CCL subset applicability.",
       "provenance": {
         "primary_source_url": "https://raw.githubusercontent.com/FedRAMP/rules/main/fedramp-consolidated-rules.json",
-        "retrieved_at": "2026-08-10",
-        "verbatim": "\"version\": \"2026.07.14.01\" … \"last_updated\": \"2026-07-14\"",
+        "retrieved_at": "2026-09-19",
+        "verbatim": "\"version\": \"2026.09.13.02\" … \"last_updated\": \"2026-09-13\"",
         "support": "WELL_SUPPORTED",
         "terminal_state": "ORIGIN"
       }
