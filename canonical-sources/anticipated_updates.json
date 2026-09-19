@@ -67,9 +67,9 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": "2026-08-09",
+      "last_checked": "2026-09-19",
       "last_change_detected": null,
-      "notes": "LEGISinfo lists C-27 under 'a prior session' (44th Parliament, 1st session) with last status 'At consideration in committee' (retrieved 2026-08-09) — the bill was not enacted and lapsed when that session ended; no successor bill verified. PIPEDA remains the in-force statute.",
+      "notes": "LEGISinfo lists C-27 under 'a prior session' (44th Parliament, 1st session) with last status 'At consideration in committee' (retrieved 2026-08-09) — the bill was not enacted and lapsed when that session ended; no successor bill verified. PIPEDA remains the in-force statute. NEW WALL 2026-09-19: parl.ca returns HTTP 403 to scripted fetch; laws-lois.justice.gc.ca detection URL remains reachable and is the operative signal.",
       "provenance": {
         "primary_source_url": "https://www.parl.ca/legisinfo/en/bill/44-1/c-27",
         "retrieved_at": "2026-08-09",
@@ -653,7 +653,7 @@
       "feed_id": "google-gemini-api",
       "authority": "Google LLC",
       "artifact": "Continuous model and API updates",
-      "current_version": "Gemini 2.0 Flash / 2.5 Pro series (2025)",
+      "current_version": "Gemini 3.8 Flash / 3.1 Pro series (2026)",
       "expected_type": "revision",
       "lifecycle_stage": null,
       "expected_window": "no_fixed_date",
@@ -674,9 +674,9 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": "2026-08-09",
+      "last_checked": "2026-09-19",
       "last_change_detected": null,
-      "notes": "Continuous model and API updates; track ai.google.dev/gemini-api/docs/release-notes",
+      "notes": "cv refreshed 2026-09-19 from ai.google.dev model listing; record tracks the API surface for the AI-governance overlay, not a compliance framework version.",
       "provenance": {
         "primary_source_url": "https://ai.google.dev/gemini-api/docs",
         "retrieved_at": "2026-08-09",
@@ -732,12 +732,12 @@
       "expected_type": "minor_rel",
       "lifecycle_stage": null,
       "expected_window": {
-        "earliest": "2026-01-01",
+        "earliest": "2026-10-01",
         "latest": "2026-12-31",
-        "basis": "v11.6.0 (anticipated 2026; adds new framework columns)"
+        "basis": "HITRUST blog 2026-07-31: proposed updates for inclusion in HITRUST CSF v11.9 'later this year'"
       },
       "confidence": "med",
-      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "trigger_signal": "HITRUST publishes CSF v11.9",
       "detection": {
         "url": "https://hitrustalliance.net/csf/",
         "method": "poll_landing",
@@ -752,14 +752,14 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": "2026-08-09",
+      "last_checked": "2026-09-19",
       "last_change_detected": null,
-      "notes": "v11.6.0 (anticipated 2026; adds new framework columns). hitrustalliance.net restructured: /csf/ and /csf/csf-suite-updates/ return 404; the framework page carries no version string, so v11.8.0 currency was not re-verifiable this pass — THIN.",
+      "notes": "ORIGIN 2026-09-19: HITRUST blog (2026-07-31) names v11.9 for later 2026. cv stays v11.8.0 until release.",
       "provenance": {
-        "primary_source_url": "https://hitrustalliance.net/hitrust-framework",
-        "retrieved_at": "2026-08-09",
-        "verbatim": "HITRUST Framework for Cybersecurity and Compliance Success",
-        "support": "THIN",
+        "primary_source_url": "https://hitrustalliance.net/blog",
+        "retrieved_at": "2026-09-19",
+        "verbatim": "refining the proposed updates for inclusion in HITRUST CSF v11.9 later this year",
+        "support": "WELL_SUPPORTED",
         "terminal_state": "ORIGIN"
       }
     },
@@ -1771,7 +1771,7 @@
       "confidence": "low",
       "trigger_signal": "new published version / draft / advisory at the authority source",
       "detection": {
-        "url": "https://owasp.org/ASVS/",
+        "url": "https://owasp.github.io/ASVS/",
         "method": "github_release",
         "match": ""
       },
@@ -1785,9 +1785,9 @@
       "dependent_of": null,
       "status": "draft_observed",
       "escalate_after_days": 120,
-      "last_checked": "2026-08-09",
+      "last_checked": "2026-09-19",
       "last_change_detected": null,
-      "notes": "draft_status=second_draft",
+      "notes": "draft_status=second_draft Old owasp.org/ASVS path now 404 (measured 2026-09-19); detection repointed to owasp.github.io/ASVS (asvs.dev is the same content).",
       "provenance": {
         "primary_source_url": "https://owasp.org/www-project-application-security-verification-standard/",
         "retrieved_at": "2026-08-09",
@@ -1812,7 +1812,7 @@
       "confidence": "med",
       "trigger_signal": "new published version / draft / advisory at the authority source",
       "detection": {
-        "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+        "url": "https://genai.owasp.org/",
         "method": "github_release",
         "match": ""
       },
@@ -1826,9 +1826,9 @@
       "dependent_of": null,
       "status": "materialized",
       "escalate_after_days": 120,
-      "last_checked": "2026-08-09",
+      "last_checked": "2026-09-19",
       "last_change_detected": "2026-08-09",
-      "notes": "CLOSED: the project page lists 'Version 2026 (current)' with Version 2025 archived (retrieved 2026-08-09) — the anticipated 2026 cadence update materialized; publication month not stated on the page.",
+      "notes": "CLOSED: the project page lists 'Version 2026 (current)' with Version 2025 archived (retrieved 2026-08-09) — the anticipated 2026 cadence update materialized; publication month not stated on the page. Project migrated to genai.owasp.org (old owasp.org path redirects); detection repointed 2026-09-19.",
       "provenance": {
         "primary_source_url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
         "retrieved_at": "2026-08-09",
@@ -1880,10 +1880,10 @@
       "artifact": "v4.1",
       "current_version": "v4.0.1 (June 2024)",
       "expected_type": "minor_rel",
-      "lifecycle_stage": null,
+      "lifecycle_stage": "early_signal",
       "expected_window": "no_fixed_date",
       "confidence": "low",
-      "trigger_signal": "new published version / draft / advisory at the authority source",
+      "trigger_signal": "PCI SSC blog 2026-06-03: RFC on PCI DSS ran 2026-06-03..2026-07-20 (AI and future-tech feedback); next version unnamed, no date",
       "detection": {
         "url": "https://www.pcisecuritystandards.org/standards/",
         "method": "poll_landing",
@@ -1897,13 +1897,13 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": "2026-08-09",
+      "last_checked": "2026-09-19",
       "last_change_detected": null,
-      "notes": "v4.1 (not announced; future-dated v4.0.1 reqs active Mar 31 2025)",
+      "notes": "ORIGIN 2026-09-19: PCI SSC blog (2026-06-03) — 'PCI SSC is beginning the next iteration of PCI DSS'. No version number or window announced; stays no_fixed_date.",
       "provenance": {
-        "primary_source_url": "https://www.pcisecuritystandards.org/document_library/",
-        "retrieved_at": "2026-08-09",
-        "verbatim": "PCI DSS v4.0.1 View Document",
+        "primary_source_url": "https://blog.pcisecuritystandards.org/request-for-comments-pci-dss-v4x",
+        "retrieved_at": "2026-09-19",
+        "verbatim": "PCI SSC is beginning the next iteration of PCI DSS",
         "support": "WELL_SUPPORTED",
         "terminal_state": "ORIGIN"
       }
@@ -2193,9 +2193,9 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 120,
-      "last_checked": "2026-08-09",
+      "last_checked": "2026-09-19",
       "last_change_detected": null,
-      "notes": "Chile's data-protection law becomes enforceable ~Dec 2026 (source proxy-gated). Biblioteca del Congreso Nacional page timed out server-side on both attempts this phase; Law 21.719 vigencia dates not re-verifiable this pass.",
+      "notes": "Chile's data-protection law becomes enforceable ~Dec 2026 (source proxy-gated). Biblioteca del Congreso Nacional page timed out server-side on both attempts this phase; Law 21.719 vigencia dates not re-verifiable this pass. OBSTACLE 2026-09-19: bcn.cl renders via JS (empty body to scripted fetch); Dec-2026 enforcement window unverifiable at origin this pass — window kept, not extended.",
       "provenance": {
         "primary_source_url": "https://www.bcn.cl/leychile/navegar?idNorma=1208650",
         "retrieved_at": "2026-08-09",
@@ -2209,7 +2209,7 @@
       "feed_id": "eu-cra",
       "authority": "European Union",
       "artifact": "CRA reporting obligations apply",
-      "current_version": "Reg (EU) 2024/2847",
+      "current_version": "Reg (EU) 2024/2847 — Art. 14 reporting obligations in force since 2026-09-11",
       "expected_type": "amendment",
       "lifecycle_stage": "final",
       "expected_window": {
@@ -2229,11 +2229,11 @@
         "https://eur-lex.europa.eu/eli/reg/2024/2847/oj"
       ],
       "dependent_of": null,
-      "status": "watching",
+      "status": "materialized",
       "escalate_after_days": 45,
-      "last_checked": "2026-08-09",
-      "last_change_detected": null,
-      "notes": "Cyber Resilience Act incident/vuln reporting duties apply 2026-09-11; full application 2027-12-11.",
+      "last_checked": "2026-09-19",
+      "last_change_detected": "2026-09-19",
+      "notes": "CLOSED 2026-09-19: Article 14 applies from 2026-09-11 (EUR-Lex verbatim re-confirmed 2026-09-19, text unamended). Full application remains 2027-12-11 (tracked separately).",
       "provenance": {
         "primary_source_url": "https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
         "retrieved_at": "2026-08-09",
@@ -2361,7 +2361,7 @@
       "feed_id": "fedramp-20x",
       "authority": "FedRAMP (GSA)",
       "artifact": "20x Class B & C pipelines open",
-      "current_version": "pre-pipeline",
+      "current_version": "20x Class B & C pipeline open since 2026-08-31",
       "expected_type": "amendment",
       "lifecycle_stage": "final",
       "expected_window": {
@@ -2381,11 +2381,11 @@
         "https://www.fedramp.gov/2026/timeline/"
       ],
       "dependent_of": null,
-      "status": "watching",
+      "status": "materialized",
       "escalate_after_days": 30,
-      "last_checked": "2026-08-16",
-      "last_change_detected": null,
-      "notes": "Window not yet elapsed. Fresh observation 2026-08-16 during the phase-42 sweep: the timeline still states the 2026-08-31 date unchanged. No window change.",
+      "last_checked": "2026-09-19",
+      "last_change_detected": "2026-09-19",
+      "notes": "CLOSED 2026-09-19: timeline milestone 'August 31, 2026 FedRAMP 20x Class B & C pipeline opens' verbatim-unchanged on fedramp.gov 2026-09-19; per the phase-42 convention an unamended timeline past its date closes as occurred.",
       "provenance": {
         "primary_source_url": "https://www.fedramp.gov/2026/timeline/",
         "retrieved_at": "2026-08-16",
@@ -2585,11 +2585,7 @@
       "current_version": "Review in progress (initiated 2026-07-13)",
       "expected_type": "policy_review",
       "lifecycle_stage": "review_pending",
-      "expected_window": {
-        "earliest": "2026-09-11",
-        "latest": "2026-09-11",
-        "basis": "Derived: release dated 2026-07-13 states 'final report to the DoW CIO within 60 days'; 2026-07-13 + 60 days = 2026-09-11. Derivation shown; the report date itself is not separately announced."
-      },
+      "expected_window": "no_fixed_date",
       "confidence": "med",
       "trigger_signal": "DoW publishes task-force outcome or further implementation guidance ('Further guidance will be promulgated at the conclusion of the CIO's 60-day review' — implementation memo)",
       "detection": {
@@ -2600,14 +2596,14 @@
       "poll_frequency": "weekly",
       "status": "watching",
       "escalate_after_days": 30,
-      "last_checked": "2026-08-08",
+      "last_checked": "2026-09-19",
       "last_change_detected": null,
       "dependent_of": null,
       "source_urls": [
         "https://www.war.gov/News/Releases/Release/Article/4542329/forging-the-arsenal-of-freedom-department-of-war-suspends-cmmc-phase-ii-require/",
         "https://dowcio.war.gov/Portals/0/Documents/Library/ImplementingSuspensionCMMC-PhaseII.pdf"
       ],
-      "notes": "Task force conducts a 'comprehensive top-to-bottom review of the certification program' (release). Outcome determines the disposition of the suspended phases.",
+      "notes": "Window 2026-09-11 (2026-07-13 + 60 days) elapsed with no public outcome as of 2026-09-19. Secondary signal (DefenseScoop 2026-09-09): DoW CIO Davies cited 'over 1,100 responses'/'over 10,000 pages' under review, no timeline given — THIN, single secondary. Reopened as no_fixed_date rather than deriving a new date; ODP baseline and suspension records stay frozen until an outcome publishes.",
       "provenance": {
         "primary_source_url": "https://www.war.gov/News/Releases/Release/Article/4542329/forging-the-arsenal-of-freedom-department-of-war-suspends-cmmc-phase-ii-require/",
         "retrieved_at": "2026-08-08",
@@ -2755,6 +2751,41 @@
         "retrieved_at": "2026-08-08",
         "verbatim": "In preparation to implement reference (a) as the minimum requirement for contractors, the Department of Defense (DoD) has defined as policy the attached values for the ODPs identified in the reference (a) source document.",
         "support": "CONTESTED",
+        "terminal_state": "ORIGIN"
+      }
+    },
+    {
+      "id": "au-scf",
+      "feed_id": "scf",
+      "authority": "Secure Controls Framework Council",
+      "artifact": "SCF meta-framework quarterly release",
+      "current_version": "SCF 2026.2 (2026-07-08) published; repo pin still 2026.1.1",
+      "expected_type": "revision",
+      "lifecycle_stage": "final",
+      "expected_window": "no_fixed_date",
+      "confidence": "high",
+      "trigger_signal": "new release tag on the SCF GitHub releases page",
+      "detection": {
+        "url": "https://github.com/securecontrolsframework/securecontrolsframework/releases",
+        "method": "poll_landing",
+        "match": "/releases/tag/"
+      },
+      "poll_frequency": "monthly",
+      "source_urls": [
+        "https://github.com/securecontrolsframework/securecontrolsframework/releases",
+        "https://securecontrolsframework.com/"
+      ],
+      "dependent_of": null,
+      "status": "watching",
+      "escalate_after_days": 45,
+      "last_checked": "2026-09-19",
+      "last_change_detected": "2026-09-19",
+      "notes": "Created 2026-09-19 after SCF 2026.2 (Quantum Security domain, compensating-controls lists, STRM refresh) went unnoticed for 10 weeks — the feed check classified from stored status (defect fixed the same phase). Ingest of 2026.2 is a separate phase; this record only guarantees the signal. releases.atom returns 403 to scripted fetch; the HTML releases page is the pollable surface.",
+      "provenance": {
+        "primary_source_url": "https://github.com/securecontrolsframework/securecontrolsframework/releases",
+        "retrieved_at": "2026-09-19",
+        "verbatim": "2026.2 … 08 Jul — With the 2026.2 release, numerous controls now include a list of compensating controls. (securecontrolsframework.com)",
+        "support": "WELL_SUPPORTED",
         "terminal_state": "ORIGIN"
       }
     }

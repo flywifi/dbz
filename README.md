@@ -29,7 +29,7 @@ overlapping controls listed. It's **one unified map**, not a shelf of separate c
 | **CCI dictionary** | 5,137 DISA control-correlation identifiers with definitions + multi-source corroboration |
 | **STIG evidence** | 383 hardening benchmarks / 19,667 rules for per-product implementation proof |
 | **FedRAMP 2026 (KSIs)** | FedRAMP's own 46 Key Security Indicators and their 373 published links to 800-53 |
-| **Keep-current** | 161 official sources watched for changes, plus a horizon of 76 anticipated future revisions |
+| **Keep-current** | 161 official sources watched for changes, plus a horizon of 77 anticipated future revisions |
 
 ## How it works
 
