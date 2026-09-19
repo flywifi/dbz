@@ -10,7 +10,7 @@ A regenerable one-screen summary of what dbz contains and how honest its evidenc
 - **Spine:** 324 controls + 872 enhancements (800-53 r5)
 - **Master surface:** 97657 edges across 36 frameworks; matrix 120 pairs
 - **Depth:** 5137 CCIs · 383 STIG benchmarks / 19667 rules · 46 FedRAMP KSIs (373 stated edges) · 1870 OLIR-hub composed edges
-- **Keep-current:** 161 feeds (8 auto-fetch) · 76 horizon records
+- **Keep-current:** 161 feeds (8 auto-fetch) · 77 horizon records
 - **Tooling:** 22 atoms · 3 overlays · 15 machine-checked doc claims
 
 ## Master edges by provenance tier
@@ -46,7 +46,8 @@ A regenerable one-screen summary of what dbz contains and how honest its evidenc
 
 ## Feed status breakdown
 
-- `current`: 42
+- `artifact_stale`: 1
+- `current`: 41
 - `fetch_blocked`: 1
 - `licensed_pinned`: 2
 - `metadata_only`: 113
