@@ -57,6 +57,13 @@ def _resolve_value(key: str):
         src = (ROOT / "cross-mapping" / "engine" / "build_db.py").read_text(encoding="utf-8")
         m = re.search(r'SCHEMA_VERSION\s*=\s*"([^"]+)"', src)
         return (m.group(1), None) if m else (None, "SCHEMA_VERSION not found in build_db.py")
+    if key == "changelog_latest":
+        # Registered in phase 46: phase 45 bumped the changelog to 0.12.1 while VERSION
+        # stayed 0.12.0, and nothing was watching. The latest changelog heading is the
+        # authority; the VERSION file is the cited restatement that must match it.
+        src = (ROOT / "changes" / "CHANGELOG.md").read_text(encoding="utf-8")
+        m = re.search(r"^## \[(\d+\.\d+\.\d+)\]", src, re.MULTILINE)
+        return (m.group(1), None) if m else (None, "no version heading in CHANGELOG.md")
     if key.startswith("manifest:"):
         if not MANIFEST_PATH.exists():
             return None, "grc_manifest.json not built (fresh checkout)"

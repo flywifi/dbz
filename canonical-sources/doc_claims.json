@@ -113,6 +113,13 @@
       "cited_in": [
         "docs/BENCHMARK.md"
       ]
+    },
+    "version_current": {
+      "value_from": "changelog_latest",
+      "cited_in": [
+        "VERSION"
+      ],
+      "_purpose": "The release version stated in VERSION must equal the latest changes/CHANGELOG.md heading. Registered in phase 46 after phase 45 shipped 0.12.1 in the changelog while VERSION stayed 0.12.0 with nothing watching."
     }
   }
 }

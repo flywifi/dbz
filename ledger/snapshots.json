@@ -400,7 +400,7 @@
       "sha": "ac6e2f7",
       "date": "2026-08-14",
       "known_good": false,
-      "note": "CI red at this sha: count_truth caught schema_version 3.18 not yet stated in docs/fedramp-modernization.md (doc drift, healed at 6a91653). Data content is sound, but do not roll back TO this sha \u2014 use 6a91653. Process cause: pushed without the mandatory ci_rehearsal. Roll back instead to the 40-close-clean anchor (ea03cf7) recorded below."
+      "note": "CI red at this sha: count_truth caught schema_version 3.18 not yet stated in docs/fedramp-modernization.md (doc drift, healed at 6a91653). Data content is sound, but do not roll back TO this sha — use 6a91653. Process cause: pushed without the mandatory ci_rehearsal. Roll back instead to the 40-close-clean anchor (ea03cf7) recorded below."
     },
     {
       "phase": "40-close-clean",
@@ -423,7 +423,7 @@
       "sha": "4852bf6",
       "date": "2026-08-15",
       "known_good": true,
-      "note": "Anchors the gates commit. The phase actually closed one commit later at 08bdd16 (CHANGELOG 0.10.1 / STATE rows), also green \u2014 either sha is a safe restore point; 08bdd16 is the complete phase."
+      "note": "Anchors the gates commit. The phase actually closed one commit later at 08bdd16 (CHANGELOG 0.10.1 / STATE rows), also green — either sha is a safe restore point; 08bdd16 is the complete phase."
     },
     {
       "phase": "42-pre",
@@ -466,6 +466,30 @@
       "sha": "742d938",
       "date": "2026-08-16",
       "known_good": true
+    },
+    {
+      "phase": "45-pre",
+      "name": "Pre-phase-45 baseline (phase-44 close, re-anchored)",
+      "sha": "1e69a7d",
+      "date": "2026-09-19",
+      "known_good": true,
+      "note": "Cut retroactively at phase-46 open: phase 45 missed checklist item 4 (no anchors were cut). 1e69a7d was CI-green on 2026-09-03 and 2026-08-16 runs."
+    },
+    {
+      "phase": "45-close",
+      "name": "Phase-45 close (currency sweep, vacuous checker fixed, FedRAMP 2026.09.13.02 re-pin, elapsed-open lens, 0.12.1)",
+      "sha": "13a02b8",
+      "date": "2026-09-19",
+      "known_good": true,
+      "note": "Cut retroactively at phase-46 open together with the VERSION repair (0.12.0 -> 0.12.1; the changelog had moved without the file). CI green on 13a02b8 at 2026-09-19T16:14:29Z (tools/ci_status.py)."
+    },
+    {
+      "phase": "46-pre",
+      "name": "Pre-phase-46 baseline for the SCF 2026.2 ingest (phase-45 close + the versioning repair commit)",
+      "sha": "13a02b8",
+      "date": "2026-09-19",
+      "known_good": true,
+      "note": "The SCF rollback anchor. The versioning-repair commit that follows is docs/ledger-only; either sha restores the 2026.1.1 data surface."
     }
   ]
 }
