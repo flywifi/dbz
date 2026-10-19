@@ -3,6 +3,23 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.14.1] — 2026-10-19 (phase 47 follow-up — both open checks resolved; docs only)
+
+PATCH: no code or registry change. Supersedes 0.14.0's "the reporting session has been
+asked" line; detail in the Resolution section of `docs/audits/phase-47-adversarial-audit.md`.
+
+- **The dead NIST feed is confirmed dead from a residential connection** (HTTP 404 with the
+  repo's own User-Agent, a third egress), so the old "works from residential access" notes
+  were wrong and the seven dropped duplicates stay dropped. The sibling
+  `/news-events/cybersecurity/rss.xml` returns 200 but an **empty** channel, so it must not
+  be used as a replacement.
+- **The reverse-index report is closed as unreproduced on both platforms**: three runs on
+  Windows 11 / Python 3.13.5 each finished in about 1 s. The original stall coincided with an
+  interrupted, re-issued command chain under memory pressure (a hypothesis, not a finding).
+- **Cross-platform note:** the generated catalog is 674,370 bytes larger on Windows,
+  exactly its line count (text-mode CRLF). Nothing hashes those bytes, so the build is
+  unaffected.
+
 ## [0.14.0] — 2026-10-19 (phase 47 — peer-reported skill defects fixed, three hidden ones found behind them)
 
 MINOR: a new atom (`source-manifest-lookup`). No schema bump, no query-surface change.

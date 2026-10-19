@@ -88,3 +88,26 @@ and is corrected here.
   is unexamined (parked; no URL asserted).
 - The reverse-index report remains open until it reproduces or the reporter confirms an
   environmental cause.
+
+## Resolution — 2026-10-19 (evidence from the reporting workstation)
+
+- **Adversary claim survives.** The old feed returns HTTP 404 from a residential
+  connection with the repo's own fetchkit User-Agent (an HTML "404 Page not found |
+  NIST" page), a third egress after the two in Pass 1. The removed notes claiming
+  residential access worked were wrong. The seven dropped duplicates stay dropped.
+  (Without a User-Agent nist.gov returns 403 for every feed, the bot-wall signature the
+  404 is not.)
+- **Do not repoint to `/news-events/cybersecurity/rss.xml`.** It returns 200 but an
+  empty channel (860 bytes, 0 items): alive-looking and signal-free. The Insights feed
+  returned 200 with 40 items there too.
+- **Reverse-index report closed as unreproduced on both platforms.** Three runs at
+  `3fd3256` on Windows 11 / Python 3.13.5 each finished in about 1 s (29 frameworks).
+  The original stall coincided with a harness-interrupted, re-issued command chain under
+  memory pressure. That is the reporter's hypothesis, not a finding. Reopen only on a
+  fresh reproduction.
+- **Cross-platform observation (no defect).** The generated catalog is 674,370 bytes
+  larger on Windows, exactly its line count: text-mode writes in `generate_controls.py`
+  emit CRLF there. No code hashes the catalog's bytes and grc.db digests are
+  content-derived, so the build is unaffected.
+- **Residual-risk list:** the reverse-index and residential-check items are resolved;
+  the all-feeds update_check, packaged-skill markdown scope, and CSRC-feed items stand.
