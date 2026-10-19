@@ -18,6 +18,11 @@ PATCH: registry refresh only (`feed_registry.json`); no code change.
   their keywords are a redesign of their own, parked. `feeds_count` unchanged at 161.
 - Do not "repair" the phase-47 repoint to `/news-events/cybersecurity/rss.xml`: it looks
   alive and carries nothing. Audit: `docs/audits/phase-48-adversarial-audit.md`.
+- **Seed-source triage recorded, nothing added** (`docs/source-inventory.md`): 21
+  user-supplied GitHub repositories ranked; 4 are already pinned (not the 8 the triage
+  claimed — four of those appear nowhere in the repo), `FedRAMP/marketplace-fedramp-gov-data`
+  and `usnistgov/macos_security` lead the candidates, 4 are not GRC. Any promotion is a
+  future phase that re-verifies first.
 
 ## [0.14.1] — 2026-10-19 (phase 47 follow-up — both open checks resolved; docs only)
 

@@ -470,3 +470,34 @@ pattern): FedRAMP r5 keeps its matrix seat; the KSI confirmation layer (46 indic
 FedRAMP-published KSI→800-53 edges, 95.2% inside the Moderate baseline) is a contained
 query-surface tier. GSA/fedramp-automation is archived (2025-07-01); FedRAMP/docs is legacy;
 the living sources are FedRAMP/rules + fedramp.gov/2026/ + fedramp.gov/schemas/.
+
+## GitHub seed-source triage (Phase 48, 2026-10-19) — recorded, nothing added
+
+Twenty-one user-supplied GitHub repositories were triaged against the registries at
+`0012f0d` (own grep) and against the GitHub API (live/archived status and last-push dates,
+as reported by the triaging workstation; not re-fetched here). **Decision: record only.** No
+source was added, pinned, or crawled; a future phase may promote a row, and must start by
+re-verifying it.
+
+**Already referenced by dbz (4):** `FedRAMP/rules` (pinned consolidated-rules dataset),
+`FedRAMP/2026-markdown` (vendored narrative corpus), `usnistgov/oscal-content` and
+`usnistgov/OSCAL` (OSCAL cache + format watch). The triage also listed `FedRAMP/2026`,
+`FedRAMP/schemas`, `usnistgov/800-63-4-Implementation-Resources` and `usnistgov/800-63-3` as
+"in use"; **they are not** — `FedRAMP/2026` appears only inside a vendored markdown file and
+the other three nowhere (the 800-63 material arrives via NIST CPRT exports, not those repos).
+A refresh of the four real pins is ordinary `standards_refresh.py` work, not a new source.
+
+**New and relevant, ranked (none adopted):**
+
+| # | Repository | What it is | Would fit | Reported size / last push |
+|---|---|---|---|---|
+| 1 | `FedRAMP/marketplace-fedramp-gov-data` | public FedRAMP Marketplace data: authorized CSPs, impact levels, agencies, status | a `kev_loader`-pattern loader + `dbz_query.py` surface; answers "is this vendor FedRAMP authorized" | ~22 MB / 2026-10-19 |
+| 2 | `usnistgov/macos_security` | macOS Security Compliance Project; per-rule YAML mapped to 800-53 r5, 800-171, CIS, DISA STIG, CMMC | a STIG-like technical-control catalog beside the `stig_*` / CCI tables | ~29 MB YAML / 2026-10-14 |
+| 3 | `usnistgov/800-63-Public-Comments` | SP 800-63-4 comment dispositions | `anticipated_updates` signal for the 800-63 feeds | ~49 MB / 2026-10-06 |
+| 4 | `usnistgov/800-217` | PIV credentials with federation | IA-family depth | ~3 MB / 2026-10-06 |
+| 5 | `usnistgov/liboscal-java`, `usnistgov/metaschema` | OSCAL tooling | only if dbz validates or emits OSCAL | 2026-10-19 |
+| 6 | `FedRAMP/JSONViewer` | JS viewer for the CR26 JSON (UI, not data) | low value | 2026-10-13 |
+| 7 | `usnistgov/swid-tools`, `usnistgov/dioptra` | SWID tags; AI test platform | marginal (SR / CM-8; AI RMF angle); dioptra is ~261 MB | 2026-10-19 |
+
+**Not GRC-related, skipped:** `usnistgov/fipy`, `usnistgov/AusteniteCalculator`,
+`usnistgov/open-notebook`, `usnistgov/pyproject2conda`.
