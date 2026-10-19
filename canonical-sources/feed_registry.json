@@ -2316,6 +2316,16 @@
             "vulnerability"
           ],
           "notes": "NIST Cybersecurity Insights blog RSS (replaces deprecated /news-events/cybersecurity/rss)"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "NVD",
+            "CVE",
+            "vulnerability"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "none",
@@ -3772,6 +3782,17 @@
             "framework profiles"
           ],
           "notes": "Federal Register NIST publications RSS (replaces deprecated csrc.nist.gov/publications RSS)"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "CSF",
+            "Cybersecurity Framework",
+            "2.0",
+            "profiles"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_landing_url": "https://csrc.nist.gov/publications/drafts-open-for-comment",
@@ -3892,6 +3913,15 @@
         {
           "url": "https://csrc.nist.gov/publications/drafts-open-for-comment.xml",
           "type": "rss"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "SP 800-37",
+            "800-37"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "none",
@@ -3932,6 +3962,15 @@
         {
           "url": "https://csrc.nist.gov/publications/drafts-open-for-comment.xml",
           "type": "rss"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "SP 800-63",
+            "800-63"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "none",
@@ -3972,6 +4011,15 @@
         {
           "url": "https://csrc.nist.gov/publications/drafts-open-for-comment.xml",
           "type": "rss"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "SP 800-63A",
+            "800-63A"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "none",
@@ -4013,6 +4061,15 @@
         {
           "url": "https://csrc.nist.gov/publications/drafts-open-for-comment.xml",
           "type": "rss"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "SP 800-63B",
+            "800-63B"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "none",
@@ -4054,6 +4111,15 @@
         {
           "url": "https://www.nist.gov/news-events/events/rss",
           "type": "rss"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "SP 800-56A",
+            "800-56A"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "none",
@@ -4094,6 +4160,15 @@
         {
           "url": "https://www.nist.gov/news-events/events/rss",
           "type": "rss"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "SP 800-57",
+            "800-57"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "none",
@@ -4134,6 +4209,15 @@
         {
           "url": "https://csrc.nist.gov/publications/drafts-open-for-comment.xml",
           "type": "rss"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "SP 800-160",
+            "800-160"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "none",
@@ -4171,6 +4255,15 @@
             "800-166"
           ],
           "notes": "NIST Cybersecurity Insights blog RSS — repointed 2026-10-19 from the deprecated /news-events/cybersecurity/rss (HTTP 404 from two independent egresses). filter_keywords derived from this feed's label, revision-agnostic."
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "SP 800-166",
+            "800-166"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "none",
@@ -4209,6 +4302,15 @@
             "800-189"
           ],
           "notes": "NIST Cybersecurity Insights blog RSS — repointed 2026-10-19 from the deprecated /news-events/cybersecurity/rss (HTTP 404 from two independent egresses). filter_keywords derived from this feed's label, revision-agnostic."
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "SP 800-189",
+            "800-189"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "none",
@@ -4249,6 +4351,15 @@
         {
           "url": "https://csrc.nist.gov/publications/drafts-open-for-comment.xml",
           "type": "rss"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "SP 800-213A",
+            "800-213A"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "none",
@@ -4285,6 +4396,14 @@
             "FIPS 140"
           ],
           "notes": "NIST Cybersecurity Insights blog RSS — repointed 2026-10-19 from the deprecated /news-events/cybersecurity/rss (HTTP 404 from two independent egresses). filter_keywords derived from this feed's label, revision-agnostic."
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "FIPS 140"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "none",
@@ -4320,6 +4439,14 @@
             "FIPS 199"
           ],
           "notes": "NIST Cybersecurity Insights blog RSS — repointed 2026-10-19 from the deprecated /news-events/cybersecurity/rss (HTTP 404 from two independent egresses). filter_keywords derived from this feed's label, revision-agnostic."
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "FIPS 199"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "none",
@@ -4355,6 +4482,14 @@
             "FIPS 200"
           ],
           "notes": "NIST Cybersecurity Insights blog RSS — repointed 2026-10-19 from the deprecated /news-events/cybersecurity/rss (HTTP 404 from two independent egresses). filter_keywords derived from this feed's label, revision-agnostic."
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "FIPS 200"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "none",
@@ -4391,6 +4526,14 @@
             "FIPS 201"
           ],
           "notes": "NIST Cybersecurity Insights blog RSS — repointed 2026-10-19 from the deprecated /news-events/cybersecurity/rss (HTTP 404 from two independent egresses). filter_keywords derived from this feed's label, revision-agnostic."
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "FIPS 201"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "none",
@@ -4433,6 +4576,15 @@
         {
           "url": "https://csrc.nist.gov/publications/drafts-open-for-comment.xml",
           "type": "rss"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "IR 8477",
+            "NISTIR 8477"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ],
       "draft_status": "draft",
@@ -5615,6 +5767,15 @@
             "HIPAA"
           ],
           "notes": "NIST Cybersecurity Insights blog RSS"
+        },
+        {
+          "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "800-66",
+            "HIPAA"
+          ],
+          "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
         }
       ]
     },
