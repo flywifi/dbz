@@ -498,6 +498,14 @@
       "date": "2026-09-19",
       "known_good": true,
       "note": "CI green at 2026-09-19T20:11:26Z (tools/ci_status.py). The rollback recipe to 46-pre (26720f6) was rehearsed in a scratch worktree before this anchor was cut: the rebuilt 2026.1.1 tree reproduced scf_direct=1117 / scf_composed_edges=8609 / confirmed=23485 exactly."
+    },
+    {
+      "phase": "47-pre",
+      "name": "Pre-phase-47 baseline (phase-46 close) for the peer-reported skill-defect fixes",
+      "sha": "3fd3256",
+      "date": "2026-10-19",
+      "known_good": true,
+      "note": "CI green on 3fd3256 (health 2026-09-19T20:12:12Z; scheduled run 2026-10-03T11:46:21Z). Rebuilt from a fresh clone 2026-10-19: confirmed=23551, scf_direct=1117."
     }
   ]
 }
