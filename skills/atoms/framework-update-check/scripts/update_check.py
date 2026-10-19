@@ -61,7 +61,7 @@ def _get_recent_announcements(
             "change_type": entry.get("change_type", "informational"),
             "human_reviewed": entry.get("human_reviewed", False),
         })
-    return sorted(results, key=lambda e: e.get("published_at", ""), reverse=True)
+    return sorted(results, key=lambda e: e.get("published_at") or "", reverse=True)  # null dates exist in the feed
 
 
 def _get_changelog_recent(
@@ -82,13 +82,27 @@ def _get_changelog_recent(
         e for e in cl.get("entries", [])
         if e.get("framework_id") == feed_id
     ]
-    entries.sort(key=lambda e: e.get("change_date", ""), reverse=True)
+    # framework_changelog.json field names (new_version / changed_at / controls_removed);
+    # the reader had drifted to a stale schema and returned None for every field.
+    entries.sort(key=lambda e: e.get("changed_at") or "", reverse=True)
+
+    def _count(v):
+        """Control lists are id lists or null (unknown) — null stays None, never 0."""
+        if v is None:
+            return None
+        if isinstance(v, str):
+            try:
+                v = json.loads(v)
+            except ValueError:
+                return None
+        return len(v) if isinstance(v, list) else None
+
     return [
         {
-            "version_to": e.get("version_to"),
-            "change_date": e.get("change_date"),
-            "controls_added": len(json.loads(e.get("controls_added", "[]"))),
-            "controls_withdrawn": len(json.loads(e.get("controls_withdrawn", "[]"))),
+            "version_to": e.get("new_version"),
+            "change_date": e.get("changed_at"),
+            "controls_added": _count(e.get("controls_added")),
+            "controls_withdrawn": _count(e.get("controls_removed")),
             "human_confirmed": e.get("human_confirmed", False),
         }
         for e in entries[:limit]
@@ -131,13 +145,20 @@ def check_frameworks(
     )
 
     # 2. Announcement signals (refresh feed with latest RSS/Atom entries)
-    ann_feed = am.run(
-        registry_path=reg,
-        output_path=ann_path,
-        dry_run=dry_run,
-        feed_ids=feed_ids,
-        window_days=announcement_days,
-    )
+    # announcement_monitor.run() takes its CLI Namespace (one feed or all) and writes
+    # the feed file unless dry_run; the entries are read back from that file. Calling it
+    # with keyword arguments raised TypeError (phase 47, reported from a PC install).
+    import argparse
+    for fid in (feed_ids or [None]):
+        rc = am.run(argparse.Namespace(registry=str(reg), output=str(ann_path), feed=fid,
+                                       days=announcement_days, dry_run=dry_run,
+                                       log_dir=str(am.LOGS_DIR)))
+        if rc != 0:
+            raise RuntimeError(f"announcement_monitor.run failed (rc={rc}) for feed {fid!r}")
+    try:
+        ann_feed = json.loads(Path(ann_path).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        ann_feed = {}
     all_announcements = ann_feed.get("entries", []) if isinstance(ann_feed, dict) else []
 
     # 3. Merge into unified records
