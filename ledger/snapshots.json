@@ -522,6 +522,14 @@
       "date": "2026-10-19",
       "known_good": true,
       "note": "CI green at 2026-10-19T21:54:25Z (tools/ci_status.py)."
+    },
+    {
+      "phase": "48-close",
+      "name": "Phase-48 close (NIST Information Technology topic feed on 18 identifier-keyed feeds, 0.14.2)",
+      "sha": "ccdbad1",
+      "date": "2026-10-19",
+      "known_good": true,
+      "note": "CI green at 2026-10-19T22:15:04Z (tools/ci_status.py)."
     }
   ]
 }
