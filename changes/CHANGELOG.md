@@ -3,6 +3,62 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.14.0] — 2026-10-19 (phase 47 — peer-reported skill defects fixed, three hidden ones found behind them)
+
+MINOR: a new atom (`source-manifest-lookup`). No schema bump, no query-surface change.
+Origin: a peer Claude session installing the skills into a read-only clone on a workstation
+reported four defects at `3fd3256`. Each was reproduced before any fix; three are confirmed, one is not.
+
+### Fixed — reported, and reproduced
+- **framework-update-check crashed on its own documented command**
+  (`update_check.py --feed nist-800-53 --days 90 --dry-run --format summary` →
+  `TypeError: run() got an unexpected keyword argument 'registry_path'`).
+  `announcement_monitor.run()` takes its CLI namespace; the skill now builds one per feed.
+- **Two more crashes were hiding behind it**, each found only by running the fix:
+  announcements with an explicit `published_at: null` (57 of 62 entries) broke the sort,
+  and the changelog reader used a **stale schema** (`version_to`, `change_date`,
+  `controls_withdrawn` don't exist) while `json.loads`-ing fields stored as lists. The
+  command now exits 0 and the reader returns real values.
+- **Unresolvable references:** two packaged workflows stepped into a nonexistent
+  `source-manifest-lookup` atom, which is now registered (read-only lookup by source key
+  or role; unknown keys and roles are errors, never synthesized entries). changelog-query
+  pointed at a nonexistent `framework-registry-lookup` and now points at `feed-poller`.
+  compliance-report-analyzer cited an `access-modes.md` it doesn't have and now cites the
+  one in the skill its `normalize` step delegates to.
+
+### Why CI never saw the references
+- `health_audit.check_workflows` scanned only top-level skills, so the five packaged
+  `skills/<name>/<name>/` workflows were never checked. The check now covers them, proven
+  red on the live defect (2 blocking findings) before the atom landed and green (0) after.
+  Markdown checks deliberately stay top-level: widening them would have emitted 46
+  findings, **44 of them false positives** (runtime output paths like
+  `crawl/finding-log.json` that those skills emit, not repo files).
+
+### Correction of record — a phase-46 data defect of mine
+- `chg-scf-2026.1.1-to-2026.2` stored **counts** (66 / 0 / 31) where every other entry
+  stores **id lists or null**, and the 31 was **wrong**: eight controls are in both the
+  renamed and wordsmithed lists, so the union is **23**. The entry now carries the 66
+  added ids (measured id-set diff), `[]` removed, and the 23 modified ids. The bare int
+  had also leaked through `dbz_query changelog --format json`, which now returns lists.
+
+### Dead NIST feed (found while running the fix)
+- **22 feeds** polled `nist.gov/news-events/cybersecurity/rss`, which returns **HTTP 404**
+  from two independent egresses, although the registry had already recorded it as
+  deprecated and named the replacement (`/blogs/cybersecurity-insights/rss.xml`, live).
+  Seven duplicates were dropped (no filter keywords lost) and fifteen entries repointed.
+- **The trap avoided:** those fifteen had no `filter_keywords`, and an empty list accepts
+  every item, so a naive repoint would have tagged **600** blog posts as announcements for
+  FIPS 199, SP 800-63 and the rest over 90 days. With revision-agnostic identifier keywords
+  derived from each feed's own label (`FIPS 201`, not `FIPS 201-3`, so a 201-4 announcement
+  still matches), the same window yields **1**, a genuine hit.
+
+### Not reproduced — no code change
+- `build_reverse_index.py` "did not finish after 7 minutes": here it completes in **1 s**
+  on a freshly generated 30.5 MB catalog. The obvious causes don't fit the report (a
+  missing catalog exits immediately, a partial one fails fast in `json.load`). The docs now
+  mark the step optional, since grc.db's reverse_index view serves reverse queries, and the
+  reporting session has been asked for OS, Python version, and catalog size.
+
 ## [0.13.0] — 2026-09-19 (phase 46 — SCF 2026.2 ingested, rollback-tested; the phase-45 versioning miss repaired)
 
 MINOR: the canonical SCF framework name changes on the query surface (alias-preserved) and

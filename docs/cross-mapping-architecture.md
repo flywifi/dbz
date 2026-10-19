@@ -289,7 +289,8 @@ and get `[AC-2, IA-2, IA-4, IA-5, IA-8]`. The legacy `build_reverse_index.py` +
 # Build catalog + DB
 python3 cross-mapping/nist-catalog/ingestion/generate_controls.py       # all families
 python3 cross-mapping/engine/build_db.py                                 # grc.db (auto-runs after generate)
-python3 cross-mapping/engine/build_reverse_index.py                      # legacy reverse_index.json
+# optional, legacy: python3 cross-mapping/engine/build_reverse_index.py  (grc.db's reverse_index
+#   view already serves reverse queries; this only writes the offline reverse_index.json)
 
 # Verify
 python3 cross-mapping/nist-catalog/ingestion/validate_catalog.py         # field rules
