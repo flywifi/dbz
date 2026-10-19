@@ -514,6 +514,14 @@
       "date": "2026-10-19",
       "known_good": true,
       "note": "CI green at 2026-10-19T19:27:52Z (tools/ci_status.py). Every commit from 47-pre was gated as it landed."
+    },
+    {
+      "phase": "48-pre",
+      "name": "Pre-phase-48 baseline (phase-47 follow-up, 0.14.1) for the NIST IT topic feed addition",
+      "sha": "0012f0d",
+      "date": "2026-10-19",
+      "known_good": true,
+      "note": "CI green at 2026-10-19T21:54:25Z (tools/ci_status.py)."
     }
   ]
 }
