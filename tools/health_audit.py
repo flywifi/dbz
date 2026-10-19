@@ -86,6 +86,22 @@ def atom_dirs() -> List[Path]:
                   if d.is_dir() and d.name not in SKIP_ATOM_DIRS and not d.name.startswith("."))
 
 
+def packaged_skill_dirs() -> List[Path]:
+    """Packaged skills nested one level down (skills/<name>/<name>/SKILL.md). Their
+    workflow.json step targets are checked like composite skills' — phase 47: two
+    workflows referenced an unregistered atom for months because the scan stopped at
+    the top level. Markdown backtick checks are NOT extended to them: their SKILL.md
+    files cite the runtime output paths they emit (e.g. `crawl/finding-log.json`),
+    which are not repo files (measured: 44 of 46 widened findings were that class)."""
+    out = []
+    for d in sorted(SKILLS_DIR.iterdir()) if SKILLS_DIR.exists() else []:
+        if d.is_dir() and d.name not in ("atoms", "shared") and not d.name.startswith("."):
+            inner = d / d.name
+            if (inner / "SKILL.md").exists():
+                out.append(inner)
+    return out
+
+
 def composite_skill_dirs() -> List[Path]:
     """Skill dirs directly under skills/ (not skills/atoms, not shared) that have a SKILL.md."""
     out = []
@@ -281,7 +297,8 @@ def workflow_findings(data: Dict[str, Any], valid_targets: set, skill_name: str,
 
 def check_workflows(reg_ids: set) -> List[Dict[str, Any]]:
     findings = []
-    for d in composite_skill_dirs():
+    packaged = set(packaged_skill_dirs())
+    for d in composite_skill_dirs() + sorted(packaged):
         wf = d / "workflow.json"
         if not wf.exists():
             continue
@@ -297,6 +314,8 @@ def check_workflows(reg_ids: set) -> List[Dict[str, Any]]:
                        if p.is_dir() and p.name not in ("shared",) and not p.name.startswith(".")}
         valid_targets = reg_ids | skill_names | {p.name for p in atom_dirs()}
         findings += workflow_findings(data, valid_targets, d.name, str(wf.relative_to(ROOT)))
+        if d in packaged:
+            continue  # workflow targets only — see packaged_skill_dirs()
         # reference integrity + hygiene for the composite skill's markdown
         for md in d.rglob("*.md"):
             if _excluded(md):
