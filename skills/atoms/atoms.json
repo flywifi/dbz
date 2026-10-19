@@ -582,6 +582,29 @@
         "description": "Query the unified master mapping surface for any framework-to-any-framework relationships, tier-arbitrated with corroboration; supports pair, control, and audit-scope modes.",
         "invocation": "dbz_query.py master --framework-a {framework_a} --framework-b {framework_b} (or --framework/--control, or --scope-fedramp)"
       }
+    },
+    {
+      "id": "source-manifest-lookup",
+      "label": "Source Manifest Lookup",
+      "version": "1.0",
+      "path": "skills/atoms/source-manifest-lookup",
+      "script": "tools/source_manifest_lookup.py",
+      "input_schema": {
+        "key": "string? — exact source id",
+        "role": "string? — source role (exactly one of key/role)"
+      },
+      "output_schema": {
+        "manifest_entry": "object (key mode)",
+        "manifest_entries": "array (role mode)",
+        "count": "integer",
+        "human_review_required": "boolean — always true"
+      },
+      "tags": [
+        "manifest",
+        "source",
+        "lookup",
+        "registry"
+      ]
     }
   ]
 }

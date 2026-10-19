@@ -5,7 +5,7 @@ description: >
   changelog entries with old/new version, change type, and summary.
   Use to determine if a framework has been updated since the last DB build.
   Do NOT use for live version monitoring (use framework-update-check).
-  Do NOT use for feed registry status (use framework-registry-lookup).
+  Do NOT use for feed registry status (use feed-poller).
 atom: true
 version: "1.0"
 ---
@@ -44,7 +44,7 @@ Wraps `dbz_query.py changelog`.
 
 ## Do NOT use for
 - Live version monitoring — use framework-update-check (polls crawl_seeds)
-- Feed registry current_version — use framework-registry-lookup
+- Feed registry current_version — use feed-poller
 - Announcements feed — different table (announcements, not changelog)
 
 ## Conflicting sources — minority-report policy

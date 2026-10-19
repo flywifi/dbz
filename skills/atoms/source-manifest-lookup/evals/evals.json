@@ -1,0 +1,35 @@
+{
+  "atom": "source-manifest-lookup",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "pass-01",
+      "label": "Known source key returns exactly one verbatim entry",
+      "input": {"key": "scf-controls"},
+      "expected_output": {"count": 1, "manifest_entry": {"$exists": true}, "human_review_required": true},
+      "expect_pass": true
+    },
+    {
+      "id": "pass-02",
+      "label": "Known role returns every entry carrying that role",
+      "input": {"role": "scf_meta_framework"},
+      "expected_output": {"count_min": 1, "manifest_entries": {"$exists": true}, "human_review_required": true},
+      "expect_pass": true
+    },
+    {
+      "id": "fail-01",
+      "label": "Unknown key returns an error, never a synthesized entry",
+      "input": {"key": "nonexistent-xyz"},
+      "expected_output": {"error": {"$contains": "not found"}, "human_review_required": true},
+      "expect_pass": true,
+      "note": "Never fabricate a manifest entry for an unknown source"
+    },
+    {
+      "id": "fail-02",
+      "label": "Unknown role returns an error listing the known roles",
+      "input": {"role": "no_such_role"},
+      "expected_output": {"error": {"$contains": "not found"}, "known_roles": {"$exists": true}},
+      "expect_pass": true
+    }
+  ]
+}

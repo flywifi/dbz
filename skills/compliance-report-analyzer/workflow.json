@@ -46,5 +46,5 @@
   ],
   "output": "{{validated}}",
   "on_step_failure": "stop_and_return_error",
-  "notes": "Each step is independently callable for debugging. 'normalize' step sets access_mode from references/access-modes.md hierarchy."
+  "notes": "Each step is independently callable for debugging. 'normalize' step sets access_mode from the audit-artifact-normalizer skill's references/access-modes.md (skills/audit-artifact-normalizer/audit-artifact-normalizer/references/access-modes.md)."
 }
