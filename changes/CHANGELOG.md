@@ -3,6 +3,22 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.14.2] — 2026-10-19 (phase 48 — NIST Information Technology topic feed added where keywords are specific)
+
+PATCH: registry refresh only (`feed_registry.json`); no code change.
+
+- NIST's feed directory shows topic feeds of the form `/news-events/<topic>/rss.xml`; the
+  **official Cybersecurity topic feed is live but empty** (200, 0 items), and cybersecurity
+  news now lands in the **Information Technology** topic feed (40 items). Measured over 180
+  days with each framework's own keywords, that feed adds **6 nist-csf** and **1 nvd-cve**
+  announcements and 0 for the SP/FIPS/IR feeds (no releases in window).
+- Added beside the Insights blog on **18 feeds**: the 16 whose keywords are all specific
+  identifiers plus nist-csf and nvd-cve. **8 generic-keyword feeds skipped by rule**
+  (`oscal-format`'s `release/schema/breaking change` match 10 of 40 general news items);
+  their keywords are a redesign of their own, parked. `feeds_count` unchanged at 161.
+- Do not "repair" the phase-47 repoint to `/news-events/cybersecurity/rss.xml`: it looks
+  alive and carries nothing. Audit: `docs/audits/phase-48-adversarial-audit.md`.
+
 ## [0.14.1] — 2026-10-19 (phase 47 follow-up — both open checks resolved; docs only)
 
 PATCH: no code or registry change. Supersedes 0.14.0's "the reporting session has been
