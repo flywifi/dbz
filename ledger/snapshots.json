@@ -506,6 +506,14 @@
       "date": "2026-10-19",
       "known_good": true,
       "note": "CI green on 3fd3256 (health 2026-09-19T20:12:12Z; scheduled run 2026-10-03T11:46:21Z). Rebuilt from a fresh clone 2026-10-19: confirmed=23551, scf_direct=1117."
+    },
+    {
+      "phase": "47-close",
+      "name": "Phase-47 close (peer-reported skill defects fixed, packaged-skill workflow audit, NIST feed repoint, 0.14.0)",
+      "sha": "46fd9ab",
+      "date": "2026-10-19",
+      "known_good": true,
+      "note": "CI green at 2026-10-19T19:27:52Z (tools/ci_status.py). Every commit from 47-pre was gated as it landed."
     }
   ]
 }
