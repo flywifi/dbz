@@ -538,6 +538,14 @@
       "date": "2026-11-04",
       "known_good": true,
       "note": "CI green on 2029a77: push run 2026-10-19T22:22:02Z and scheduled run 2026-11-03T14:25:03Z (tools/ci_status.py)."
+    },
+    {
+      "phase": "49-close",
+      "name": "Phase-49 close (NIST feed-directory + NCP crawl, nist-ncp feed, 0.14.3)",
+      "sha": "2dfcf5a",
+      "date": "2026-11-04",
+      "known_good": true,
+      "note": "CI green at 2026-11-04T20:26:57Z (tools/ci_status.py)."
     }
   ]
 }
