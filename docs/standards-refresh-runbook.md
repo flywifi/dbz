@@ -73,8 +73,9 @@ touching that workflow or the generators it depends on.
 
 All live fetching in the monitors routes through fetchkit: per-host pacing (min interval +
 jitter + robots Crawl-delay), Retry-After / RateLimit-Reset respect, a circuit breaker
-(4 consecutive 403/429/503 → 15-minute cooldown), a per-run request budget, and an
-ETag/Last-Modified + sha256 conditional-GET cache. Learned limits and cache state persist in
+(4 consecutive 403/429/503 → 15-minute cooldown), each host's **published usage rule**
+(next section), a runaway ceiling of 600 requests per run, and an ETag/Last-Modified + sha256
+conditional-GET cache. Learned limits and cache state persist in
 `.fetch-cache/` (gitignored). Repeat refresh runs are therefore mostly 304 header exchanges.
 
 **Wayback labeling rule (non-negotiable):** `fetchkit.resilient_get` can fall back to a
@@ -85,20 +86,76 @@ set `allow_wayback=False`. Canonical-artifact fetches in `standards_refresh.py` 
 Escape hatch for manual verification: delete `.fetch-cache/fetch_state.json` to force full
 re-downloads. Offline unit tests: `cross-mapping/tests/test_fetchkit.py`.
 
+## Host usage rules — never overload a source (Phase 50)
+
+`canonical-sources/host_policies.json` records, for every host the monitors contact, the host's
+**published** usage rule quoted verbatim (or `none published` with the date it was checked) and
+the limits the governor enforces. The rules recorded on 2026-11-04 include:
+
+| host | published rule | enforced |
+|---|---|---|
+| ncp.nist.gov | "use the META file … less than 200 requests per day" | read `.meta` before any `.xml.gz`/`.zip`; 10 per run |
+| services.nvd.nist.gov | 5 per rolling 30 s (50 with an API key) | the same rolling window |
+| api.github.com | 60/h unauthenticated; 1,000/h per repository with `GITHUB_TOKEN` | 50 per run; the monthly workflow passes its token |
+| www.ecfr.gov | the full-XML endpoint requires `Accept-Encoding` | header added automatically; 4 s; robots override for that one documented API path, with both citations |
+| all others | none published | 1.5 s between requests, 25 per run |
+
+How it is enforced:
+
+- **robots.txt follows RFC 9309.** A 4xx means no rules. A 5xx or a transport failure means
+  complete disallow for that run, and the refusal names the error (TLS, timeout). An HTML page
+  answering for `/robots.txt` is not a robots file.
+- **Blank lines are not group breaks.** Python's stdlib parser treats them as breaks and so
+  drops real Disallow rules. fetchkit strips blank lines first; this is pinned by a fixture.
+- **Every refusal is recorded.** A broken rule raises `PolicyRefused`. It is written to the
+  per-run ledger (`fetch_ledger` / `policy_refusals` in the drift report) and surfaces in the
+  drift issue. It is never retried in the same run.
+
+The CI gate is `python3 tools/fetch_census.py --check`. It replays one monthly `--check`
+offline and fails if any request bypasses the governor or any host's planned count exceeds its
+cap. It measured 328 requests to 96 hosts, with api.github.com the busiest at 37.
+
+To add a host:
+1. Quote its rule from its own page into `host_policies.json` via `registry_io`, with `verified`
+   and `probe`.
+2. Set `enforced` at or below the rule.
+3. Run the census.
+4. **Re-verify every host's rule yearly** (each entry carries its `verified` date).
+
+The first governed live run (2026-11-04) refused exactly what the rules require:
+- `capitol.texas.gov` disallows `/BillLookup/`, so the `texas-tdpsa` feed now polls the codified
+  statute instead.
+- `www.ismap.go.jp` allows only `/csm`, so the `japan-ismap` feed now polls `/csm`.
+- Four hosts' robots.txt failed TLS or timed out from that network (`www.acq.osd.mil`,
+  `www.cnss.gov`, `www.ilga.gov`, `www.cyber.gov.au`). Their pages fail the same way, so this is
+  no regression. The ledger now names the cause.
+
 ## STIG library harvest + delta procedure (Phase 21)
 
 The STIG layer is **CCI application evidence**, not a STIG registry. Keeping it current:
 
-1. **Delta check** — `standards_refresh.py --check` runs `stig_harvest.py --check`, comparing
-   the live cyber.trackr.live catalog (1 API call) against the committed `stig_catalog.json`.
-   Drift = new / removed / changed titles + stale harvested benchmarks.
-2. **Incremental refresh** — `standards_refresh.py --fetch` runs `stig_harvest.py
-   --refresh-stale`: re-harvests only the drifted benchmarks (per-title DISA zip first,
-   trackr per-rule crawl as fallback) and rewrites the two artifacts deterministically.
-3. **Quarterly library refresh** — when DISA posts a new SRG-STIG Library compilation,
-   fetch it and run `stig_harvest.py --full --from-zip U_SRG-STIG_Library_<Month>_<YYYY>.zip`
-   (the multi-hundred-MB zip is NEVER committed). The URL is discovered at run time
-   (`dl.dod.cyber.mil/.../U_SRG-STIG_Library_{Month}_{YYYY}.zip`, months Jan/Apr/Jul/Oct).
+1. **Currency check (three signals, phase 50).** `standards_refresh.py --check` runs
+   `stig_harvest.py --check --json`, which prints one JSON line:
+   - **library:** HEAD probes for a DISA compilation newer than the pinned one. An unpublished
+     quarter is a clean 404. This is the complete signal.
+   - **NCP:** the NIST checklist feed, under NCP's meta-first rule. It covers about 96
+     benchmarks, with sha-256 hashes for the per-title zips.
+   - **trackr:** corroboration.
+
+   The verdict is drift if any signal sees a newer release, and `check_failed` only if all three
+   fail, each with its reason. *Correction of record:* from July to November 2026 this check
+   could only say `check_failed`. It parsed the last line of an indented report, and it kept
+   only the last 4,000 characters of output. The trackr host was reachable all along.
+2. **Quarterly library refresh** (the usual case): run
+   `stig_harvest.py --full --from-zip U_SRG-STIG_Library_<Month>_<YYYY>.zip --retain-absent --refresh-final`.
+   - The multi-hundred-MB zip is NEVER committed.
+   - `--retain-absent` keeps benchmarks DISA dropped, flagged `not_in_current_library` with
+     `last_library`. They are never deleted (schema 3.19).
+   - `--refresh-final` fetches DISA's final release for them when the zip name is derivable.
+3. **Out-of-cycle titles:** run `stig_harvest.py --refresh-stale`. It tries the NCP-listed zip
+   first (sha-256 verified), then DISA's V/R zip rewrite. The trackr per-rule crawl runs only
+   with `--allow-trackr-crawl` and is capped by trackr's host policy. Above `--max-delta` it
+   refuses, because that is library-scale drift and belongs to step 2.
 4. **Rebuild** — `--gate` regenerates the DB tables (build artifacts, never hand-patched);
    validate_spine check 9 + test_spine STIG fixtures must stay green.
 

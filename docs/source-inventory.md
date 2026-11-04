@@ -554,3 +554,74 @@ older. Example: Office 365 ProPlus is V3R8 in NCP and V3R5 in our catalog (harve
 > - **What was done:** the check now uses three signals (DISA library quarter, NCP, trackr).
 >   The layer was refreshed from the October 2026 library, with the STIGs DISA dropped kept and
 >   flagged. See "Phase 50" below.
+
+## Host usage rules + STIG refresh (Phase 50, 2026-11-04)
+
+**Why:** The monthly feed had to carry STIG currency without overloading any source.
+Investigating that showed the politeness layer was being bypassed, and that the STIG check
+had been blind since July.
+
+**Published usage rules, recorded and enforced.** `canonical-sources/host_policies.json`
+holds 11 hosts. Each records its rule verbatim or "none published", with the check date and
+probe. The rules that matter most:
+- **NCP:** read `.meta` first; fewer than 200 requests a day.
+- **NVD:** 5 requests per rolling 30 s.
+- **GitHub:** 60/h unauthenticated, 1,000/h per repository with the workflow token.
+- **eCFR:** the full-XML endpoint requires `Accept-Encoding`.
+
+robots.txt follows RFC 9309. Python's blank-line grouping, which silently drops eCFR and
+Federal Register Disallow rules, is neutralised. The offline census
+(`tools/fetch_census.py --check`, in CI) plans one monthly run at **328 requests to 96 hosts,
+none ungoverned**. Before phase 50 it was 423, with 193 ungoverned and two hosts over their
+cap.
+
+**What the first governed live run refused** (from the run ledger):
+- `texas-tdpsa` polled `capitol.texas.gov/BillLookup/…`, which that host's robots disallows. It
+  now polls the codified statute (`statutes.capitol.texas.gov` BC.541, "CHAPTER 541. CONSUMER
+  DATA PROTECTION").
+- `japan-ismap` polled `www.ismap.go.jp/`, but that robots file reads "Disallow: / Allow: /csm".
+  It now polls `/csm`, the portal home with announcements.
+- `www.acq.osd.mil`, `www.cnss.gov` and `www.ilga.gov` fail TLS verification from the session
+  network, and `www.cyber.gov.au` timed out. Their robots files count as unreachable, which
+  means disallow for that run. Their pages fail the same way, so this is not a regression. CI
+  runners may differ, and the ledger names the cause.
+
+**STIG layer → DISA October 2026 library.** The library is
+`U_SRG-STIG_Library_October_2026.zip`: 375,827,141 B, sha256 `ea581eb2…d1d`, HTTP
+Last-Modified 2026-10-26.
+- **The library itself:** 387 of the total, carrying 19,386 of its rules (+24 new, 159 version changes).
+- **Kept, not deleted:** 20 more that the library no longer carries, flagged
+  `not_in_current_library` (schema 3.19), 1,456 rules. DISA's revision history lists most as
+  sunset deletions: 09/30/2026 RHEL 8 V2R9, iOS 18 V2R4, Akamai ×2, Exchange Edge ×2; 07/01/2026
+  Windows Server 2019 V3R9, Crunchy PostgreSQL V3R2, Palo Alto Y25M04, .NET 4.0, 3PAR, Zebra 13.
+  The Exchange 2016/2019 *Mailbox* STIGs have no deletion entry, which is why the flag states
+  only the measured fact.
+- **Refreshed to DISA's final release:** 5 kept benchmarks (iOS 18 v2r4, Crunchy PostgreSQL
+  v3r2, 3PAR 3.2.x v2r2, RHEL 8 v2r9, Windows Server 2019 v3r9).
+- **Out-of-cycle releases from trackr:** HP FlexFabric Switch RTR v1r3 and zOS SRRAUDIT TSS
+  v7r2. Both sit in date-coded DISA bundles, 25 trackr calls.
+- **Result:** **407 benchmarks / 20,842 rules / 539 distinct CCIs.** All three currency signals
+  (library, NCP, trackr) read `same`. Two CCIs left the STIG-cited set with revised Windows
+  Server 2022 / Apache 2.4 UNIX Site STIGs (CCI-000776, CCI-002506), and two arrived with
+  AvePoint Fly Server (CCI-001083, CCI-005155). Net confirmation verdicts over the unchanged
+  180,413 pairs: confirmed 23,551 → 23,540.
+
+**November drift triage** (live tag from the 2026-11-03 scheduled run, plus the issuer's own page):
+
+| Feed | Change | Status |
+|---|---|---|
+| openapi-spec | → 3.2.1 (10 Sep 2026) | current |
+| mitre-attack | → v20.0 (13 Oct 2026) | artifact_stale; ingest owed |
+| mcp-spec | → 2026-07-28 | current |
+| oscal-format | → v1.2.3 (6 Aug 2026) | current |
+| fedramp | repo repointed GSA/fedramp-automation (archived) → FedRAMP/rules | — |
+| cisa-kev | live catalogVersion 2026.11.04 vs committed 2026.07.01 | artifact_stale; `--fetch` owed |
+
+- **Re-verified at origin** (7 staleness warnings cleared):
+  - `disa-cci`: the live U_CCI_List.xml is byte-identical to the committed one, version
+    2025-01-23, despite a 2026-04-28 zip date.
+  - `disa-cci-trackr`: enumeration 3,551 matches.
+  - `nist-800-53` and `-53b`: CSRC still names Release 5.2.0.
+- **Still pending** (no issuer page stated the version): scf (live tag 2026.3), mitre-atlas
+  (v2026.10), cisa-scubagear, cisa-csaf, the OWASP feeds, openai-api, and the no-release
+  repositories. The tags fallback and the dispatch run decide them.

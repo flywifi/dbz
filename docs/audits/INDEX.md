@@ -32,6 +32,7 @@ heuristics. The corrective is visibility, not automation.
 | 47 | correction of the phase-46 `framework_changelog.json` entry (counts → id lists; 31 → 23 modified) + repoint of 22 dead NIST feed entries in `feed_registry.json` | YES | `phase-47-adversarial-audit.md` | satisfied |
 | 48 | NIST Information Technology topic feed added to 18 identifier-keyed feeds in `feed_registry.json` | YES | `phase-48-adversarial-audit.md` | satisfied |
 | 49 | NIST feed-directory + NCP crawl: new feed `nist-ncp`, three dead NIST links repaired, STIG-currency note in `feed_registry.json`; `horizon_count` claim coverage extended | YES | `phase-49-adversarial-audit.md` | satisfied |
+| 50 | STIG refresh (October 2026 library) + November drift triage: 14 `feed_registry.json` feeds, `framework_changelog.json` entry `chg-disa-stig-library-2026-10`, `source_manifest.json` STIG re-pin, new canonical registry `host_policies.json` | YES | `phase-50-adversarial-audit.md` | satisfied |
 
 `feed_registry.json` was first touched under the gate by phase 45 and
 `framework_changelog.json` by phase 46 (both covered by their audit rows above). No hidden

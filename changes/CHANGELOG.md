@@ -3,6 +3,57 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.15.0] — 2026-11-04 (phase 50 — STIGs in the monthly feed, host usage rules enforced)
+
+MINOR: schema 3.18 → 3.19 (`stig_catalog.lifecycle`, `last_library`) and a new canonical
+registry (`host_policies.json`). Audit: `docs/audits/phase-50-adversarial-audit.md`; record:
+`docs/source-inventory.md` (Phase 50); procedure: `docs/standards-refresh-runbook.md`.
+
+- **Every seed host's published usage rule is recorded and enforced.**
+  `canonical-sources/host_policies.json` quotes each host's rule verbatim (or "none
+  published", with the date checked). Examples: NCP "<200 requests/day, read the .meta
+  first"; NVD 5 per 30 s; GitHub 60/h unauthenticated and 1,000/h with a token; eCFR
+  "Accept-Encoding required". The fetchkit governor enforces it with per-host run caps,
+  rolling windows, meta-first downloads, required headers and robots.txt under RFC 9309
+  semantics (blank-line-safe, unlike the stdlib parser). Refusals are recorded per run.
+- **Every monthly fetch goes through the governor.**
+  - The announcement monitor used raw, unpaced requests: 172 per month for 94 URLs. It now
+    makes one governed GET per distinct URL, and www.nist.gov goes 52 → 8.
+  - `tools/fetch_census.py --check` (CI) fails the build if a monthly request bypasses the
+    governor or exceeds a host's cap. The measured plan is 328 requests to 96 hosts.
+  - The monthly workflow now passes its token to GitHub.
+- **The monthly STIG check works.** Since July it could only say `check_failed`, for two
+  reasons: it parsed only the last line of an indented report, and it kept only the last
+  4,000 characters of output. It now uses three signals (DISA library quarter, NIST NCP,
+  trackr), and the drift issue reports STIG, CCI and refusal status.
+- **The STIG layer is refreshed to DISA's October 2026 library:** 407 benchmarks / 20,842
+  rules / 539 CCIs.
+  - The 20 benchmarks DISA dropped (RHEL 8, Windows Server 2019, …) are **kept and
+    flagged**, not deleted. Five of them were refreshed to DISA's final release.
+  - Per-title zips are sha-256 verified against NCP.
+  - `--via-trackr` no longer crashes.
+  - The trackr per-rule crawl is opt-in and host-capped.
+- **November drift triaged at the issuer.**
+  - Four version moves: OpenAPI 3.2.1, ATT&CK v20.0 (artifact stale, ingest owed), MCP
+    2026-07-28, OSCAL 1.2.3.
+  - The fedramp repo was repointed off an archived repository, and repositories with no
+    releases now fall back to their tags.
+  - Two landing pages that robots.txt forbids were repointed (texas-tdpsa, japan-ismap).
+  - The NCP `.meta` poll was retired as noise.
+  - Seven feeds were re-verified at origin. The health audit goes 72 → 100.
+- **Smaller fixes.**
+  - Four doc counts are now checked at every restatement; this is proven red on the phase-49
+    stale lines.
+  - The feed-staleness warning says what it means, and cron liveness is measured by
+    `ci_status.py --workflow`.
+  - The all-feeds `update_check` is bounded by `--max-seconds`, and feeds it does not reach
+    are reported as unchecked.
+- **Corrections of record.**
+  - Phase 49's "trackr unreachable" was the check's label, not its cause
+    (`docs/source-inventory.md`).
+  - Phase 48's residual claimed fetchkit conditional GETs for announcements; the announcement
+    monitor never used fetchkit (`docs/audits/phase-48-adversarial-audit.md`).
+
 ## [0.14.3] — 2026-11-04 (phase 49 — NIST feed directory and National Checklist Program crawled)
 
 PATCH: registry refresh; no code change. Crawl record: `docs/source-inventory.md` (Phase 49);

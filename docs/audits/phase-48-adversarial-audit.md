@@ -54,3 +54,13 @@ other way, the all-news feed with the same identifier keywords is the fallback.
   news; they deserve a redesign of their own (parked, stated).
 - 18 more fetches of one URL per monthly run; fetchkit's conditional GET makes repeats
   304s, but a NIST rate-limit change would surface as `check_failed`, not silently.
+
+  > **CORRECTION (phase 50, 2026-11-04): the residual above was false when written.**
+  > - **What actually happened:** `announcement_monitor` did not use fetchkit. Each (feed, URL)
+  >   pair was a raw, unpaced `urlopen` with no conditional GET: 172 requests a month for 94
+  >   distinct URLs, 52 of them to www.nist.gov. A 429 would have printed a warning to stderr,
+  >   not raised `check_failed`.
+  > - **Fixed in phase 50:** one governed GET per distinct URL per run (www.nist.gov 52 → 8),
+  >   under the host rules in `canonical-sources/host_policies.json`.
+  > - **Now enforced:** `tools/fetch_census.py --check` fails CI if any monthly request bypasses
+  >   the governor.
