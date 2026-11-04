@@ -6,7 +6,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 [docs/cross-mapping-architecture.md](docs/cross-mapping-architecture.md).
 
 ## Live status
-- **DB schema:** 3.18 (adds `scf_composed_edges` + the SCF fan-out witness; 3.17 added baseline/OLIR witnesses) (`grc.db`, deterministic build, double-build digest check)
+- **DB schema:** 3.19 (adds `scf_composed_edges` + the SCF fan-out witness; 3.17 added baseline/OLIR witnesses) (`grc.db`, deterministic build, double-build digest check)
 - **Gate battery:** rebuild ×2 identical digests · `test_spine.py` · `validate_spine.py` ·
   `health_audit.py --scan/--full` 100/100 (including the artifacts-hidden CI condition) ·
   `sync_check.py` (16 invariants, incl. the pre-push hook guard) · golden self-test · `benchmark_oracles.py --check` ·
@@ -61,7 +61,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 | 38 | Framework→CCI confirmation layer | `a602016` | 2026-08-13 | Schema 3.16 `framework_cci_confirmation`: framework→CCI pairs verdicted from independent witnesses; `reachable` no longer passes as a mapping (headline count corrected in phase 39) |
 | 39 | Confirmation-layer remediation + correction | `92b7d46` (head) | 2026-08-13 | Per-anchor publisher rule corrects the phase-38 overcount (53,046→**23,339 confirmed** of 180,413); FedRAMP derived from baseline flags (252,917 noise rows→2,777 authoritative); coarse-key publishers + OLIR-composed witness; ceilings stated |
 
-| 40 | SCF fan-out witness | `ac6e2f7` + close | 2026-08-14 | Schema 3.18: SCF workbook's 45 framework columns composed with its 800-53 column into a supports-only witness (8,626 edges); SOC 2 0→69 confirmed, 800-172 r3 0→5, GDPR 96→303 corroborated; overall 23,485 confirmed |
+| 40 | SCF fan-out witness | `ac6e2f7` + close | 2026-08-14 | Schema 3.19: SCF workbook's 45 framework columns composed with its 800-53 column into a supports-only witness (8,626 edges); SOC 2 0→69 confirmed, 800-172 r3 0→5, GDPR 96→303 corroborated; overall 23,485 confirmed |
 | 41 | Push + status hardening | `4852bf6` + close | 2026-08-15 | Pre-push hook (rehearsal enforced, loud bypass), atomic bump_schema, three-state ci_status with the captured proxy payload pinned in a selftest, drift invariant 16; every checker proven red-then-green |
 | 42 | Tidy-up sweep | `b897d62`, `a8b89be`, `9179db7` + close | 2026-08-16 | The owed phase-35 closing audit (three phases late, stated) + `docs/audits/INDEX.md` obligation ledger so the twice-missed gate fails visibly; five elapsed horizon windows resolved at origin (two FedRAMP milestones closed, CMMC RFI closed, DISA + SWIFT walls re-confirmed and rolled on cadence); rollback path repaired to a green sha |
 | 43 | Everything still open | `fa9bb39`, `e17737b`, `b5d2018`, `c445e66`, `03e28e2`, `6601fd2` + close | 2026-08-16 | The consensus layer's biggest voter registered with its provenance gap and −48% sensitivity measured (no re-weighting); two vocabulary statements the engine contradicts corrected with no number changed, plus check 20 re-deriving 180,413/180,413 verdicts; manifest row counts derived not hand-kept (40→42 keys) and the two headline figures finally under `count_truth` (15 claims); the phase-36 frame + 220 keys committed; consensus stratum adjudicated (n=120, 20.2% unsupported, indistinguishable from the authoritative tier) and all 231 candidate anchors (209 stale Rev-4 Appendix-J, 18 real bridge gaps, 2 transposed) |

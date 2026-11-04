@@ -2306,20 +2306,8 @@ def load_stig_rules(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], List
                 "title": r.get("title", ""),
                 "ccis": json.dumps(ccis, ensure_ascii=False),
             })
-        catalog_rows.append({
-            "stig_id": stig_id,
-            "title": b.get("title", ""),
-            "version": str(b.get("version", "")),
-            "release": str(b.get("release", "")),
-            "benchmark_date": b.get("benchmark_date", ""),
-            "type": b.get("type", "stig"),
-            "rule_count": len(rules),
-            "cci_citations": n_citations,
-            "distinct_ccis": len(distinct),
-            "trackr_title": b.get("trackr_title"),
-            "source": b.get("source", ""),
-            "source_zip": b.get("source_zip"),
-        })
+        catalog_rows.append(_stig_catalog_row(stig_id, b, rules, n_citations, distinct,
+                                              data.get("_meta", {}).get("library")))
         stats["benchmarks"] += 1
         stats["rules"] += len(rules)
         stats["cci_citations"] += n_citations
@@ -2329,3 +2317,13 @@ def load_stig_rules(catalog_ids: Set[str]) -> Tuple[List[dict], List[dict], List
     stats["distinct_ccis"] = len(usage_rows)
     stats["library"] = data.get("_meta", {}).get("library")
     return catalog_rows, rule_rows, usage_rows, stats
+
+
+def _stig_catalog_row(stig_id: str, b: dict, rules: list, n_citations: int, distinct: set, library) -> dict:
+    """One stig_catalog row (load_stig_rules calls this in place of its inline dict)."""
+    return {"stig_id": stig_id, "title": b.get("title", ""), "version": str(b.get("version", "")),
+            "release": str(b.get("release", "")), "benchmark_date": b.get("benchmark_date", ""),
+            "type": b.get("type", "stig"), "rule_count": len(rules), "cci_citations": n_citations,
+            "distinct_ccis": len(distinct), "trackr_title": b.get("trackr_title"),
+            "source": b.get("source", ""), "source_zip": b.get("source_zip"),
+            "lifecycle": b.get("lifecycle", "current"), "last_library": b.get("last_library") or library}

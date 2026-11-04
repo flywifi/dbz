@@ -67,7 +67,6 @@ _RELEASE_RE = re.compile(r"Release:\s*([\w.]+)\s+Benchmark Date:\s*(.+?)\s*$")
 _MONTHS = {m: i + 1 for i, m in enumerate(
     ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))}
-_TRACKR_RATE_S = 0.35  # ~3 requests/second
 _QUARTERS = ("January", "April", "July", "October")
 NCP_META = "https://ncp.nist.gov/feeds/xml/ncp/checklist-0.1-feed.meta"
 NCP_GZ = "https://ncp.nist.gov/feeds/xml/ncp/checklist-0.1-feed.xml.gz"
@@ -161,18 +160,20 @@ def _bench_sha(rules: list[dict]) -> str:
     ).hexdigest()[:16]
 
 
-def _write_map(benchmarks: dict, meta: dict) -> None:
-    """The gz map is a pure function of its inputs (library zip + registry):
-    volatile fields (retrieved_at) stay out so byte-identity across re-runs is
-    the determinism check. Retrieval provenance lives in stig_catalog.json."""
-    STIG_DIR.mkdir(parents=True, exist_ok=True)
+def _map_bytes(benchmarks: dict, meta: dict) -> bytes:
+    """The gz map as bytes: a pure function of its inputs (mtime=0, sorted keys)."""
     meta = {k: v for k, v in meta.items() if k != "retrieved_at"}
     payload = {"_meta": meta, "benchmarks": {k: benchmarks[k] for k in sorted(benchmarks)}}
     raw = json.dumps(payload, indent=1, sort_keys=True, ensure_ascii=False).encode("utf-8")
     buf = io.BytesIO()
     with gzip.GzipFile(filename="", mode="wb", fileobj=buf, mtime=0) as gz:
         gz.write(raw)
-    MAP_PATH.write_bytes(buf.getvalue())
+    return buf.getvalue()
+
+
+def _write_map(benchmarks: dict, meta: dict) -> None:
+    STIG_DIR.mkdir(parents=True, exist_ok=True)
+    MAP_PATH.write_bytes(_map_bytes(benchmarks, meta))
 
 
 def read_map() -> dict:
@@ -195,21 +196,32 @@ def _catalog_from(benchmarks: dict, registry: dict, meta: dict) -> dict:
     harvested = {}
     for bid, b in benchmarks.items():
         harvested[bid] = {
-            "title": b["title"],
-            "version": b["version"],
-            "release": b["release"],
-            "benchmark_date": b["benchmark_date"],
-            "type": b["type"],
-            "source": b["source"],
-            "trackr_title": b.get("trackr_title"),
-            "rule_count": len(b["rules"]),
+            "title": b["title"], "version": b["version"], "release": b["release"],
+            "benchmark_date": b["benchmark_date"], "type": b["type"], "source": b["source"],
+            "trackr_title": b.get("trackr_title"), "rule_count": len(b["rules"]),
             "cci_citations": sum(len(r["ccis"]) for r in b["rules"]),
             "distinct_ccis": len({c for r in b["rules"] for c in r["ccis"]}),
             "sha16": _bench_sha(b["rules"]),
+            "lifecycle": b.get("lifecycle", "current"), "last_library": b.get("last_library"),
         }
-    return {"_meta": meta,
-            "harvested": {k: harvested[k] for k in sorted(harvested)},
+    return {"_meta": meta, "harvested": {k: harvested[k] for k in sorted(harvested)},
             "registry": {k: registry[k] for k in sorted(registry)}}
+
+
+def retain_absent(new: dict, old: dict, old_library: str, new_library: str) -> tuple:
+    """Keep committed benchmarks the new library no longer carries — flagged, never deleted
+    (phase-50 decision). The flag states only the measured fact: absent from new_library, last
+    seen in old_library. Whether DISA calls it 'sunset' is recorded in the audit, not guessed."""
+    out = {bid: {**b, "lifecycle": "current", "last_library": new_library} for bid, b in new.items()}
+    kept = []
+    for bid in sorted(set(old) - set(new)):
+        b = dict(old[bid])
+        if b.get("lifecycle") != "not_in_current_library":   # newly absent: last seen in old_library
+            b["last_library"] = old_library
+        b["lifecycle"] = "not_in_current_library"              # already kept: keep its last_library
+        out[bid] = b
+        kept.append(bid)
+    return out, kept
 
 
 # ── trackr registry ──────────────────────────────────────────────────────────
@@ -367,8 +379,7 @@ def harvest_title_via_trackr(title: str, ver: str, rel: str) -> dict | None:
     listing = _http_json(f"{TRACKR_BASE}/stig/{title}/{ver}/{rel}")
     reqs = listing.get("requirements") or {}
     rules = []
-    for vid in sorted(reqs):
-        time.sleep(_TRACKR_RATE_S)
+    for vid in sorted(reqs):  # paced and capped by host_policies.json (cyber.trackr.live)
         det = _http_json(f"{TRACKR_BASE}/stig/{title}/{ver}/{rel}/{vid}")
         ccis = sorted({t for t in (det.get("identifiers") or []) if CCI_RE.match(t)})
         rules.append({
@@ -436,6 +447,22 @@ def compute_drift(live: dict, committed_cat: dict) -> dict:
     return {"new_titles": new_titles, "removed_titles": removed_titles,
             "changed_titles": changed, "stale_harvested": stale_harvested,
             "mirror_lag": mirror_lag}
+
+
+def _parse_title_zip(blob: bytes, bid: str, zip_name: str, stats: dict):
+    """The benchmark `bid` from a per-title DISA zip, with source_zip = the ZIP name (the
+    pre-phase-50 refresh recorded the XML member name, breaking the next V/R rewrite)."""
+    try:
+        inner = zipfile.ZipFile(io.BytesIO(blob))
+    except zipfile.BadZipFile:
+        return None
+    for member in sorted(inner.namelist()):
+        if member.lower().endswith(("-xccdf.xml", "_xccdf.xml")):
+            parsed = parse_xccdf(inner.read(member), zip_name, stats)
+            if parsed and parsed["benchmark_id"] == bid:
+                parsed.pop("benchmark_id")
+                return parsed
+    return None
 
 
 def library_signal(pinned: str | None) -> dict:
@@ -606,30 +633,40 @@ def mode_catalog(args) -> int:
 def mode_full(args) -> int:
     zip_path = Path(args.from_zip) if args.from_zip else None
     if not zip_path or not zip_path.exists():
-        print("[full] --from-zip PATH is required (download the current SRG-STIG "
-              "Library compilation first; see feed disa-stig-library). Probe pattern:")
-        print("       " + COMPILATION_URL_PATTERN.format(month="<Month>", year="<YYYY>")
-              + f"  months={_QUARTER_MONTHS}")
+        print("[full] --from-zip PATH is required (download the current SRG-STIG Library compilation "
+              "first; the monthly library signal names it). Pattern:")
+        print("       " + COMPILATION_URL_PATTERN.format(month="<Month>", year="<YYYY>"))
         return 1
     try:
         registry = fetch_registry()
         reg_note = f"{len(registry)} titles"
-    except Exception as e:  # offline distill still works; registry kept if present
+    except Exception as e:  # noqa: BLE001 — offline distill still works; registry kept if present
         registry = read_catalog().get("registry", {}) if CATALOG_PATH.exists() else {}
         reg_note = f"trackr unreachable ({type(e).__name__}); kept committed registry ({len(registry)})"
     print(f"[full] registry: {reg_note}")
-    print(f"[full] distilling {zip_path.name} …")
     benchmarks, stats = distill_library(zip_path, registry)
     if not benchmarks:
         print("[full] no benchmarks distilled — refusing to overwrite artifacts")
         return 1
     library = args.library or zip_path.stem
-    meta = _meta("disa_compilation", {"library": library, "stats": stats})
+    if args.retain_absent and MAP_PATH.exists():
+        old = read_map()
+        benchmarks, kept = retain_absent(benchmarks, old["benchmarks"],
+                                         old.get("_meta", {}).get("library") or "unknown", library)
+        stats["retained_absent"] = len(kept)
+        print(f"[full] kept {len(kept)} benchmark(s) absent from {library}, flagged not_in_current_library")
+        if args.refresh_final:
+            for bid, how, why in refresh_final(benchmarks, registry, stats):
+                print(f"[full]   {how:5} {bid}: {why}")
+    h = hashlib.sha256()
+    with open(zip_path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    lib_sha = h.hexdigest()
+    meta = _meta("disa_compilation", {"library": library, "library_sha256": lib_sha, "stats": stats})
     _write_map(benchmarks, meta)
     _write_catalog(_catalog_from(benchmarks, registry, meta))
     print(f"[full] {stats}")
-    print(f"[full] wrote {MAP_PATH.relative_to(ROOT)} "
-          f"({MAP_PATH.stat().st_size // 1024} KB) + {CATALOG_PATH.relative_to(ROOT)}")
     return 0
 
 
@@ -699,85 +736,115 @@ def mode_delta(args) -> int:
     return 0
 
 
-def _fetch_disa_title_zip(old_zip_name: str, old_v: str, old_r: str,
-                          new_v: str, new_r: str) -> bytes | None:
-    """DISA posts updated individual STIG zips between quarterly compilations at
-    the same URL layout as the library members. Rewrite the recorded member zip
-    name's V{v}R{r} token to the live version and probe; None on any miss."""
-    m = re.search(r"V\d+R\d+", old_zip_name)
+def _fetch_disa_title_zip(old_zip_name: str, old_v: str, old_r: str, new_v: str, new_r: str):
+    """(new_zip_name, bytes | None): rewrite the recorded zip's V{v}R{r} token and GET it
+    through the governor (dl.dod.cyber.mil: 5 s, 30 per run)."""
+    m = re.search(r"V\d+R\d+", old_zip_name or "")
     if not m:
-        return None
+        return None, None
     new_name = old_zip_name[: m.start()] + f"V{new_v}R{new_r}" + old_zip_name[m.end():]
-    url = "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/" + new_name
-    req = urllib.request.Request(url, headers={"User-Agent": "dbz-stig-harvest/" + TOOL_VERSION})
     try:
-        with urllib.request.urlopen(req, timeout=120) as r:
-            return r.read()
-    except Exception:
-        return None
+        st, _, blob = _get("https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/" + new_name, "GET", 120)
+    except Exception:  # noqa: BLE001 — a miss keeps the committed version
+        return new_name, None
+    return new_name, (blob if st == 200 else None)
+
+
+def refresh_final(benchmarks: dict, live: dict, stats: dict) -> list:
+    """For benchmarks kept after leaving DISA's library: fetch DISA's FINAL release when trackr
+    names a newer one and the zip name is V#R#-derivable. Probe-or-keep: accepted only when the
+    zip yields the SAME benchmark id; otherwise the harvested version stays, with the reason."""
+    results = []
+    for bid in sorted(benchmarks):
+        b = benchmarks[bid]
+        if b.get("lifecycle") != "not_in_current_library":
+            continue
+        lv = live.get(b.get("trackr_title") or "")
+        if not lv:
+            results.append((bid, "kept", "no trackr entry to name a final release"))
+            continue
+        if _vr_key(lv["version"], lv["release"]) <= _vr_key(b["version"], b["release"]):
+            results.append((bid, "kept", f"v{b['version']}r{b['release']} is already >= trackr"))
+            continue
+        if not re.search(r"V\d+R\d+", b.get("source_zip") or ""):
+            results.append((bid, "kept", f"date-coded {b.get('source_zip')}: final zip name not derivable"))
+            continue
+        name, blob = _fetch_disa_title_zip(b["source_zip"], b["version"], b["release"], lv["version"], lv["release"])
+        parsed = _parse_title_zip(blob, bid, name, stats) if blob else None
+        if not parsed:
+            results.append((bid, "kept", f"{name}: {'not served' if not blob else 'benchmark id not inside'}"))
+            continue
+        parsed.update(lifecycle=b["lifecycle"], last_library=b.get("last_library"),
+                      trackr_title=b.get("trackr_title"), source="disa_title_final")
+        benchmarks[bid] = parsed
+        results.append((bid, "final", f"v{b['version']}r{b['release']} -> v{parsed['version']}r{parsed['release']} ({name})"))
+    return results
 
 
 def mode_refresh_stale(args) -> int:
-    """Bring stale harvested benchmarks current: per-title DISA zip first
-    (authoritative, one small download), trackr per-rule crawl as fallback."""
+    """Bring stale current benchmarks up to date. Source order: the NCP-listed per-title zip,
+    sha-256 verified -> the DISA V/R rewrite named by trackr -> (only with --allow-trackr-crawl)
+    the trackr per-rule crawl, capped by host_policies.json. trackr being down is not fatal."""
     if not (CATALOG_PATH.exists() and MAP_PATH.exists()):
         print("[refresh-stale] committed artifacts missing — run --full first")
         return 1
-    cat = read_catalog()
-    live = fetch_registry()
-    stale = compute_drift(live, cat)["stale_harvested"]
-    if not stale:
-        print("[refresh-stale] nothing stale")
+    cat, data = read_catalog(), read_map()
+    bm = data["benchmarks"]
+    sig = collect_signals(cat, bm)
+    plan = {}
+    for s in sig["ncp"].get("newer") or []:
+        plan[s["benchmark_id"]] = {"zip": s["ncp_zip"], "href": s["href"], "sha256": s["sha256"]}
+    live = fetch_registry() if sig["trackr"].get("status") != "failed" else {}
+    for s in sig["trackr"].get("stale") or []:
+        plan.setdefault(s["benchmark_id"], {})["trackr_title"] = s["title"]
+    if not plan:
+        print(f"[refresh-stale] nothing stale (library: {sig['library'].get('status')})")
         return 0
-    if len(stale) > args.max_delta:
-        print(f"[refresh-stale] {len(stale)} stale > --max-delta {args.max_delta} — "
-              "refusing; raise --max-delta or run --full with a new library zip")
+    if len(plan) > args.max_delta:
+        print(f"[refresh-stale] {len(plan)} stale > --max-delta {args.max_delta} — refusing; this is "
+              f"library-scale drift: run --full --retain-absent with {sig['library'].get('library') or 'the newest library'}")
         return 1
-    data = read_map()
-    harvested_new: dict[str, dict] = {}
-    stats = {"disa_zip": 0, "trackr": 0, "failed": 0,
-             "malformed_cci_citations": 0, "xml_parse_errors": 0,
-             "benchmarks_without_rules": 0}
-    for s in stale:
-        t, bid = s["title"], s["benchmark_id"]
-        lv = live[t]
-        old = data["benchmarks"].get(bid, {})
-        blob = _fetch_disa_title_zip(old.get("source_zip") or "",
-                                     old.get("version", ""), old.get("release", ""),
-                                     lv["version"], lv["release"])
-        bench = None
-        if blob:
+    stats = {"ncp_zip": 0, "disa_rewrite": 0, "trackr": 0, "failed": 0, "sha_mismatch": 0,
+             "malformed_cci_citations": 0, "xml_parse_errors": 0, "benchmarks_without_rules": 0}
+    new = {}
+    for bid, how in sorted(plan.items()):
+        old = bm.get(bid, {})
+        bench, route = None, None
+        if how.get("href"):
             try:
-                inner = zipfile.ZipFile(io.BytesIO(blob))
-                for member in sorted(inner.namelist()):
-                    if member.lower().endswith(("-xccdf.xml", "_xccdf.xml")):
-                        parsed = parse_xccdf(inner.read(member), Path(member).name, stats)
-                        if parsed and parsed["benchmark_id"] == bid:
-                            bench = parsed
-                            bench.pop("benchmark_id")
-                            bench["trackr_title"] = t
-                            break
-            except zipfile.BadZipFile:
-                bench = None
-        if bench:
-            stats["disa_zip"] += 1
-            print(f"[refresh-stale] {bid}: {s['harvested']} -> {s['live']} (DISA zip)")
-        else:
+                st, _, blob = _get(how["href"], "GET", 120)
+            except Exception:  # noqa: BLE001
+                blob = None
+            if blob is not None and hashlib.sha256(blob).hexdigest() != how["sha256"]:
+                stats["sha_mismatch"] += 1
+                print(f"[refresh-stale] {bid}: NCP sha-256 mismatch for {how['zip']} — refused")
+                blob = None
+            bench = _parse_title_zip(blob, bid, how["zip"], stats) if blob else None
+            route = "ncp_zip" if bench else None
+        if bench is None and how.get("trackr_title") in live:
+            lv = live[how["trackr_title"]]
+            name, blob = _fetch_disa_title_zip(old.get("source_zip") or "", old.get("version", ""),
+                                               old.get("release", ""), lv["version"], lv["release"])
+            bench = _parse_title_zip(blob, bid, name, stats) if blob else None
+            route = "disa_rewrite" if bench else None
+        if bench is None and how.get("trackr_title") in live and args.allow_trackr_crawl:
+            lv = live[how["trackr_title"]]
             try:
-                bench = harvest_title_via_trackr(t, lv["version"], lv["release"])
-            except Exception as e:
-                print(f"[refresh-stale] {bid}: FAILED ({type(e).__name__}) — kept committed")
-                stats["failed"] += 1
-                continue
-            if bench is None:
-                stats["failed"] += 1
-                print(f"[refresh-stale] {bid}: no rules via trackr — kept committed")
-                continue
-            stats["trackr"] += 1
-            print(f"[refresh-stale] {bid}: {s['harvested']} -> {s['live']} (trackr)")
-        harvested_new[bid] = bench
-    if harvested_new:
-        _merge_and_rewrite(harvested_new, live, "disa_compilation+title_refresh")
+                bench = harvest_title_via_trackr(how["trackr_title"], lv["version"], lv["release"])
+                route = "trackr" if bench else None
+            except Exception as e:  # noqa: BLE001 — includes PolicyRefused (trackr run cap)
+                print(f"[refresh-stale] {bid}: trackr crawl stopped ({e})")
+        if bench is None:
+            stats["failed"] += 1
+            print(f"[refresh-stale] {bid}: no verified source — kept committed")
+            continue
+        bench.update(trackr_title=old.get("trackr_title") or how.get("trackr_title"),
+                     lifecycle=old.get("lifecycle", "current"), last_library=old.get("last_library"))
+        new[bid] = bench
+        stats[route] += 1
+        print(f"[refresh-stale] {bid}: v{old.get('version')}r{old.get('release')} -> v{bench['version']}r{bench['release']} ({route})")
+    if new:
+        _merge_and_rewrite(new, live or cat.get("registry", {}), "disa_compilation+title_refresh")
     print(f"[refresh-stale] {stats}")
     return 0 if stats["failed"] == 0 else 1
 
@@ -839,43 +906,55 @@ def _flush_backfill(harvested_new: dict, live: dict) -> None:
         _write_catalog(_catalog_from(harvested_new, live, meta))
 
 
-def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+def build_parser() -> argparse.ArgumentParser:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--catalog", action="store_true", help="refresh registry from trackr")
     ap.add_argument("--full", action="store_true", help="distill a library compilation zip")
-    ap.add_argument("--check", action="store_true", help="drift report vs live trackr catalog")
+    ap.add_argument("--check", action="store_true", help="three-signal currency check (library, NCP, trackr)")
     ap.add_argument("--delta", action="store_true", help="re-harvest only stale titles via trackr")
     ap.add_argument("--refresh-stale", action="store_true", dest="refresh_stale",
-                    help="re-harvest stale benchmarks (per-title DISA zip, trackr fallback)")
-    ap.add_argument("--via-trackr", action="store_true", dest="via_trackr",
-                    help="targeted per-title trackr harvest")
+                    help="re-harvest stale benchmarks (NCP zip + sha-256, DISA rewrite; trackr crawl opt-in)")
+    ap.add_argument("--via-trackr", action="store_true", dest="via_trackr", help="targeted per-title trackr harvest")
     ap.add_argument("--from-zip", metavar="PATH", help="path to U_SRG-STIG_Library_*.zip")
     ap.add_argument("--library", metavar="NAME", help="library label (default: zip stem)")
     ap.add_argument("--titles", metavar="T1,T2", help="trackr titles for --via-trackr")
+    ap.add_argument("--titles-file", metavar="PATH", dest="titles_file",
+                    help="newline-separated trackr titles for --via-trackr")
+    ap.add_argument("--flush-every", type=int, default=10, dest="flush_every",
+                    help="--via-trackr: checkpoint every N merged benchmarks")
+    ap.add_argument("--retain-absent", action="store_true", dest="retain_absent",
+                    help="--full: keep committed benchmarks absent from the new library, flagged")
+    ap.add_argument("--refresh-final", action="store_true", dest="refresh_final",
+                    help="--full --retain-absent: fetch DISA's final release for kept benchmarks")
+    ap.add_argument("--allow-trackr-crawl", action="store_true", dest="allow_trackr_crawl",
+                    help="--refresh-stale: allow the per-rule trackr crawl (host-policy capped)")
+    ap.add_argument("--trackr-cap", type=int, default=None, dest="trackr_cap",
+                    help="operator override of cyber.trackr.live's per-run cap (printed, never silent)")
     ap.add_argument("--max-delta", type=int, default=25,
-                    help="max stale titles to re-harvest via API before deferring to --full")
-    ap.add_argument("--json", action="store_true", help="machine-readable --check output")
-    args = ap.parse_args(argv)
-    if args.full:
-        return mode_full(args)
-    if args.delta:
-        return mode_delta(args)
-    if args.refresh_stale:
-        return mode_refresh_stale(args)
-    if args.via_trackr:
-        return mode_via_trackr(args)
-    if args.check:
-        return mode_check(args)
-    if args.catalog:
-        return mode_catalog(args)
-    ap.error("choose one of --catalog / --full / --check / --delta / --via-trackr")
-    return 2
+                    help="max stale titles to re-harvest per title before deferring to --full")
+    ap.add_argument("--json", action="store_true", help="machine-readable --check output (one line)")
+    return ap
+
+
+def main(argv=None) -> int:
+    args = build_parser().parse_args(argv)
+    fk = _fk()
+    if args.trackr_cap:
+        hp = fk.governor().policies.setdefault("hosts", {}).setdefault("cyber.trackr.live", {})
+        hp.setdefault("enforced", {})["run_cap"] = args.trackr_cap
+        print(f"[policy] OPERATOR OVERRIDE: cyber.trackr.live run_cap = {args.trackr_cap} for this run",
+              file=sys.stderr)
+    try:
+        for flag, fn in (("full", mode_full), ("delta", mode_delta), ("refresh_stale", mode_refresh_stale),
+                         ("via_trackr", mode_via_trackr), ("check", mode_check), ("catalog", mode_catalog)):
+            if getattr(args, flag):
+                return fn(args)
+        build_parser().error("choose one of --catalog / --full / --check / --delta / --refresh-stale / --via-trackr")
+        return 2
+    finally:
+        fk.save_state()
+        fk.save_ledger("stig_harvest")
 
 
 if __name__ == "__main__":
-    try:
-        sys.exit(main())
-    finally:
-        _fk().save_state()
-        _fk().save_ledger("stig_harvest")  # per-host requests/refusals for the drift report
+    sys.exit(main())

@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.18"  # v3.18: scf_composed_edges (SCF fan-out witness); v3.17: w_baseline_authoritative + w_olir_composed witnesses on framework_cci_confirmation; v3.16: framework_cci_confirmation (witnessed framework->CCI verdicts); v3.15: edge_semantic on master_mappings (what an edge CLAIMS); v3.14: regulatory-provenance columns on anticipated_updates (enum-enforced); v3.13: evidence_state ladder on master_mappings; v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
+SCHEMA_VERSION = "3.19"  # v3.19: stig_catalog.lifecycle + last_library: STIGs absent from the current DISA library are kept, flagged; v3.18: scf_composed_edges (SCF fan-out witness); v3.17: w_baseline_authoritative + w_olir_composed witnesses on framework_cci_confirmation; v3.16: framework_cci_confirmation (witnessed framework->CCI verdicts); v3.15: edge_semantic on master_mappings (what an edge CLAIMS); v3.14: regulatory-provenance columns on anticipated_updates (enum-enforced); v3.13: evidence_state ladder on master_mappings; v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
 
 CHUNK = 500  # executemany batch size
 
@@ -639,8 +639,11 @@ CREATE TABLE IF NOT EXISTS stig_catalog (
     cci_citations  INTEGER NOT NULL DEFAULT 0,  -- total CCI references (with repetition)
     distinct_ccis  INTEGER NOT NULL DEFAULT 0,
     trackr_title   TEXT,               -- cyber.trackr.live catalog key (delta detector), NULL if unmatched
-    source         TEXT,               -- disa_compilation | trackr | …
-    source_zip     TEXT
+    source         TEXT,               -- disa_compilation | disa_title_final | trackr | …
+    source_zip     TEXT,
+    lifecycle      TEXT NOT NULL DEFAULT 'current'
+                   CHECK (lifecycle IN ('current', 'not_in_current_library')),  -- v3.19
+    last_library   TEXT                -- newest DISA library that carried it (v3.19)
 );
 CREATE INDEX IF NOT EXISTS idx_stigcat_trackr ON stig_catalog(trackr_title);
 
@@ -1516,10 +1519,10 @@ def build_db(
         _executemany_chunked(conn, """
             INSERT INTO stig_catalog
                 (stig_id, title, version, release, benchmark_date, type, rule_count,
-                 cci_citations, distinct_ccis, trackr_title, source, source_zip)
+                cci_citations, distinct_ccis, trackr_title, source, source_zip, lifecycle, last_library)
             VALUES
                 (:stig_id, :title, :version, :release, :benchmark_date, :type, :rule_count,
-                 :cci_citations, :distinct_ccis, :trackr_title, :source, :source_zip)
+                :cci_citations, :distinct_ccis, :trackr_title, :source, :source_zip, :lifecycle, :last_library)
         """, stig_cat_rows, "stig_catalog")
         _executemany_chunked(conn, """
             INSERT INTO stig_rules

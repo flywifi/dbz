@@ -33,6 +33,9 @@ jobs:
       - name: Fetch-layer unit tests (offline; host usage rules, RFC 9309 robots)
         run: python3 cross-mapping/tests/test_fetchkit.py
 
+      - name: STIG retention tests (offline; DISA-dropped benchmarks are kept and flagged)
+        run: python3 cross-mapping/tests/test_stig_retention.py
+
       - name: Fetch census — monthly request plan within every host's recorded rule (offline)
         run: python3 tools/fetch_census.py --check
 

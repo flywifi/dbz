@@ -45,6 +45,7 @@ STEPS = [
     ("ci-status selftest", "python3 tools/ci_status.py --selftest"),
     ("count-claim selftest", "python3 tools/count_truth.py --selftest"),
     ("fetch-layer unit tests", "python3 cross-mapping/tests/test_fetchkit.py"),
+    ("stig retention tests", "python3 cross-mapping/tests/test_stig_retention.py"),
     ("fetch census (host rules)", "python3 tools/fetch_census.py --check"),
     ("health audit — scan", "python3 tools/health_audit.py --scan"),
     ("health audit — full", "python3 tools/health_audit.py --full"),

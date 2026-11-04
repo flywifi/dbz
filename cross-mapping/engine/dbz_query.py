@@ -192,6 +192,19 @@ def _output(rows: list[dict], fmt: str, columns: list[str]) -> None:
     print(f"\n{len(rows)} row(s)")
 
 
+def _stig_list(conn, flt=None):
+    cols = ["stig_id", "title", "version", "release", "benchmark_date", "rule_count",
+            "distinct_ccis", "lifecycle", "last_library"]
+    have = {r[1] for r in conn.execute("PRAGMA table_info(stig_catalog)")}
+    sel = ", ".join(c if c in have else f"NULL AS {c}" for c in cols)
+    if flt:
+        rows = conn.execute(f"SELECT {sel} FROM stig_catalog WHERE stig_id LIKE ? OR title LIKE ? ORDER BY stig_id",
+                            (f"%{flt}%", f"%{flt}%")).fetchall()
+    else:
+        rows = conn.execute(f"SELECT {sel} FROM stig_catalog ORDER BY stig_id").fetchall()
+    return [dict(zip(cols, r)) for r in rows], cols
+
+
 # ── Subcommands ───────────────────────────────────────────────────────────────
 
 def cmd_reverse(args, conn: sqlite3.Connection) -> int:
@@ -1378,12 +1391,12 @@ def cmd_stig(args, conn: sqlite3.Connection) -> int:
             print(f"[input error] {sv if isinstance(sv, str) else 'ambiguous: ' + ', '.join(sv[:20])}",
                   file=sys.stderr)
             return 1
-        cat = conn.execute(
-            "SELECT stig_id, title, version, release, benchmark_date, type, rule_count, "
-            "distinct_ccis, trackr_title, source FROM stig_catalog WHERE stig_id=?",
-            (sv,)).fetchone()
         catcols = ["stig_id", "title", "version", "release", "benchmark_date", "type",
-                   "rule_count", "distinct_ccis", "trackr_title", "source"]
+                   "rule_count", "distinct_ccis", "trackr_title", "source", "lifecycle", "last_library"]
+        _have = {r[1] for r in conn.execute("PRAGMA table_info(stig_catalog)")}
+        cat = conn.execute(
+            "SELECT " + ", ".join(c if c in _have else f"NULL AS {c}" for c in catcols)
+            + " FROM stig_catalog WHERE stig_id=?", (sv,)).fetchone()
         rules = conn.execute(
             "SELECT group_id, rule_id, version_id, severity, title, ccis FROM stig_rules "
             "WHERE stig_id=? ORDER BY group_id", (sv,)).fetchall()
@@ -1401,18 +1414,8 @@ def cmd_stig(args, conn: sqlite3.Connection) -> int:
         return 0
 
     # --list [--filter]: the catalog (default)
-    flt = getattr(args, "filter", None)
-    if flt:
-        rows = conn.execute(
-            "SELECT stig_id, title, version, release, benchmark_date, rule_count, distinct_ccis "
-            "FROM stig_catalog WHERE stig_id LIKE ? OR title LIKE ? ORDER BY stig_id",
-            (f"%{flt}%", f"%{flt}%")).fetchall()
-    else:
-        rows = conn.execute(
-            "SELECT stig_id, title, version, release, benchmark_date, rule_count, distinct_ccis "
-            "FROM stig_catalog ORDER BY stig_id").fetchall()
-    cols = ["stig_id", "title", "version", "release", "benchmark_date", "rule_count", "distinct_ccis"]
-    _output([dict(zip(cols, r)) for r in rows], args.format, cols)
+    rows, cols = _stig_list(conn, getattr(args, "filter", None))
+    _output(rows, args.format, cols)
     return 0
 
 
