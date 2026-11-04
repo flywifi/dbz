@@ -12,8 +12,10 @@
     "horizon_count": {
       "value_from": "horizon_count",
       "cited_in": [
-        "README.md"
-      ]
+        "README.md",
+        "docs/cross-mapping-architecture.md"
+      ],
+      "_purpose": "Number of anticipated_updates.json records. Known limit (phase 49): the check passes when a cited file states the value at least once, so a stale second occurrence in the same file is not caught — README.md carried both 77 and a stale 76 for two phases. When restating, grep every occurrence, including markup variants such as **horizon** of N."
     },
     "schema_version": {
       "value_from": "schema_version",

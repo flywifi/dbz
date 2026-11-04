@@ -18,9 +18,9 @@ any-framework. (Before Phase 19 these were two separate crosswalks; they are now
                     │  framework_monitor.py    (version signals)            │
                     │  announcement_monitor.py (RSS/Atom announcement feeds)│
                     │  horizon_monitor.py      (anticipated future revs)    │
-                    │      ▲ feed_registry.json (161 sources)               │
+                    │      ▲ feed_registry.json (162 sources)               │
                     │      → announcements_feed.json / framework_changelog  │
-                    │      → anticipated_updates.json (horizon, 76 records) │
+                    │      → anticipated_updates.json (horizon, 77 records) │
                     └──────┼──────────────────────────────────────────────┘
                            │ flags "re-pin source X"
         ┌──────────────────┴───────────────────┐

@@ -3,6 +3,32 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.14.3] — 2026-11-04 (phase 49 — NIST feed directory and National Checklist Program crawled)
+
+PATCH: registry refresh; no code change. Crawl record: `docs/source-inventory.md` (Phase 49);
+audit: `docs/audits/phase-49-adversarial-audit.md`.
+
+- **NIST feed directory (30 feeds) crawled; nothing new needed adding.** The two feeds already
+  registered (Cybersecurity Insights, Information Technology topic) carry 32 and 24 relevant
+  items; the other 28 add almost nothing (11 items, 6 of them event listings) or are not GRC.
+  Each one's disposition is recorded in the inventory.
+- **Three dead links repaired:** nist-ai-rmf, nist-sp-800-56a and nist-sp-800-57pt1 still
+  polled the bare `/news-events/{news,events}/rss` paths, which return 404; they now use the
+  directory's `/rss.xml` forms. The two events entries also gained label-derived keywords,
+  because unfiltered they would tag all 24 events.
+- **New feed `nist-ncp`** (feeds 161 → 162): the National Checklist Program's checklist data
+  feed (918 checklists: DISA 447, CIS 322, CISA SCuBA 18, NIST mSCP 14). It polls the feed's
+  `.meta` sidecar. The site's pages are a JavaScript app whose `Last-Modified` is the build
+  date, so polling them would have been a vacuous signal. Metadata only; no loader.
+- **Finding: the STIG catalog is behind.** NCP lists DISA versions independently of trackr:
+  50 of 96 exactly title-matched STIGs are newer there (e.g. Office 365 ProPlus V3R8 vs our
+  V3R5, harvested 2026-07-04), while the monthly STIG check reported `check_failed`. A
+  refresh-stale harvest is owed (`disa-stig-library` notes).
+- **Correction of record:** README and the architecture diagram still said 76 horizon
+  records (the registry has had 77 since phase 45). `count_truth` missed it because a claim
+  passes if the value appears once in a cited file. Both lines are fixed, the diagram is now
+  cited (proven red, then green), and the limit is recorded on the claim.
+
 ## [0.14.2] — 2026-10-19 (phase 48 — NIST Information Technology topic feed added where keywords are specific)
 
 PATCH: registry refresh only (`feed_registry.json`); no code change.
