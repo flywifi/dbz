@@ -458,17 +458,20 @@ def score(findings: List[Dict[str, Any]]) -> Dict[str, Any]:
             "release_gate_recommendation": gate}
 
 
-def check_feed_staleness(max_age_days: int = 90) -> List[Dict[str, Any]]:
-    """Warn when an auto_fetch feed hasn't been checked within max_age_days —
-    the cheap alarm that catches a dead standards-watch cron."""
+def check_feed_staleness(max_age_days: int = 90, feeds: dict | None = None) -> List[Dict[str, Any]]:
+    """Warn when an auto_fetch feed has not been VERIFIED AT ORIGIN within max_age_days.
+    last_verified is a human, committed stamp — the monthly workflow cannot write it (contents:
+    read), so this is a re-verification reminder, not a cron-liveness signal. Cron liveness:
+    tools/ci_status.py --workflow standards-watch.yml."""
     findings: List[Dict[str, Any]] = []
-    path = ROOT / "canonical-sources" / "feed_registry.json"
-    if not path.exists():
-        return findings
-    try:
-        feeds = json.loads(path.read_text(encoding="utf-8")).get("feeds", {})
-    except Exception:
-        return findings
+    if feeds is None:
+        path = ROOT / "canonical-sources" / "feed_registry.json"
+        if not path.exists():
+            return findings
+        try:
+            feeds = json.loads(path.read_text(encoding="utf-8")).get("feeds", {})
+        except Exception:
+            return findings
     from datetime import datetime, timezone
     now = datetime.now(timezone.utc)
     for fid, e in feeds.items():
@@ -486,9 +489,9 @@ def check_feed_staleness(max_age_days: int = 90) -> List[Dict[str, Any]]:
         age = (now - then).days
         if age > max_age_days:
             findings.append(_f("warning", "feed_registry",
-                f"auto_fetch feed '{fid}' unchecked for {age} days (>{max_age_days}) — "
-                "standards-watch cron may be dead",
-                "run tools/standards_refresh.py --check",
+                f"auto_fetch feed '{fid}' last verified at origin {age} days ago (>{max_age_days})",
+                "re-verify at the issuer, then stamp last_verified via registry_io "
+                "(cron liveness is separate: tools/ci_status.py --workflow standards-watch.yml)",
                 False, "canonical-sources/feed_registry.json"))
     return findings
 

@@ -117,6 +117,11 @@ python3 skills/atoms/framework-update-check/scripts/update_check.py \
     --dry-run --format json
 ```
 
+An all-frameworks run is bounded by `--max-seconds` (default 100, under a typical 120-second
+interactive timeout). Feeds it does not reach are reported as `not_checked_deadline`, flagged for
+human review, and are never counted as unchanged. Pass `--feed` or `--max-seconds 0` for a full
+run. Every fetch obeys the host's published usage rule (`canonical-sources/host_policies.json`).
+
 Calls:
 - `cross-mapping/engine/framework_monitor.py:run_monitor()` — file-level version signals
 - `cross-mapping/engine/announcement_monitor.py:run()` — RSS/Atom announcement signals

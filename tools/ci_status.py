@@ -17,6 +17,7 @@ data are three distinct outputs with three distinct exit codes.
 
 Usage:
     python3 tools/ci_status.py [--branch NAME] [--sha PREFIX] [--wait [SECONDS]] [--selftest]
+    python3 tools/ci_status.py --workflow standards-watch.yml [--max-age-days 35]   # cron liveness
 
 Rules learned from the incident, encoded here:
   * Auth comes from $GITHUB_TOKEN (Bearer). No unauthenticated fallback — the proxy
@@ -80,6 +81,33 @@ def _fetch(branch: str):
     return classify(code, body)
 
 
+def _fetch_workflow(workflow: str):
+    token = os.environ.get("GITHUB_TOKEN", "")
+    if not token:
+        return ("error", "GITHUB_TOKEN is not set in this environment — use the GitHub MCP tools instead")
+    url = f"https://api.github.com/repos/{REPO}/actions/workflows/{urllib.request.quote(workflow, safe='')}/runs?per_page=5"
+    req = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}",
+                                               "Accept": "application/vnd.github+json", "User-Agent": "dbz-ci-status"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return classify(resp.status, resp.read().decode("utf-8", "replace"))
+    except urllib.error.HTTPError as e:
+        return ("error", f"HTTP {e.code}: {e.read().decode('utf-8', 'replace')[:300]}")
+    except Exception as e:  # transport/proxy failure is an ERROR, never "no runs"
+        return ("error", f"{type(e).__name__}: {e}")
+
+
+def workflow_liveness(runs: list, max_age_days: int, now: float | None = None) -> tuple:
+    """('alive'|'stale', detail) from the newest completed run's created_at."""
+    from datetime import datetime, timezone
+    done = [r for r in runs if r.get("status") == "completed" and r.get("created_at")]
+    if not done:
+        return "stale", "no completed run"
+    newest = max(datetime.fromisoformat(r["created_at"].replace("Z", "+00:00")) for r in done)
+    age = ((now or datetime.now(timezone.utc).timestamp()) - newest.timestamp()) / 86400
+    return ("alive" if age <= max_age_days else "stale"), f"newest completed run {newest:%Y-%m-%d} ({age:.0f} d ago)"
+
+
 def classify(status_code: int, body: str):
     """The three-state contract, pure so --selftest can pin it."""
     if status_code != 200:
@@ -124,15 +152,44 @@ def selftest() -> int:
         bad += 0 if ok else 1
         print(f"  {'ok ' if ok else 'FAIL'} classify(HTTP {code}, {body[:42]!r}...) "
               f"= {got} (want {want})")
+    bad += selftest_liveness()
     print(f"[ci-status selftest] {'PASS' if not bad else f'FAIL ({bad})'} — error, empty "
-          "and data are distinct states")
+          "and data are distinct states; workflow liveness alive/stale")
     return 1 if bad else 0
+
+
+def selftest_liveness() -> int:
+    from datetime import datetime, timezone
+    now = datetime(2026, 11, 4, tzinfo=timezone.utc).timestamp()
+    cases = [([{"status": "completed", "created_at": "2026-11-03T14:25:03Z"}], "alive"),
+             ([{"status": "completed", "created_at": "2026-09-20T00:00:00Z"}], "stale"),
+             ([{"status": "in_progress", "created_at": "2026-11-04T00:00:00Z"}], "stale")]
+    bad = 0
+    for runs, want in cases:
+        got = workflow_liveness(runs, 35, now)[0]
+        bad += got != want
+        print(f"  {'ok ' if got == want else 'FAIL'} liveness({runs[0]['status']}, {runs[0]['created_at'][:10]}) = {got}")
+    return bad
 
 
 def main() -> int:
     args = sys.argv[1:]
     if "--selftest" in args:
         return selftest()
+    if "--workflow" in args:
+        # cron liveness for a scheduled workflow (e.g. standards-watch.yml): alive | stale
+        wf = args[args.index("--workflow") + 1]
+        max_age = int(args[args.index("--max-age-days") + 1]) if "--max-age-days" in args else 35
+        state, detail = _fetch_workflow(wf)
+        if state == "error":
+            print(f"ERROR: {detail}")
+            return 2
+        if state == "empty":
+            print(f"no runs found for workflow {wf!r}")
+            return 1
+        verdict, why = workflow_liveness(detail, max_age)
+        print(f"{wf}: {verdict} — {why} (max age {max_age} d)")
+        return 0 if verdict == "alive" else 1
     branch = _current_branch()
     if "--branch" in args:
         branch = args[args.index("--branch") + 1]

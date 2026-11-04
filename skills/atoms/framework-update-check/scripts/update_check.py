@@ -9,6 +9,7 @@ major revisions, drafts, and public comment periods.
 
 import json
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional
@@ -109,6 +110,13 @@ def _get_changelog_recent(
     ]
 
 
+def deadline_summary(results: list) -> dict:
+    deferred = [r["feed_id"] for r in results if r.get("error") == "not_checked_deadline"]
+    return {"checked": len(results) - len(deferred), "of": len(results),
+            "not_checked_deadline": len(deferred), "deferred_ids": deferred,
+            "human_review_required": bool(deferred)}
+
+
 def check_frameworks(
     feed_ids: Optional[List[str]] = None,
     registry_path: Optional[Path] = None,
@@ -116,6 +124,7 @@ def check_frameworks(
     changelog_path: Optional[Path] = None,
     dry_run: bool = False,
     announcement_days: int = 90,
+    max_seconds: Optional[float] = None,
 ) -> dict:
     """
     Run combined file-signal + announcement check for one or more frameworks.
@@ -128,6 +137,8 @@ def check_frameworks(
     changelog_path     : Path to framework_changelog.json.
     dry_run            : Pass through to monitors (don't write outputs).
     announcement_days  : How many days back to include announcements.
+    max_seconds        : Wall-clock budget; feeds reached after it are reported as
+                         not_checked_deadline (never as unchanged/current). None = no limit.
     """
     fm, am = _import_engine()
 
@@ -137,11 +148,13 @@ def check_frameworks(
     monitor_out = _REPO_ROOT / "cross-mapping" / "output" / "framework_updates_feed.json"
 
     # 1. File-level version signals
+    deadline = (time.monotonic() + max_seconds) if max_seconds else None
     monitor_feed = fm.run_monitor(
         registry_path=reg,
         out_path=monitor_out,
         dry_run=dry_run,
         feed_ids=feed_ids,
+        deadline=deadline,
     )
 
     # 2. Announcement signals (refresh feed with latest RSS/Atom entries)
@@ -152,7 +165,7 @@ def check_frameworks(
     for fid in (feed_ids or [None]):
         rc = am.run(argparse.Namespace(registry=str(reg), output=str(ann_path), feed=fid,
                                        days=announcement_days, dry_run=dry_run,
-                                       log_dir=str(am.LOGS_DIR)))
+                                       log_dir=str(am.LOGS_DIR), deadline=deadline))
         if rc != 0:
             raise RuntimeError(f"announcement_monitor.run failed (rc={rc}) for feed {fid!r}")
     try:
@@ -208,6 +221,12 @@ def check_frameworks(
         }
         unified_results.append(record)
 
+    partial = deadline_summary(monitor_feed.get("results", []))
+    for r in unified_results:
+        if r["feed_id"] in partial["deferred_ids"]:
+            r["human_review_required"] = True
+            r["file_signals"]["update_notes"] = "not_checked_deadline — rerun with --feed or a larger --max-seconds"
+    human_review_required = human_review_required or partial["human_review_required"]
     changed = [r for r in unified_results if r["human_review_required"]]
     unchanged = [r for r in unified_results if not r["human_review_required"]]
 
@@ -219,6 +238,8 @@ def check_frameworks(
             "action_required": len(changed),
             "unchanged": len(unchanged),
             "errors": monitor_feed.get("summary", {}).get("errors", 0),
+            "checked": partial["checked"],
+            "not_checked_deadline": partial["not_checked_deadline"],
         },
         "action_required": changed,
         "unchanged_ids": [r["feed_id"] for r in unchanged],
@@ -237,6 +258,9 @@ def main():
     parser.add_argument("--days", type=int, default=90, help="Announcement lookback window (days)")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--format", choices=["json", "summary"], default="json")
+    parser.add_argument("--max-seconds", type=float, default=100.0,
+                        help="wall-clock budget (default 100 s, under a 120 s interactive timeout); "
+                             "feeds past it are reported not_checked_deadline. 0 = no limit")
     args = parser.parse_args()
 
     result = check_frameworks(
@@ -246,11 +270,13 @@ def main():
         changelog_path=Path(args.changelog) if args.changelog else None,
         dry_run=args.dry_run,
         announcement_days=args.days,
+        max_seconds=args.max_seconds or None,
     )
 
     if args.format == "summary":
         s = result["summary"]
-        print(f"Checked {s['total_checked']} frameworks")
+        print(f"Checked {s['checked']} of {s['total_checked']} frameworks"
+              + (f" — {s['not_checked_deadline']} NOT checked (deadline)" if s['not_checked_deadline'] else ""))
         print(f"Action required: {s['action_required']}")
         print(f"Unchanged: {s['unchanged']}")
         for r in result["action_required"]:

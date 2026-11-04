@@ -18,6 +18,7 @@ import json
 import logging
 import re
 import sys
+import time as _time
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone, timedelta
 from email.utils import parsedate_to_datetime
@@ -396,8 +397,13 @@ def run(args: argparse.Namespace) -> int:
 
     all_new: list[dict] = []
     skipped = 0
+    deadline = getattr(args, "deadline", None)   # monotonic; set by the interactive update_check
+    not_checked: list[str] = []
 
     for fw_id in target_ids:
+        if deadline is not None and _time.monotonic() > deadline:
+            not_checked.append(fw_id)            # past the caller's budget: reported, never fetched
+            continue
         entry = feeds[fw_id]
         af_list: list[dict] = entry.get("announcement_feeds", [])
         if not af_list:
@@ -419,6 +425,8 @@ def run(args: argparse.Namespace) -> int:
         f"{'[DRY-RUN] ' if args.dry_run else ''}Found {len(all_new)} matching entries "
         f"across feeds ({skipped} feeds skipped — no announcement_feeds configured)"
     )
+    if not_checked:
+        summary += f"; {len(not_checked)} feeds NOT checked (deadline)"
     print(f"\n{summary}")
     _log.info(summary)
 

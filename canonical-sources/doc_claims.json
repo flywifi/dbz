@@ -1,12 +1,15 @@
 {
   "_schema_version": "1.0",
-  "_purpose": "Registry of load-bearing numbers cited in docs. tools/count_truth.py recomputes each value from its authoritative source and fails when a cited file no longer states the current value. The checker NEVER edits docs - drift is fixed by a human doc edit. STATED LIMIT (measured phase 43): a claim asserts that a cited file states the current value SOMEWHERE, not that every restatement in that file agrees. A doc carrying the same number twice stays green if one copy drifts. That is deliberate — several docs restate a historical figure beside the current one on purpose (e.g. the phase-38 correction narrative) — but it means count_truth is a floor, not a proof of internal consistency.",
+  "_purpose": "Registry of load-bearing numbers cited in docs. tools/count_truth.py recomputes each value from its authoritative source and fails when a cited file no longer states the current value. The checker NEVER edits docs - drift is fixed by a human doc edit. STATED LIMIT (measured phase 43): a claim asserts that a cited file states the current value SOMEWHERE, not that every restatement in that file agrees. A doc carrying the same number twice stays green if one copy drifts. That is deliberate — several docs restate a historical figure beside the current one on purpose (e.g. the phase-38 correction narrative) — but it means count_truth is a floor, not a proof of internal consistency. Phase 50: a claim may opt into every-occurrence checking with \"context_patterns\" (one capture group per regex; every match must equal the current value) — enabled for feeds_count, horizon_count, stig_benchmarks and stig_rules.",
   "claims": {
     "feeds_count": {
       "value_from": "feeds_count",
       "cited_in": [
         "README.md",
         "docs/cross-mapping-architecture.md"
+      ],
+      "context_patterns": [
+        "(?i)(\\d[\\d,]*)\\s+(?:official\\s+|monitored\\s+)?sources\\b"
       ]
     },
     "horizon_count": {
@@ -15,7 +18,11 @@
         "README.md",
         "docs/cross-mapping-architecture.md"
       ],
-      "_purpose": "Number of anticipated_updates.json records. Known limit (phase 49): the check passes when a cited file states the value at least once, so a stale second occurrence in the same file is not caught — README.md carried both 77 and a stale 76 for two phases. When restating, grep every occurrence, including markup variants such as **horizon** of N."
+      "_purpose": "Number of anticipated_updates.json records. Phase 50: every-occurrence mode — each context_patterns match in a cited file must equal the current value, so a stale second restatement (README.md carried 77 and a stale 76 for phases 47-49) now fails.",
+      "context_patterns": [
+        "(?i)horizon\\W{0,6}(?:of\\s+|,\\s*|\\(\\s*)?(\\d[\\d,]*)",
+        "(?i)(\\d[\\d,]*)\\s+(?:anticipated|horizon)\\s+records"
+      ]
     },
     "schema_version": {
       "value_from": "schema_version",
@@ -88,6 +95,9 @@
         "README.md",
         "docs/overlap-spine.md",
         "docs/source-inventory.md"
+      ],
+      "context_patterns": [
+        "(?i)(\\d[\\d,]*)\\s+(?:hardening\\s+|STIG\\s+)?benchmarks\\b"
       ]
     },
     "scorer_weights": {
@@ -102,6 +112,9 @@
         "README.md",
         "docs/overlap-spine.md",
         "docs/source-inventory.md"
+      ],
+      "context_patterns": [
+        "(?i)benchmarks\\s*/\\s*(\\d[\\d,]*)\\s+rules\\b"
       ]
     },
     "cci_confirmation_pairs": {

@@ -111,6 +111,21 @@ def _patterns_for(value):
     if isinstance(value, int) and value >= 1000:
         pats.append(re.compile(r"(?<![\d.,])" + re.escape(f"{value:,}") + tail))
     return pats
+def _context_findings(cid: str, spec: dict, value, rel: str, text: str) -> list:
+    """Every-occurrence mode (phase 50). Each context pattern has ONE capture group; every match in
+    the cited file must equal the current value. Lifts the phase-43 'states it somewhere' limit
+    for the claims that opt in via "context_patterns"."""
+    out = []
+    if not isinstance(value, int):
+        return out
+    for pat in spec.get("context_patterns") or []:
+        rx = re.compile(pat)
+        for ln, line in enumerate(text.splitlines(), 1):
+            for m in rx.finditer(line):
+                got = m.group(1).replace(",", "")
+                if got.isdigit() and int(got) != value:
+                    out.append((rel, cid, f"line {ln} states {m.group(1)} (current {value}): {line.strip()[:90]}"))
+    return out
 
 
 # ── checks (importable by health_audit) ──────────────────────────────────────
@@ -132,7 +147,6 @@ def check_doc_claims():
                 continue
             text = path.read_text(encoding="utf-8", errors="replace")
             if isinstance(value, dict):
-                # dict-valued claim: every key/value pair must appear as a doc table row
                 for k, v in sorted(value.items()):
                     row = re.compile(re.escape(k) + r"\s*\|\s*" + re.escape(f"{v:.2f}"))
                     if not row.search(text):
@@ -141,6 +155,7 @@ def check_doc_claims():
             pats = _patterns_for(value)
             if not any(p.search(text) for p in pats):
                 findings.append((rel, cid, f"does not state current value {value}"))
+            findings += _context_findings(cid, spec, value, rel, text)
     return findings, skips
 
 
@@ -186,11 +201,36 @@ def check_url_provenance():
 
 # ── CLI ──────────────────────────────────────────────────────────────────────
 
+def selftest_context() -> int:
+    """Every-occurrence mode must fail on the real phase-49 defect: README.md at 910e28c stated the
+    current feed count once in a table and a stale one in prose, and the horizon count likewise.
+    The fixtures are those lines verbatim; the patterns are the registered ones."""
+    claims = _load(CLAIMS_PATH)["claims"]
+    stale = ("| **Keep-current** | 162 official sources watched for changes, plus a horizon of 77 anticipated future revisions |\n"
+             "dbz watches **161 official sources** (`canonical-sources/feed_registry.json`) for version changes\n"
+             "and keeps a **horizon** of 76 anticipated future revisions (`canonical-sources/anticipated_updates.json`)\n")
+    clean = stale.replace("**161 official", "**162 official").replace("of 76 ", "of 77 ")
+    cases = [("feeds_count", 162, stale, 1), ("horizon_count", 77, stale, 1),
+             ("feeds_count", 162, clean, 0), ("horizon_count", 77, clean, 0)]
+    bad = 0
+    for cid, value, text, want in cases:
+        got = len(_context_findings(cid, claims[cid], value, "README.md", text))
+        bad += got != want
+        print(f"  [{'ok' if got == want else 'FAIL'}] {cid} on {'stale' if text is stale else 'clean'} text: "
+              f"{got} finding(s) (want {want})")
+    print(f"[selftest] every-occurrence claims: {len(cases) - bad}/{len(cases)} passed")
+    return 1 if bad else 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="doc-number truth + URL provenance checks")
     ap.add_argument("--list", action="store_true", help="show all claims + current values")
     ap.add_argument("--check", action="store_true", help="(default) fail on drift")
+    ap.add_argument("--selftest", action="store_true",
+                    help="prove every-occurrence mode fails on the real phase-49 stale lines")
     a = ap.parse_args(argv)
+    if a.selftest:
+        return selftest_context()
 
     if a.list:
         claims = _load(CLAIMS_PATH)["claims"]

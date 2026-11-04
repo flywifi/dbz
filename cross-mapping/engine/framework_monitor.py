@@ -33,6 +33,7 @@ import urllib.error
 import urllib.parse
 from datetime import datetime, timezone
 from pathlib import Path
+import time as _time
 from typing import Dict, List, Optional
 
 _HERE = Path(__file__).resolve().parent
@@ -321,12 +322,15 @@ def _detect_changes(current_results: List[dict], previous_feed: Optional[dict]) 
     """
     if not previous_feed:
         for r in current_results:
-            r["change_status"] = "new"
+            if r.get("change_status") != "not_checked":   # deadline-deferred: keep the label
+                r["change_status"] = "new"
         return current_results
 
     prev_by_id = {r["feed_id"]: r for r in previous_feed.get("results", [])}
 
     for r in current_results:
+        if r.get("change_status") == "not_checked":       # deadline-deferred: never compared
+            continue
         fid = r["feed_id"]
         prev = prev_by_id.get(fid)
         if prev is None:
@@ -366,11 +370,23 @@ def _detect_changes(current_results: List[dict], previous_feed: Optional[dict]) 
 
 # ── Main ────────────────────────────────────────────────────────────────────────
 
+def _check_or_defer(fid: str, entry: dict, deadline):
+    """Check one feed, or — past the caller's monotonic deadline — record it as not checked.
+    A deferred feed is never 'unchanged' or 'current' (phase 50; interactive update_check)."""
+    if deadline is not None and _time.monotonic() > deadline:
+        return {"feed_id": fid, "label": entry.get("label", ""), "strategy": entry.get("check_strategy", "poll_landing"),
+                "checked_at": "", "current_version": entry.get("current_version", ""), "version_signal": "",
+                "error": "not_checked_deadline", "change_status": "not_checked",
+                "source_manifest_keys": entry.get("source_manifest_keys", [])}
+    return _check_feed_entry(fid, entry)
+
+
 def run_monitor(
     registry_path: Path = DEFAULT_REGISTRY,
     out_path: Path = DEFAULT_OUT,
     dry_run: bool = False,
     feed_ids: Optional[List[str]] = None,
+    deadline: Optional[float] = None,
 ) -> dict:
     """
     Run the framework monitor. Returns the full feed dict.
@@ -406,7 +422,7 @@ def run_monitor(
             print(f"    [warn] Unknown feed_id: {fid}")
             continue
         print(f"    [{fid}] strategy={entry.get('check_strategy','poll_landing')} …", end=" ")
-        r = _check_feed_entry(fid, entry)
+        r = _check_or_defer(fid, entry, deadline)
         results.append(r)
         if r.get("error"):
             print(f"ERROR: {r['error']}")

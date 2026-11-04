@@ -27,6 +27,9 @@ jobs:
       - name: CI-status selftest
         run: python3 tools/ci_status.py --selftest
 
+      - name: Count-claim selftest (every-occurrence mode fails on the real phase-49 stale lines)
+        run: python3 tools/count_truth.py --selftest
+
       - name: Fetch-layer unit tests (offline; host usage rules, RFC 9309 robots)
         run: python3 cross-mapping/tests/test_fetchkit.py
 
