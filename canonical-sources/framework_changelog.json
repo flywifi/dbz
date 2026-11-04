@@ -541,6 +541,17 @@
         "support": "WELL_SUPPORTED",
         "terminal_state": "ORIGIN"
       }
+    },
+    {
+      "entry_id": "chg-disa-stig-library-2026-10",
+      "framework_id": "disa-stig-library",
+      "change_type": "minor_revision",
+      "old_version": "U_SRG-STIG_Library_April_2026",
+      "new_version": "U_SRG-STIG_Library_October_2026",
+      "changed_at": "2026-10-26",
+      "source_url": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_SRG-STIG_Library_October_2026.zip",
+      "summary": "Quarterly library refresh (sha256 ea581eb2d5c4a210440852b67ea4dd9564fffdf57c8c94aec971047fe0c01d1d; HTTP Last-Modified 2026-10-26; DISA revision history dated 30 September 2026). Library: 387 benchmarks / 19,386 rules (+24 added, 159 version changes). 20 benchmarks DISA no longer carries are kept and flagged not_in_current_library (schema 3.19) — DISA's revision history lists most as sunset (e.g. RHEL 8 V2R9 on 09/30/2026, Windows Server 2019 V3R9 on 07/01/2026); the Exchange Mailbox STIGs have no deletion entry. 5 kept benchmarks were refreshed to DISA's final release (iOS 18 v2r4, Crunchy PostgreSQL v3r2, 3PAR 3.2.x v2r2, RHEL 8 v2r9, Windows Server 2019 v3r9); 2 out-of-cycle titles came from trackr (HP FlexFabric RTR v1r3, zOS SRRAUDIT TSS v7r2). Total 407 benchmarks / 20,842 rules / 539 distinct CCIs.",
+      "human_confirmed": true
     }
   ]
 }

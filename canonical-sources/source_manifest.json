@@ -1014,7 +1014,7 @@
       "id": "stig-cci-map",
       "file": "canonical-sources/source_data/stig/stig_cci_map.json.gz",
       "format": "json.gz",
-      "version": "U_SRG-STIG_Library_April_2026 (distilled; 383 benchmarks, 19,667 rules, 539 distinct CCIs)",
+      "version": "U_SRG-STIG_Library_October_2026 (distilled; 407 benchmarks — 387 in the library + 20 kept after DISA dropped them, flagged not_in_current_library — 20,842 rules, 539 distinct CCIs)",
       "retrieved": "2026-07-04",
       "source_url": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_SRG-STIG_Library_{Month}_{YYYY}.zip",
       "sha256_prefix": "95efbb79c75bfec7",

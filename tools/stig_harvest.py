@@ -695,7 +695,10 @@ def _merge_and_rewrite(new_benchmarks: dict, registry: dict, source: str) -> Non
     data = read_map()
     benchmarks = data["benchmarks"]
     benchmarks.update(new_benchmarks)
-    meta = _meta(source, {"library": data.get("_meta", {}).get("library"),
+    prev = data.get("_meta", {})
+    # carry the library's provenance forward (phase 50: a title refresh after --full had dropped
+    # library_sha256 and the distill stats from both artifacts)
+    meta = _meta(source, {**{k: prev[k] for k in ("library", "library_sha256", "stats") if k in prev},
                           "merged_titles": sorted(new_benchmarks)})
     _write_map(benchmarks, meta)
     _write_catalog(_catalog_from(benchmarks, registry, meta))

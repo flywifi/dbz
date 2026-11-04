@@ -433,8 +433,9 @@ complete STIG catalog. `tools/stig_harvest.py` distills the DISA SRG-STIG Librar
 (the ~360MB zip is fetched at harvest time and **never committed**) into two committed
 artifacts under `canonical-sources/source_data/stig/`: `stig_cci_map.json.gz` (rule→CCI) and
 `stig_catalog.json` (the 1,079-title trackr delta ledger + per-benchmark harvest provenance).
-The April-2026 library yields 383 benchmarks / 19,667 rules / 539 distinct CCIs (97.6% resolve
-in `cci_bridge`).
+The October-2026 refresh (phase 50) holds 407 benchmarks / 20,842 rules / 539 distinct CCIs: the
+library's 387 plus 20 STIGs DISA dropped, kept and flagged `not_in_current_library` (April 2026,
+the first harvest: 383 / 19,667, 97.6% resolved in `cci_bridge`).
 
 Uploaded research-file dispositions:
 
@@ -541,3 +542,15 @@ older. Example: Office 365 ProPlus is V3R8 in NCP and V3R5 in our catalog (harve
 2026-07-04). The monthly STIG drift check could not see this because it reported
 `check_failed (trackr unreachable)`. Refreshing the STIG layer is a separate, owed step
 (`standards_refresh.py --fetch` → `stig_harvest.py --refresh-stale`).
+
+> **CORRECTION (phase 50, 2026-11-04).** "trackr unreachable" was the check's *label*, not its
+> cause, and the remedy named above would have failed.
+> - **The check could never report drift.** From phase 21 (`e6449ab`, 2026-07-04),
+>   `standards_refresh.stage_stig_check` read only the last line of an indented JSON report
+>   (always `}`). It also kept only the last 4,000 characters of output. So it said
+>   `check_failed` on every run, while trackr answered the CCI check in the same runs.
+> - **The true scale was larger.** Measured live: 164 of the then-383 harvested STIGs were stale.
+> - **`--refresh-stale` refuses that drift.** It stops above `--max-delta 40`.
+> - **What was done:** the check now uses three signals (DISA library quarter, NCP, trackr).
+>   The layer was refreshed from the October 2026 library, with the STIGs DISA dropped kept and
+>   flagged. See "Phase 50" below.

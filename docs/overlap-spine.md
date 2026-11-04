@@ -230,8 +230,11 @@ Instead:
 
 Source: the DISA SRG-STIG Library compilation (authoritative bulk), distilled by
 `tools/stig_harvest.py` into two committed artifacts (the ~360MB zip is never committed). The
-April-2026 library yields **383 benchmarks / 19,667 rules / 539 distinct CCIs** (97.6% resolve
-in `cci_bridge`; 13 unresolved are surfaced, never dropped). The full 1,079-title trackr
+October-2026 refresh (phase 50) holds **407 benchmarks / 20,842 rules / 539 distinct CCIs**: the
+library's 387 plus 20 that DISA dropped from it, kept and flagged `not_in_current_library`
+(schema 3.19; 5 at DISA's final release), 2 of them out-of-cycle trackr refreshes (April 2026,
+the first harvest: 383 / 19,667; 97.6% resolved in `cci_bridge` then, 13 unresolved surfaced,
+never dropped). The full 1,079-title trackr
 catalog is snapshotted as the delta detector; ~700 titles are historical/sunset and are
 catalogued but rule-harvested on demand — empirically they add ~0 new CCIs (the CCI
 vocabulary is product-agnostic; a sampled Windows 10 / Citrix harvest added 0). Query:

@@ -27,7 +27,7 @@ overlapping controls listed. It's **one unified map**, not a shelf of separate c
 | **Evidence concentration** | **82,587 of 97,668 master edges (84.6%) derive from one licensed artifact** (HITRUST CSF v11.4 Cross-Reference), composed through the hub rather than stated by a source; `unified_mappings` is 87% transitive-via-HITRUST. Tier and confidence are on every row. |
 | **Overlap matrix** | 120 precomputed framework pairs (the 16 canonical frameworks) with shared-work % |
 | **CCI dictionary** | 5,137 DISA control-correlation identifiers with definitions + multi-source corroboration |
-| **STIG evidence** | 383 hardening benchmarks / 19,667 rules for per-product implementation proof |
+| **STIG evidence** | 407 hardening benchmarks / 20,842 rules for per-product implementation proof (DISA's October 2026 library, plus 20 STIGs DISA retired, kept and flagged) |
 | **FedRAMP 2026 (KSIs)** | FedRAMP's own 46 Key Security Indicators and their 373 published links to 800-53 |
 | **Keep-current** | 162 official sources watched for changes, plus a horizon of 77 anticipated future revisions |
 

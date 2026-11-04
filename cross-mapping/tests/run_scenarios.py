@@ -82,9 +82,10 @@ def main() -> int:
     n = c.execute("SELECT COUNT(*) FROM disa_ccis").fetchone()[0]
     check(n == 5137, f"scenario 6: CCI dictionary complete (want 5137; got {n})")
 
-    # 7. STIG evidence layer (383 benchmarks — exact; pinned harvest).
+    # 7. STIG evidence layer (407 benchmarks — exact; pinned harvest). Re-pinned 383→407 in phase 50:
+    #    October-2026 library (387) + 20 DISA-dropped benchmarks kept, flagged not_in_current_library.
     n = c.execute("SELECT COUNT(*) FROM stig_catalog").fetchone()[0]
-    check(n == 383, f"scenario 7: STIG catalog complete (want 383; got {n})")
+    check(n == 407, f"scenario 7: STIG catalog complete (want 407; got {n})")
 
     # 8. Horizon registry loaded (77 records — exact until records are added;
     #    re-pinned 70→76 in phase 32 when the six CMMC suspension/RFI/task-force
