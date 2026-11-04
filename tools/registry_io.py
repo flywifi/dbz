@@ -17,6 +17,7 @@ Canonical registries:
   canonical-sources/source_manifest.json
   canonical-sources/framework_changelog.json
   canonical-sources/doc_claims.json
+  canonical-sources/host_policies.json   (published per-host usage rules; phase 50)
 """
 
 import json
@@ -31,6 +32,7 @@ CANONICAL = {
     "source_manifest": ROOT / "canonical-sources" / "source_manifest.json",
     "framework_changelog": ROOT / "canonical-sources" / "framework_changelog.json",
     "doc_claims": ROOT / "canonical-sources" / "doc_claims.json",
+    "host_policies": ROOT / "canonical-sources" / "host_policies.json",
 }
 
 

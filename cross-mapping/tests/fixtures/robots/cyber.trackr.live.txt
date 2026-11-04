@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /search/
+Disallow: /plans/*/preview
+Disallow: /plans/*/download
+Disallow: /plans/*/controls/
+
+Sitemap: https://cyber.trackr.live/sitemap.xml

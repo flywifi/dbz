@@ -8,8 +8,15 @@ survives their bad days:
 
   RateGovernor  — per-host pacing (min interval + jitter, robots.txt Crawl-delay),
                   Retry-After / RateLimit-Reset respect, a circuit breaker
-                  (4 consecutive 403/429/503 -> 15-min cooldown), a per-run request
-                  budget, and persisted learned limits (.fetch-cache/host_limits.json).
+                  (4 consecutive 403/429/503 -> 15-min cooldown), persisted learned
+                  limits (.fetch-cache/host_limits.json), and — since phase 50 — each
+                  host's PUBLISHED usage rule from canonical-sources/host_policies.json:
+                  per-run caps, rolling windows (NVD: 5 per 30 s), meta-first downloads
+                  (NCP: read the .meta before the feed), required headers (eCFR:
+                  Accept-Encoding), and robots.txt Disallow with RFC 9309 status
+                  semantics. A broken rule raises PolicyRefused and is recorded in the
+                  per-run ledger (run_ledger / save_ledger); the run budget is only a
+                  runaway ceiling.
   FetchCache    — per-URL ETag / Last-Modified conditional-GET validators plus a
                   sha256 unchanged check (.fetch-cache/fetch_state.json), so repeat
                   runs are mostly 304 header exchanges.
@@ -29,18 +36,24 @@ import gzip
 import hashlib
 import io
 import json
+import os
 import random
 import re
 import time
 import urllib.error
 import urllib.request
+import urllib.robotparser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 STATE_DIR = ROOT / ".fetch-cache"
 
 DEFAULT_MIN_INTERVAL = 1.5   # seconds between requests to one host (plus jitter)
-DEFAULT_BUDGET = 200         # requests per run per governor
+DEFAULT_BUDGET = 600           # runaway ceiling per run (1.8x the 328 measured by the phase-50 census); per-host caps are the guard
+DEFAULT_RUN_CAP = 25           # per host per run when a host publishes nothing (busiest such host measured: 19)
+ROBOTS_MAX_BYTES = 512 * 1024  # RFC 9309 §2.5: parse at least 500 KiB
+ROBOTS_AGENT = "dbz-standards-monitor"   # product token that robots.txt groups are matched against
+POLICY_PATH = ROOT / "canonical-sources" / "host_policies.json"
 BREAKER_FAILS = 4            # consecutive 403/429/503 before the breaker trips
 BREAKER_COOLDOWN = 15 * 60   # seconds
 BREAKER_STATUSES = {403, 429, 503}
@@ -51,6 +64,11 @@ WAYBACK_API = "https://archive.org/wayback/available?url="
 
 class HostCooldown(Exception):
     """Raised when a host's circuit breaker is active — skip, don't hammer."""
+
+
+class PolicyRefused(Exception):
+    """The request would break the host's recorded usage rule or its robots.txt.
+    Skip it, report it (run ledger), never retry it in the same run."""
 
 
 def _host(url: str) -> str:
@@ -71,21 +89,81 @@ def _read_body(resp) -> bytes:
     return body
 
 
+def read_body(resp) -> bytes:
+    """Public: read a response body, decoding Content-Encoding: gzip (required-header hosts)."""
+    return _read_body(resp)
+
+
+def load_policies(path: Path | None = None) -> dict:
+    """canonical-sources/host_policies.json, or a built-in default when absent (offline tests)."""
+    default = {"_default": {"enforced": {"min_interval_s": DEFAULT_MIN_INTERVAL,
+                                         "run_cap": DEFAULT_RUN_CAP}}, "hosts": {}}
+    try:
+        data = json.loads((path or POLICY_PATH).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return default
+    data.setdefault("hosts", {})
+    data.setdefault("_default", default["_default"])
+    return data
+
+
+def robots_lines(body: str) -> list:
+    """RFC 9309 groups rules by user-agent lines; blank lines carry no meaning. The stdlib parser
+    ends a group at a blank line, which silently drops the Disallow rules of eCFR's and the
+    Federal Register's real robots.txt (measured phase 50) — strip comments and blank lines."""
+    return [ln for ln in (x.split("#", 1)[0].strip() for x in body.splitlines()) if ln]
+
+
+def robots_verdict(status: int, body: str):
+    """RFC 9309 status semantics. 2xx -> parse (an HTML page, or a body without directives, is not
+    a robots file -> no rules); 4xx 'unavailable' -> allow all (§2.3.1.3); 5xx or a network
+    failure 'unreachable' -> complete disallow (§2.3.1.4). Returns "allow_all" | "disallow_all" |
+    a RobotFileParser."""
+    if status == 0 or 500 <= status <= 599:
+        return "disallow_all"
+    if 400 <= status <= 499:
+        return "allow_all"
+    head = body.lstrip()[:300].lower()
+    if (head.startswith(("<!doctype", "<html")) or "<head" in head
+            or not re.search(r"(?im)^\s*(user-agent|disallow|allow)\s*:", body)):
+        return "allow_all"
+    rp = urllib.robotparser.RobotFileParser()
+    rp.parse(robots_lines(body))
+    return rp
+
+
+def _path_of(url: str) -> str:
+    rest = url.split("//", 1)[-1]
+    return "/" + rest.split("/", 1)[1] if "/" in rest else "/"
+
+
+def _meta_key(url: str) -> str:
+    """'…/feed.meta' and '…/feed.xml.gz' share the key '…/feed' (meta-first pairing)."""
+    return re.sub(r"\.(meta|xml\.gz|xml\.zip|zip|gz|xml)$", "", url.split("?", 1)[0])
+
+
 class RateGovernor:
-    """Per-host pacing + breaker + budget. Persisted across runs."""
+    """Per-host pacing + breaker + recorded host usage rules + runaway ceiling.
+    Learned limits persist across runs (.fetch-cache/host_limits.json); per-run counts never do."""
 
     def __init__(self, state_path: Path | None = None, *,
                  min_interval: float = DEFAULT_MIN_INTERVAL,
                  budget: int = DEFAULT_BUDGET,
-                 opener=_default_open, clock=time.time, sleeper=time.sleep):
+                 opener=_default_open, clock=time.time, sleeper=time.sleep,
+                 policies: dict | None = None):
         self.state_path = state_path if state_path is not None else STATE_DIR / "host_limits.json"
         self.min_interval = min_interval
         self.budget_remaining = budget
         self._opener = opener
         self._clock = clock
         self._sleep = sleeper
+        self.policies = policies if policies is not None else load_policies()
         self.hosts: dict = {}          # host -> {last_ts, interval, fails, breaker_until}
-        self._robots_checked: set = set()
+        self.counts: dict = {}         # host -> requests admitted this run
+        self.refusals: dict = {}       # host -> [reason, ...] this run
+        self.meta_seen: set = set()    # _meta_key()s whose .meta was fetched this run
+        self._robots: dict = {}        # host -> robots verdict, once per run (RFC 9309 §2.4)
+        self._window: dict = {}        # host -> admitted timestamps inside the rolling window
         if self.state_path and self.state_path.exists():
             try:
                 saved = json.loads(self.state_path.read_text(encoding="utf-8"))
@@ -98,38 +176,92 @@ class RateGovernor:
             "last_ts": 0.0, "interval": self.min_interval,
             "fails": 0, "breaker_until": 0.0})
 
-    def _robots_crawl_delay(self, host: str):
-        """Best-effort, once per host per run; failure -> keep default interval."""
-        if host in self._robots_checked:
-            return
-        self._robots_checked.add(host)
+    def _policy(self, host: str) -> dict:
+        p = dict(self.policies.get("_default", {}).get("enforced", {}))
+        p.update(self.policies.get("hosts", {}).get(host, {}).get("enforced", {}))
+        p.setdefault("run_cap", DEFAULT_RUN_CAP)
+        p.setdefault("min_interval_s", self.min_interval)
+        return p
+
+    def _robots_for(self, host: str):
+        """Fetch robots.txt once per host per run; learn Crawl-delay; keep the verdict."""
+        if host in self._robots:
+            return self._robots[host]
+        status, body = 0, ""
         try:
             req = urllib.request.Request(f"https://{host}/robots.txt",
                                          headers={"User-Agent": USER_AGENT})
             with self._opener(req, 10) as resp:
-                text = _read_body(resp).decode("utf-8", errors="replace")
-            m = re.search(r"(?im)^crawl-delay:\s*(\d+(?:\.\d+)?)", text)
+                status = getattr(resp, "status", 200) or 200
+                body = _read_body(resp)[:ROBOTS_MAX_BYTES].decode("utf-8", errors="replace")
+        except urllib.error.HTTPError as e:
+            status = e.code
+        except Exception:
+            status = 0
+        verdict = robots_verdict(status, body)
+        if not isinstance(verdict, str):
+            m = re.search(r"(?im)^\s*crawl-delay:\s*(\d+(?:\.\d+)?)", body)
             if m:
                 e = self._entry(host)
                 e["interval"] = max(e["interval"], float(m.group(1)))
-        except Exception:
-            pass
+        self._robots[host] = verdict
+        return verdict
 
-    def wait(self, host: str):
-        """Block until this host may be contacted. Raises HostCooldown / RuntimeError."""
+    def _documented_api(self, host: str, path: str) -> bool:
+        """A robots Disallow may be overridden only for a path the issuer's own API documentation
+        publishes, and only when BOTH citations are recorded in host_policies.json."""
+        for x in self._policy(host).get("documented_api_paths") or []:
+            if path.startswith(x.get("prefix", "\0")) and x.get("robots_line") and x.get("api_doc"):
+                return True
+        return False
+
+    def _refuse(self, host: str, reason: str):
+        self.refusals.setdefault(host, []).append(reason)
+        raise PolicyRefused(f"{host}: {reason}")
+
+    def wait(self, host: str, url: str = ""):
+        """Block until this host may be contacted under its recorded rules.
+        Raises HostCooldown / PolicyRefused / RuntimeError (runaway ceiling)."""
         now = self._clock()
         e = self._entry(host)
         if now < e.get("breaker_until", 0.0):
             raise HostCooldown(f"{host} cooling down until {e['breaker_until']:.0f}")
         if self.budget_remaining <= 0:
             raise RuntimeError("fetch budget exhausted for this run")
-        self._robots_crawl_delay(host)
+        p = self._policy(host)
+        path = _path_of(url) if url else ""
+        if self.counts.get(host, 0) >= int(p["run_cap"]):
+            self._refuse(host, f"run cap {p['run_cap']} reached")
+        mf = p.get("meta_first")
+        if url and mf and re.search(mf, path) and _meta_key(url) not in self.meta_seen:
+            self._refuse(host, f"{path.rsplit('/', 1)[-1]} requested before its .meta (published rule)")
+        verdict = self._robots_for(host)
+        if url and not path.endswith("/robots.txt") and not self._documented_api(host, path):
+            if verdict == "disallow_all":
+                self._refuse(host, "robots.txt unreachable -> complete disallow (RFC 9309 2.3.1.4)")
+            if not isinstance(verdict, str) and not verdict.can_fetch(ROBOTS_AGENT, url):
+                self._refuse(host, f"robots.txt disallows {path}")
         e = self._entry(host)
-        wait_for = e["last_ts"] + e["interval"] + random.uniform(0, 0.4) - now
+        e["interval"] = max(e["interval"], float(p["min_interval_s"]))
+        win = p.get("window")
+        if p.get("key_env") and os.environ.get(p["key_env"]) and p.get("window_with_key"):
+            win = p["window_with_key"]
+        if win:
+            n, secs = int(win[0]), float(win[1])
+            ts = [t for t in self._window.get(host, []) if self._clock() - t < secs]
+            if len(ts) >= n:
+                self._sleep(secs - (self._clock() - ts[0]) + 0.05)
+            self._window[host] = ts
+        wait_for = e["last_ts"] + e["interval"] + random.uniform(0, 0.4) - self._clock()
         if wait_for > 0:
             self._sleep(wait_for)
         e["last_ts"] = self._clock()
+        if win:
+            self._window[host].append(e["last_ts"])
         self.budget_remaining -= 1
+        self.counts[host] = self.counts.get(host, 0) + 1
+        if url and path.endswith(".meta"):
+            self.meta_seen.add(_meta_key(url))
 
     def note(self, host: str, status: int, headers=None):
         """Record a response: learn server-provided limits, trip/clear the breaker."""
@@ -158,6 +290,13 @@ class RateGovernor:
                                          self._clock() + BREAKER_COOLDOWN)
         else:
             e["fails"] = 0
+
+    def ledger(self) -> dict:
+        """Per-host requests admitted and refused this run, with distinct refusal reasons."""
+        hosts = sorted(set(self.counts) | set(self.refusals))
+        return {h: {"requests": self.counts.get(h, 0),
+                    "refused": len(self.refusals.get(h, [])),
+                    "reasons": sorted(set(self.refusals.get(h, [])))} for h in hosts}
 
     def save(self):
         if not self.state_path:
@@ -249,12 +388,29 @@ def save_state():
         _CACHE.save()
 
 
+def run_ledger() -> dict:
+    """This process's per-host ledger (empty when nothing was fetched)."""
+    return _GOV.ledger() if _GOV is not None else {}
+
+
+def save_ledger(tool: str, state_dir: Path | None = None):
+    """Write this process's ledger to .fetch-cache/ledger/<tool>.json for the drift report."""
+    d = (state_dir or STATE_DIR) / "ledger"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / f"{tool}.json").write_text(json.dumps(run_ledger(), indent=2, sort_keys=True) + "\n",
+                                    encoding="utf-8")
+
+
 def polite_urlopen(req: urllib.request.Request, timeout: float = 30, gov: RateGovernor | None = None):
-    """Drop-in wrapper around urlopen that paces + breaker-tracks the host.
-    Raises HostCooldown when the host is in cooldown."""
+    """Drop-in wrapper around urlopen: applies the host's recorded rules (pacing, caps, rolling
+    window, meta-first, robots, required headers) and breaker-tracks the host.
+    Raises HostCooldown / PolicyRefused."""
     gov = gov or governor()
     host = _host(req.full_url)
-    gov.wait(host)
+    gov.wait(host, req.full_url)
+    for k, v in (gov._policy(host).get("require_headers") or {}).items():
+        if not req.has_header(k.capitalize()):
+            req.add_header(k, v)
     try:
         resp = gov._opener(req, timeout)
     except urllib.error.HTTPError as e:
@@ -271,23 +427,15 @@ def resilient_get(url: str, *, gov: RateGovernor | None = None,
                   fcache: FetchCache | None = None,
                   allow_wayback: bool = True, timeout: float = 30,
                   extra_headers: dict | None = None):
-    """GET with pacing, conditional headers, and a labeled Wayback fallback.
-
-    Returns (status, body_bytes_or_None, meta) where meta = {
-      "source": "live" | "wayback" | "cache",
-      "cache": "unchanged" | "changed" | None,
-      "trail": [attempt strings],
-      "snapshot_ts": wayback timestamp when source == "wayback",
-    }. A 304 / sha-identical response returns body=None with cache="unchanged".
-    """
+    """GET with recorded host rules, conditional headers, and a labeled Wayback fallback that is
+    used ONLY on hard failure — never after a PolicyRefused (an archive copy must not route
+    around a host's rules or its robots.txt)."""
     gov = gov or governor()
     fcache = fcache or cache()
     trail = []
     headers = {"User-Agent": USER_AGENT, "Accept-Encoding": "gzip",
                **fcache.validators(url), **(extra_headers or {})}
     req = urllib.request.Request(url, headers=headers)
-
-    # prong 1 — live
     try:
         resp = polite_urlopen(req, timeout=timeout, gov=gov)
         body = _read_body(resp)
@@ -301,6 +449,9 @@ def resilient_get(url: str, *, gov: RateGovernor | None = None,
     except HostCooldown as e:
         trail.append(f"live:cooldown:{e}")
         return 0, None, {"source": "live", "cache": None, "trail": trail, "snapshot_ts": None}
+    except PolicyRefused as e:
+        trail.append(f"live:refused:{e}")
+        return 0, None, {"source": "live", "cache": None, "trail": trail, "snapshot_ts": None}
     except urllib.error.HTTPError as e:
         if e.code == 304:
             fcache.note_response(url, 304, {}, None)
@@ -312,8 +463,6 @@ def resilient_get(url: str, *, gov: RateGovernor | None = None,
     except Exception as e:
         trail.append(f"live:error:{type(e).__name__}")
         status = 0
-
-    # prong 2 — Wayback, hard-fail only, ALWAYS labeled
     if not allow_wayback:
         return status, None, {"source": "live", "cache": None, "trail": trail, "snapshot_ts": None}
     try:

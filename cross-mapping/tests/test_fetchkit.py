@@ -176,10 +176,170 @@ def test_no_wayback_on_success():
            "successful live fetch never consults wayback")
 
 
+# ── phase 50: recorded host usage rules (canonical-sources/host_policies.json) ─────────────
+# Fixtures are the hosts' real robots.txt files (fetched 2026-11-04); statuses below mirror the
+# measured ones: www.cisa.gov 403 (CDN), web.archive.org connection reset, dl.dod.cyber.mil 404.
+
+ROBOTS_FIX = Path(__file__).resolve().parent / "fixtures" / "robots"
+POLICIES = json.loads((Path(__file__).resolve().parents[2] / "canonical-sources"
+                       / "host_policies.json").read_text(encoding="utf-8"))
+
+
+class StepClock:
+    """A clock that advances only when the governor sleeps — sleeps become measurable."""
+    def __init__(self):
+        self.t = 1_000_000.0
+
+    def __call__(self):
+        return self.t
+
+    def sleep(self, s):
+        self.t += max(0.0, s)
+
+
+SENT = []
+
+
+def policy_opener(req, timeout):
+    url, host = req.full_url, fetchkit._host(req.full_url)
+    if url.endswith("/robots.txt"):
+        if host == "www.cisa.gov":
+            raise urllib.error.HTTPError(url, 403, "Forbidden", {}, io.BytesIO(b""))
+        if host == "web.archive.org":
+            raise ConnectionResetError("reset by peer")
+        fx = ROBOTS_FIX / f"{host}.txt"
+        if fx.exists():
+            return FakeResp(200, {}, fx.read_bytes())
+        raise urllib.error.HTTPError(url, 404, "Not Found", {}, io.BytesIO(b""))
+    SENT.append(req)
+    return FakeResp(200, {}, b"ok")
+
+
+def policy_gov():
+    c = StepClock()
+    return fetchkit.RateGovernor(state_path=None, opener=policy_opener, clock=c,
+                                 sleeper=c.sleep, policies=POLICIES), c
+
+
+def refusal(g, url):
+    try:
+        g.wait(fetchkit._host(url), url)
+        return None
+    except fetchkit.PolicyRefused as e:
+        return str(e)
+
+
+def test_policy_registry_cites_every_rule():
+    for host, v in POLICIES["hosts"].items():
+        ok(all(v.get(k) for k in ("published_rule", "source_url", "verified", "probe",
+                                  "robots", "enforced")), f"{host}: rule, source, date, probe recorded")
+        for x in v["enforced"].get("documented_api_paths", []):
+            ok(all(x.get(k) for k in ("prefix", "robots_line", "api_doc", "api_doc_url")),
+               f"{host}: robots override {x.get('prefix')} carries both citations")
+
+
+def test_ncp_meta_first_and_run_cap():
+    g, _ = policy_gov()
+    base = "https://ncp.nist.gov/feeds/xml/ncp/checklist-0.1-feed"
+    ok("before its .meta" in (refusal(g, base + ".xml.gz") or ""),
+       "NCP feed download refused before its .meta (published rule)")
+    ok(refusal(g, base + ".meta") is None and refusal(g, base + ".xml.gz") is None,
+       "NCP feed admitted after its .meta")
+    n = 2
+    while refusal(g, base + ".meta") is None:
+        n += 1
+    ok(n == POLICIES["hosts"]["ncp.nist.gov"]["enforced"]["run_cap"],
+       f"NCP run cap enforced at {n} requests (published: <200/day)")
+
+
+def test_nvd_rolling_window():
+    import os
+    url = "https://services.nvd.nist.gov/rest/json/cves/2.0?x"
+    g, c = policy_gov()
+    t0 = c.t
+    for _ in range(6):
+        g.wait("services.nvd.nist.gov", url)
+    ok(c.t - t0 >= 30, f"NVD without key: 6 requests took {c.t - t0:.1f}s (rule: 5 per 30 s)")
+    os.environ["NVD_API_KEY"] = "test"
+    try:
+        g, c = policy_gov()
+        t0 = c.t
+        for _ in range(6):
+            g.wait("services.nvd.nist.gov", url)
+        ok(c.t - t0 < 30, f"NVD with key: 6 requests took {c.t - t0:.1f}s (rule: 50 per 30 s)")
+    finally:
+        del os.environ["NVD_API_KEY"]
+
+
+def test_robots_rfc9309():
+    g, _ = policy_gov()
+    cases = [("https://www.ecfr.gov/api/versioner/v1/full/2026-08-01/title-32.xml?part=170", None),
+             ("https://www.ecfr.gov/search?q=x", "disallows"),
+             ("https://www.ecfr.gov/api/versioner/v1/structure/current/title-45.json", None),
+             ("https://www.federalregister.gov/articles/search?x=1", "disallows"),
+             ("https://www.federalregister.gov/api/v1/documents.json?per_page=1", None),
+             ("https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json", None),
+             ("https://web.archive.org/wayback/available?url=x", "unreachable"),
+             ("https://ncp.nist.gov/feeds/xml/ncp/checklist-0.1-feed.meta", None),
+             ("https://www.nist.gov/search/site?x", "disallows"),
+             ("https://www.nist.gov/blogs/cybersecurity-insights/rss.xml", None),
+             ("https://cyber.trackr.live/search/x", "disallows"),
+             ("https://cyber.trackr.live/api/stig", None)]
+    for url, want in cases:
+        got = refusal(g, url)
+        good = (got is None) if want is None else (got is not None and want in got)
+        ok(good, f"robots {'allow' if want is None else 'deny (' + want + ')'}: {url[:70]}")
+
+
+def test_stdlib_blank_line_grouping_is_neutralised():
+    body = (ROBOTS_FIX / "www.ecfr.gov.txt").read_text(encoding="utf-8")
+    import urllib.robotparser
+    naive = urllib.robotparser.RobotFileParser()
+    naive.parse(body.splitlines())
+    url = "https://www.ecfr.gov/api/versioner/v1/full/2026-01-01/title-45.xml"
+    ok(naive.can_fetch(fetchkit.ROBOTS_AGENT, url),
+       "stdlib parser alone allows a path eCFR disallows (the defect, pinned)")
+    ok(not fetchkit.robots_verdict(200, body).can_fetch(fetchkit.ROBOTS_AGENT, url),
+       "robots_verdict honours eCFR's Disallow after blank-line normalisation")
+
+
+def test_required_header_and_no_wayback_after_refusal():
+    g, _ = policy_gov()
+    SENT.clear()
+    fetchkit.polite_urlopen(urllib.request.Request(
+        "https://www.ecfr.gov/api/versioner/v1/full/2026-08-01/title-32.xml"), gov=g)
+    ok(SENT[-1].get_header("Accept-encoding") == "gzip",
+       "eCFR's published Accept-Encoding requirement is added automatically")
+    st, body, meta = fetchkit.resilient_get("https://web.archive.org/x", gov=g,
+                                            fcache=fetchkit.FetchCache(state_path=None))
+    ok(meta["trail"][0].startswith("live:refused") and len(meta["trail"]) == 1,
+       "a policy-refused URL never falls through to the Wayback prong")
+    led = g.ledger()
+    ok(led["web.archive.org"]["refused"] == 1 and led["www.ecfr.gov"]["requests"] == 1,
+       "the run ledger records admitted and refused requests per host")
+
+
+def test_save_ledger_roundtrip():
+    g, _ = policy_gov()
+    g.wait("www.nist.gov", "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml")
+    with tempfile.TemporaryDirectory() as d:
+        saved, fetchkit._GOV = fetchkit._GOV, g
+        try:
+            fetchkit.save_ledger("t", state_dir=Path(d))
+        finally:
+            fetchkit._GOV = saved
+        led = json.loads((Path(d) / "ledger" / "t.json").read_text(encoding="utf-8"))
+    ok(led == {"www.nist.gov": {"requests": 1, "refused": 0, "reasons": []}},
+       "save_ledger writes this process's ledger for the drift report")
+
+
 if __name__ == "__main__":
     for fn in [test_breaker_trips_and_cools, test_retry_after_honored, test_budget_exhausts,
                test_cache_304_and_sha, test_governor_state_roundtrip,
                test_resilient_live_and_unchanged, test_wayback_only_on_hard_fail,
-               test_no_wayback_on_success]:
+               test_no_wayback_on_success, test_policy_registry_cites_every_rule,
+               test_ncp_meta_first_and_run_cap, test_nvd_rolling_window, test_robots_rfc9309,
+               test_stdlib_blank_line_grouping_is_neutralised,
+               test_required_header_and_no_wayback_after_refusal, test_save_ledger_roundtrip]:
         fn()
     print(f"\nfetchkit tests: {PASS} assertions PASS")

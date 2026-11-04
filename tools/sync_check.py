@@ -248,7 +248,8 @@ def main() -> int:
     # A .py file (outside the allowlist) that both names a canonical registry and
     # contains a write primitive is a suspected ad-hoc registry writer.
     _REG_NAMES = ("feed_registry.json", "anticipated_updates.json", "crawl_seeds.json",
-                  "source_manifest.json", "framework_changelog.json", "doc_claims.json")
+                  "source_manifest.json", "framework_changelog.json", "doc_claims.json",
+                  "host_policies.json")
     _WRITE_TOKENS = (".write_text(", "json.dump(")
     _WRITER_ALLOW = {
         "tools/registry_io.py",        # THE writer

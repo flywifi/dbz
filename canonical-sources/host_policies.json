@@ -1,0 +1,154 @@
+{
+  "_schema": "host_policies/1.0",
+  "_purpose": "Published usage rules of every host the keep-current subsystem contacts, and the limits fetchkit.RateGovernor enforces for each. published_rule is quoted verbatim from source_url, or reads 'none published' with the date it was checked — never invented. Enforced limits sit at or below the published rule. A robots.txt Disallow may be overridden ONLY through documented_api_paths, and only with both citations (the robots line and the issuer's API documentation). Written only via tools/registry_io.py; tools/fetch_census.py --check fails CI when the monthly plan would exceed a run_cap.",
+  "_default": {
+    "enforced": {
+      "min_interval_s": 1.5,
+      "run_cap": 25
+    }
+  },
+  "hosts": {
+    "ncp.nist.gov": {
+      "published_rule": "The META file should be used to determine if a given feed has been updated since your last import. This helps prevent unnecessary downloads of the .zip or .gz files and should result in a reasonable use of less than 200 requests per day.",
+      "source_url": "https://ncp.nist.gov/data-feeds",
+      "verified": "2026-11-04",
+      "probe": "text of the top-level data-feeds route component in the NCP site bundle (the site is a JavaScript app); the same page states the .meta files are 'updated approximately every two hours'",
+      "robots": "200 text/html (the app shell, not a robots file) -> no rules",
+      "enforced": {
+        "min_interval_s": 2.0,
+        "run_cap": 10,
+        "meta_first": "\\.(xml\\.gz|zip)$"
+      }
+    },
+    "services.nvd.nist.gov": {
+      "published_rule": "The public rate limit (without an API key) is 5 requests in a rolling 30 second window; the rate limit with an API key is 50 requests in a rolling 30 second window. ... it is still recommended that your application sleeps for several seconds between requests so that legitimate requests are not denied",
+      "source_url": "https://nvd.nist.gov/developers/start-here",
+      "verified": "2026-11-04",
+      "probe": "Firecrawl directQuote of the start-here page",
+      "robots": "nvd.nist.gov serves the app shell as /robots.txt -> no rules",
+      "enforced": {
+        "min_interval_s": 0.6,
+        "run_cap": 400,
+        "window": [
+          5,
+          30
+        ],
+        "window_with_key": [
+          50,
+          30
+        ],
+        "key_env": "NVD_API_KEY"
+      }
+    },
+    "api.github.com": {
+      "published_rule": "The primary rate limit for unauthenticated requests is 60 requests per hour. ... The rate limit for GITHUB_TOKEN is 1,000 requests per hour per repository. ... No more than 100 concurrent requests are allowed. ... No more than 900 points per minute are allowed for REST API endpoints",
+      "source_url": "https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api",
+      "verified": "2026-11-04",
+      "probe": "Firecrawl directQuote of the rate-limits page",
+      "robots": "not fetched for an API host (no rules apply to authenticated API calls)",
+      "enforced": {
+        "min_interval_s": 1.0,
+        "run_cap": 50
+      }
+    },
+    "www.ecfr.gov": {
+      "published_rule": "none published for rate (API documentation checked 2026-11-04); the full-XML endpoint states: 'Requests must include Accept-Encoding that permits compression.'",
+      "source_url": "https://www.ecfr.gov/developers/documentation/api/v1",
+      "verified": "2026-11-04",
+      "probe": "Firecrawl directQuote of the API documentation; robots.txt fetched",
+      "robots": "200 text/plain; Disallow /search, /recent-changes, /on/, /compare/, /my/, /auth/*, /api/renderer/v1/content/, /api/versioner/v1/full/",
+      "enforced": {
+        "min_interval_s": 4.0,
+        "run_cap": 25,
+        "require_headers": {
+          "Accept-Encoding": "gzip"
+        },
+        "documented_api_paths": [
+          {
+            "prefix": "/api/versioner/v1/full/",
+            "robots_line": "Disallow: /api/versioner/v1/full/  (under '# Don't index developer tool links')",
+            "api_doc": "GET /api/versioner/v1/full/{date}/title-{title}.xml — Source XML for a title or subset of a title. Requests must include Accept-Encoding that permits compression.",
+            "api_doc_url": "https://www.ecfr.gov/developers/documentation/api/v1"
+          }
+        ]
+      }
+    },
+    "www.federalregister.gov": {
+      "published_rule": "none published (API documentation checked 2026-11-04; the API sends no rate-limit headers)",
+      "source_url": "https://www.federalregister.gov/developers/documentation/api/v1",
+      "verified": "2026-11-04",
+      "probe": "Firecrawl directQuote + response-header inspection",
+      "robots": "200 text/plain; Disallow /documents/current, /documents/email-a-friend, /articles/search, /documents/search, /public-inspection/search, /regulations/search, /my/, /auth/",
+      "enforced": {
+        "min_interval_s": 4.0,
+        "run_cap": 25
+      }
+    },
+    "cyber.trackr.live": {
+      "published_rule": "none published (the /api index lists endpoints only; responses carry cache-control: max-age=3600; checked 2026-11-04)",
+      "source_url": "https://cyber.trackr.live/api",
+      "verified": "2026-11-04",
+      "probe": "GET /api and /api/stig headers",
+      "robots": "200 text/plain; Disallow /search/, /plans/*/preview, /plans/*/download, /plans/*/controls/",
+      "enforced": {
+        "min_interval_s": 1.5,
+        "run_cap": 60
+      }
+    },
+    "dl.dod.cyber.mil": {
+      "published_rule": "none published (checked 2026-11-04; robots.txt returns 404)",
+      "source_url": "https://dl.dod.cyber.mil/robots.txt",
+      "verified": "2026-11-04",
+      "probe": "robots.txt 404; library compilations are 360-380 MB single files",
+      "robots": "404 -> RFC 9309 unavailable -> no rules",
+      "enforced": {
+        "min_interval_s": 5.0,
+        "run_cap": 30
+      }
+    },
+    "www.nist.gov": {
+      "published_rule": "none published (checked 2026-11-04)",
+      "source_url": "https://www.nist.gov/robots.txt",
+      "verified": "2026-11-04",
+      "probe": "robots.txt fetched; requests without a User-Agent are refused with 403 (phase 47)",
+      "robots": "200 text/plain; Allow/Disallow lists, no Crawl-delay; Disallow /search/",
+      "enforced": {
+        "min_interval_s": 1.5,
+        "run_cap": 25
+      }
+    },
+    "csrc.nist.gov": {
+      "published_rule": "none published (checked 2026-11-04)",
+      "source_url": "https://csrc.nist.gov/robots.txt",
+      "verified": "2026-11-04",
+      "probe": "robots.txt redirects (301) to the HTML home page",
+      "robots": "301 -> HTML -> no robots file -> no rules",
+      "enforced": {
+        "min_interval_s": 1.5,
+        "run_cap": 25
+      }
+    },
+    "www.cisa.gov": {
+      "published_rule": "none published (checked 2026-11-04)",
+      "source_url": "https://www.cisa.gov/robots.txt",
+      "verified": "2026-11-04",
+      "probe": "robots.txt answers 403 (CDN) to the monitor's User-Agent while the KEV JSON answers 200",
+      "robots": "403 -> RFC 9309 'unavailable' -> no rules",
+      "enforced": {
+        "min_interval_s": 1.5,
+        "run_cap": 25
+      }
+    },
+    "web.archive.org": {
+      "published_rule": "none published (checked 2026-11-04)",
+      "source_url": "https://web.archive.org/robots.txt",
+      "verified": "2026-11-04",
+      "probe": "robots.txt connection reset from this egress",
+      "robots": "unreachable -> RFC 9309 complete disallow for the run (Wayback is a labeled fallback only)",
+      "enforced": {
+        "min_interval_s": 5.0,
+        "run_cap": 20
+      }
+    }
+  }
+}

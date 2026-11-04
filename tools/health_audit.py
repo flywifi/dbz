@@ -516,7 +516,7 @@ def check_publication_hygiene() -> List[Dict[str, Any]]:
     targets += sorted((ROOT / "skills").glob("**/references/**/*.md"))
     for name in ("source_manifest.json", "feed_registry.json",
                  "framework_changelog.json", "framework_vocab.json",
-                 "uncertainty_ledger.jsonl"):
+                 "host_policies.json", "uncertainty_ledger.jsonl"):
         p = ROOT / "canonical-sources" / name
         if p.exists():
             targets.append(p)
