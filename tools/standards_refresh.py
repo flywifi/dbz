@@ -91,6 +91,17 @@ def _run(argv: list[str], timeout: int = 900) -> tuple[int, str]:
         return 1, f"{type(e).__name__}: {e}"
 
 
+def _run_stdout(argv: list[str], timeout: int = 900) -> tuple[int, str]:
+    """Full, untruncated stdout. The STIG verdict is one JSON line of ~100 KB; _run keeps only
+    the last 4,000 characters of stdout+stderr, which cut that line's head off — the second cause
+    (with the multi-line parse) of the July-November blind spot, found by the phase-50 live run."""
+    try:
+        p = subprocess.run(argv, capture_output=True, text=True, timeout=timeout, cwd=str(ROOT))
+        return p.returncode, p.stdout
+    except Exception as e:  # noqa: BLE001 — report, never crash the pipeline
+        return 1, f"{type(e).__name__}: {e}"
+
+
 def _last_json_line(out: str):
     """The last line that is a complete JSON object. The phase-21 parser took the very last line
     of an INDENTED document (always '}') and so reported check_failed on every reachable run from
@@ -108,7 +119,7 @@ def _last_json_line(out: str):
 def stage_stig_check(_runner=None) -> dict:
     """Three-signal STIG currency (DISA library quarter, NIST NCP, trackr). Offline-safe:
     every failed signal carries its reason; check_failed only when all three fail."""
-    rc, out = (_runner or _run)([sys.executable, str(ROOT / "tools" / "stig_harvest.py"), "--check", "--json"])
+    rc, out = (_runner or _run_stdout)([sys.executable, str(ROOT / "tools" / "stig_harvest.py"), "--check", "--json"])
     payload = _last_json_line(out)
     if payload is None:
         payload = {"status": "check_failed",
@@ -213,7 +224,7 @@ def _latest_release_tag(repo: str) -> tuple:
         if e.code != 404:
             return None, f"HTTPError:{e.code}"
     except Exception as e:  # noqa: BLE001 — classify, never crash the report
-        return None, f"{type(e).__name__}:{getattr(e, 'code', '')}"
+        return None, f"{type(e).__name__}: {getattr(e, 'code', '') or str(e)[:90]}"
     try:
         tags = _gh_get(GITHUB_TAGS.format(repo=repo))
     except Exception as e:  # noqa: BLE001
@@ -303,11 +314,16 @@ def selftest_stig_check() -> int:
         "library": {"status": "newer", "library": "U_SRG-STIG_Library_October_2026"},
         "ncp": {"status": "newer", "newer": [{"benchmark_id": "X"}]},
         "trackr": {"status": "failed", "reason": "URLError"}}})
+    long_line = json.dumps({"status": "drift", "basis": ["trackr"], "signals": {"trackr": {
+        "status": "newer", "stale": [{"benchmark_id": f"B{i}", "harvested": "v1r1", "live": "v1r2",
+                                      "title": f"T{i}"} for i in range(1500)]}}}) + "\n"
     parse_cases = [
         ("phase-50 one-line drift", "[warn] noise\n" + one_line + "\n", "drift"),
         ("legacy trackr-down line", '[check] trackr unreachable (URLError: x)\n{"status": "check_failed"}\n', "check_failed"),
         ("legacy INDENTED drift (the July-November blind spot)", '{\n "changed_titles": [],\n "status": "drift"\n}', "check_failed"),
         ("traceback", "Traceback (most recent call last):\n  boom\n", "check_failed"),
+        ("100 KB one-line payload, untruncated (_run_stdout)", long_line, "drift"),
+        ("same payload truncated to 4,000 chars (the old _run)", long_line[-4000:], "check_failed"),
     ]
     bad = 0
     for label, out, want in parse_cases:

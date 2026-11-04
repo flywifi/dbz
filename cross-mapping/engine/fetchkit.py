@@ -163,6 +163,7 @@ class RateGovernor:
         self.refusals: dict = {}       # host -> [reason, ...] this run
         self.meta_seen: set = set()    # _meta_key()s whose .meta was fetched this run
         self._robots: dict = {}        # host -> robots verdict, once per run (RFC 9309 §2.4)
+        self._robots_why: dict = {}    # host -> why robots.txt was unreachable (TLS, timeout, 5xx)
         self._window: dict = {}        # host -> admitted timestamps inside the rolling window
         if self.state_path and self.state_path.exists():
             try:
@@ -196,8 +197,11 @@ class RateGovernor:
                 body = _read_body(resp)[:ROBOTS_MAX_BYTES].decode("utf-8", errors="replace")
         except urllib.error.HTTPError as e:
             status = e.code
-        except Exception:
+        except Exception as e:  # transport failure: name it in the refusal (TLS, timeout, reset)
             status = 0
+            self._robots_why[host] = f"{type(e).__name__}: {str(getattr(e, 'reason', e))[:80]}"
+        if 500 <= status <= 599:
+            self._robots_why[host] = f"HTTP {status}"
         verdict = robots_verdict(status, body)
         if not isinstance(verdict, str):
             m = re.search(r"(?im)^\s*crawl-delay:\s*(\d+(?:\.\d+)?)", body)
@@ -238,7 +242,8 @@ class RateGovernor:
         verdict = self._robots_for(host)
         if url and not path.endswith("/robots.txt") and not self._documented_api(host, path):
             if verdict == "disallow_all":
-                self._refuse(host, "robots.txt unreachable -> complete disallow (RFC 9309 2.3.1.4)")
+                self._refuse(host, f"robots.txt unreachable ({self._robots_why.get(host, 'no response')}) "
+                                   "-> complete disallow (RFC 9309 2.3.1.4)")
             if not isinstance(verdict, str) and not verdict.can_fetch(ROBOTS_AGENT, url):
                 self._refuse(host, f"robots.txt disallows {path}")
         e = self._entry(host)

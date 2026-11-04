@@ -32,6 +32,12 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Standards drift check
+        # The workflow token raises GitHub's limit from 60/h (unauthenticated, per IP) to
+        # 1,000/h per repository (host_policies.json, api.github.com); the monitor's
+        # github_authenticated flag is switched on for this step only.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DBZ_FF_GITHUB_AUTHENTICATED: '1'
         run: python3 tools/standards_refresh.py --check
 
       # The runner is a fresh checkout: the generated catalog and the OSCAL cache are
