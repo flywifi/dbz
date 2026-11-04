@@ -546,6 +546,14 @@
       "date": "2026-11-04",
       "known_good": true,
       "note": "CI green at 2026-11-04T20:26:57Z (tools/ci_status.py)."
+    },
+    {
+      "phase": "50-pre",
+      "name": "Pre-phase-50 baseline (phase-49 close anchor) for host usage rules, the STIG currency repair and the October 2026 STIG refresh",
+      "sha": "39af2d8",
+      "date": "2026-11-04",
+      "known_good": true,
+      "note": "CI green on 39af2d8 at 2026-11-04T20:28:40Z (tools/ci_status.py)."
     }
   ]
 }
