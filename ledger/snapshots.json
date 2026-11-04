@@ -530,6 +530,14 @@
       "date": "2026-10-19",
       "known_good": true,
       "note": "CI green at 2026-10-19T22:15:04Z (tools/ci_status.py)."
+    },
+    {
+      "phase": "49-pre",
+      "name": "Pre-phase-49 baseline (phase-48 close + seed-source triage) for the NIST feed-directory and NCP crawl",
+      "sha": "2029a77",
+      "date": "2026-11-04",
+      "known_good": true,
+      "note": "CI green on 2029a77: push run 2026-10-19T22:22:02Z and scheduled run 2026-11-03T14:25:03Z (tools/ci_status.py)."
     }
   ]
 }
