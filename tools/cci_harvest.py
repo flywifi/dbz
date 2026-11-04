@@ -183,4 +183,10 @@ def main(argv=None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    finally:
+        sys.path.insert(0, str(ROOT / "cross-mapping" / "engine"))
+        import fetchkit
+        fetchkit.save_state()
+        fetchkit.save_ledger("cci_harvest")  # per-host requests/refusals for the drift report

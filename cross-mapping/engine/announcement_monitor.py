@@ -484,7 +484,11 @@ def main() -> int:
     )
     args = parser.parse_args()
     setup_logging(Path(args.log_dir))
-    return run(args)
+    try:
+        return run(args)
+    finally:
+        fetchkit.save_state()
+        fetchkit.save_ledger("announcement_monitor")  # per-host requests/refusals for the drift report
 
 
 if __name__ == "__main__":

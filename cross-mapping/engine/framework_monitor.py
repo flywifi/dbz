@@ -501,6 +501,7 @@ def main():
         )
     finally:
         fetchkit.save_state()  # persist learned host limits / breakers across runs
+        fetchkit.save_ledger("framework_monitor")  # per-host requests/refusals for the drift report
 
 
 if __name__ == "__main__":

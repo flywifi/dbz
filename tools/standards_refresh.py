@@ -45,6 +45,9 @@ REGISTRY = ROOT / "canonical-sources" / "feed_registry.json"
 CHANGELOG = ROOT / "canonical-sources" / "framework_changelog.json"
 REPORT = ROOT / "cross-mapping" / "output" / "standards_drift_report.json"
 ENGINE = ROOT / "cross-mapping" / "engine"
+LEDGER_DIR = ROOT / ".fetch-cache" / "ledger"
+_SIG_KEYS = ("status", "reason", "library", "last_modified", "joined", "entries", "entry_digest",
+             "newest_modified", "feed_sha256", "retained_behind", "mirror_lag")
 
 GATES = [
     [sys.executable, str(ROOT / "tools" / "sync_check.py")],
@@ -88,26 +91,38 @@ def _run(argv: list[str], timeout: int = 900) -> tuple[int, str]:
         return 1, f"{type(e).__name__}: {e}"
 
 
-def stage_stig_check() -> dict:
-    """Compare the live trackr STIG catalog against the committed artifact.
-    Offline-safe: a fetch failure degrades to check_failed, never crashes."""
-    rc, out = _run([sys.executable, str(ROOT / "tools" / "stig_harvest.py"), "--check", "--json"])
-    try:
-        payload = json.loads(out.strip().splitlines()[-1])
-    except Exception:
-        payload = {"status": "check_failed"}
+def _last_json_line(out: str):
+    """The last line that is a complete JSON object. The phase-21 parser took the very last line
+    of an INDENTED document (always '}') and so reported check_failed on every reachable run from
+    2026-07-04 until phase 50."""
+    for line in reversed((out or "").strip().splitlines()):
+        line = line.strip()
+        if line.startswith("{") and line.endswith("}"):
+            try:
+                return json.loads(line)
+            except ValueError:
+                continue
+    return None
+
+
+def stage_stig_check(_runner=None) -> dict:
+    """Three-signal STIG currency (DISA library quarter, NIST NCP, trackr). Offline-safe:
+    every failed signal carries its reason; check_failed only when all three fail."""
+    rc, out = (_runner or _run)([sys.executable, str(ROOT / "tools" / "stig_harvest.py"), "--check", "--json"])
+    payload = _last_json_line(out)
+    if payload is None:
+        payload = {"status": "check_failed",
+                   "basis": [f"unparseable stig_harvest output (rc={rc}): {(out or '')[-160:]!r}"], "signals": {}}
     status = payload.get("status", "check_failed")
-    if status == "drift":
-        n = (len(payload.get("new_titles", [])) + len(payload.get("changed_titles", []))
-             + len(payload.get("stale_harvested", [])))
-        print(f"[check] stig: DRIFT — {n} signals "
-              f"({len(payload.get('stale_harvested', []))} harvested benchmarks stale; "
-              "run standards_refresh.py --fetch to re-harvest changed titles)")
-    elif status == "current":
-        print("[check] stig: current — no drift vs the live trackr catalog")
-    else:
-        print("[check] stig: check_failed (trackr unreachable)")
-    return {"stig_status": status}
+    signals = {}
+    for name, s in sorted((payload.get("signals") or {}).items()):
+        n = len(s.get("newer") or s.get("stale") or [])
+        signals[name] = {**{k: s[k] for k in _SIG_KEYS if k in s}, "n_newer": n}
+        print(f"[check] stig/{name}: {s.get('status')} {s.get('library') or s.get('reason') or ''}"
+              + (f" — {n} benchmark(s) newer" if n else ""))
+    print(f"[check] stig: {status.upper()} (basis: {', '.join(payload.get('basis') or []) or '-'})"
+          + (" — re-harvest: stig_harvest.py --full --retain-absent (library) or --refresh-stale" if status == "drift" else ""))
+    return {"stig_status": status, "stig_signals": signals}
 
 
 def stage_cci_check() -> dict:
@@ -151,6 +166,23 @@ def stage_horizon() -> dict:
         print(f"[check] horizon: nothing elapsed/overdue/due ({draft} draft-observed on the horizon)")
     return {"horizon_overdue": overdue, "horizon_due_review": due_review,
             "horizon_elapsed_open": elapsed}
+
+
+def _collect_ledgers(ledger_dir: Path | None = None) -> dict:
+    """Sum the per-tool fetch ledgers this run wrote (each monitor runs in its own process)."""
+    merged = {}
+    d = ledger_dir or LEDGER_DIR
+    for f in (sorted(d.glob("*.json")) if d.exists() else []):
+        try:
+            data = json.loads(f.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        for host, v in data.items():
+            m = merged.setdefault(host, {"requests": 0, "refused": 0, "reasons": []})
+            m["requests"] += int(v.get("requests", 0))
+            m["refused"] += int(v.get("refused", 0))
+            m["reasons"] = sorted(set(m["reasons"]) | set(v.get("reasons", [])))
+    return merged
 
 
 GITHUB_LATEST = "https://api.github.com/repos/{repo}/releases/latest"
@@ -263,62 +295,90 @@ def selftest_release_check() -> int:
     return 1 if bad else 0
 
 
+def selftest_stig_check() -> int:
+    """Prove the STIG verdict cannot go blind again: the parser and the three-signal classifier."""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import stig_harvest
+    one_line = json.dumps({"status": "drift", "basis": ["library", "ncp"], "signals": {
+        "library": {"status": "newer", "library": "U_SRG-STIG_Library_October_2026"},
+        "ncp": {"status": "newer", "newer": [{"benchmark_id": "X"}]},
+        "trackr": {"status": "failed", "reason": "URLError"}}})
+    parse_cases = [
+        ("phase-50 one-line drift", "[warn] noise\n" + one_line + "\n", "drift"),
+        ("legacy trackr-down line", '[check] trackr unreachable (URLError: x)\n{"status": "check_failed"}\n', "check_failed"),
+        ("legacy INDENTED drift (the July-November blind spot)", '{\n "changed_titles": [],\n "status": "drift"\n}', "check_failed"),
+        ("traceback", "Traceback (most recent call last):\n  boom\n", "check_failed"),
+    ]
+    bad = 0
+    for label, out, want in parse_cases:
+        got = stage_stig_check(_runner=lambda argv, out=out: (0, out))["stig_status"]
+        bad += got != want
+        print(f"  [{'ok' if got == want else 'FAIL'}] parse: {label} -> {got}")
+    m = {"status": "newer"}
+    sig_cases = [
+        ("all three newer", {"library": m, "ncp": m, "trackr": m}, "drift"),
+        ("trackr down, DISA+NCP newer", {"library": m, "ncp": m, "trackr": {"status": "failed", "reason": "URLError"}}, "drift"),
+        ("all same", {k: {"status": "same"} for k in ("library", "ncp", "trackr")}, "current"),
+        ("all down", {k: {"status": "failed", "reason": "timeout"} for k in ("library", "ncp", "trackr")}, "check_failed"),
+    ]
+    for label, sig, want in sig_cases:
+        got = stig_harvest.classify_signals(sig)[0]
+        bad += got != want
+        print(f"  [{'ok' if got == want else 'FAIL'}] classify: {label} -> {got}")
+    print(f"[selftest] stig-check: {len(parse_cases) + len(sig_cases) - bad}/{len(parse_cases) + len(sig_cases)} passed")
+    return 1 if bad else 0
+
+
 def stage_check() -> dict:
-    """Run the monitors, then classify every registry feed. Feeds with
-    check_strategy=github_release get a LIVE version comparison; every other
-    row is explicitly labeled stored_status_only so the report never again
-    reads a stored status as a live verdict (phase 45, defect T1)."""
+    """Run the monitors, then classify every registry feed. github_release feeds get a LIVE
+    comparison (against github_tag_pin when set); every other row is labeled stored_status_only.
+    The report carries the STIG signals and the per-host fetch ledger of the whole run."""
+    if LEDGER_DIR.exists():
+        for f in LEDGER_DIR.glob("*.json"):
+            f.unlink()
     monitor_rc, monitor_out = _run([sys.executable, str(ENGINE / "framework_monitor.py"), "--dry-run"])
     ann_rc, ann_out = _run([sys.executable, str(ENGINE / "announcement_monitor.py"), "--dry-run"])
     stig_signal = stage_stig_check()
     cci_signal = stage_cci_check()
     horizon_signal = stage_horizon()
-
     reg = json.loads(REGISTRY.read_text(encoding="utf-8"))
-    feeds = reg["feeds"]
     rows = []
-    for fid, e in sorted(feeds.items()):
+    for fid, e in sorted(reg["feeds"].items()):
         if not isinstance(e, dict):
             continue
         status = e.get("artifact_status", "metadata_only")
         cls, reason, signal = status, None, "stored_status_only"
         if e.get("check_strategy") == "github_release" and e.get("github_repo"):
             signal = "github_release_api"
-            tag, err = _latest_release_tag(e["github_repo"])
-            cls, reason = _classify_release_feed(e.get("current_version", ""), tag, err)
+            tag, note = _latest_release_tag(e["github_repo"])
+            cls, reason = _classify_release_feed(e.get("current_version", ""), tag, note, e.get("github_tag_pin"))
         elif status == "current" and e.get("auto_fetch") and monitor_rc != 0:
             cls = "check_failed"
-        rows.append({
-            "framework_id": fid,
-            "current_version": e.get("current_version"),
-            "artifact_status": status,
-            "auto_fetch": bool(e.get("auto_fetch")),
-            "last_changed": e.get("last_changed"),
-            "last_verified": e.get("last_verified"),
-            "classification": cls,
-            "signal": signal,
-            "reason": reason,
-        })
-    report = {
-        "generated_at": _now(),
-        "monitor_exit": monitor_rc,
-        "announcements_exit": ann_rc,
-        "stig_status": stig_signal.get("stig_status"),
-        "cci_status": cci_signal.get("cci_status"),
-        "horizon_overdue": horizon_signal.get("horizon_overdue"),
-        "feeds": rows,
-        "summary": {},
-    }
+        rows.append({"framework_id": fid, "current_version": e.get("current_version"),
+                     "artifact_status": status, "auto_fetch": bool(e.get("auto_fetch")),
+                     "last_changed": e.get("last_changed"), "last_verified": e.get("last_verified"),
+                     "classification": cls, "signal": signal, "reason": reason})
+    sys.path.insert(0, str(ENGINE))
+    import fetchkit
+    LEDGER_DIR.mkdir(parents=True, exist_ok=True)
+    fetchkit.save_ledger("standards_refresh")
+    ledger = _collect_ledgers()
+    report = {"generated_at": _now(), "monitor_exit": monitor_rc, "announcements_exit": ann_rc,
+              "stig_status": stig_signal.get("stig_status"), "stig_signals": stig_signal.get("stig_signals"),
+              "cci_status": cci_signal.get("cci_status"), "horizon_overdue": horizon_signal.get("horizon_overdue"),
+              "fetch_ledger": ledger, "policy_refusals": sum(v["refused"] for v in ledger.values()),
+              "feeds": rows, "summary": {}}
     for r in rows:
         report["summary"][r["classification"]] = report["summary"].get(r["classification"], 0) + 1
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(f"[check] monitor rc={monitor_rc} announcements rc={ann_rc}")
     print(f"[check] {len(rows)} feeds -> {report['summary']}")
-    stale = [r for r in rows if r["classification"] == "registry_stale"]
-    for r in stale:
-        print(f"[check] REGISTRY STALE {r['framework_id']}: {r['reason']} — "
-              "re-verify at origin and update the feed via registry_io")
+    print(f"[check] fetch: {sum(v['requests'] for v in ledger.values())} requests to {len(ledger)} hosts, "
+          f"{report['policy_refusals']} refused by host rules")
+    for r in rows:
+        if r["classification"] == "registry_stale":
+            print(f"[check] REGISTRY STALE {r['framework_id']}: {r['reason']} — re-verify at origin and update via registry_io")
     print(f"[check] report: {REPORT.relative_to(ROOT)}")
     return report
 
@@ -412,9 +472,16 @@ def main() -> int:
     ap.add_argument("--gate", action="store_true", help="rebuild grc.db + run gate battery")
     ap.add_argument("--selftest-release-check", action="store_true",
                     help="prove the github_release classifier fails red/closed (fixtures)")
+    ap.add_argument("--selftest-stig-check", action="store_true",
+                    help="prove the STIG verdict parser + three-signal classifier (fixtures)")
     args = ap.parse_args()
-    if args.selftest_release_check:
-        return selftest_release_check()
+    if args.selftest_release_check or args.selftest_stig_check:
+        rc = 0
+        if args.selftest_release_check:
+            rc |= selftest_release_check()
+        if args.selftest_stig_check:
+            rc |= selftest_stig_check()
+        return rc
     if not (args.check or args.fetch or args.gate):
         ap.error("choose at least one of --check / --fetch / --gate")
 

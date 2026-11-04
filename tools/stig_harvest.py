@@ -68,6 +68,11 @@ _MONTHS = {m: i + 1 for i, m in enumerate(
     ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))}
 _TRACKR_RATE_S = 0.35  # ~3 requests/second
+_QUARTERS = ("January", "April", "July", "October")
+NCP_META = "https://ncp.nist.gov/feeds/xml/ncp/checklist-0.1-feed.meta"
+NCP_GZ = "https://ncp.nist.gov/feeds/xml/ncp/checklist-0.1-feed.xml.gz"
+DISA_ORG = "Defense Information Systems Agency"
+_ZIP_VR = re.compile(r"_V(\d+)R(\d+)(?=[_.])")
 _LIVE_MEMO: dict = {}
 
 
@@ -231,6 +236,15 @@ def fetch_registry() -> dict:
                            "sev": latest.get("sev") or {}}
     _LIVE_MEMO["v"] = registry
     return registry
+
+
+def _zip_key(name: str) -> str:
+    return _ZIP_VR.sub("_V#R#", name or "")
+
+
+def _vr(name: str):
+    m = _ZIP_VR.search(name or "")
+    return (int(m.group(1)), int(m.group(2))) if m else None
 
 
 # ── XCCDF distillation ───────────────────────────────────────────────────────
@@ -424,6 +438,144 @@ def compute_drift(live: dict, committed_cat: dict) -> dict:
             "mirror_lag": mirror_lag}
 
 
+def library_signal(pinned: str | None) -> dict:
+    """Is a DISA quarterly compilation newer than the pinned one published? HEAD the following
+    quarters newest-first; an unpublished quarter is a clean 404 (measured: January 2027 -> 404,
+    10 bytes). The complete signal: every benchmark ships in the compilation."""
+    m = re.fullmatch(r"U_SRG-STIG_Library_(January|April|July|October)_(\d{4})", pinned or "")
+    if not m:
+        return {"status": "failed", "reason": f"unparseable library pin {pinned!r}"}
+    y, q = int(m.group(2)), _QUARTERS.index(m.group(1))
+    later = []
+    for _ in range(4):
+        q += 1
+        if q == 4:
+            q, y = 0, y + 1
+        later.append((y, q))
+    errors = []
+    for y, q in reversed(later):
+        name = f"U_SRG-STIG_Library_{_QUARTERS[q]}_{y}"
+        try:
+            st, h, _ = _get(COMPILATION_URL_PATTERN.format(month=_QUARTERS[q], year=y), "HEAD", 30)
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                continue
+            errors.append(f"{name}: HTTP {e.code}")
+            continue
+        except Exception as e:  # noqa: BLE001 — classify, never crash the report
+            errors.append(f"{name}: {type(e).__name__}")
+            continue
+        if st == 200 and "html" not in h.get("content-type", ""):
+            return {"status": "newer", "library": name, "bytes": h.get("content-length"),
+                    "last_modified": h.get("last-modified")}
+    if errors:
+        return {"status": "failed", "reason": "; ".join(errors)}
+    return {"status": "same", "library": pinned}
+
+
+def ncp_index(raw: bytes):
+    """({zip_key: {zip, href, sha256}} for DISA FINAL per-title XCCDF zips, feed facts)."""
+    root = ET.fromstring(raw)
+    idx, rows = {}, []
+    for e in root:
+        first = {}
+        for x in e.iter():
+            first.setdefault(_local(x.tag), (x.text or "").strip())
+        rows.append((e.get("ncp-checklist-id") or "", first.get("version", ""),
+                     first.get("review-status", ""), first.get("last-modified-datetime", "")))
+        orgs = [x.get("name") for x in e.iter() if _local(x.tag) == "organization"]
+        if not orgs or orgs[0] != DISA_ORG or first.get("review-status") != "FINAL":
+            continue
+        for r in (x for x in e.iter() if _local(x.tag) == "resource"):
+            kids = {_local(c.tag): c for c in r}
+            ref = kids.get("reference")
+            href = (ref.get("href") if ref is not None else "") or ""
+            typ = (kids["type"].text if "type" in kids else "") or ""
+            sha = ((kids["sha-256"].text if "sha-256" in kids else "") or "").strip().lower()
+            zname = href.rsplit("/", 1)[-1]
+            if "XCCDF" in typ and "dl.dod.cyber.mil" in href and _ZIP_VR.search(zname) and sha:
+                idx[_zip_key(zname)] = {"zip": zname, "href": href, "sha256": sha}
+    rows.sort()
+    facts = {"entries": len(rows),
+             "entry_digest": hashlib.sha256("\n".join("|".join(r) for r in rows).encode()).hexdigest()[:16],
+             "newest_modified": max((r[3] for r in rows), default="")}
+    return idx, facts
+
+
+def ncp_signal(benchmarks: dict, last_sha: str | None = None) -> dict:
+    """NIST NCP checklist feed, under NCP's published rule: read the .meta first; download the
+    feed only when its sha256 differs from the last import; verify the download against it."""
+    try:
+        _, _, meta_b = _get(NCP_META, "GET", 30)
+    except Exception as e:  # noqa: BLE001
+        return {"status": "failed", "reason": f"meta: {type(e).__name__} {getattr(e, 'code', '')}".strip()}
+    meta = dict(ln.split(":", 1) for ln in meta_b.decode("utf-8", "replace").splitlines() if ":" in ln)
+    sha = meta.get("sha256", "").strip().lower()
+    if not sha:
+        return {"status": "failed", "reason": ".meta carries no sha256"}
+    if last_sha and sha == last_sha.lower():
+        return {"status": "same", "feed_sha256": sha, "reason": "feed unchanged since last import (.meta sha256)"}
+    try:
+        _, _, gz = _get(NCP_GZ, "GET", 120)
+    except Exception as e:  # noqa: BLE001
+        return {"status": "failed", "reason": f"feed: {type(e).__name__} {getattr(e, 'code', '')}".strip()}
+    raw = gzip.decompress(gz) if gz[:2] == b"\x1f\x8b" else gz
+    if hashlib.sha256(raw).hexdigest() != sha:
+        return {"status": "failed", "reason": "feed sha256 does not match its .meta - refused"}
+    try:
+        idx, facts = ncp_index(raw)
+    except ET.ParseError as e:
+        return {"status": "failed", "reason": f"feed XML: {e}"}
+    newer, joined = [], 0
+    for bid, b in sorted(benchmarks.items()):
+        if b.get("lifecycle", "current") != "current":
+            continue
+        hit = idx.get(_zip_key(b.get("source_zip") or ""))
+        if not hit:
+            continue
+        joined += 1
+        if (_vr(hit["zip"]) or (0, 0)) > (_vr(b.get("source_zip")) or (0, 0)):
+            newer.append({"benchmark_id": bid, "harvested": b.get("source_zip"),
+                          "ncp_zip": hit["zip"], "href": hit["href"], "sha256": hit["sha256"]})
+    return {"status": "newer" if newer else "same", "feed_sha256": sha, "joined": joined,
+            "newer": newer, **facts}
+
+
+def trackr_signal(cat: dict, benchmarks: dict) -> dict:
+    """cyber.trackr.live mirror (corroboration). Benchmarks kept after leaving DISA's library are
+    excluded from 'stale': trackr keeps sunset titles listed (e.g. RHEL 8)."""
+    try:
+        live = fetch_registry()
+    except Exception as e:  # noqa: BLE001
+        return {"status": "failed", "reason": f"{type(e).__name__} {getattr(e, 'code', '')}".strip()}
+    d = compute_drift(live, cat)
+    retained = {bid for bid, b in benchmarks.items() if b.get("lifecycle", "current") != "current"}
+    stale = [s for s in d["stale_harvested"] if s["benchmark_id"] not in retained]
+    return {"status": "newer" if stale else "same", "stale": stale,
+            "retained_behind": len(d["stale_harvested"]) - len(stale),
+            "new_titles": len(d["new_titles"]), "changed_titles": len(d["changed_titles"]),
+            "mirror_lag": len(d["mirror_lag"])}
+
+
+def classify_signals(sig: dict) -> tuple:
+    """drift if ANY signal sees a newer release; current if at least one signal saw the same;
+    check_failed only when every signal failed — each with its reason."""
+    newer = sorted(k for k, v in sig.items() if v.get("status") == "newer")
+    seen = sorted(k for k, v in sig.items() if v.get("status") in ("newer", "same"))
+    if newer:
+        return "drift", newer
+    if seen:
+        return "current", seen
+    return "check_failed", sorted(f"{k}:{v.get('reason')}" for k, v in sig.items())
+
+
+def collect_signals(cat: dict, benchmarks: dict) -> dict:
+    meta = cat.get("_meta", {})
+    return {"library": library_signal(meta.get("library")),
+            "ncp": ncp_signal(benchmarks, meta.get("ncp_feed_sha256")),
+            "trackr": trackr_signal(cat, benchmarks)}
+
+
 # ── modes ────────────────────────────────────────────────────────────────────
 
 def _meta(source: str, extra: dict | None = None) -> dict:
@@ -483,39 +635,22 @@ def mode_full(args) -> int:
 
 def mode_check(args) -> int:
     if not CATALOG_PATH.exists():
-        print("[check] no committed stig_catalog.json — run --full first")
+        print(json.dumps({"status": "check_failed", "basis": ["no committed stig_catalog.json"]})
+              if args.json else "[check] no committed stig_catalog.json — run --full first")
         return 0
-    cat = read_catalog()
-    try:
-        live = fetch_registry()
-    except Exception as e:  # offline-safe: the report is the deliverable
-        print(f"[check] trackr unreachable ({type(e).__name__}: {e}) — check_failed")
-        if args.json:
-            print(json.dumps({"status": "check_failed"}))
+    cat, bm = read_catalog(), read_map()["benchmarks"]
+    sig = collect_signals(cat, bm)
+    status, basis = classify_signals(sig)
+    if args.json:   # ONE line — standards_refresh parses the last JSON line
+        print(json.dumps({"status": status, "basis": basis, "signals": sig}, sort_keys=True))
         return 0
-    drift = compute_drift(live, cat)
-    n = sum(len(v) for k, v in drift.items() if k != "mirror_lag")
-    if args.json:
-        print(json.dumps({"status": "drift" if n else "current", **drift},
-                         indent=1, sort_keys=True))
-    else:
-        print(f"[check] registry {len(cat.get('registry', {}))} committed vs {len(live)} live; "
-              f"harvested {len(cat.get('harvested', {}))}")
-        for kind in ("new_titles", "removed_titles"):
-            for t in drift[kind][:20]:
-                print(f"  {kind[:-7]}: {t}")
-            if len(drift[kind]) > 20:
-                print(f"  … +{len(drift[kind]) - 20} more {kind}")
-        for c in drift["changed_titles"][:40]:
-            print(f"  changed: {c['title']}  {c['registry']} -> {c['live']}")
-        if len(drift["changed_titles"]) > 40:
-            print(f"  … +{len(drift['changed_titles']) - 40} more changed")
-        for s in drift["stale_harvested"][:40]:
-            print(f"  stale-harvest: {s['benchmark_id']}  {s['harvested']} -> {s['live']}")
-        if drift["mirror_lag"]:
-            print(f"  (mirror lag: {len(drift['mirror_lag'])} harvested benchmarks are "
-                  "NEWER than the trackr mirror — informational, DISA is primary)")
-        print(f"[check] {'CURRENT — no drift' if n == 0 else f'{n} drift signals'}")
+    print(f"[check] STIG currency: {status.upper()} (basis: {', '.join(basis)})")
+    for name, s in sorted(sig.items()):
+        items = s.get("newer") or s.get("stale") or []
+        print(f"  {name:7} {s['status']:7} {s.get('reason') or s.get('library') or ''}"
+              + (f" ({len(items)} newer)" if items else ""))
+        for x in items[:15]:
+            print(f"      {x['benchmark_id']}: {x.get('harvested')} -> {x.get('ncp_zip') or x.get('live')}")
     return 0
 
 
@@ -739,4 +874,8 @@ def main(argv=None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    finally:
+        _fk().save_state()
+        _fk().save_ledger("stig_harvest")  # per-host requests/refusals for the drift report

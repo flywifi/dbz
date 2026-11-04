@@ -72,16 +72,27 @@ jobs:
             if (!fs.existsSync(path)) return;
             const report = JSON.parse(fs.readFileSync(path, 'utf8'));
             const summary = report.summary || {};
-            const drifted = (summary.registry_stale || 0) + (summary.artifact_stale || 0) + (summary.check_failed || 0);
+            const bad = (s) => s === 'drift' || s === 'check_failed';
+            const dedicated = [['stig', report.stig_status], ['cci', report.cci_status]];
+            const refusals = report.policy_refusals || 0;
+            const drifted = (summary.registry_stale || 0) + (summary.artifact_stale || 0) + (summary.check_failed || 0)
+              + dedicated.filter(([, s]) => bad(s)).length + (refusals > 0 ? 1 : 0);
             if (drifted === 0) { core.info('no drift — no issue'); return; }
             const title = 'standards drift report';
+            const sig = ['| dedicated check | status | detail |', '|---|---|---|'];
+            for (const [name, s] of dedicated) sig.push(`| ${name} | ${s || 'n/a'} | |`);
+            for (const [name, s] of Object.entries(report.stig_signals || {})) {
+              const detail = [s.library, s.reason, s.n_newer ? `${s.n_newer} newer` : ''].filter(Boolean).join(' — ');
+              sig.push(`| stig/${name} | ${s.status} | ${detail} |`);
+            }
+            if (refusals) sig.push(`| fetch policy | ${refusals} refused | per-host reasons in fetch_ledger (artifact) |`);
             const lines = ['| framework | version | status | last_verified |', '|---|---|---|---|'];
             for (const f of report.feeds) {
-              if (['registry_stale','artifact_stale','check_failed'].includes(f.classification)) {
+              if (['registry_stale', 'artifact_stale', 'check_failed'].includes(f.classification)) {
                 lines.push(`| ${f.framework_id} | ${f.current_version} | ${f.classification} | ${f.last_verified} |`);
               }
             }
-            const body = `Generated ${report.generated_at}\n\n${lines.join('\n')}\n\nFull report in the workflow artifact. Runbook: docs/standards-refresh-runbook.md`;
+            const body = `Generated ${report.generated_at}\n\n${sig.join('\n')}\n\n${lines.join('\n')}\n\nFull report in the workflow artifact. Runbook: docs/standards-refresh-runbook.md`;
             const issues = await github.rest.issues.listForRepo({owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'standards-drift'});
             if (issues.data.length) {
               await github.rest.issues.update({owner: context.repo.owner, repo: context.repo.repo, issue_number: issues.data[0].number, body});
