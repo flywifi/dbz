@@ -30,6 +30,9 @@ jobs:
       - name: Fetch-layer unit tests (offline; host usage rules, RFC 9309 robots)
         run: python3 cross-mapping/tests/test_fetchkit.py
 
+      - name: Fetch census — monthly request plan within every host's recorded rule (offline)
+        run: python3 tools/fetch_census.py --check
+
       - name: Health audit — scan (reference integrity + layout)
         run: python3 tools/health_audit.py --scan
 

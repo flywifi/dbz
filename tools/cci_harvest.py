@@ -29,7 +29,6 @@ import hashlib
 import io
 import json
 import sys
-import time
 import urllib.request
 from pathlib import Path
 
@@ -44,13 +43,16 @@ TOOL_VERSION = "1.0.0"
 ACASEHS_RAW = "https://raw.githubusercontent.com/acasehs/STIG-Control-CCI/main/{f}.json"
 TRACKR_ENUM = "https://cyber.trackr.live/api/cci"
 TRACKR_ONE = "https://cyber.trackr.live/api/cci/{cci}"
-_RATE_S = 0.3
 
 
 def _http(url: str, timeout: int = 120) -> bytes:
-    req = urllib.request.Request(url, headers={"User-Agent": "dbz-cci-harvest/" + TOOL_VERSION})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read()
+    eng = str(ROOT / "cross-mapping" / "engine")
+    if eng not in sys.path:
+        sys.path.insert(0, eng)
+    import fetchkit
+    req = urllib.request.Request(url, headers={"User-Agent": fetchkit.USER_AGENT})
+    with fetchkit.polite_urlopen(req, timeout=timeout) as r:
+        return fetchkit.read_body(r)
 
 
 def _meta(source: str, extra: dict | None = None) -> dict:
@@ -115,11 +117,15 @@ def mode_trackr(args) -> int:
     if args.enrich:
         ids = sorted(enum)
         todo = [c for c in ids if c not in enriched] if args.resume else ids
-        print(f"[trackr] enriching {len(todo)} CCIs (rmf/ap/family), rate {1/_RATE_S:.1f}/s …")
+        print(f"[trackr] enriching {len(todo)} CCIs (rmf/ap/family), paced and capped per run by "
+              "canonical-sources/host_policies.json (cyber.trackr.live) …")
         for i, cci in enumerate(todo, 1):
             try:
                 d = json.loads(_http(TRACKR_ONE.format(cci=cci), timeout=45).decode("utf-8"))
             except Exception as e:
+                if type(e).__name__ == "PolicyRefused":  # trackr's per-run cap: stop, never hammer
+                    print(f"[trackr]   stopped at {cci}: {e} — rerun with --resume to continue")
+                    break
                 print(f"[trackr]   {cci}: {type(e).__name__} — skipped")
                 continue
             enriched[cci] = {"rmf": (d.get("rmf") or "").strip(),
@@ -128,7 +134,6 @@ def mode_trackr(args) -> int:
             if i % 250 == 0:
                 _write_trackr(enum_count, enriched, _cci_xml_version() or "")
                 print(f"[trackr]   … checkpoint {i}/{len(todo)} ({len(enriched)} total)")
-            time.sleep(_RATE_S)
     _write_trackr(enum_count, enriched, _cci_xml_version() or "")
     print(f"[trackr] wrote {TRACKR_PATH.relative_to(ROOT)} "
           f"(enum {enum_count}, enriched {len(enriched)})")

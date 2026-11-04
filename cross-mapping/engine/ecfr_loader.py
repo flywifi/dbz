@@ -40,6 +40,7 @@ from pathlib import Path
 from typing import Optional
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+import gzip as _gzip
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -191,14 +192,16 @@ KNOWN_CFR_PARTS: dict[tuple[int, int | str], dict] = {
 # ---------------------------------------------------------------------------
 
 def _build_request(url: str, accept: str = "*/*") -> Request:
-    """Build a Request with identifying headers. Proxy is picked up from env."""
-    return Request(
-        url,
-        headers={
-            "User-Agent": USER_AGENT,
-            "Accept": accept,
-        },
-    )
+    """Identifying headers + Accept-Encoding: gzip. eCFR API documentation for the full-XML
+    endpoint: 'Requests must include Accept-Encoding that permits compression.' (host_policies.json)"""
+    return Request(url, headers={"User-Agent": USER_AGENT, "Accept": accept, "Accept-Encoding": "gzip"})
+
+
+def _decode(resp) -> bytes:
+    body = resp.read()
+    if (resp.headers.get("Content-Encoding") or "").lower() == "gzip" or body[:2] == b"\x1f\x8b":
+        body = _gzip.decompress(body)
+    return body
 
 
 def _fetch_with_retry(url: str, accept: str = "*/*") -> Optional[bytes]:
@@ -211,7 +214,7 @@ def _fetch_with_retry(url: str, accept: str = "*/*") -> Optional[bytes]:
         try:
             req = _build_request(url, accept)
             with urlopen(req, timeout=TIMEOUT) as resp:
-                return resp.read()
+                return _decode(resp)
         except HTTPError as exc:
             if exc.code in (429, 503):
                 wait = BACKOFF_BASE ** attempt

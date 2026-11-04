@@ -68,6 +68,7 @@ _MONTHS = {m: i + 1 for i, m in enumerate(
     ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))}
 _TRACKR_RATE_S = 0.35  # ~3 requests/second
+_LIVE_MEMO: dict = {}
 
 
 # ── helpers ──────────────────────────────────────────────────────────────────
@@ -76,10 +77,25 @@ def _local(tag: str) -> str:
     return tag.rsplit("}", 1)[-1]
 
 
+def _fk():
+    eng = str(ROOT / "cross-mapping" / "engine")
+    if eng not in sys.path:
+        sys.path.insert(0, eng)
+    import fetchkit
+    return fetchkit
+
+
+def _get(url: str, method: str = "GET", timeout: int = 90):
+    """(status, lower-cased headers, body) through the governor (host_policies.json rules)."""
+    fk = _fk()
+    req = urllib.request.Request(url, method=method, headers={"User-Agent": fk.USER_AGENT})
+    with fk.polite_urlopen(req, timeout=timeout) as r:
+        return (r.status, {k.lower(): v for k, v in dict(r.headers).items()},
+                fk.read_body(r) if method == "GET" else b"")
+
+
 def _http_json(url: str, timeout: int = 90):
-    req = urllib.request.Request(url, headers={"User-Agent": "dbz-stig-harvest/" + TOOL_VERSION})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return json.loads(r.read().decode("utf-8"))
+    return json.loads(_get(url, "GET", timeout)[2].decode("utf-8"))
 
 
 def _iso_date(raw: str) -> str:
@@ -194,13 +210,14 @@ def _catalog_from(benchmarks: dict, registry: dict, meta: dict) -> dict:
 # ── trackr registry ──────────────────────────────────────────────────────────
 
 def fetch_registry() -> dict:
-    """Latest entry per title from the trackr STIG catalog (1 API call)."""
+    """Latest entry per title from the trackr STIG catalog (1 API call per process)."""
+    if "v" in _LIVE_MEMO:
+        return _LIVE_MEMO["v"]
     raw = _http_json(f"{TRACKR_BASE}/stig")
     registry = {}
     for title, versions in raw.items():
         if not isinstance(versions, list) or not versions:
             continue
-        # newest first by benchmark date, then numeric version/release
         def _key(v):
             def _num(x):
                 try:
@@ -209,13 +226,10 @@ def fetch_registry() -> dict:
                     return (1, 0.0)
             return (str(v.get("date") or ""), _num(v.get("version")), _num(v.get("release")))
         latest = sorted(versions, key=_key)[-1]
-        registry[title] = {
-            "date": latest.get("date"),
-            "version": str(latest.get("version") or ""),
-            "release": str(latest.get("release") or ""),
-            "n_versions": len(versions),
-            "sev": latest.get("sev") or {},
-        }
+        registry[title] = {"date": latest.get("date"), "version": str(latest.get("version") or ""),
+                           "release": str(latest.get("release") or ""), "n_versions": len(versions),
+                           "sev": latest.get("sev") or {}}
+    _LIVE_MEMO["v"] = registry
     return registry
 
 

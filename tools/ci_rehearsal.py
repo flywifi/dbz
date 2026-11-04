@@ -44,6 +44,7 @@ STEPS = [
     ("drift guard (sync_check)", "python3 tools/sync_check.py"),
     ("ci-status selftest", "python3 tools/ci_status.py --selftest"),
     ("fetch-layer unit tests", "python3 cross-mapping/tests/test_fetchkit.py"),
+    ("fetch census (host rules)", "python3 tools/fetch_census.py --check"),
     ("health audit — scan", "python3 tools/health_audit.py --scan"),
     ("health audit — full", "python3 tools/health_audit.py --full"),
     ("auditor golden self-test", "python3 skills/health-auditor/tests/run_golden.py"),

@@ -154,67 +154,112 @@ def stage_horizon() -> dict:
 
 
 GITHUB_LATEST = "https://api.github.com/repos/{repo}/releases/latest"
+GITHUB_TAGS = "https://api.github.com/repos/{repo}/tags"
 
 
-def _latest_release_tag(repo: str) -> tuple:
-    """(tag, None) from the GitHub releases API, or (None, reason).
-
-    In CI (standards-watch.yml) GITHUB_TOKEN authenticates the call; in a session
-    environment the proxy intercepts api.github.com with a structured 403 — the
-    caller MUST classify that as check_failed, never as current (the ci_status.py
-    error/empty/data discipline). The releases HTML page and releases.atom both
-    403 scripted fetches (measured 2026-09-19), so the API is the one signal."""
-    headers = {"User-Agent": "dbz-standards-refresh/1.0",
-               "Accept": "application/vnd.github+json"}
+def _gh_get(url: str):
+    if str(ENGINE) not in sys.path:
+        sys.path.insert(0, str(ENGINE))
+    import fetchkit
+    headers = {"User-Agent": "dbz-standards-refresh/1.0", "Accept": "application/vnd.github+json"}
     tok = os.environ.get("GITHUB_TOKEN")
     if tok:
         headers["Authorization"] = f"Bearer {tok}"
-    req = urllib.request.Request(GITHUB_LATEST.format(repo=repo), headers=headers)
+    with fetchkit.polite_urlopen(urllib.request.Request(url, headers=headers), timeout=20) as r:
+        return json.loads(r.read().decode("utf-8"))
+
+
+def _latest_release_tag(repo: str) -> tuple:
+    """(tag, note) or (None, reason). Releases first. A 404 there means 'this repository publishes
+    no releases' (9 of 19 November rows), so the tags API is tried before failing. Still fail-closed:
+    no tag from either endpoint -> (None, reason) -> check_failed, never current."""
     try:
-        with urllib.request.urlopen(req, timeout=20) as r:
-            payload = json.loads(r.read().decode("utf-8"))
+        payload = _gh_get(GITHUB_LATEST.format(repo=repo))
         tag = payload.get("tag_name") or payload.get("name")
-        return (tag, None) if tag else (None, "no tag_name in release payload")
+        return (tag, "latest release") if tag else (None, "no tag_name in release payload")
+    except urllib.error.HTTPError as e:
+        if e.code != 404:
+            return None, f"HTTPError:{e.code}"
     except Exception as e:  # noqa: BLE001 — classify, never crash the report
         return None, f"{type(e).__name__}:{getattr(e, 'code', '')}"
+    try:
+        tags = _gh_get(GITHUB_TAGS.format(repo=repo))
+    except Exception as e:  # noqa: BLE001
+        return None, f"releases:404 tags:{type(e).__name__}:{getattr(e, 'code', '')}"
+    if isinstance(tags, list) and tags and tags[0].get("name"):
+        return tags[0]["name"], "no releases; first entry of the tags API"
+    return None, "releases:404 tags:none"
 
 
-def _classify_release_feed(current_version: str, tag, err) -> tuple:
-    """current | registry_stale | check_failed for a github_release feed.
+def _norm_tag(t) -> str:
+    return re.sub(r"(?i)^(scf|v)\s*", "", str(t).strip())
 
-    Boundary-guarded match (the count_truth._patterns_for idiom) so a shorter
-    live tag ('2026.1') can never satisfy a longer pin ('2026.1.1'); a missing
-    tag FAILS CLOSED — the fail-open stored-status default was how SCF 2026.2
-    stayed classified 'current' for ten weeks (phase 45, defect T1)."""
+
+def _classify_release_feed(current_version: str, tag, err, pin=None) -> tuple:
+    """current | registry_stale | check_failed. With github_tag_pin set, ONLY equality with the
+    pin is current (free-text versions like 'v2.0 (2025)' never match a tag like '2024').
+    Without a pin: the boundary-guarded match of phase 45 (a shorter tag never satisfies a longer
+    pin). A missing tag fails CLOSED."""
     if tag is None:
         return "check_failed", err
-    norm = re.sub(r"(?i)^(scf|v)\s*", "", str(tag).strip())
-    if norm and re.search(r"(?<![\d.])" + re.escape(norm) + r"(?![\d.])",
-                          current_version or ""):
+    if pin:
+        if _norm_tag(tag) == _norm_tag(pin):
+            return "current", f"live tag {tag!r} equals github_tag_pin"
+        return "registry_stale", f"live tag {tag!r} != github_tag_pin {pin!r} - verify at the issuer, then re-pin"
+    norm = _norm_tag(tag)
+    if norm and re.search(r"(?<![\d.])" + re.escape(norm) + r"(?![\d.])", current_version or ""):
         return "current", f"release tag {tag!r} matches"
     return "registry_stale", f"live tag {tag!r} not in current_version {current_version!r}"
 
 
 def selftest_release_check() -> int:
-    """Prove the release classifier goes RED on a stale pin and CLOSED on no signal.
-    The first fixture is the real phase-45 incident verbatim: pin 'SCF 2026.1.1'
-    vs live tag '2026.2' (released 2026-07-08), which the stored-status
-    classifier called current for ten weeks."""
+    """The six phase-45 fixtures plus pin and tags-fallback fixtures (fake governor, no network)."""
     cases = [
-        ("SCF 2026.1.1 (2026-04-22)", "2026.2", None, "registry_stale"),
-        ("SCF 2026.1.1 (2026-04-22)", "SCF 2026.1.1", None, "current"),
-        ("SCF 2026.1.1 (2026-04-22)", "SCF 2026.1", None, "registry_stale"),  # boundary guard
-        ("SCF 2026.2 (2026-07-08)", "2026.2", None, "current"),
-        ("v4.1", "v4.1", None, "current"),
-        ("v4.1", None, "HTTPError:403", "check_failed"),  # fail closed, never current
+        ("SCF 2026.1.1 (2026-04-22)", "2026.2", None, None, "registry_stale"),
+        ("SCF 2026.1.1 (2026-04-22)", "SCF 2026.1.1", None, None, "current"),
+        ("SCF 2026.1.1 (2026-04-22)", "SCF 2026.1", None, None, "registry_stale"),
+        ("SCF 2026.2 (2026-07-08)", "2026.2", None, None, "current"),
+        ("v4.1", "v4.1", None, None, "current"),
+        ("v4.1", None, "HTTPError:403", None, "check_failed"),
+        ("v2.0 (2025)", "2024", None, "2024", "current"),            # owasp-llm-top10 shape
+        ("v2.0 (2025)", "2025", None, "2024", "registry_stale"),
+        ("ATT&CK v20.0", "v20.0", None, "20.0", "current"),
     ]
     bad = 0
-    for cv, tag, err, want in cases:
-        got, why = _classify_release_feed(cv, tag, err)
-        ok = got == want
-        bad += 0 if ok else 1
-        print(f"  [{'ok' if ok else 'FAIL'}] cv={cv!r} tag={tag!r} -> {got} ({why})")
-    print(f"[selftest] release-check: {len(cases) - bad}/{len(cases)} passed")
+    for cv, tag, err, pin, want in cases:
+        got, why = _classify_release_feed(cv, tag, err, pin)
+        bad += got != want
+        print(f"  [{'ok' if got == want else 'FAIL'}] cv={cv!r} tag={tag!r} pin={pin!r} -> {got}")
+    import io as _io
+    sys.path.insert(0, str(ENGINE))
+    import fetchkit
+
+    class _R(_io.BytesIO):
+        status = 200
+        headers: dict = {}
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+
+    def opener_for(tags_body):
+        def op(req, timeout):
+            if req.full_url.endswith("/robots.txt") or "/releases/latest" in req.full_url:
+                raise urllib.error.HTTPError(req.full_url, 404, "nf", {}, _io.BytesIO(b""))
+            if tags_body is None:
+                raise urllib.error.HTTPError(req.full_url, 404, "nf", {}, _io.BytesIO(b""))
+            return _R(tags_body)
+        return op
+    saved = fetchkit._GOV
+    for label, body, want in (("404 releases -> tags", b'[{"name": "v1.0"}]', ("v1.0", "current")),
+                              ("404 releases, 404 tags", None, (None, "check_failed"))):
+        fetchkit._GOV = fetchkit.RateGovernor(state_path=None, opener=opener_for(body), sleeper=lambda s: None,
+                                              policies={"_default": {"enforced": {"run_cap": 99, "min_interval_s": 0}}, "hosts": {}})
+        tag, note = _latest_release_tag("o/r")
+        cls = _classify_release_feed("v1.0", tag, note)[0]
+        bad += (tag, cls) != want
+        print(f"  [{'ok' if (tag, cls) == want else 'FAIL'}] {label}: tag={tag!r} ({note}) -> {cls}")
+    fetchkit._GOV = saved
+    total = len(cases) + 2
+    print(f"[selftest] release-check: {total - bad}/{total} passed")
     return 1 if bad else 0
 
 

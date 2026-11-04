@@ -55,6 +55,8 @@ _REPO_ROOT = _HERE.parent.parent
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
+import fetchkit as _fk  # noqa: E402 — one robots policy for the subsystem (RFC 9309)
+
 DEFAULT_REGISTRY = _REPO_ROOT / "canonical-sources" / "feed_registry.json"
 DEFAULT_BASELINE = _REPO_ROOT / "canonical-sources" / "crawl_baselines.json"
 DEFAULT_REPORT = _HERE.parent / "output" / "framework_crawl_report.json"
@@ -138,7 +140,8 @@ class Fetcher:
         self.ua = ua
         self.timeout = timeout
         self.respect_robots = respect_robots
-        self._robots: Dict[str, Optional[urllib.robotparser.RobotFileParser]] = {}
+        # base -> fetchkit.robots_verdict(): "allow_all" | "disallow_all" | RobotFileParser
+        self._robots: Dict[str, object] = {}
 
     def allowed(self, url: str) -> bool:
         if not self.respect_robots:
@@ -147,44 +150,28 @@ class Fetcher:
         base = f"{pr.scheme}://{pr.netloc}"
         if base not in self._robots:
             self._robots[base] = self._load_robots(base)
-        rp = self._robots[base]
-        # rp is None when there is no *valid* robots.txt → standard interpretation: allowed
-        return True if rp is None else rp.can_fetch(self.ua, url)
+        v = self._robots[base]
+        if v == "allow_all":
+            return True
+        if v == "disallow_all":
+            return False
+        return v.can_fetch(_fk.ROBOTS_AGENT, url)
 
-    def _load_robots(self, base: str) -> Optional[urllib.robotparser.RobotFileParser]:
-        """
-        Fetch and parse robots.txt, but only honor it when it is a *real* robots
-        file. Many gov sites (e.g. csrc.nist.gov) serve an HTML soft-404 for
-        /robots.txt; RobotFileParser mis-parses that into "disallow all". We
-        guard against that: if the body isn't plausibly a robots file, treat the
-        site as having no robots.txt (→ allowed), which is the correct reading.
-        """
-        robots_url = base + "/robots.txt"
-        req = urllib.request.Request(robots_url, headers={"User-Agent": self.ua})
+    def _load_robots(self, base: str):
+        """RFC 9309 via fetchkit.robots_verdict. Was: 401/403 -> disallow (would have blocked
+        cisa-kev, whose robots.txt 403s while its data answers 200), unreachable -> allow
+        (contradicts RFC 9309 §2.3.1.4), and stdlib blank-line grouping (drops real Disallows)."""
+        req = urllib.request.Request(base + "/robots.txt", headers={"User-Agent": self.ua})
+        status, body = 0, ""
         try:
             with urllib.request.urlopen(req, timeout=self.timeout) as resp:
-                ctype = resp.headers.get("Content-Type", "").lower()
-                body = resp.read(65536).decode("utf-8", "ignore")
+                status = getattr(resp, "status", 200) or 200
+                body = resp.read(_fk.ROBOTS_MAX_BYTES).decode("utf-8", "ignore")
         except urllib.error.HTTPError as e:
-            # 404/410 → no robots.txt → allowed. 401/403 → be conservative, disallow.
-            if e.code in (401, 403):
-                rp = urllib.robotparser.RobotFileParser()
-                rp.disallow_all = True
-                return rp
-            return None
+            status = e.code
         except Exception:
-            return None  # unreachable → treat as allowed (matches stdlib behavior)
-
-        # Validate it's actually a robots.txt, not an HTML error page
-        low = body.lstrip().lower()
-        looks_html = low.startswith("<!doctype") or low.startswith("<html") or "<head" in low[:200]
-        has_directives = bool(re.search(r"(?im)^\s*(user-agent|disallow|allow|sitemap)\s*:", body))
-        if looks_html or not has_directives:
-            return None  # bogus/empty robots → no restrictions
-
-        rp = urllib.robotparser.RobotFileParser()
-        rp.parse(body.splitlines())
-        return rp
+            status = 0
+        return _fk.robots_verdict(status, body)
 
     def get(self, url: str) -> Tuple[int, bytes, str, dict]:
         """Return (status, body, content_type, headers). status 0 on transport error."""

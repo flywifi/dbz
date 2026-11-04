@@ -25,6 +25,7 @@ from pathlib import Path
 from typing import Optional
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+import fetchkit
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 REGISTRY_PATH = REPO_ROOT / "canonical-sources" / "feed_registry.json"
@@ -33,6 +34,7 @@ LOGS_DIR = REPO_ROOT / "logs"
 
 WINDOW_DAYS_DEFAULT = 180  # standard look-back; pass --days 730 for 2-year historical scans
 TIMEOUT = 20
+_FETCH_MEMO: dict = {}   # url -> bytes | None — one fetch per distinct URL per process (= per run)
 USER_AGENT = "dbz-announcement-monitor/1.0 (GRC cross-mapping research)"
 
 _log = logging.getLogger("announcement_monitor")
@@ -203,16 +205,21 @@ def _is_after(published_at: Optional[str], since: datetime) -> bool:
 
 
 def _fetch_xml(url: str) -> Optional[bytes]:
+    """One governed GET per distinct URL per run. Before phase 50 this was a raw, unpaced urlopen
+    per (feed, url) pair: 172 requests for 94 distinct URLs, 52 of them to www.nist.gov."""
+    if url in _FETCH_MEMO:
+        return _FETCH_MEMO[url]
+    body = None
     try:
-        req = Request(
-            url,
-            headers={
-                "User-Agent": USER_AGENT,
-                "Accept": "application/rss+xml, application/atom+xml, text/xml, */*",
-            },
-        )
-        with urlopen(req, timeout=TIMEOUT) as resp:
-            return resp.read()
+        req = Request(url, headers={
+            "User-Agent": USER_AGENT,
+            "Accept": "application/rss+xml, application/atom+xml, text/xml, */*",
+        })
+        with fetchkit.polite_urlopen(req, timeout=TIMEOUT) as resp:
+            body = fetchkit.read_body(resp)
+    except (fetchkit.PolicyRefused, fetchkit.HostCooldown) as e:
+        _log.warning("fetch policy: %s", e)
+        print(f"  [POLICY] {e}", file=sys.stderr)
     except HTTPError as e:
         _log.warning("HTTP %d %s", e.code, url)
         print(f"  [WARN] HTTP {e.code} {url}", file=sys.stderr)
@@ -222,7 +229,8 @@ def _fetch_xml(url: str) -> Optional[bytes]:
     except Exception as e:
         _log.warning("Fetch error %s: %s", url, e)
         print(f"  [WARN] Error {url}: {e}", file=sys.stderr)
-    return None
+    _FETCH_MEMO[url] = body       # failures are memoized too: never re-hit a failing URL 18x
+    return body
 
 
 def _parse_atom(root: ET.Element, since: datetime) -> list[dict]:

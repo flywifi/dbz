@@ -70,6 +70,7 @@ USER_AGENT = (
 )
 
 TIMEOUT = 15
+_HTTP_MEMO: dict = {}
 
 # Shared politeness layer: per-host pacing + circuit breaker + learned limits.
 # Currency checks are LIVE-only by design — fetchkit's wayback prong is never
@@ -80,35 +81,36 @@ import fetchkit  # sibling module (engine dir already on sys.path)
 # ── HTTP helpers ───────────────────────────────────────────────────────────────
 
 def _http_head(url: str) -> dict:
-    """
-    Send HEAD request to url (paced via fetchkit). Returns metadata dict:
-      {status, etag, last_modified, content_length, error}
-    """
-    try:
-        req = urllib.request.Request(url, method="HEAD",
-                                     headers={"User-Agent": USER_AGENT})
-        with fetchkit.polite_urlopen(req, timeout=TIMEOUT) as resp:
-            return {
-                "status": resp.status,
-                "etag": resp.headers.get("ETag", ""),
-                "last_modified": resp.headers.get("Last-Modified", ""),
-                "content_length": resp.headers.get("Content-Length", ""),
-                "error": None,
-            }
-    except urllib.error.HTTPError as e:
-        return {"status": e.code, "etag": "", "last_modified": "", "content_length": "", "error": str(e)}
-    except Exception as e:
-        return {"status": 0, "etag": "", "last_modified": "", "content_length": "", "error": str(e)}
+    """HEAD url (paced via fetchkit), memoized per run. Returns
+    {status, etag, last_modified, content_length, error}."""
+    key = ("HEAD", url)
+    if key not in _HTTP_MEMO:
+        try:
+            req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": USER_AGENT})
+            with fetchkit.polite_urlopen(req, timeout=TIMEOUT) as resp:
+                _HTTP_MEMO[key] = {"status": resp.status,
+                                   "etag": resp.headers.get("ETag", ""),
+                                   "last_modified": resp.headers.get("Last-Modified", ""),
+                                   "content_length": resp.headers.get("Content-Length", ""),
+                                   "error": None}
+        except urllib.error.HTTPError as e:
+            _HTTP_MEMO[key] = {"status": e.code, "etag": "", "last_modified": "", "content_length": "", "error": str(e)}
+        except Exception as e:   # includes fetchkit.PolicyRefused — its message names the rule
+            _HTTP_MEMO[key] = {"status": 0, "etag": "", "last_modified": "", "content_length": "", "error": str(e)}
+    return dict(_HTTP_MEMO[key])
 
 
 def _http_get_text(url: str, max_bytes: int = 32768) -> Optional[str]:
-    """Fetch up to max_bytes of text from url. Returns None on error."""
-    try:
-        req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-        with fetchkit.polite_urlopen(req, timeout=TIMEOUT) as resp:
-            return resp.read(max_bytes).decode("utf-8", errors="replace")
-    except Exception:
-        return None
+    """Fetch up to max_bytes of text from url, memoized per run. Returns None on error."""
+    key = ("GET", url, max_bytes)
+    if key not in _HTTP_MEMO:
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+            with fetchkit.polite_urlopen(req, timeout=TIMEOUT) as resp:
+                _HTTP_MEMO[key] = resp.read(max_bytes).decode("utf-8", errors="replace")
+        except Exception:
+            _HTTP_MEMO[key] = None
+    return _HTTP_MEMO[key]
 
 
 def _content_fingerprint(url: str) -> str:
