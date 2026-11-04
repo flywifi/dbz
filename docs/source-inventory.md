@@ -501,3 +501,43 @@ A refresh of the four real pins is ordinary `standards_refresh.py` work, not a n
 
 **Not GRC-related, skipped:** `usnistgov/fipy`, `usnistgov/AusteniteCalculator`,
 `usnistgov/open-notebook`, `usnistgov/pyproject2conda`.
+
+## NIST feed directory + National Checklist Program crawl (Phase 49, 2026-11-04)
+
+Two user-supplied seeds crawled recursively: NIST's feed directory
+(`www.nist.gov/coo/nist-rss-feeds`, updated 2026-07-01) and an NCP checklist page
+(`ncp.nist.gov/checklist/953`, the DISA Microsoft Office 365 ProPlus STIG). Every relevance
+figure below was measured against the live feeds with `announcement_monitor`'s own fetch and
+keyword matcher, 180-day window.
+
+**NIST feed directory: 30 feeds listed** (news, events, 24 topics, 4 blogs). Directory feeds
+all have the form `/rss.xml`; the bare `/rss` paths return 404.
+
+| Outcome | Feeds | Evidence |
+|---|---|---|
+| Already in the registry, carrying the signal | Cybersecurity Insights blog, Information Technology topic | 32 and 24 GRC-relevant items of 40 |
+| **Repaired** (dead bare path → `/rss.xml`) | news (nist-ai-rmf), events (nist-sp-800-56a, nist-sp-800-57pt1; events entries given label-derived keywords, since unfiltered they would tag all 24 events) | old paths 404; new paths 200 |
+| Not added: no GRC signal | standards, resilience, energy, manufacturing, electronics, Taking Measure blog (0 relevant items each); health, public safety (1 each) | the directory's "Standards" topic covers measurement standards, not security publications |
+| Not added to other frameworks: signal already covered | all-news (one item in 180 days not already in the IT feed: a CSF small-business guide); advanced communications (O-RAN security reports also land in the IT feed) | items deduplicated by URL against the two registered feeds |
+| Not added to other frameworks: wrong kind | events (webinars and community calls, not publications); Cybersecurity topic (live but empty, 0 items) | — |
+| Not crawled: not GRC | bioscience, buildings and construction, chemistry, environment, fire, forensic science, materials, mathematics, metrology, nanotechnology, neutron research, performance excellence, physics, transportation; Blogrige; Manufacturing Innovation blog | — |
+
+**National Checklist Program: added as feed `nist-ncp`.** The repository and checklist pages
+are a JavaScript app; a scripted fetch gets a 2,250-byte shell whose `Last-Modified` is the app
+build date, so they cannot be monitored. NCP's **data feeds** can: `checklist-0.1-feed.xml.gz`
+(all checklists, 918 entries) and `checklist-0.1-feed-modified.xml.gz` (recent changes), each with
+a `.meta` sidecar (`lastModifiedDate`, sizes, SHA-256 of the uncompressed feed; the downloaded
+feed matched its published SHA-256). The registry polls the `.meta` file. Coverage at crawl:
+DISA 447 checklists, CIS Benchmarks 322, CISA SCuBA 18, NIST macOS Security Compliance Project
+14, USGCB 9; FINAL 512, ARCHIVED 405; 71 modified since 2026-08-01. The data-feeds page also
+lists NIST's CCE v5 configuration-identifier downloads (combined file dated 2025-12-09), recorded
+on the same entry, not as a separate feed.
+
+**Finding — the STIG catalog is behind.** NCP lists DISA STIG versions independently of the
+trackr API that `stig_harvest.py` uses. Of 96 DISA FINAL checklists whose titles match a
+`stig_catalog.json` entry exactly (token-set equality after dropping "STIG"/vendor words; 3
+ambiguous titles excluded), **50 carry a newer version/release in NCP**, 44 agree and 2 are
+older. Example: Office 365 ProPlus is V3R8 in NCP and V3R5 in our catalog (harvested
+2026-07-04). The monthly STIG drift check could not see this because it reported
+`check_failed (trackr unreachable)`. Refreshing the STIG layer is a separate, owed step
+(`standards_refresh.py --fetch` → `stig_harvest.py --refresh-stale`).

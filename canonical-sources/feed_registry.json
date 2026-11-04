@@ -1465,7 +1465,7 @@
           "notes": "NIST Cybersecurity Insights RSS (replaces /news-events/news/rss which returned 404)"
         },
         {
-          "url": "https://www.nist.gov/news-events/news/rss",
+          "url": "https://www.nist.gov/news-events/news/rss.xml",
           "type": "rss",
           "filter_keywords": [
             "AI RMF",
@@ -1473,7 +1473,7 @@
             "AI 600-1",
             "artificial intelligence risk"
           ],
-          "notes": "NIST news — filter for AI RMF and profile publications [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+          "notes": "Repointed 2026-11-04 from the dead bare path (news/rss → /rss.xml; the bare form returns HTTP 404 and NIST's feed directory lists only /rss.xml feeds). Keywords unchanged."
         },
         {
           "url": "https://github.com/usnistgov/AI-RMF/releases.atom",
@@ -4109,8 +4109,13 @@
           "notes": "NIST Cybersecurity Insights blog RSS — repointed 2026-10-19 from the deprecated /news-events/cybersecurity/rss (HTTP 404 from two independent egresses). filter_keywords derived from this feed's label, revision-agnostic."
         },
         {
-          "url": "https://www.nist.gov/news-events/events/rss",
-          "type": "rss"
+          "url": "https://www.nist.gov/news-events/events/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "SP 800-56A",
+            "800-56A"
+          ],
+          "notes": "Repointed 2026-11-04 from the dead bare path (events/rss → /rss.xml; the bare form returns HTTP 404 and NIST's feed directory lists only /rss.xml feeds). filter_keywords derived from this feed's label, revision-agnostic (unfiltered, the events feed would tag all 24 events)."
         },
         {
           "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
@@ -4158,8 +4163,13 @@
           "notes": "NIST Cybersecurity Insights blog RSS — repointed 2026-10-19 from the deprecated /news-events/cybersecurity/rss (HTTP 404 from two independent egresses). filter_keywords derived from this feed's label, revision-agnostic."
         },
         {
-          "url": "https://www.nist.gov/news-events/events/rss",
-          "type": "rss"
+          "url": "https://www.nist.gov/news-events/events/rss.xml",
+          "type": "rss",
+          "filter_keywords": [
+            "SP 800-57",
+            "800-57"
+          ],
+          "notes": "Repointed 2026-11-04 from the dead bare path (events/rss → /rss.xml; the bare form returns HTTP 404 and NIST's feed directory lists only /rss.xml feeds). filter_keywords derived from this feed's label, revision-agnostic (unfiltered, the events feed would tag all 24 events)."
         },
         {
           "url": "https://www.nist.gov/news-events/information%20technology/rss.xml",
@@ -5799,7 +5809,7 @@
         "stig-cci-map",
         "stig-catalog"
       ],
-      "notes": "Every STIG rule cites DISA CCIs (<ident system=cyber.mil/cci>) — the layer where CCIs are applied. Objective is CCI application evidence, not a STIG registry. The quarterly SRG-STIG Library compilation (~380 current benchmarks) is distilled by tools/stig_harvest.py into the two committed artifacts (rule→CCI map + catalog); the multi-hundred-MB zip is fetched at harvest time and never committed. cyber.mil moved to a JS app, so the compilation URL is discovered at run time (month/year pattern) with the trackr API as fallback. Delta detection: standards_refresh.py --check compares the live trackr catalog (1 call) against the committed catalog and re-harvests only changed titles. auto_fetch is false — the bulk pull is operator-triggered via --fetch. Historical/sunset titles stay catalogued (delta-tracked) but rule-harvested on demand via stig_harvest.py --via-trackr.",
+      "notes": "Every STIG rule cites DISA CCIs (<ident system=cyber.mil/cci>) — the layer where CCIs are applied. Objective is CCI application evidence, not a STIG registry. The quarterly SRG-STIG Library compilation (~380 current benchmarks) is distilled by tools/stig_harvest.py into the two committed artifacts (rule→CCI map + catalog); the multi-hundred-MB zip is fetched at harvest time and never committed. cyber.mil moved to a JS app, so the compilation URL is discovered at run time (month/year pattern) with the trackr API as fallback. Delta detection: standards_refresh.py --check compares the live trackr catalog (1 call) against the committed catalog and re-harvests only changed titles. auto_fetch is false — the bulk pull is operator-triggered via --fetch. Historical/sunset titles stay catalogued (delta-tracked) but rule-harvested on demand via stig_harvest.py --via-trackr. Second currency signal (2026-11-04): the NIST NCP checklist data feed (nist-ncp) lists DISA STIG versions independently of trackr; measured then, 50 of 96 exactly title-matched FINAL STIGs were newer in NCP than in stig_catalog.json, while the monthly STIG drift check reported check_failed (trackr unreachable). A refresh-stale harvest is owed.",
       "announcement_feeds": [
         {
           "url": "https://public.cyber.mil/rss",
@@ -6710,6 +6720,43 @@
           ]
         }
       ]
+    },
+    "nist-ncp": {
+      "label": "NIST National Checklist Program (NCP) — checklist repository data feeds",
+      "authority": "NIST",
+      "framework_id": "nist-ncp",
+      "tier": "reference",
+      "current_version": "NCP checklist feed v0.1 (pub_date 2026-11-04; 918 checklists)",
+      "urls": {
+        "landing": "https://ncp.nist.gov/feeds/xml/ncp/checklist-0.1-feed.meta",
+        "full_feed_gz": "https://ncp.nist.gov/feeds/xml/ncp/checklist-0.1-feed.xml.gz",
+        "modified_feed_meta": "https://ncp.nist.gov/feeds/xml/ncp/checklist-0.1-feed-modified.meta",
+        "modified_feed_gz": "https://ncp.nist.gov/feeds/xml/ncp/checklist-0.1-feed-modified.xml.gz",
+        "schema": "https://csrc.nist.gov/schema/nvd/ncp-checklist-feed_0.2.xsd",
+        "data_feeds_page": "https://ncp.nist.gov/data-feeds",
+        "repository": "https://ncp.nist.gov/repository",
+        "checklist_template": "https://ncp.nist.gov/checklist/{ncp_checklist_id}",
+        "cce_combined": "https://csrc.nist.gov/CSRC/media/Projects/national-vulnerability-database/documents/CCE/cce-COMBINED-5.20251209.xlsx"
+      },
+      "check_strategy": "poll_landing",
+      "last_checked": "2026-11-04",
+      "last_changed": "2026-11-04",
+      "draft_status": "none",
+      "public_comment_deadline": null,
+      "source_manifest_keys": [],
+      "crawl_seeds": [
+        "https://ncp.nist.gov/data-feeds"
+      ],
+      "doc_patterns": [
+        ".xml.gz",
+        ".xml.zip",
+        ".meta"
+      ],
+      "version_signal": "Last-Modified of checklist-0.1-feed.meta (the .meta carries lastModifiedDate and the sha256 of the uncompressed feed)",
+      "auto_fetch": false,
+      "artifact_status": "metadata_only",
+      "last_verified": "2026-11-04",
+      "notes": "The U.S. government repository of security configuration checklists (NIST SP 800-70): DISA STIGs, CIS Benchmarks, CISA SCuBA baselines, NIST macOS Security Compliance Project, USGCB. Crawled 2026-11-04 from ncp.nist.gov/checklist/953 (Microsoft Office 365 ProPlus STIG). The repository and checklist PAGES are a JavaScript app: a scripted fetch gets a 2,250-byte shell whose Last-Modified is the app build date (2026-09-16), so polling them would be a vacuous signal. Monitor the DATA FEED instead: the .meta sidecar's Last-Modified moves whenever any checklist changes (NIST updates it about every two hours and asks for under 200 requests a day). Feed at crawl: 918 entries (FINAL 512, ARCHIVED 405, CANDIDATE 1); by authority DISA 447, CIS 322, CISA 18, NIST mSCP 14, USGCB 9; 71 modified since 2026-08-01. The repository UI reports 1,049 matching records; it counts differently, so use the feed. Each entry carries ncp-checklist-id, name, Ver/Rel, authority, resource download links with sha-256, target CPEs and review status. Second STIG-currency signal: of 96 DISA FINAL checklists exactly title-matched to stig_catalog.json (trackr harvest 2026-07-04), 50 carry a newer Ver/Rel in NCP (e.g. Office 365 ProPlus V3R8 vs V3R5), 44 agree, 2 are older — see disa-stig-library. No loader (metadata_only)."
     }
   },
   "check_schedule": {
