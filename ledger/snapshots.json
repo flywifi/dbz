@@ -570,6 +570,14 @@
       "date": "2026-11-05",
       "known_good": true,
       "note": "CI green on 394eae9 at 2026-11-05T00:53:23Z (tools/ci_status.py)."
+    },
+    {
+      "phase": "51-close",
+      "name": "Phase-51 close (weekly keep-current rotation in PR mode, every loader governed, ATT&CK v20 with CTID mappings, KEV 2026.11.04, 0.16.1)",
+      "sha": "866b74b",
+      "date": "2026-11-05",
+      "known_good": true,
+      "note": "CI green on 866b74b at 2026-11-05T02:56:28Z (tools/ci_status.py); 81a0055 (0.16.0) was red (run 41958122419, pandas import in a health test), fixed in 866b74b. Slot crons are provisional: the C8 pin (2026-11-19 or later) may move this anchor."
     }
   ]
 }
