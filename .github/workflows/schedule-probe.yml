@@ -1,0 +1,26 @@
+name: schedule-probe
+# The fired cron goes into the run's title (display_title in the runs API), so a run delayed past the
+# next candidate time is still attributed to its own cron.
+run-name: "probe ${{ github.event.schedule }}"
+
+# Phase 51, temporary (delete at the C8 pin, 2026-11-19): measures GitHub's scheduled-run queue delay
+# at six candidate times so the weekly slots run when GitHub is least busy. No checkout, no network.
+on:
+  schedule:
+    - cron: '41 2 * * *'
+    - cron: '17 6 * * *'
+    - cron: '47 9 * * *'
+    - cron: '43 13 * * *'
+    - cron: '37 17 * * *'
+    - cron: '53 21 * * *'
+
+permissions: {}
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - env:
+          FIRED: ${{ github.event.schedule }}
+        run: echo "fired=$FIRED started=$(date -u +%FT%TZ)"

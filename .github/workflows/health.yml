@@ -46,6 +46,9 @@ jobs:
       - name: Weekly-workflow tests (offline; shipped PR/digest scripts under node, bot commit script, build load)
         run: python3 cross-mapping/tests/test_weekly_workflows.py
 
+      - name: Schedule-delay tests (offline; queue delay per fired cron, pin rule, probe workflow shape)
+        run: python3 cross-mapping/tests/test_schedule_delay.py
+
       - name: STIG retention tests (offline; DISA-dropped benchmarks are kept and flagged)
         run: python3 cross-mapping/tests/test_stig_retention.py
 
