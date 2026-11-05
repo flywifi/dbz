@@ -562,7 +562,7 @@ Investigating that showed the politeness layer was being bypassed, and that the 
 had been blind since July.
 
 **Published usage rules, recorded and enforced.** `canonical-sources/host_policies.json`
-holds 11 hosts. Each records its rule verbatim or "none published", with the check date and
+holds 12 hosts (11 at 0.15.0; github.com added in 0.15.1). Each records its rule verbatim or "none published", with the check date and
 probe. The rules that matter most:
 - **NCP:** read `.meta` first; fewer than 200 requests a day.
 - **NVD:** 5 requests per rolling 30 s.
@@ -664,3 +664,16 @@ GitHub's runners:
 
   These need a different check strategy or a repo repoint, and both need evidence from
   outside this phase's scope.
+
+**A second CI dispatch** (run 41940244303, on the 0.15.1 fixes, green) confirmed the fixes
+from the runners. ISMAP `/csm` was admitted. api.github.com made 28 calls (cap 50) and was
+the busiest host. No host exceeded its cap, and the STIG verdict was still `current`.
+
+Its ledger refused two more things:
+- **16 `github.com/…/releases.atom` URLs: correct.** GitHub's robots `*` group disallows
+  `/*.atom$`, which the stdlib parser could not express. The 18 `announcement_feeds` entries
+  that poll those URLs had therefore broken GitHub's rules every month. They are now refused
+  and never sent, and the release signal comes from the API. Removing or replacing those
+  entries is owed.
+- **One law.lis.virginia.gov statute page: a matcher defect, fixed.** A `Crawl-delay` line
+  did not end the user-agent run, so `GPTBot: Disallow: /` merged into `*`.

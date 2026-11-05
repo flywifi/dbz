@@ -121,6 +121,20 @@ transcripts are summarised in `docs/source-inventory.md` (Phase 50).
        304 instead of 327 with no violation.
      - Why CI never showed it: CI starts with no `.fetch-cache`.
      - Fix: `None` is now stateless, pinned by a planted-breaker test (70 assertions).
+   - **Second dispatch** (run 41940244303, on `0a295f5`, green).
+     - **Holds:** the three fixes. ISMAP `/csm` was admitted (2 requests, 0 refused).
+       api.github.com made 28 calls (cap 50) and was the busiest host. No host exceeded its cap.
+       230 requests in all, and the STIG verdict is still `current`.
+     - **Overturned once more** by its 23 refusals.
+       - 16 refusals on `github.com/…/releases.atom` are **correct**. GitHub's `*` group
+         disallows `/*.atom$`, which the stdlib parser cannot express. So the 18
+         `announcement_feeds` entries had broken GitHub's rules every month until then.
+       - 1 refusal on law.lis.virginia.gov was a **matcher defect**. A `Crawl-delay` line did
+         not end the user-agent run, so `GPTBot: Disallow: /` merged into `*`. Fixed, and
+         pinned by the real file.
+       - The other 6 are the TLS/timeout hosts.
+     - Neither GitHub nor Virginia was in the robots sweep: no file was held for either.
+       Once again only the live ledger saw them.
 
 ## Residual risk
 - **Four hosts' robots files fail TLS or time out**, from the session network and (measured,
@@ -129,6 +143,10 @@ transcripts are summarised in `docs/source-inventory.md` (Phase 50).
   Their feeds fail the same way, so this is unchanged reachability, now named in the ledger.
 - **KEV and ATT&CK artifacts are `artifact_stale`.** `--fetch` and the ATT&CK v20 ingest are
   owed.
+- **18 `announcement_feeds` entries point at URLs GitHub's robots disallows**
+  (`…/releases.atom`, 16 distinct). The governor refuses them, so no request is sent, and the
+  release signal comes through the API. They add 16 refusals to every monthly ledger until
+  they are removed or replaced via `registry_io`.
 - **Seven release rows stay `registry_stale`** for want of an issuer statement:
   - scf 2026.3: the SCF download page still names 2026.2.
   - mitre-atlas v2026.10: atlas.mitre.org states no version.

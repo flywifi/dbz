@@ -149,6 +149,17 @@
         "min_interval_s": 5.0,
         "run_cap": 20
       }
+    },
+    "github.com": {
+      "published_rule": "# If you would like to crawl GitHub contact us via https://support.github.com?tags=dotcom-robots # We also provide an extensive API: https://docs.github.com",
+      "source_url": "https://github.com/robots.txt",
+      "verified": "2026-11-05",
+      "probe": "robots.txt read in full (the session proxy answers github.com with 403, so it was read through Firecrawl); the second CI dispatch (run 41940244303) ledger refused the 16 distinct releases.atom URLs that 18 announcement_feeds entries poll",
+      "robots": "200 text/plain; the User-agent: * group disallows /*.atom$ (repository release feeds), /*/*/tags$, /*/*/commits/, /*/archive/, /*/raw/, /*/tree/ and more. Release currency is read through the documented API (api.github.com), never the .atom feeds",
+      "enforced": {
+        "min_interval_s": 1.5,
+        "run_cap": 25
+      }
     }
   }
 }

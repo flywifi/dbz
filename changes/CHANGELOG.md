@@ -15,7 +15,7 @@ Pass 4 item 5.
   result it refused `www.ismap.go.jp/csm`, the only path ISMAP's robots allows and the
   `japan-ismap` landing since 0.15.0. fetchkit now evaluates robots itself (`RobotsRules`:
   longest match, `*`/`$`, group merging). The crawler uses the same verdict. It is pinned by
-  the real ISMAP file and the RFC's precedence examples (`test_fetchkit.py`, 70 assertions).
+  the real ISMAP file and the RFC's precedence examples (`test_fetchkit.py`, 76 assertions).
   Re-swept over 64 registry and seed URLs on 16 hosts, exactly one verdict changed: that one.
 - **Fixed — GitHub calls counted twice; census undercount.** The monthly path looked up every
   release feed in both `framework_monitor` and `standards_refresh`: 54 GitHub calls, against a
@@ -28,6 +28,16 @@ Pass 4 item 5.
   selftest inherited live breakers after a real run. The tests hit a `www.cisa.gov` cooldown
   (caught by the pre-push rehearsal), and the census quietly counted 304 instead of 327. Now
   `None` means no persisted state, and omitting the argument means the shared file.
+- **Fixed — robots group boundaries** (found by a second dispatch, run 41940244303). A
+  `Crawl-delay` line did not end a run of user-agent lines. So law.lis.virginia.gov's
+  `GPTBot: Disallow: /` merged into its `*` group, and a registered statute page was refused.
+  Now any group record ends the run, pinned by the real file.
+- **Recorded — GitHub disallows its release feeds.** github.com's robots `*` group disallows
+  `/*.atom$`, which the stdlib parser could not express. So the 18 `announcement_feeds`
+  entries polling 16 distinct `…/releases.atom` URLs had broken GitHub's rules every month.
+  Those requests are now refused, never sent. The release signal comes from the documented API.
+  `github.com` is now in `host_policies.json` (12 hosts). Removing or replacing those 18
+  entries is owed.
 - **Corrected:** 0.15.0's "measured plan is 328 requests" understated GitHub use, as above.
 
 ## [0.15.0] — 2026-11-04 (phase 50 — STIGs in the monthly feed, host usage rules enforced)

@@ -1,0 +1,7 @@
+# Allow good bots or apply general rules
+User-agent: *
+Crawl-delay: 10
+
+# Block specific aggressive AI/scrapers completely
+User-agent: GPTBot
+Disallow: /

@@ -98,6 +98,7 @@ the limits the governor enforces. The rules recorded on 2026-11-04 include:
 | services.nvd.nist.gov | 5 per rolling 30 s (50 with an API key) | the same rolling window |
 | api.github.com | 60/h unauthenticated; 1,000/h per repository with `GITHUB_TOKEN` | 50 per run; the monthly workflow passes its token |
 | www.ecfr.gov | the full-XML endpoint requires `Accept-Encoding` | header added automatically; 4 s; robots override for that one documented API path, with both citations |
+| github.com | robots.txt: "If you would like to crawl GitHub contact us … We also provide an extensive API"; `*` group disallows `/*.atom$` | `…/releases.atom` refused (release currency is read through api.github.com); 25 per run |
 | all others | none published | 1.5 s between requests, 25 per run |
 
 How it is enforced:
@@ -112,7 +113,9 @@ How it is enforced:
   merged; failing that, the `*` groups apply. The stdlib parser applies the *first* match, and
   on the first CI dispatch it refused `www.ismap.go.jp/csm`, the one path that file allows
   (`Disallow: /` is listed before `Allow: /csm`). Since 0.15.1 fetchkit evaluates robots
-  itself (`RobotsRules`), pinned by the ISMAP fixture and the RFC's own examples.
+  itself (`RobotsRules`), pinned by the ISMAP fixture and the RFC's own examples. Any group
+  record (`Crawl-delay` included) ends a run of user-agent lines: law.lis.virginia.gov's
+  `GPTBot: Disallow: /` must not merge into its `*` group (fixture-pinned).
 - **Every refusal is recorded.** A broken rule raises `PolicyRefused`. It is written to the
   per-run ledger (`fetch_ledger` / `policy_refusals` in the drift report) and surfaces in the
   drift issue. It is never retried in the same run.

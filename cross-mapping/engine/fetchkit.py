@@ -143,9 +143,13 @@ class RobotsRules:
                     self.groups.append((agents, rules))
                     agents, rules, in_rules = set(), [], False
                 agents.add(val.lower().split("/", 1)[0].strip())
-            elif key in ("allow", "disallow") and agents:
+            elif key != "sitemap" and agents:
+                # Any group record ends the run of user-agent lines, not only allow/disallow:
+                # law.lis.virginia.gov reads "User-agent: * / Crawl-delay: 10 / User-agent: GPTBot
+                # / Disallow: /". Counting only allow/disallow merged GPTBot into '*' and refused
+                # everyone (second CI dispatch, run 41940244303). Sitemap is a global record.
                 in_rules = True
-                if val:                      # an empty Disallow is no rule (allow all)
+                if key in ("allow", "disallow") and val:   # an empty Disallow is no rule
                     rules.append((key == "allow", val))
         if agents:
             self.groups.append((agents, rules))

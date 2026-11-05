@@ -340,6 +340,36 @@ def test_longest_match_wins():
        "the governor admits ISMAP /csm (the registered japan-ismap landing)")
 
 
+def test_group_boundaries_and_wildcards():
+    """Any group record (not only allow/disallow) ends a run of user-agent lines. Real file:
+    law.lis.virginia.gov ('User-agent: * / Crawl-delay: 10 / User-agent: GPTBot / Disallow: /').
+    Counting only allow/disallow merged GPTBot into '*' and refused a registered statute page on
+    the second CI dispatch (run 41940244303). GitHub lines quoted verbatim from github.com/robots.txt
+    (read 2026-11-05): its '*' group disallows '/*.atom$', which the stdlib cannot express."""
+    body = (ROBOTS_FIX / "law.lis.virginia.gov.txt").read_text(encoding="utf-8")
+    v = fetchkit.robots_verdict(200, body)
+    ok(v.can_fetch(fetchkit.ROBOTS_AGENT, "https://law.lis.virginia.gov/vacodefull/toc.aspx?1=59.1-571"),
+       "Virginia: the '*' group (Crawl-delay only) allows the statute page")
+    ok(not v.can_fetch("GPTBot", "https://law.lis.virginia.gov/vacodefull/"),
+       "Virginia: GPTBot keeps its own 'Disallow: /'")
+    g, c = policy_gov()
+    g.policies = {"_default": {"enforced": {"run_cap": 99, "min_interval_s": 0}}, "hosts": {}}
+    t0 = c.t
+    g.wait("law.lis.virginia.gov", "https://law.lis.virginia.gov/vacodefull/toc.aspx?1=59.1-571")
+    g.wait("law.lis.virginia.gov", "https://law.lis.virginia.gov/vacodefull/toc.aspx?1=59.1-571")
+    ok(c.t - t0 >= 10, f"Virginia: Crawl-delay 10 learned from the '*' group ({c.t - t0:.1f}s for 2 requests)")
+    gh = ("# If you would like to crawl GitHub contact us via https://support.github.com?tags=dotcom-robots\n"
+          "# We also provide an extensive API: https://docs.github.com\n"
+          "Sitemap: https://github.com/sitemap_marketing.xml\n\n"
+          "User-agent: baidu\ncrawl-delay: 1\n\n"
+          "User-agent: *\nDisallow: /*.atom$\nDisallow: /*/*/tags$\n")
+    r = fetchkit.robots_verdict(200, gh)
+    ok(not r.can_fetch(fetchkit.ROBOTS_AGENT, "https://github.com/OAI/OpenAPI-Specification/releases.atom"),
+       "GitHub: repository releases.atom is disallowed ('/*.atom$'); release currency uses the API")
+    ok(r.can_fetch(fetchkit.ROBOTS_AGENT, "https://github.com/OAI/OpenAPI-Specification/releases"),
+       "GitHub: the releases page itself is allowed ('$' anchors the .atom rule)")
+
+
 def test_state_path_none_is_stateless():
     """state_path=None means no persisted state. Before 0.15.1 it silently meant the shared
     .fetch-cache file, so after a live run these tests and the census inherited real breakers
@@ -404,7 +434,7 @@ if __name__ == "__main__":
                test_no_wayback_on_success, test_policy_registry_cites_every_rule,
                test_ncp_meta_first_and_run_cap, test_nvd_rolling_window, test_robots_rfc9309,
                test_stdlib_blank_line_grouping_is_neutralised, test_longest_match_wins,
-               test_state_path_none_is_stateless,
+               test_group_boundaries_and_wildcards, test_state_path_none_is_stateless,
                test_required_header_and_no_wayback_after_refusal, test_save_ledger_roundtrip]:
         fn()
     print(f"\nfetchkit tests: {PASS} assertions PASS")
