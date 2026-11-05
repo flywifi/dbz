@@ -39,6 +39,9 @@ jobs:
       - name: ATT&CK loader tests (offline; CTID issuer mappings, honest blanks, parent links)
         run: python3 cross-mapping/tests/test_attack_loader.py
 
+      - name: Weekly-rotation tests (offline; slot by fired cron, volatile-only reverts, per-day census)
+        run: python3 cross-mapping/tests/test_rotation.py
+
       - name: STIG retention tests (offline; DISA-dropped benchmarks are kept and flagged)
         run: python3 cross-mapping/tests/test_stig_retention.py
 

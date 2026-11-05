@@ -670,6 +670,23 @@ def mode_full(args) -> int:
     return 0
 
 
+def mode_auto_library(args, _fetch=None, _full=None) -> int:
+    sig = library_signal(read_catalog().get("_meta", {}).get("library") if CATALOG_PATH.exists() else None)
+    if sig.get("status") != "newer":
+        print(f"[auto-library] nothing to do: library signal {sig.get('status')} ({sig.get('library') or sig.get('reason')})")
+        return 0
+    name = sig["library"]
+    url = COMPILATION_URL_PATTERN.format(month=name.split("_")[-2], year=name.split("_")[-1])
+    dest = ROOT / ".fetch-cache" / "stig" / f"{name}.zip"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    fk = _fk()
+    blob = (_fetch or (lambda u: fk.fetch(u, timeout=1800, retries=2).body))(url)
+    dest.write_bytes(blob)
+    print(f"[auto-library] {name}: {len(blob):,} B sha256 {hashlib.sha256(blob).hexdigest()} -> {dest}")
+    full = argparse.Namespace(from_zip=str(dest), library=name, retain_absent=True, refresh_final=True)
+    return (_full or mode_full)(full)
+
+
 def mode_check(args) -> int:
     if not CATALOG_PATH.exists():
         print(json.dumps({"status": "check_failed", "basis": ["no committed stig_catalog.json"]})
@@ -927,6 +944,8 @@ def build_parser() -> argparse.ArgumentParser:
                     help="--via-trackr: checkpoint every N merged benchmarks")
     ap.add_argument("--retain-absent", action="store_true", dest="retain_absent",
                     help="--full: keep committed benchmarks absent from the new library, flagged")
+    ap.add_argument("--auto-library", action="store_true", dest="auto_library",
+                    help="weekly job: only when a newer DISA library quarter is published, download it and run --full --retain-absent --refresh-final")
     ap.add_argument("--refresh-final", action="store_true", dest="refresh_final",
                     help="--full --retain-absent: fetch DISA's final release for kept benchmarks")
     ap.add_argument("--allow-trackr-crawl", action="store_true", dest="allow_trackr_crawl",
@@ -948,11 +967,11 @@ def main(argv=None) -> int:
         print(f"[policy] OPERATOR OVERRIDE: cyber.trackr.live run_cap = {args.trackr_cap} for this run",
               file=sys.stderr)
     try:
-        for flag, fn in (("full", mode_full), ("delta", mode_delta), ("refresh_stale", mode_refresh_stale),
+        for flag, fn in (("auto_library", mode_auto_library), ("full", mode_full), ("delta", mode_delta), ("refresh_stale", mode_refresh_stale),
                          ("via_trackr", mode_via_trackr), ("check", mode_check), ("catalog", mode_catalog)):
             if getattr(args, flag):
                 return fn(args)
-        build_parser().error("choose one of --catalog / --full / --check / --delta / --refresh-stale / --via-trackr")
+        build_parser().error("choose one of --catalog / --full / --check / --delta / --refresh-stale / --via-trackr / --auto-library")
         return 2
     finally:
         fk.save_state()

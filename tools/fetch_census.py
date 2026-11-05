@@ -133,7 +133,13 @@ def main(argv=None) -> int:
     ap.add_argument("--policies", default=str(ROOT / "canonical-sources" / "host_policies.json"))
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args(argv)
-    r = census(json.loads(Path(a.policies).read_text(encoding="utf-8")))
+    policies = json.loads(Path(a.policies).read_text(encoding="utf-8"))
+    r = census(policies)
+    # Phase 51: the weekly rotation's per-day plan (fetch_schedule.json requests_measured) joins the gate.
+    import fetch_rotation
+    days, slot_bad = fetch_rotation.census_slots(fetch_rotation.load_schedule(), policies)
+    r["violations"] += [f"rotation {v}" for v in slot_bad]
+    r["rotation_days"] = {d: sum(v["requests"] for v in h.values()) for d, h in sorted(days.items())}
     if a.json:
         print(json.dumps(r, indent=2, sort_keys=True))
     else:
@@ -141,6 +147,7 @@ def main(argv=None) -> int:
               f"({r['governed']} governed, {r['ungoverned']} ungoverned; {r['robots']} robots.txt)")
         for h, n in list(r["per_host"].items())[:8]:
             print(f"  {n:4} / cap {r['caps'][h]:<4} {h}")
+        print(f"[census] weekly rotation, planned requests per weekday (cron day-of-week): {r['rotation_days']}")
         for v in r["violations"]:
             print(f"  VIOLATION {v}")
         print(f"[census] {'FAIL' if r['violations'] else 'PASS'}")

@@ -1,0 +1,325 @@
+{
+  "_schema": "fetch_schedule/1.0",
+  "_purpose": "Weekly keep-current rotation (phase 51). Each slot is one cron in one workflow; the cron string that fired (github.event.schedule) selects the slot, so a delayed run still runs its own slot. mode 'pr' jobs may change canonical files and are proposed as one pull request per slot; mode 'report' jobs never write the repository and are summarised in the weekly digest with a commit suggestion. requests_measured is the live ledger of a dry run (date and probe recorded); tools/fetch_census.py --check fails when a day's planned requests to a host exceed its run_cap. Status 'not_scheduled' records a loader that cannot be automated, with the measured reason. Written only via tools/registry_io.py.",
+  "timezone": "UTC",
+  "volatile_keys": [
+    "_as_of_date",
+    "_fetched_at",
+    "fetched_at",
+    "generated_at",
+    "retrieved_at",
+    "checked_at",
+    "_generated_at"
+  ],
+  "slots": {
+    "mon-standards-check": {
+      "cron": "17 6 * * 1",
+      "workflow": "standards-watch.yml",
+      "jobs": [
+        "standards-check"
+      ]
+    },
+    "tue-regulatory": {
+      "cron": "41 14 * * 2",
+      "workflow": "weekly-refresh.yml",
+      "jobs": [
+        "fr-watcher",
+        "ecfr-45-164",
+        "ecfr-32-170"
+      ]
+    },
+    "wed-vulnerability": {
+      "cron": "47 14 * * 3",
+      "workflow": "weekly-refresh.yml",
+      "jobs": [
+        "kev",
+        "nvd-7d"
+      ]
+    },
+    "thu-dod-mitre": {
+      "cron": "53 14 * * 4",
+      "workflow": "weekly-refresh.yml",
+      "jobs": [
+        "attack",
+        "stig-library",
+        "horizon-check"
+      ]
+    }
+  },
+  "jobs": {
+    "standards-check": {
+      "mode": "report",
+      "argv": [
+        "tools/standards_refresh.py",
+        "--check"
+      ],
+      "outputs": [],
+      "requests_measured": {
+        "ag.ny.gov": 1,
+        "ai.google.dev": 2,
+        "api.github.com": 28,
+        "app.leg.wa.gov": 2,
+        "artificialintelligenceact.eu": 1,
+        "blog.google": 1,
+        "blog.pcisecuritystandards.org": 1,
+        "capec.mitre.org": 2,
+        "cloudsecurityalliance.org": 3,
+        "coag.gov": 2,
+        "cppa.ca.gov": 1,
+        "csrc.nist.gov": 18,
+        "cwe.mitre.org": 2,
+        "cyber.trackr.live": 3,
+        "d3fend.mitre.org": 1,
+        "datatracker.ietf.org": 1,
+        "developers.googleblog.com": 1,
+        "digital-strategy.ec.europa.eu": 2,
+        "dl.dod.cyber.mil": 4,
+        "docs.anthropic.com": 2,
+        "dodcio.defense.gov": 2,
+        "emb3d.mitre.org": 1,
+        "eur-lex.europa.eu": 3,
+        "hitrustalliance.net": 3,
+        "huggingface.co": 1,
+        "ico.org.uk": 2,
+        "ithandbook.ffiec.gov": 1,
+        "laws-lois.justice.gc.ca": 2,
+        "nca.gov.sa": 2,
+        "ncp.nist.gov": 2,
+        "nvd.nist.gov": 1,
+        "nzism.gcsb.govt.nz": 1,
+        "openai.com": 1,
+        "owasp.org": 1,
+        "pages.nist.gov": 1,
+        "pcaobus.org": 1,
+        "public.cyber.mil": 5,
+        "raw.githubusercontent.com": 3,
+        "security.cms.gov": 2,
+        "standards.ieee.org": 2,
+        "statutes.capitol.texas.gov": 1,
+        "stigviewer.com": 2,
+        "www.acquisition.gov": 2,
+        "www.aicpa-cima.com": 3,
+        "www.aicpa.org": 1,
+        "www.anthropic.com": 1,
+        "www.apra.gov.au": 2,
+        "www.cisa.gov": 2,
+        "www.cisecurity.org": 3,
+        "www.cyber.gc.ca": 1,
+        "www.dcsa.mil": 1,
+        "www.dfs.ny.gov": 2,
+        "www.dni.gov": 2,
+        "www.eba.europa.eu": 1,
+        "www.ecb.europa.eu": 1,
+        "www.ecfr.gov": 4,
+        "www.edpb.europa.eu": 1,
+        "www.eiopa.europa.eu": 3,
+        "www.enisa.europa.eu": 1,
+        "www.europarl.europa.eu": 1,
+        "www.fdic.gov": 3,
+        "www.federalregister.gov": 14,
+        "www.federalreserve.gov": 2,
+        "www.fedramp.gov": 4,
+        "www.ffiec.gov": 1,
+        "www.fincen.gov": 3,
+        "www.finra.org": 3,
+        "www.first.org": 1,
+        "www.ftc.gov": 2,
+        "www.gov.uk": 4,
+        "www.hhs.gov": 3,
+        "www.irs.gov": 1,
+        "www.ismap.go.jp": 2,
+        "www.iso.org": 4,
+        "www.mas.gov.sg": 2,
+        "www.mass.gov": 1,
+        "www.meity.gov.in": 1,
+        "www.microsoft.com": 2,
+        "www.ncsc.gov.uk": 3,
+        "www.nerc.com": 3,
+        "www.niap-ccevs.org": 1,
+        "www.nist.gov": 6,
+        "www.occ.treas.gov": 2,
+        "www.openapis.org": 1,
+        "www.pcaobus.org": 1,
+        "www.pcisecuritystandards.org": 2,
+        "www.priv.gc.ca": 1,
+        "www.rfc-editor.org": 1,
+        "www.sec.gov": 3,
+        "www.whitehouse.gov": 3
+      },
+      "measured": "2026-11-05 dispatch run 41940244303 fetch_ledger (230 requests to 90 hosts, after the 0.15.1 de-duplication)"
+    },
+    "fr-watcher": {
+      "mode": "pr",
+      "argv": [
+        "cross-mapping/engine/fr_watcher.py",
+        "--days",
+        "7"
+      ],
+      "outputs": [
+        "canonical-sources/announcements_feed.json"
+      ],
+      "requests_measured": {
+        "www.federalregister.gov": 2
+      },
+      "measured": "2026-11-05 plan T-2"
+    },
+    "ecfr-45-164": {
+      "mode": "pr",
+      "argv": [
+        "cross-mapping/engine/ecfr_loader.py",
+        "--title",
+        "45",
+        "--part",
+        "164",
+        "--subpart",
+        "C"
+      ],
+      "outputs": [
+        "canonical-sources/cfr/45-cfr-164.json"
+      ],
+      "requests_measured": {
+        "www.ecfr.gov": 2
+      },
+      "measured": "2026-11-05 plan T-2"
+    },
+    "ecfr-32-170": {
+      "mode": "pr",
+      "argv": [
+        "cross-mapping/engine/ecfr_loader.py",
+        "--title",
+        "32",
+        "--part",
+        "170"
+      ],
+      "outputs": [
+        "canonical-sources/cfr/32-cfr-170.json"
+      ],
+      "requests_measured": {
+        "www.ecfr.gov": 2
+      },
+      "measured": "2026-11-05 plan T-2"
+    },
+    "kev": {
+      "mode": "pr",
+      "argv": [
+        "cross-mapping/engine/kev_loader.py",
+        "--format",
+        "summary"
+      ],
+      "outputs": [
+        "canonical-sources/known_exploited_vulnerabilities.json"
+      ],
+      "requests_measured": {
+        "www.cisa.gov": 1
+      },
+      "measured": "2026-11-05 plan T-2"
+    },
+    "nvd-7d": {
+      "mode": "report",
+      "argv": [
+        "cross-mapping/engine/nvd_api_loader.py",
+        "--days",
+        "7",
+        "--dry-run",
+        "--format",
+        "json"
+      ],
+      "outputs": [],
+      "requests_measured": {
+        "services.nvd.nist.gov": 5
+      },
+      "measured": "2026-11-05 plan T-2"
+    },
+    "attack": {
+      "mode": "pr",
+      "when": "attack_version_changed",
+      "argv": [
+        "cross-mapping/engine/attack_stix_loader.py",
+        "--format",
+        "summary"
+      ],
+      "outputs": [
+        "canonical-sources/mitre-attack-techniques.json"
+      ],
+      "requests_measured": {
+        "attack-taxii.mitre.org": 11,
+        "ctid.mitre.org": 1
+      },
+      "measured": "2026-11-05 plan T-9 (1 version check + 9 attack-pattern pages + 1 collection page; 1 CTID mapping)"
+    },
+    "stig-library": {
+      "mode": "pr",
+      "when": "stig_library_newer",
+      "argv": [
+        "tools/stig_harvest.py",
+        "--auto-library"
+      ],
+      "outputs": [
+        "canonical-sources/source_data/stig/stig_cci_map.json.gz",
+        "canonical-sources/source_data/stig/stig_catalog.json"
+      ],
+      "requests_measured": {
+        "dl.dod.cyber.mil": 4
+      },
+      "measured": "2026-11-05 plan T-10 (signal only: 4 quarter HEADs; a newer quarter adds 1 library GET and at most 12 final-release GETs, phase-50 T-10)"
+    },
+    "horizon-check": {
+      "mode": "report",
+      "argv": [
+        "cross-mapping/engine/horizon_monitor.py",
+        "--check",
+        "--json"
+      ],
+      "outputs": [],
+      "requests_measured": {
+        "ai.google.dev": 1,
+        "atlas.mitre.org": 1,
+        "cloudsecurityalliance.org": 2,
+        "cppa.ca.gov": 1,
+        "csrc.nist.gov": 3,
+        "digital-strategy.ec.europa.eu": 1,
+        "dl.dod.cyber.mil": 1,
+        "docs.anthropic.com": 1,
+        "dowcio.war.gov": 2,
+        "eur-lex.europa.eu": 1,
+        "github.com": 1,
+        "hitrustalliance.net": 1,
+        "huggingface.co": 1,
+        "laws-lois.justice.gc.ca": 1,
+        "modelcontextprotocol.io": 1,
+        "oauth.net": 1,
+        "owasp.github.io": 1,
+        "owasp.org": 1,
+        "pcaobus.org": 1,
+        "platform.openai.com": 1,
+        "raw.githubusercontent.com": 1,
+        "security.cms.gov": 1,
+        "spec.openapis.org": 1,
+        "standards.ieee.org": 1,
+        "uscode.house.gov": 1,
+        "www.bcn.cl": 1,
+        "www.cisa.gov": 1,
+        "www.commoncriteriaportal.org": 1,
+        "www.cyber.gc.ca": 1,
+        "www.ecfr.gov": 2,
+        "www.federalregister.gov": 1,
+        "www.fedramp.gov": 5,
+        "www.gov.uk": 1,
+        "www.iso.org": 1,
+        "www.meity.gov.in": 1,
+        "www.nist.gov": 2,
+        "www.pcisecuritystandards.org": 1,
+        "www.swift.com": 1,
+        "www.war.gov": 1
+      },
+      "measured": "2026-11-05 plan T-3 [6]: one GET per due record with a detection URL (49 URLs, 39 hosts)"
+    }
+  },
+  "not_scheduled": {
+    "eurlex": "eurlex_loader extracts 0 articles from all 4 regulations, live and in the committed files (2026-07-02); repair needs the Publications Office machine channel (Cellar), unverified in phase 51",
+    "fips": "the CMVP search API the loader calls is unavailable (0 modules, 2026-11-05) and NIST publishes no machine-readable CMVP listing (HTML search only)",
+    "olir": "https://csrc.nist.gov/api/olir/finalized answers 404 (2026-11-05)",
+    "cprt": "https://csrc.nist.gov/api/catalog/pubs/page answers 404 (2026-11-05); the nudp REST retirement is recorded in docs/source-audit-phase25.md:76",
+    "oscal": "not a separate job: the Monday standards-check build step fetches the OSCAL catalog (governed since C1), and oscal-format / nist-800-53 currency is in the Monday check"
+  }
+}

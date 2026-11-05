@@ -18,6 +18,7 @@ Canonical registries:
   canonical-sources/framework_changelog.json
   canonical-sources/doc_claims.json
   canonical-sources/host_policies.json   (published per-host usage rules; phase 50)
+  canonical-sources/fetch_schedule.json  (weekly keep-current rotation; phase 51)
 """
 
 import json
@@ -33,6 +34,7 @@ CANONICAL = {
     "framework_changelog": ROOT / "canonical-sources" / "framework_changelog.json",
     "doc_claims": ROOT / "canonical-sources" / "doc_claims.json",
     "host_policies": ROOT / "canonical-sources" / "host_policies.json",
+    "fetch_schedule": ROOT / "canonical-sources" / "fetch_schedule.json",
 }
 
 
