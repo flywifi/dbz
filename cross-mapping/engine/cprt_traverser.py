@@ -34,6 +34,8 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
+import fetchkit  # governed fetch: host_policies.json caps, pacing, breaker, ledger (phase 51)
+
 _HERE = Path(__file__).resolve().parent
 _REPO_ROOT = _HERE.parent.parent
 FEED_REGISTRY_PATH = _REPO_ROOT / "canonical-sources" / "feed_registry.json"
@@ -50,30 +52,15 @@ USER_AGENT = "dbz-cprt-traverser/1.0 (GRC gap analysis; polite client)"
 
 
 def _fetch_json(url: str) -> dict | list | None:
-    for attempt in range(1, MAX_RETRIES + 1):
-        try:
-            req = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/json"})
-            with urlopen(req, timeout=TIMEOUT) as resp:
-                raw = b""
-                while True:
-                    chunk = resp.read(65536)
-                    if not chunk:
-                        break
-                    raw += chunk
-                return json.loads(raw)
-        except HTTPError as e:
-            print(f"  [!] HTTP {e.code} attempt {attempt}: {url}", file=sys.stderr)
-            if e.code in (429, 503):
-                time.sleep(BACKOFF_BASE ** attempt)
-            else:
-                return None
-        except URLError as e:
-            print(f"  [!] URL error attempt {attempt}: {e.reason}", file=sys.stderr)
-            time.sleep(BACKOFF_BASE ** attempt)
-        except Exception as e:
-            print(f"  [!] Error attempt {attempt}: {e}", file=sys.stderr)
-            if attempt < MAX_RETRIES:
-                time.sleep(BACKOFF_BASE ** attempt)
+    try:
+        raw = fetchkit.fetch(url, headers={"User-Agent": USER_AGENT, "Accept": "application/json"},
+                             timeout=TIMEOUT, retries=MAX_RETRIES, retry_on=(429, 503),
+                             backoff=BACKOFF_BASE).body
+        return json.loads(raw)
+    except (fetchkit.PolicyRefused, fetchkit.HostCooldown) as e:
+        print(f"  [!] fetch policy: {e}", file=sys.stderr)
+    except Exception as e:  # noqa: BLE001
+        print(f"  [!] {type(e).__name__} {getattr(e, 'code', '')}: {url}", file=sys.stderr)
     return None
 
 
@@ -117,8 +104,7 @@ def list_all_publications(max_pages: int = 20) -> list[dict]:
 
         if len(items) < 10:
             break
-        page += 1
-        time.sleep(0.5)
+        page += 1   # pacing: csrc.nist.gov 1.5 s in host_policies.json (fetchkit)
 
     return pubs
 
@@ -340,4 +326,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    fetchkit.run_cli(main, "cprt_traverser")

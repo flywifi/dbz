@@ -42,6 +42,8 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 import gzip as _gzip
 
+import fetchkit  # governed fetch: host_policies.json caps, pacing, breaker, ledger (phase 51)
+
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
@@ -68,7 +70,6 @@ ECFR_VERSIONS_URL = (
 TIMEOUT = 30
 MAX_RETRIES = 3
 BACKOFF_BASE = 2.0          # seconds; doubles each retry
-POLITE_DELAY = 4.0          # seconds between distinct API calls
 USER_AGENT = (
     "dbz-ecfr-loader/1.0 (GRC cross-mapping research; polite client)"
 )
@@ -205,49 +206,17 @@ def _decode(resp) -> bytes:
 
 
 def _fetch_with_retry(url: str, accept: str = "*/*") -> Optional[bytes]:
-    """
-    GET *url* with up to MAX_RETRIES attempts and exponential backoff.
-    Honours HTTPS_PROXY via urllib (set automatically from env).
-    Returns raw bytes on success, None on permanent failure.
-    """
-    for attempt in range(1, MAX_RETRIES + 1):
-        try:
-            req = _build_request(url, accept)
-            with urlopen(req, timeout=TIMEOUT) as resp:
-                return _decode(resp)
-        except HTTPError as exc:
-            if exc.code in (429, 503):
-                wait = BACKOFF_BASE ** attempt
-                retry_after = exc.headers.get("Retry-After")
-                if retry_after:
-                    try:
-                        wait = max(wait, float(retry_after))
-                    except ValueError:
-                        pass
-                print(
-                    f"  [WARN] HTTP {exc.code} on {url} — sleeping {wait:.1f}s "
-                    f"(attempt {attempt}/{MAX_RETRIES})",
-                    file=sys.stderr,
-                )
-                time.sleep(wait)
-            elif exc.code == 404:
-                print(f"  [WARN] HTTP 404: {url}", file=sys.stderr)
-                return None
-            else:
-                print(f"  [WARN] HTTP {exc.code}: {url}", file=sys.stderr)
-                if attempt == MAX_RETRIES:
-                    return None
-                time.sleep(BACKOFF_BASE ** attempt)
-        except URLError as exc:
-            print(f"  [WARN] URLError ({exc.reason}): {url}", file=sys.stderr)
-            if attempt == MAX_RETRIES:
-                return None
-            time.sleep(BACKOFF_BASE ** attempt)
-        except Exception as exc:
-            print(f"  [WARN] Unexpected error fetching {url}: {exc}", file=sys.stderr)
-            if attempt == MAX_RETRIES:
-                return None
-            time.sleep(BACKOFF_BASE ** attempt)
+    try:
+        body = fetchkit.fetch(url, headers={"User-Agent": USER_AGENT, "Accept": accept,
+                                            "Accept-Encoding": "gzip"},
+                              timeout=TIMEOUT, retries=MAX_RETRIES, backoff=BACKOFF_BASE).body
+        return _gzip.decompress(body) if body[:2] == b"\x1f\x8b" else body
+    except (fetchkit.PolicyRefused, fetchkit.HostCooldown) as exc:
+        print(f"  [POLICY] {exc}", file=sys.stderr)
+    except HTTPError as exc:
+        print(f"  [WARN] HTTP {exc.code}: {url}", file=sys.stderr)
+    except Exception as exc:  # noqa: BLE001
+        print(f"  [WARN] {type(exc).__name__} fetching {url}: {exc}", file=sys.stderr)
     return None
 
 
@@ -308,8 +277,8 @@ class eCFRLoader:
     Loads CFR sections from the eCFR REST API.
 
     All network calls respect the HTTPS_PROXY environment variable (urllib
-    picks it up automatically). A polite POLITE_DELAY is inserted between
-    distinct API calls to avoid hammering the government endpoint.
+    picks it up automatically). Every call goes through fetchkit, which paces www.ecfr.gov at
+    its recorded 4.0 s (host_policies.json) so the government endpoint is never hammered.
     """
 
     def __init__(self) -> None:
@@ -348,10 +317,7 @@ class eCFRLoader:
     # ------------------------------------------------------------------
 
     def _polite_sleep(self) -> None:
-        """Sleep as needed to maintain POLITE_DELAY between API calls."""
-        elapsed = time.monotonic() - self._last_request_time
-        if elapsed < POLITE_DELAY:
-            time.sleep(POLITE_DELAY - elapsed)
+        """Pacing is the governor's: www.ecfr.gov 4.0 s in host_policies.json (fetchkit, phase 51)."""
         self._last_request_time = time.monotonic()
 
     def _get(self, url: str, accept: str = "*/*") -> Optional[bytes]:
@@ -751,4 +717,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(fetchkit.run_cli(main, "ecfr_loader"))

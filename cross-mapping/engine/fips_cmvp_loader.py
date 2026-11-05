@@ -26,6 +26,8 @@ import urllib.parse
 from datetime import datetime, timezone
 from pathlib import Path
 
+import fetchkit  # governed fetch: host_policies.json caps, pacing, breaker, ledger (phase 51)
+
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 OUTPUT_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
@@ -48,27 +50,14 @@ FIPS_CCI_PROVENANCE = {
 def _fetch(url: str, params: dict | None = None, retries: int = 3) -> dict | list | None:
     if params:
         url = url + "?" + urllib.parse.urlencode(params)
-    for attempt in range(retries):
-        try:
-            req = urllib.request.Request(
-                url,
-                headers={"Accept": "application/json", "User-Agent": "dbz-grc-loader/1.0"},
-            )
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                return json.loads(resp.read().decode())
-        except urllib.error.HTTPError as exc:
-            if exc.code in (404, 405):
-                return None
-            if attempt < retries - 1:
-                time.sleep(2 ** attempt)
-                continue
-            raise
-        except Exception:
-            if attempt < retries - 1:
-                time.sleep(2 ** attempt)
-                continue
-            raise
-    return None
+    try:
+        r = fetchkit.fetch(url, headers={"Accept": "application/json", "User-Agent": "dbz-grc-loader/1.0"},
+                           timeout=30, retries=retries, backoff=1.0)
+    except urllib.error.HTTPError as exc:
+        if exc.code in (404, 405):
+            return None
+        raise
+    return json.loads(r.body.decode())
 
 
 def _normalize_status(raw: str) -> str:
@@ -197,4 +186,4 @@ if __name__ == "__main__":
     parser.add_argument("--max-results", type=int, default=500,
                         help="Maximum number of modules to fetch (default: 500)")
     args = parser.parse_args()
-    run(max_results=args.max_results, dry_run=args.dry_run)
+    fetchkit.run_cli(lambda: run(max_results=args.max_results, dry_run=args.dry_run), "fips_cmvp_loader")

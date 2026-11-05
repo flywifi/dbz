@@ -37,6 +37,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
+import fetchkit  # governed fetch: host_policies.json caps, pacing, breaker, ledger (phase 51)
+
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
@@ -55,7 +57,6 @@ FR_API_BASE = "https://www.federalregister.gov/api/v1/documents.json"
 TIMEOUT = 30
 MAX_RETRIES = 3
 BACKOFF_BASE = 2.0        # seconds; doubles each retry
-POLITE_DELAY = 4.0        # seconds between paginated API calls
 DEFAULT_DAYS = 90
 PAGE_SIZE = 100           # FR API max per_page
 USER_AGENT = (
@@ -157,54 +158,15 @@ def _classify_doc_type(doc_type: str, title: str) -> str:
 # ---------------------------------------------------------------------------
 
 def _fetch_with_retry(url: str) -> Optional[bytes]:
-    """
-    GET *url* with up to MAX_RETRIES retries and exponential backoff.
-    Picks up HTTPS_PROXY automatically via urllib.
-    """
-    for attempt in range(1, MAX_RETRIES + 1):
-        try:
-            req = Request(
-                url,
-                headers={
-                    "User-Agent": USER_AGENT,
-                    "Accept": "application/json",
-                },
-            )
-            with urlopen(req, timeout=TIMEOUT) as resp:
-                return resp.read()
-        except HTTPError as exc:
-            if exc.code in (429, 503):
-                wait = BACKOFF_BASE ** attempt
-                retry_after = exc.headers.get("Retry-After")
-                if retry_after:
-                    try:
-                        wait = max(wait, float(retry_after))
-                    except ValueError:
-                        pass
-                print(
-                    f"  [WARN] HTTP {exc.code} — sleeping {wait:.1f}s "
-                    f"(attempt {attempt}/{MAX_RETRIES})",
-                    file=sys.stderr,
-                )
-                time.sleep(wait)
-            elif exc.code == 404:
-                print(f"  [WARN] HTTP 404: {url}", file=sys.stderr)
-                return None
-            else:
-                print(f"  [WARN] HTTP {exc.code}: {url}", file=sys.stderr)
-                if attempt == MAX_RETRIES:
-                    return None
-                time.sleep(BACKOFF_BASE ** attempt)
-        except URLError as exc:
-            print(f"  [WARN] URLError ({exc.reason}): {url}", file=sys.stderr)
-            if attempt == MAX_RETRIES:
-                return None
-            time.sleep(BACKOFF_BASE ** attempt)
-        except Exception as exc:
-            print(f"  [WARN] Unexpected error fetching {url}: {exc}", file=sys.stderr)
-            if attempt == MAX_RETRIES:
-                return None
-            time.sleep(BACKOFF_BASE ** attempt)
+    try:
+        return fetchkit.fetch(url, headers={"User-Agent": USER_AGENT, "Accept": "application/json"},
+                              timeout=TIMEOUT, retries=MAX_RETRIES, backoff=BACKOFF_BASE).body
+    except (fetchkit.PolicyRefused, fetchkit.HostCooldown) as exc:
+        print(f"  [POLICY] {exc}", file=sys.stderr)
+    except HTTPError as exc:
+        print(f"  [WARN] HTTP {exc.code}: {url}", file=sys.stderr)
+    except Exception as exc:  # noqa: BLE001
+        print(f"  [WARN] {type(exc).__name__} fetching {url}: {exc}", file=sys.stderr)
     return None
 
 
@@ -360,9 +322,7 @@ def fetch_fr_documents(days: int) -> list[dict]:
         if total_pages and page >= total_pages:
             break
 
-        page += 1
-        # Polite delay between paginated calls
-        time.sleep(POLITE_DELAY)
+        page += 1   # pacing: www.federalregister.gov 4.0 s in host_policies.json (fetchkit)
 
     return all_docs
 
@@ -623,4 +583,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(fetchkit.run_cli(main, "fr_watcher"))

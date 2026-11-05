@@ -31,6 +31,8 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
+import fetchkit  # governed fetch: host_policies.json caps, pacing, breaker, ledger (phase 51)
+
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
@@ -131,31 +133,13 @@ def _map_to_nist_families(vuln: dict) -> list[str]:
 # HTTP fetch with retry
 # ---------------------------------------------------------------------------
 def _fetch(url: str) -> bytes | None:
-    for attempt in range(1, MAX_RETRIES + 1):
-        try:
-            req = Request(url, headers={"User-Agent": USER_AGENT})
-            with urlopen(req, timeout=TIMEOUT) as resp:
-                # Read in chunks to handle large responses and IncompleteRead gracefully
-                chunks: list[bytes] = []
-                while True:
-                    chunk = resp.read(65536)
-                    if not chunk:
-                        break
-                    chunks.append(chunk)
-                return b"".join(chunks)
-        except HTTPError as e:
-            print(f"  [!] HTTP {e.code} on attempt {attempt}: {url}", file=sys.stderr)
-            if e.code in (429, 503):
-                time.sleep(BACKOFF_BASE ** attempt)
-            else:
-                return None
-        except URLError as e:
-            print(f"  [!] URL error on attempt {attempt}: {e.reason}", file=sys.stderr)
-            time.sleep(BACKOFF_BASE ** attempt)
-        except Exception as e:
-            print(f"  [!] Unexpected error on attempt {attempt}: {e}", file=sys.stderr)
-            if attempt < MAX_RETRIES:
-                time.sleep(BACKOFF_BASE ** attempt)
+    try:
+        return fetchkit.fetch(url, headers={"User-Agent": USER_AGENT}, timeout=TIMEOUT,
+                              retries=MAX_RETRIES, retry_on=(429, 503), backoff=BACKOFF_BASE).body
+    except (fetchkit.PolicyRefused, fetchkit.HostCooldown) as e:
+        print(f"  [!] fetch policy: {e}", file=sys.stderr)
+    except Exception as e:  # noqa: BLE001 — contract: None on failure
+        print(f"  [!] {type(e).__name__} {getattr(e, 'code', '')}: {url}", file=sys.stderr)
     return None
 
 
@@ -289,4 +273,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    fetchkit.run_cli(main, "kev_loader")

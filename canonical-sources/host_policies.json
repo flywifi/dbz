@@ -160,6 +160,17 @@
         "min_interval_s": 1.5,
         "run_cap": 25
       }
+    },
+    "eur-lex.europa.eu": {
+      "published_rule": "none published (eur-lex.europa.eu and op.europa.eu searched 2026-11-05 for a usage or rate statement; none found)",
+      "source_url": "https://eur-lex.europa.eu/",
+      "verified": "2026-11-05",
+      "probe": "Firecrawl site search for automated-access / reuse / rate terms; T-2 live dry-run of eurlex_loader",
+      "robots": "not re-checked in phase 51 (out of scope by the user's instruction); the governor's standing robots check applies",
+      "enforced": {
+        "min_interval_s": 3.0,
+        "run_cap": 25
+      }
     }
   }
 }

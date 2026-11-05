@@ -27,6 +27,8 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
+import fetchkit  # governed fetch: host_policies.json caps, pacing, breaker, ledger (phase 51)
+
 _HERE = Path(__file__).resolve().parent
 _REPO_ROOT = _HERE.parent.parent
 CANONICAL_DIR = _REPO_ROOT / "canonical-sources"
@@ -49,30 +51,13 @@ KNOWN_OLIR_KEYS = {
 
 
 def _fetch(url: str) -> bytes | None:
-    for attempt in range(1, MAX_RETRIES + 1):
-        try:
-            req = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "*/*"})
-            with urlopen(req, timeout=TIMEOUT) as resp:
-                data = b""
-                while True:
-                    chunk = resp.read(65536)
-                    if not chunk:
-                        break
-                    data += chunk
-                return data
-        except HTTPError as e:
-            print(f"  [!] HTTP {e.code} attempt {attempt}: {url}", file=sys.stderr)
-            if e.code in (429, 503):
-                time.sleep(BACKOFF_BASE ** attempt)
-            else:
-                return None
-        except URLError as e:
-            print(f"  [!] URL error attempt {attempt}: {e.reason}", file=sys.stderr)
-            time.sleep(BACKOFF_BASE ** attempt)
-        except Exception as e:
-            print(f"  [!] Error attempt {attempt}: {e}", file=sys.stderr)
-            if attempt < MAX_RETRIES:
-                time.sleep(BACKOFF_BASE ** attempt)
+    try:
+        return fetchkit.fetch(url, headers={"User-Agent": USER_AGENT, "Accept": "*/*"}, timeout=TIMEOUT,
+                              retries=MAX_RETRIES, retry_on=(429, 503), backoff=BACKOFF_BASE).body
+    except (fetchkit.PolicyRefused, fetchkit.HostCooldown) as e:
+        print(f"  [!] fetch policy: {e}", file=sys.stderr)
+    except Exception as e:  # noqa: BLE001
+        print(f"  [!] {type(e).__name__} {getattr(e, 'code', '')}: {url}", file=sys.stderr)
     return None
 
 
@@ -231,7 +216,6 @@ def download_new_olirs(
         }
         new_entries.append(manifest_entry)
         manifest.setdefault("sources", []).append(manifest_entry)
-        time.sleep(1.0)
 
     if new_entries and not dry_run:
         _save_source_manifest(manifest)
@@ -296,4 +280,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    fetchkit.run_cli(main, "olir_crawler")

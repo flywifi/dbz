@@ -551,3 +551,56 @@ def resilient_get(url: str, *, gov: RateGovernor | None = None,
     except Exception as e:
         trail.append(f"wayback:error:{type(e).__name__}")
         return status, None, {"source": "live", "cache": None, "trail": trail, "snapshot_ts": None}
+
+
+TRANSIENT = (429, 500, 502, 503, 504)
+
+
+class Fetched(tuple):
+    """(status, headers, body); header names lower-cased."""
+    __slots__ = ()
+    status = property(lambda s: s[0])
+    headers = property(lambda s: s[1])
+    body = property(lambda s: s[2])
+
+
+def fetch(url: str, *, headers: dict | None = None, timeout: float = 60, retries: int = 3,
+          retry_on: tuple = TRANSIENT, backoff: float = 2.0, max_bytes: int | None = None,
+          gov=None, sleeper=None) -> "Fetched":
+    """One governed GET with bounded retries, for every hand-run loader (phase 51).
+    Pacing, caps, the breaker and the ledger come from the governor (host_policies.json).
+    Retries network errors and `retry_on` statuses with backoff, backoff*2, …; the governor has
+    already learned any Retry-After. Any other HTTP status raises at once. PolicyRefused and
+    HostCooldown are never retried, so a loader cannot route around a host's rule."""
+    sleep = sleeper or time.sleep
+    hdrs = {"User-Agent": USER_AGENT, **(headers or {})}
+    last = None
+    for attempt in range(1, retries + 1):
+        req = urllib.request.Request(url, headers=hdrs)
+        try:
+            with polite_urlopen(req, timeout=timeout, gov=gov) as resp:
+                body = resp.read(max_bytes) if max_bytes else _read_body(resp)
+                return Fetched((getattr(resp, "status", 200) or 200,
+                                {k.lower(): v for k, v in dict(resp.headers or {}).items()}, body))
+        except (PolicyRefused, HostCooldown):
+            raise
+        except urllib.error.HTTPError as e:
+            last = e
+            if e.code not in retry_on or attempt == retries:
+                raise
+        except Exception as e:  # noqa: BLE001 — transport failure: retry, then raise
+            last = e
+            if attempt == retries:
+                raise
+        sleep(backoff * 2 ** (attempt - 1))
+    raise last
+
+
+def run_cli(main, tool: str):
+    """Run a loader's main() and always persist learned host limits and this run's ledger
+    (.fetch-cache/ledger/<tool>.json) — the weekly rotation reads the ledger (phase 51)."""
+    try:
+        return main()
+    finally:
+        save_state()
+        save_ledger(tool)

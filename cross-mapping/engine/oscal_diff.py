@@ -33,6 +33,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
+import fetchkit  # governed fetch: host_policies.json caps, pacing, breaker, ledger (phase 51)
+
 _HERE = Path(__file__).resolve().parent
 _REPO_ROOT = _HERE.parent.parent
 
@@ -55,53 +57,34 @@ WINDOW = 512 * 1024  # 512KB Range windows (proxy truncates larger streams)
 # ── Robust large-file fetch (Range windows + retry) ─────────────────────────────
 
 def fetch_large_json(url: str, timeout: float = 60.0, max_retries: int = 4) -> dict:
-    """
-    Fetch a large JSON file using HTTP Range windows, retrying each window.
-    Works around proxies that truncate long single-stream responses.
-    """
-    # Probe total size + range support
-    probe = urllib.request.Request(
-        url, headers={"User-Agent": UA, "Range": "bytes=0-0"})
-    with urllib.request.urlopen(probe, timeout=timeout) as r:
-        cr = r.headers.get("Content-Range", "")
-        supports_range = r.status == 206 and "/" in cr
-        total = int(cr.split("/")[-1]) if supports_range else 0
-
-    if not supports_range or total == 0:
-        # Fall back to a plain streamed read
-        req = urllib.request.Request(url, headers={"User-Agent": UA})
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            return json.loads(r.read())
-
-    buf = bytearray()
-    start = 0
+    """Fetch a large JSON file in HTTP Range windows through the governor (each window is one
+    counted request; raw.githubusercontent.com: 1.5 s, 25 per run). Works around proxies that
+    truncate long single-stream responses."""
+    probe = fetchkit.fetch(url, headers={"User-Agent": UA, "Range": "bytes=0-0"}, timeout=timeout)
+    cr = probe.headers.get("content-range", "")
+    total = int(cr.split("/")[-1]) if probe.status == 206 and "/" in cr else 0
+    if total == 0:
+        return json.loads(fetchkit.fetch(url, headers={"User-Agent": UA}, timeout=timeout).body)
+    buf, start = bytearray(), 0
     while start < total:
         end = min(start + WINDOW - 1, total - 1)
         want = end - start + 1
         last_err = None
         for attempt in range(max_retries):
             try:
-                req = urllib.request.Request(
-                    url, headers={"User-Agent": UA, "Range": f"bytes={start}-{end}"})
-                # Loop-read until the window is fully drained (single read() can short-return)
-                chunk = bytearray()
-                with urllib.request.urlopen(req, timeout=timeout) as r:
-                    while len(chunk) < want:
-                        b = r.read(want - len(chunk))
-                        if not b:
-                            break
-                        chunk.extend(b)
+                chunk = fetchkit.fetch(url, headers={"User-Agent": UA, "Range": f"bytes={start}-{end}"},
+                                       timeout=timeout, retries=1).body
                 if len(chunk) == want:
                     buf.extend(chunk)
                     break
                 last_err = f"short window {len(chunk)}/{want}"
-            except Exception as e:
+            except (fetchkit.PolicyRefused, fetchkit.HostCooldown):
+                raise
+            except Exception as e:  # noqa: BLE001
                 last_err = repr(e)
         else:
-            raise RuntimeError(f"Range window {start}-{end} failed after "
-                               f"{max_retries} retries: {last_err}")
+            raise RuntimeError(f"Range window {start}-{end} failed after {max_retries} retries: {last_err}")
         start = end + 1
-
     return json.loads(bytes(buf))
 
 
@@ -445,4 +428,4 @@ def main(argv=None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(fetchkit.run_cli(main, "oscal_diff"))

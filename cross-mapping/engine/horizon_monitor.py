@@ -30,6 +30,8 @@ import urllib.request
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
+import fetchkit  # governed fetch: host_policies.json caps, pacing, breaker, ledger (phase 51)
+
 ROOT = Path(__file__).resolve().parents[2]
 REGISTRY = ROOT / "canonical-sources" / "anticipated_updates.json"
 
@@ -107,10 +109,10 @@ def _http_ok(url: str, timeout: int = 20) -> tuple[bool, str]:
     if not url:
         return False, "no url"
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "dbz-horizon/1.0"}, method="GET")
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            return True, r.read(4096).decode("utf-8", "replace")
-    except Exception as e:  # noqa: BLE001 — offline-safe
+        r = fetchkit.fetch(url, headers={"User-Agent": "dbz-horizon/1.0"}, timeout=timeout,
+                           retries=1, max_bytes=4096)
+        return True, r.body.decode("utf-8", "replace")
+    except Exception as e:  # noqa: BLE001 — offline-safe; includes PolicyRefused
         return False, f"{type(e).__name__}"
 
 
@@ -266,4 +268,4 @@ def main(argv=None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(fetchkit.run_cli(main, "horizon_monitor"))

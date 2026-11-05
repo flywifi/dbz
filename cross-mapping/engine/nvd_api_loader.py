@@ -35,6 +35,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
+import fetchkit  # governed fetch: host_policies.json caps, pacing, breaker, ledger (phase 51)
+
 _HERE = Path(__file__).resolve().parent
 _REPO_ROOT = _HERE.parent.parent
 _CANONICAL_DIR = _REPO_ROOT / "canonical-sources"
@@ -43,8 +45,6 @@ NVD_CVE_URL = "https://services.nvd.nist.gov/rest/json/cves/2.0"
 _RESULTS_PER_PAGE = 2000   # NVD API 2.0 maximum
 
 # Rate-limit sleeps (seconds)
-_SLEEP_NO_KEY  = 6.0   # 5 req/30s → stay well under
-_SLEEP_WITH_KEY = 0.7  # 50 req/30s → comfortable margin
 
 # ── CWE → NIST 800-53 family mapping ─────────────────────────────────────────
 # Based on CWE taxonomy / NIST 800-53 Rev. 5 control categories.
@@ -155,61 +155,25 @@ def _nist_families_for_cwes(cwe_ids: List[str]) -> List[str]:
 
 # ── network utilities ─────────────────────────────────────────────────────────
 
-def _build_proxy_opener() -> urllib.request.OpenerDirector:
-    proxy_url = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
-    handlers: List[urllib.request.BaseHandler] = []
-    if proxy_url:
-        handlers.append(urllib.request.ProxyHandler({"https": proxy_url, "http": proxy_url}))
-    return urllib.request.build_opener(*handlers)
-
-
-def _fetch_json(
-    url: str,
-    params: Dict[str, str],
-    api_key: Optional[str],
-    max_retries: int = 3,
-    initial_delay: float = 6.0,
-    timeout: int = 60,
-) -> Dict[str, Any]:
-    """Fetch JSON from NVD API with query params; retries with back-off."""
-    opener  = _build_proxy_opener()
-    qs      = urllib.parse.urlencode(params)
-    full_url = f"{url}?{qs}"
-
-    headers: Dict[str, str] = {
-        "User-Agent": "dbz-grc-nvd-loader/1.0 (GRC cross-mapping backend)",
-        "Accept": "application/json",
-    }
+def _fetch_json(url, params, api_key, max_retries=3, initial_delay=6.0, timeout=60):
+    """Fetch JSON from NVD API with query params, through the governor."""
+    full_url = f"{url}?{urllib.parse.urlencode(params)}"
+    headers = {"User-Agent": "dbz-grc-nvd-loader/1.0 (GRC cross-mapping backend)",
+               "Accept": "application/json"}
     if api_key:
         headers["apiKey"] = api_key
-
-    delay = initial_delay
-    last_exc: Optional[Exception] = None
-
-    for attempt in range(1, max_retries + 1):
-        try:
-            req = urllib.request.Request(full_url, headers=headers)
-            with opener.open(req, timeout=timeout) as resp:
-                raw = resp.read()
-                return json.loads(raw.decode("utf-8"))
-        except urllib.error.HTTPError as exc:
-            print(
-                f"  [warn] HTTP {exc.code} on attempt {attempt}/{max_retries}: {full_url}",
-                file=sys.stderr,
-            )
-            last_exc = exc
-            if exc.code in (403, 429, 503):
-                time.sleep(delay)
-                delay *= 2
-            else:
-                raise
-        except Exception as exc:
-            print(f"  [warn] Network error attempt {attempt}/{max_retries}: {exc}", file=sys.stderr)
-            last_exc = exc
-            time.sleep(delay)
-            delay *= 2
-
-    raise RuntimeError(f"Failed to fetch NVD API after {max_retries} attempts") from last_exc
+    try:
+        raw = fetchkit.fetch(full_url, headers=headers, timeout=timeout, retries=max_retries,
+                             retry_on=(403, 429, 503), backoff=initial_delay).body
+    except urllib.error.HTTPError as exc:
+        if exc.code in (403, 429, 503):
+            raise RuntimeError(f"Failed to fetch NVD API after {max_retries} attempts") from exc
+        raise
+    except (fetchkit.PolicyRefused, fetchkit.HostCooldown):
+        raise
+    except Exception as exc:  # noqa: BLE001
+        raise RuntimeError(f"Failed to fetch NVD API after {max_retries} attempts") from exc
+    return json.loads(raw.decode("utf-8"))
 
 
 # ── CVE parsing ───────────────────────────────────────────────────────────────
@@ -305,7 +269,6 @@ class NVDLoader:
 
     def __init__(self, api_key: Optional[str] = None) -> None:
         self._api_key  = api_key or os.environ.get("NVD_API_KEY")
-        self._sleep    = _SLEEP_WITH_KEY if self._api_key else _SLEEP_NO_KEY
 
     def map_cwe_to_nist(self, cwe_id: str) -> List[str]:
         """
@@ -354,9 +317,6 @@ class NVDLoader:
         total_results: Optional[int] = None
 
         while True:
-            if start_index > 0:
-                time.sleep(self._sleep)
-
             page = self.fetch_page(start_index, start_date, end_date)
 
             if total_results is None:
@@ -399,7 +359,7 @@ class NVDLoader:
         if self._api_key:
             print("  Using NVD_API_KEY (higher rate limit)")
         else:
-            print("  No API key — using conservative rate limit (6 s/request)")
+            print("  No API key — NVD window from host_policies.json (5 per 30 s; 50 with NVD_API_KEY)")
 
         now       = datetime.now(timezone.utc)
         end_dt    = now
@@ -546,4 +506,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    fetchkit.run_cli(main, "nvd_api_loader")

@@ -33,6 +33,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+import fetchkit  # governed fetch: host_policies.json caps, pacing, breaker, ledger (phase 51)
+
 _HERE = Path(__file__).resolve().parent
 _REPO_ROOT = _HERE.parent.parent
 _CANONICAL_DIR = _REPO_ROOT / "canonical-sources"
@@ -72,47 +74,19 @@ _KEYWORD_HEURISTIC: List[Tuple[List[str], List[str]]] = [
 ]
 
 
-def _build_proxy_opener() -> urllib.request.OpenerDirector:
-    """Return an opener that honours HTTPS_PROXY / HTTP_PROXY env vars."""
-    proxy_url = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
-    handlers: List[urllib.request.BaseHandler] = []
-    if proxy_url:
-        handlers.append(urllib.request.ProxyHandler({"https": proxy_url, "http": proxy_url}))
-    return urllib.request.build_opener(*handlers)
-
-
-def _fetch_url(
-    url: str,
-    max_retries: int = 3,
-    initial_delay: float = 2.0,
-    timeout: int = 60,
-) -> bytes:
-    """Fetch a URL with exponential back-off; returns raw bytes or raises."""
-    opener = _build_proxy_opener()
-    delay = initial_delay
-    last_exc: Optional[Exception] = None
-    for attempt in range(1, max_retries + 1):
-        try:
-            req = urllib.request.Request(
-                url,
-                headers={"User-Agent": "dbz-grc-attack-loader/1.0 (GRC cross-mapping backend)"},
-            )
-            with opener.open(req, timeout=timeout) as resp:
-                return resp.read()
-        except urllib.error.HTTPError as exc:
-            print(f"  [warn] HTTP {exc.code} on attempt {attempt}/{max_retries}: {url}", file=sys.stderr)
-            last_exc = exc
-            if exc.code in (429, 503):
-                time.sleep(delay)
-                delay *= 2
-            else:
-                raise
-        except Exception as exc:
-            print(f"  [warn] Network error attempt {attempt}/{max_retries}: {exc}", file=sys.stderr)
-            last_exc = exc
-            time.sleep(delay)
-            delay *= 2
-    raise RuntimeError(f"Failed to fetch {url} after {max_retries} attempts") from last_exc
+def _fetch_url(url: str, max_retries: int = 3, initial_delay: float = 2.0, timeout: int = 60) -> bytes:
+    try:
+        return fetchkit.fetch(url, headers={"User-Agent": "dbz-grc-attack-loader/1.0 (GRC cross-mapping backend)"},
+                              timeout=timeout, retries=max_retries, retry_on=(429, 503),
+                              backoff=initial_delay).body
+    except urllib.error.HTTPError as exc:
+        if exc.code in (429, 503):
+            raise RuntimeError(f"Failed to fetch {url} after {max_retries} attempts") from exc
+        raise
+    except (fetchkit.PolicyRefused, fetchkit.HostCooldown):
+        raise
+    except Exception as exc:  # noqa: BLE001
+        raise RuntimeError(f"Failed to fetch {url} after {max_retries} attempts") from exc
 
 
 # ── NIST XLSX parsing ─────────────────────────────────────────────────────────
@@ -489,4 +463,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    fetchkit.run_cli(main, "attack_stix_loader")
