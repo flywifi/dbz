@@ -1865,7 +1865,7 @@
       "label": "CISA Known Exploited Vulnerabilities Catalog",
       "authority": "primary",
       "framework_id": "cisa-kev",
-      "current_version": "catalogVersion 2026.11.04 (live; committed artifact is catalog 2026.07.01)",
+      "current_version": "catalogVersion 2026.11.04 (1,768 CVEs)",
       "urls": {
         "kev_json": "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json",
         "kev_csv": "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.csv",
@@ -1873,8 +1873,8 @@
         "landing": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
       },
       "check_strategy": "github_release",
-      "notes": "KEV catalog 2026.07.01 ingested 2026-07-02 (1,631 CVEs) via kev_loader. Phase 50 (2026-11-04): the live KEV JSON reports catalogVersion 2026.11.04 (1,768 CVEs); the committed artifact is catalog 2026.07.01 (1,631) — artifact_stale until standards_refresh.py --fetch re-runs kev_loader.",
-      "last_checked": "2026-11-04",
+      "notes": "KEV catalog 2026.07.01 ingested 2026-07-02 (1,631 CVEs) via kev_loader. Phase 50 (2026-11-04): the live KEV JSON reports catalogVersion 2026.11.04 (1,768 CVEs); the committed artifact is catalog 2026.07.01 (1,631) — artifact_stale until standards_refresh.py --fetch re-runs kev_loader. Phase 51 (2026-11-05): artifact refreshed through the governed kev_loader to catalogVersion 2026.11.04 — 1,768 CVEs (+137 since 2026.07.01, 0 dropped, 1 shortDescription edited upstream). CISA's records now carry a forensicTriage field (not stored by build_db). Weekly refresh: Wednesday slot (fetch_schedule.json).",
+      "last_checked": "2026-11-05",
       "last_changed": "2026-07-01",
       "announcement_feeds": [
         {
@@ -1903,8 +1903,8 @@
       "version_signal": "github_release_tag",
       "cci_coverage_notes": "Implied-Bridge: CISA KEV inherits CVE→800-53 mapping from NVD. SI-2 (CCI-001643–001645): Confirmed-Subject for 'patch' / 'vulnerability' language. RA-5 (CCI-002515–002517): Confirmed-Subject. KEV-specific exploitability status not in CCI text — Implied-Bridge for the KEV catalog as a distinct source.",
       "auto_fetch": true,
-      "artifact_status": "artifact_stale",
-      "last_verified": "2026-11-04"
+      "artifact_status": "current",
+      "last_verified": "2026-11-05"
     },
     "cisa-cpg": {
       "label": "CISA Cross-Sector Cybersecurity Performance Goals",

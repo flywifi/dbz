@@ -47,6 +47,10 @@ ALLOW_PATHS = {
     "tools/secret_scan.py": "this scanner's own pattern literals",
     "tools/health_audit.py": "leak-pattern definitions",
     "tools/output_validate.py": "imports leak patterns",
+    "canonical-sources/known_exploited_vulnerabilities.json":
+        "verbatim CISA KEV catalog fetched by kev_loader (weekly since phase 51); CISA's own notes cite "
+        "mailing-list archive URLs whose path names an organizational list address (e.g. the openSUSE "
+        "updates list) — public record, not personal data; upstream text is never edited",
 }
 # directory prefixes that may legitimately contain planted material, with reasons
 ALLOW_PREFIXES = {
