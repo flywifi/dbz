@@ -20,7 +20,7 @@ Usage:
     python3 dbz_query.py cfr --part "45-CFR-164" --section 164.308
     python3 dbz_query.py cfr --keyword "authentication" --family IA
     python3 dbz_query.py attack --technique T1078
-    python3 dbz_query.py attack --tactic initial-access --control AC-2
+    python3 dbz_query.py attack --tactic "Initial Access" --control AC-2
     python3 dbz_query.py edgar --incident-type ransomware
     python3 dbz_query.py edgar --company "Acme" --days 180
     python3 dbz_query.py 800-63b --aal AAL2 [--section 4.2] [--control IA-2]
@@ -1850,7 +1850,7 @@ def build_parser() -> argparse.ArgumentParser:
     atk = subs.add_parser("attack", help="Query MITRE ATT&CK techniques and NIST 800-53 mappings")
     atk.add_argument("--technique", metavar="TID", help="ATT&CK technique ID (e.g. T1078)")
     atk.add_argument("--name", metavar="NAME", help="Technique name substring")
-    atk.add_argument("--tactic", metavar="TACTIC", help="Tactic name substring (e.g. initial-access)")
+    atk.add_argument("--tactic", metavar="TACTIC", help='Tactic name substring as stored (e.g. "Initial Access")')
     atk.add_argument("--control", metavar="CTRL", help="NIST control ID (e.g. AC-2)")
     _add_format(atk); _add_db(atk)
 

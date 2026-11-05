@@ -2173,10 +2173,12 @@
         "stix_github": "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json",
         "taxii": "https://attack-taxii.mitre.org/api/v21/",
         "landing": "https://attack.mitre.org",
-        "nist_mapping": "https://www.nist.gov/system/files/documents/2023/09/12/SP800-53_ATT%26CK_v13_v1.xlsx"
+        "nist_mapping": "https://www.nist.gov/system/files/documents/2023/09/12/SP800-53_ATT%26CK_v13_v1.xlsx",
+        "taxii_enterprise": "https://attack-taxii.mitre.org/api/v21/collections/x-mitre-collection--1f5f1533-f617-4ca8-9ab4-6a02367fa019/objects/",
+        "ctid_nist_mapping": "https://ctid.mitre.org/mappings/data/nist_800_53/attack-16.1/nist_800_53-rev5/enterprise/nist_800_53-rev5_attack-16.1-enterprise_json.json"
       },
       "check_strategy": "github_release",
-      "last_checked": "2026-11-04",
+      "last_checked": "2026-11-05",
       "last_changed": "2026-04-22",
       "announcement_feeds": [
         {
@@ -2192,7 +2194,7 @@
       "draft_status": "none",
       "public_comment_deadline": null,
       "source_manifest_keys": [
-        "mitre-attack-stix"
+        "mitre-attack-enterprise"
       ],
       "crawl_seeds": [
         "https://attack.mitre.org/resources/attack-data-and-tools/"
@@ -2203,11 +2205,11 @@
       ],
       "github_repo": "mitre-attack/attack-stix-data",
       "version_signal": "github_release_tag",
-      "cci_coverage_notes": "Implied-Bridge: ATT&CK → 800-53 via official NIST ATT&CK↔800-53 mapping (SP800-53_ATT&CK_v13_v1.xlsx; 195 techniques mapped). CCIs apply at the 800-53 control end. ATT&CK technique IDs not in CCI text; all Implied-Bridge. AC-2 CCIs (CCI-000004–000014) align with multiple ATT&CK persistence techniques.",
-      "notes": "v19: Defense Evasion split into Stealth + Defense Impairment; ICS sub-techniques; Mobile detection strategies. v18 (Oct 2025) replaced Detections with Detection Strategies/Analytics. Enterprise STIX v19.1 ingested 2026-07-02 (697 techniques + 475 sub-techniques via attack_stix_loader). STIX source moved from the deprecated mitre/cti repo to mitre-attack/attack-stix-data. Phase 50 (2026-11-04): 'v19.1 (Apr 2026)' -> 'v20.0 (October 13, 2026)'; live release tag 'v20.0' (2026-11-03 scheduled run) and verified at the issuer — attack.mitre.org/resources/versions: 'ATT&CK v20.0 / October 13, 2026 - current'; the ATT&CK v20.0 ingest is owed (own loader phase) — the database carries v19.1 until then.",
+      "cci_coverage_notes": "Implied-Bridge: ATT&CK -> 800-53 via MITRE CTID Mappings Explorer (NIST 800-53 rev5 <-> ATT&CK 16.1 enterprise, last_update 2025-04-16): 454 of 706 v20 techniques carry direct 'mitigates' controls (109 distinct); 252 left blank (no CTID mapping). Phase 51; the former NIST SP800-53_ATT&CK_v13_v1.xlsx source returns 404.",
+      "notes": "v19: Defense Evasion split into Stealth + Defense Impairment; ICS sub-techniques; Mobile detection strategies. v18 (Oct 2025) replaced Detections with Detection Strategies/Analytics. Enterprise STIX v19.1 ingested 2026-07-02 (697 techniques + 475 sub-techniques via attack_stix_loader). STIX source moved from the deprecated mitre/cti repo to mitre-attack/attack-stix-data. Phase 50 (2026-11-04): 'v19.1 (Apr 2026)' -> 'v20.0 (October 13, 2026)'; live release tag 'v20.0' (2026-11-03 scheduled run) and verified at the issuer — attack.mitre.org/resources/versions: 'ATT&CK v20.0 / October 13, 2026 - current'; the ATT&CK v20.0 ingest is owed (own loader phase) — the database carries v19.1 until then. Phase 51 (2026-11-05): v20.0 ingested from MITRE's TAXII 2.1 server (Enterprise collection; 706 live techniques = 227 + 479 sub-techniques, matching attack.mitre.org's stated counts) with CTID issuer mappings replacing the keyword heuristic that every v19.1 record carried (the NIST v13 spreadsheet returns 404). 10 mapped techniques renamed since 16.1 carry nist_mapping_note for review. CORRECTION of an earlier note: '697 techniques + 475 sub-techniques' was wrong — v19.1 had 697 records in all, 475 of them sub-techniques. source_manifest_keys repointed from the non-existent 'mitre-attack-stix' to 'mitre-attack-enterprise'.",
       "auto_fetch": true,
-      "artifact_status": "artifact_stale",
-      "last_verified": "2026-11-04",
+      "artifact_status": "current",
+      "last_verified": "2026-11-05",
       "github_tag_pin": "v20.0"
     },
     "mitre-d3fend": {

@@ -1078,7 +1078,7 @@ def load_attack_data(path: Path) -> list[dict]:
             "name": t.get("name", ""),
             "tactic": json.dumps(t.get("tactics", t.get("tactic", []))),
             "is_subtechnique": 1 if t.get("is_subtechnique") else 0,
-            "parent_id": t.get("parent_id", "") or "",
+            "parent_id": t.get("parent_id") or t.get("sub_technique_of") or "",  # loader writes sub_technique_of
             "nist_controls": json.dumps(nist_controls),
             "nist_families": json.dumps(families),
         })

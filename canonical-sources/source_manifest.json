@@ -1285,6 +1285,17 @@
       "role": "consensus_voter_crosswalk",
       "authority_scope": "unattributed",
       "notes": "PROVENANCE GAP, registered in phase 43 rather than papered over. 812 NIST 800-53 r5 controls with SOC 2 TSC / ISO 27001:2022 / NIST CSF v2.0 / PCI DSS v4.0 / HIPAA (45 CFR) / NIST 800-171r3 / SCF columns. Consumed as the 'master' voter by consensus_detector.collect_master, which reads six of those columns (the SCF column is NOT read). No upstream URL, edition or retrieval date is known for it. INFLUENCE (measured 2026-08-16): it votes in 4,071 of the 6,842 strong/moderate consensus edges; dropping the voter takes strong+moderate 6,842 -> 3,537 and strong 910 -> 148. INDEPENDENCE (measured 2026-08-16, per column, against the loaded projections): PCI DSS v4.0 is 1,348 of 1,351 assertions already present from other loaded sources (a restatement, so its vote is not independent there); SOC 2 TSC 548 of 832, HIPAA 360 of 448, NIST 800-171r3 116 of 122 and ISO 27001:2022 35 of 66 assertions appear NOWHERE else in the repository — 1,062 original mapping claims of unrecorded origin. NIST CSF v2.0 is empty. Re-weighting or excluding this voter would move w_consensus, master_mappings, overlap and the confirmation counts in one step; that decision is deliberately NOT made here — the sensitivity is measured and reproducible via cross-mapping/tests/consensus_sensitivity.py."
+    },
+    {
+      "id": "mitre-attack-enterprise",
+      "file": "canonical-sources/mitre-attack-techniques.json",
+      "format": "json",
+      "version": "ATT&CK Enterprise 20.0 (TAXII collection object x_mitre_version 20.0, modified 2026-10-12); 800-53 mappings: CTID nist_800_53 rev5 / ATT&CK 16.1 (last_update 2025-04-16)",
+      "retrieved": "2026-11-05",
+      "source_url": "https://attack-taxii.mitre.org/api/v21/collections/x-mitre-collection--1f5f1533-f617-4ca8-9ab4-6a02367fa019/objects/",
+      "sha256_prefix": "2c059586a7ab61dd",
+      "role": "attack_techniques",
+      "notes": "Written by cross-mapping/engine/attack_stix_loader.py from MITRE's ATT&CK TAXII 2.1 server (attack-patterns + collection object, paged at 100) and the CTID NIST 800-53 rev5 mapping (https://ctid.mitre.org/mappings/data/nist_800_53/attack-16.1/nist_800_53-rev5/enterprise/nist_800_53-rev5_attack-16.1-enterprise_json.json). Direct 'mitigates' mappings only; a technique CTID does not map stays blank (no parent inheritance, no keyword guess). Loaded by build_db.load_attack_data into attack_techniques (parent_id from sub_technique_of)."
     }
   ],
   "staged_reference_sources": {

@@ -2,15 +2,17 @@
 """
 MITRE ATT&CK Enterprise STIX 2.1 Loader
 
-Parses the MITRE ATT&CK Enterprise STIX 2.1 bundle from GitHub and enriches
-each technique with NIST SP 800-53 Rev. 5 control mappings using NIST's
-official ATT&CK↔800-53 mapping spreadsheet.
+Loads Enterprise ATT&CK from MITRE's TAXII 2.1 server and maps each technique to NIST SP 800-53
+Rev. 5 controls with the issuer mapping: MITRE CTID Mappings Explorer (NIST 800-53 rev5 <-> ATT&CK).
 
-Primary source:
-  STIX bundle:   https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json
-  NIST mapping:  https://www.nist.gov/system/files/documents/2023/09/12/SP800-53_ATT%26CK_v13_v1.xlsx
+Sources (phase 51):
+  ATT&CK data:  https://attack-taxii.mitre.org/api/v21/ (Enterprise collection, paged)
+  800-53 map:   https://ctid.mitre.org/mappings/ (nist_800_53 rev5, ATT&CK 16.1 enterprise JSON)
 
-Fallback: keyword-based heuristic when the XLSX is not available.
+Only direct CTID mappings are written. A technique CTID does not map stays blank (no parent
+inheritance, no keyword guess — CLAUDE.md: leave uncertain fields blank). A technique CTID mapped
+under a different (16.1) name carries `nist_mapping_note` for human review. NIST's v13 spreadsheet
+(the former source) returns 404 since at least 2026-07, which is why v19.1 shipped keyword guesses.
 
 Output: canonical-sources/mitre-attack-techniques.json
 
@@ -25,6 +27,7 @@ import argparse
 import io
 import json
 import os
+import re
 import sys
 import time
 import urllib.error
@@ -40,38 +43,13 @@ _REPO_ROOT = _HERE.parent.parent
 _CANONICAL_DIR = _REPO_ROOT / "canonical-sources"
 _OUTPUT_PATH = _CANONICAL_DIR / "mitre-attack-techniques.json"
 
-STIX_URL = (
-    "https://raw.githubusercontent.com/mitre/cti/master/"
-    "enterprise-attack/enterprise-attack.json"
-)
-NIST_XLSX_URL = (
-    "https://www.nist.gov/system/files/documents/2023/09/12/"
-    "SP800-53_ATT%26CK_v13_v1.xlsx"
-)
-
-# ── keyword heuristic fallback ────────────────────────────────────────────────
-# Maps ATT&CK technique-name keywords → NIST 800-53 control families.
-# Used when the NIST XLSX cannot be fetched.
-_KEYWORD_HEURISTIC: List[Tuple[List[str], List[str]]] = [
-    (["credential", "password", "bruteforce", "brute force", "phishing",
-      "token", "authentication", "kerberos", "ntlm", "ldap"],             ["IA-5", "IA-2", "AC-7"]),
-    (["privilege", "escalation", "sudo", "admin", "root", "uac bypass"],   ["AC-6", "AC-3"]),
-    (["persistence", "registry", "startup", "scheduled task", "cron",
-      "bootkit", "rootkit", "service"],                                     ["CM-7", "SI-7", "AU-12"]),
-    (["lateral movement", "pass the hash", "remote service",
-      "smb", "rdp", "wmi", "psexec"],                                       ["SC-7", "AC-17", "AU-12"]),
-    (["exfiltration", "data transfer", "upload", "exfil"],                  ["SC-8", "SC-28", "AC-4"]),
-    (["command and control", "c2", "dns", "http", "https", "beaconing",
-      "proxy", "protocol tunnel"],                                           ["SC-7", "SI-4", "AU-12"]),
-    (["discovery", "enumeration", "scan", "reconnaissance"],                ["CM-8", "SI-4", "CA-7"]),
-    (["defense evasion", "obfuscation", "timestomp", "log clear",
-      "indicator removal"],                                                  ["AU-9", "AU-12", "SI-7"]),
-    (["collection", "screen capture", "keylog", "clipboard"],               ["AC-4", "SC-28", "AU-12"]),
-    (["impact", "ransomware", "wiper", "denial of service", "dos",
-      "resource hijacking", "defacement"],                                   ["CP-10", "SI-3", "SC-5"]),
-    (["execution", "script", "powershell", "python", "shell", "macro"],     ["CM-7", "SI-3", "AU-12"]),
-    (["supply chain", "trusted relationship", "third party"],               ["SA-12", "SR-3"]),
-]
+TAXII_ROOT = "https://attack-taxii.mitre.org/api/v21/"
+ENTERPRISE_COLLECTION = "x-mitre-collection--1f5f1533-f617-4ca8-9ab4-6a02367fa019"
+TAXII_OBJECTS = f"{TAXII_ROOT}collections/{ENTERPRISE_COLLECTION}/objects/"
+CTID_MAPPING_URL = ("https://ctid.mitre.org/mappings/data/nist_800_53/attack-16.1/nist_800_53-rev5/"
+                    "enterprise/nist_800_53-rev5_attack-16.1-enterprise_json.json")
+_TAXII_HDRS = {"Accept": "application/taxii+json;version=2.1",
+               "User-Agent": "dbz-grc-attack-loader/1.0 (GRC cross-mapping backend)"}
 
 
 def _fetch_url(url: str, max_retries: int = 3, initial_delay: float = 2.0, timeout: int = 60) -> bytes:
@@ -91,83 +69,36 @@ def _fetch_url(url: str, max_retries: int = 3, initial_delay: float = 2.0, timeo
 
 # ── NIST XLSX parsing ─────────────────────────────────────────────────────────
 
-def _parse_nist_xlsx(data: bytes) -> Dict[str, List[str]]:
-    """
-    Parse NIST ATT&CK↔800-53 XLSX using openpyxl.
-
-    Expected columns: 'Technique ID', 'Technique Name', 'NIST SP 800-53 Rev. 5 Control'
-
-    Returns dict: {technique_id: [control_id, ...]}
-    """
-    try:
-        import openpyxl  # type: ignore
-    except ImportError:
-        raise ImportError("openpyxl is required to parse the NIST mapping XLSX")
-
-    wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
-    ws = wb.active
-
-    rows = list(ws.iter_rows(values_only=True))
-    if not rows:
-        raise ValueError("XLSX is empty")
-
-    # Locate header row
-    header: Optional[List[str]] = None
-    header_idx = 0
-    for i, row in enumerate(rows):
-        lower_cells = [str(c).lower() if c is not None else "" for c in row]
-        if "technique id" in lower_cells:
-            header = lower_cells
-            header_idx = i
-            break
-
-    if header is None:
-        raise ValueError("Could not find 'Technique ID' header in XLSX")
-
-    col_tid   = next((i for i, h in enumerate(header) if "technique id" in h), None)
-    col_ctrl  = next((i for i, h in enumerate(header) if "800-53" in h and "control" in h), None)
-
-    if col_tid is None or col_ctrl is None:
-        raise ValueError(f"Required columns not found in header: {header}")
-
-    mapping: Dict[str, List[str]] = {}
-    for row in rows[header_idx + 1:]:
-        if not row or len(row) <= max(col_tid, col_ctrl):
-            continue
-        tid   = str(row[col_tid]).strip()  if row[col_tid]  is not None else ""
-        ctrl  = str(row[col_ctrl]).strip() if row[col_ctrl] is not None else ""
-        if not tid or not ctrl or tid.lower() in ("none", ""):
-            continue
-        # Control cell may contain multiple controls separated by commas or newlines
-        controls = [c.strip() for c in ctrl.replace("\n", ",").split(",") if c.strip()]
-        if tid not in mapping:
-            mapping[tid] = []
-        for c in controls:
-            if c not in mapping[tid]:
-                mapping[tid].append(c)
-
-    wb.close()
-    return mapping
-
-
 # ── keyword fallback ──────────────────────────────────────────────────────────
 
-def _keyword_map(technique_name: str, tactic) -> List[str]:
-    """
-    Keyword heuristic: returns a list of NIST control IDs based on technique
-    name and tactic. Used when the NIST XLSX is unavailable.
-    tactic may be a list or a string.
-    """
-    tactic_str = " ".join(tactic) if isinstance(tactic, list) else (tactic or "")
-    needle = (technique_name + " " + tactic_str).lower()
-    for keywords, controls in _KEYWORD_HEURISTIC:
-        if any(kw in needle for kw in keywords):
-            return controls
-    # Default: SI family (general defensive integrity)
-    return ["SI-3"]
-
-
 # ── main class ────────────────────────────────────────────────────────────────
+
+def taxii_objects(obj_type: str, page: int = 100) -> list:
+    """Every object of one STIX type in MITRE's Enterprise ATT&CK TAXII collection, paged. An
+    unpaged query times out at MITRE's gateway (502, measured 2026-11-05); a 502 is retried."""
+    out, nxt = [], None
+    while True:
+        url = f"{TAXII_OBJECTS}?match%5Btype%5D={obj_type}&limit={page}" + (f"&next={nxt}" if nxt else "")
+        d = json.loads(fetchkit.fetch(url, headers=_TAXII_HDRS, timeout=180, retries=3, backoff=15.0).body)
+        out += d.get("objects", [])
+        nxt = d.get("next") if d.get("more") else None
+        if not nxt:
+            return out
+
+
+def _ver(v) -> tuple:
+    return tuple(int(x) for x in re.findall(r"\d+", str(v or "")))
+
+
+def remote_attack_version() -> str:
+    """Newest x_mitre_version of the Enterprise collection object on MITRE's TAXII server."""
+    return max((o.get("x_mitre_version") or "" for o in taxii_objects("x-mitre-collection")), key=_ver, default="")
+
+
+def _norm_ctrl(c: str):
+    m = re.fullmatch(r"([A-Z]{2})-0*(\d+)(?:\((0*)(\d+)\))?", c or "")
+    return (f"{m.group(1)}-{int(m.group(2))}" + (f"({int(m.group(4))})" if m.group(4) else "")) if m else None
+
 
 class ATTACKLoader:
     """
@@ -179,67 +110,41 @@ class ATTACKLoader:
         self._bundle: Optional[Dict[str, Any]] = None
         self._nist_mapping: Optional[Dict[str, List[str]]] = None
         self._used_fallback: bool = False
+        self._mapping_meta: Dict[str, Any] = {}
+        self._ctid_names: Dict[str, str] = {}
+        self._attack_version_seen: str = ""
 
     # ── public API ─────────────────────────────────────────────────────────
 
     def fetch_bundle(self, url: Optional[str] = None) -> Dict[str, Any]:
-        """
-        Fetch and parse the ATT&CK Enterprise STIX 2.1 JSON bundle.
-
-        Returns the parsed bundle dict with 'objects' list.
-        Raises RuntimeError on network failure after retries.
-        """
-        target = url or STIX_URL
-        print(f"  Fetching STIX bundle from: {target}")
-        raw = _fetch_url(target)
-        bundle = json.loads(raw.decode("utf-8"))
+        """Enterprise ATT&CK as a STIX bundle. Default: MITRE's TAXII server (attack-patterns plus the
+        collection object). --stix-url keeps the single-file path for an explicit override."""
+        if url:
+            bundle = json.loads(_fetch_url(url).decode("utf-8"))
+        else:
+            print(f"  Fetching Enterprise ATT&CK from MITRE TAXII: {TAXII_OBJECTS}")
+            bundle = {"type": "bundle", "objects": taxii_objects("attack-pattern") + taxii_objects("x-mitre-collection")}
         self._bundle = bundle
         return bundle
 
-    def load_nist_mapping(self, xlsx_path: Optional[str] = None) -> Dict[str, List[str]]:
-        """
-        Load the NIST ATT&CK↔800-53 mapping.
-
-        Priority:
-          1. xlsx_path if provided (local file)
-          2. Download from NIST_XLSX_URL
-          3. Return empty dict (keyword fallback will be used at map_techniques time)
-
-        Returns {technique_id: [control_id, ...]}
-        """
-        # Local file override
-        if xlsx_path:
-            p = Path(xlsx_path)
-            if p.exists():
-                print(f"  Loading NIST mapping from local file: {p}")
-                try:
-                    mapping = _parse_nist_xlsx(p.read_bytes())
-                    self._nist_mapping = mapping
-                    return mapping
-                except Exception as exc:
-                    print(f"  [warn] Could not parse local XLSX: {exc}", file=sys.stderr)
-
-        # Try downloading from NIST
-        print(f"  Downloading NIST mapping from: {NIST_XLSX_URL}")
-        try:
-            raw = _fetch_url(NIST_XLSX_URL, timeout=90)
-            mapping = _parse_nist_xlsx(raw)
-            print(f"  NIST mapping loaded: {len(mapping)} techniques mapped")
-            self._nist_mapping = mapping
-            return mapping
-        except ImportError:
-            print(
-                "  [warn] openpyxl not installed — cannot parse XLSX; will use keyword fallback.",
-                file=sys.stderr,
-            )
-        except Exception as exc:
-            print(
-                f"  [warn] Could not load NIST XLSX ({exc}); will use keyword fallback.",
-                file=sys.stderr,
-            )
-
-        self._nist_mapping = {}
-        return {}
+    def load_ctid_mapping(self, url: Optional[str] = None) -> Dict[str, List[str]]:
+        """CTID Mappings Explorer: NIST 800-53 rev5 <-> ATT&CK, 'mitigates' rows only, control ids
+        normalised to the catalog form (AC-02 -> AC-2). Keeps CTID's technique names for the rename
+        note. Raises on failure: no mapping means no ingest."""
+        doc = json.loads(fetchkit.fetch(url or CTID_MAPPING_URL, headers={"Accept": "application/json"}, timeout=90).body)
+        mapping: Dict[str, set] = {}
+        for m in doc.get("mapping_objects", []):
+            c = _norm_ctrl(m.get("capability_id") or "")
+            if m.get("mapping_type") == "mitigates" and c and m.get("attack_object_id"):
+                mapping.setdefault(m["attack_object_id"], set()).add(c)
+                self._ctid_names.setdefault(m["attack_object_id"], m.get("attack_object_name", ""))
+        md = doc.get("metadata", {})
+        self._mapping_meta = {"source": "CTID Mappings Explorer", "url": url or CTID_MAPPING_URL,
+                              "framework": f"{md.get('mapping_framework')} {md.get('mapping_framework_version')}",
+                              "mapping_attack_version": md.get("attack_version"), "last_update": md.get("last_update"),
+                              "rows": sum(len(v) for v in mapping.values()), "techniques": len(mapping)}
+        self._nist_mapping = {k: sorted(v, key=lambda c: (c.split("-")[0], _ver(c))) for k, v in mapping.items()}
+        return self._nist_mapping
 
     def extract_techniques(self, bundle: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
@@ -318,104 +223,52 @@ class ATTACKLoader:
         techniques.sort(key=lambda t: t["technique_id"])
         return techniques
 
-    def map_techniques(
-        self,
-        techniques: List[Dict[str, Any]],
-        nist_mapping: Dict[str, List[str]],
-    ) -> List[Dict[str, Any]]:
-        """
-        Enrich each technique with NIST 800-53 control IDs.
-
-        Uses nist_mapping when available; falls back to keyword heuristic per
-        technique name + tactic. Sets self._used_fallback if heuristic is used.
-        """
-        use_fallback = len(nist_mapping) == 0
-
+    def map_techniques(self, techniques: List[Dict[str, Any]], nist_mapping: Dict[str, List[str]]) -> List[Dict[str, Any]]:
+        """Direct issuer mappings only. A technique CTID does not map stays blank — no parent
+        inheritance, no keyword guess (CLAUDE.md: leave uncertain fields blank). A mapped technique
+        whose name changed since CTID's ATT&CK version carries nist_mapping_note."""
         for t in techniques:
-            tid = t["technique_id"]
-            if not use_fallback and tid in nist_mapping:
-                t["nist_controls"] = nist_mapping[tid]
-            else:
-                # For subtechniques try the parent mapping first
-                parent = t.get("sub_technique_of", "")
-                if not use_fallback and parent and parent in nist_mapping:
-                    t["nist_controls"] = nist_mapping[parent]
-                else:
-                    # keyword fallback
-                    t["nist_controls"] = _keyword_map(t["name"], t["tactic"])
-                    self._used_fallback = True
-
+            t["nist_controls"] = list(nist_mapping.get(t["technique_id"], []))
+            old = self._ctid_names.get(t["technique_id"])
+            if t["nist_controls"] and old and old.strip().lower() != t["name"].strip().lower():
+                t["nist_mapping_note"] = (f"CTID mapped this id under its ATT&CK {self._mapping_meta.get('mapping_attack_version')} "
+                                          f"name {old!r}; the v{self._attack_version_seen or '?'} name differs — review")
+        self._used_fallback = False
         return techniques
 
     def run(self, dry_run: bool = False, stix_url: Optional[str] = None) -> Dict[str, Any]:
-        """
-        Full pipeline: fetch → load mapping → extract → map → optionally save.
-
-        Returns the result dict (also written to canonical-sources/ unless dry_run).
-        """
+        """Full pipeline: fetch (TAXII) -> CTID mapping -> extract -> map -> optionally save."""
         print("=== ATT&CK STIX Loader ===")
-
-        # Step 1: Fetch STIX bundle
         bundle = self.fetch_bundle(url=stix_url)
-        print(f"  STIX bundle: {len(bundle.get('objects', []))} objects total")
-
-        # Step 2: Load NIST mapping
-        nist_mapping = self.load_nist_mapping()
-
-        # Step 3: Extract techniques
-        print("  Extracting techniques...")
-        techniques = self.extract_techniques(bundle)
+        colls = [o for o in bundle.get("objects", []) if o.get("type") == "x-mitre-collection"]
+        newest = max(colls, key=lambda o: _ver(o.get("x_mitre_version")), default={})
+        self._attack_version_seen = newest.get("x_mitre_version", "")
+        mapping = self.load_ctid_mapping()
+        techniques = self.map_techniques(self.extract_techniques(bundle), mapping)
         subtechs = sum(1 for t in techniques if t["is_subtechnique"])
-        base     = len(techniques) - subtechs
-        print(f"  Extracted: {base} techniques, {subtechs} sub-techniques")
-
-        # Step 4: Map to NIST controls
-        techniques = self.map_techniques(techniques, nist_mapping)
         mapped = sum(1 for t in techniques if t["nist_controls"])
-
-        fallback_note = " (keyword heuristic fallback)" if self._used_fallback else ""
-        print(
-            f"\n  ✓ {len(techniques)} techniques loaded, "
-            f"{mapped} mapped to 800-53 controls{fallback_note}, "
-            f"{subtechs} sub-techniques"
-        )
-
-        # Extract bundle-level version anchor for incremental updates
-        bundle_modified = bundle.get("modified") or bundle.get("spec_version") or ""
-        attack_version = ""
-        for obj in bundle.get("objects", []):
-            if obj.get("type") == "x-mitre-collection":
-                attack_version = obj.get("x_mitre_version", "")
-                bundle_modified = bundle_modified or obj.get("modified", "")
-                break
-
-        # Build result envelope
         result: Dict[str, Any] = {
-            "_stix_bundle_modified": bundle_modified,
-            "_attack_version": attack_version,
+            "_stix_bundle_modified": newest.get("modified", ""),
+            "_attack_version": self._attack_version_seen,
             "metadata": {
-                "generated_at":        datetime.now(timezone.utc).isoformat(),
-                "source_stix_url":     stix_url or STIX_URL,
-                "nist_mapping_source": "NIST SP800-53 ATT&CK v13 XLSX" if not self._used_fallback
-                                        else "keyword heuristic fallback",
-                "total_techniques":    len(techniques),
-                "total_mapped":        mapped,
-                "total_subtechniques": subtechs,
-                "used_fallback":       self._used_fallback,
-                "human_review_required": True,
+                "generated_at": datetime.now(timezone.utc).isoformat(),
+                "source_stix_url": stix_url or TAXII_OBJECTS,
+                "nist_mapping_source": self._mapping_meta,
+                "total_techniques": len(techniques), "total_mapped": mapped, "total_subtechniques": subtechs,
+                "total_unmapped_left_blank": len(techniques) - mapped,
+                "total_mapping_notes": sum(1 for t in techniques if t.get("nist_mapping_note")),
+                "used_fallback": False, "human_review_required": True,
             },
             "techniques": techniques,
         }
-
+        print(f"  {len(techniques)} techniques ({subtechs} sub) | {mapped} with CTID controls, "
+              f"{len(techniques) - mapped} left blank | ATT&CK {result['_attack_version']}")
         if dry_run:
             print("  [dry-run] Skipping file write.")
         else:
             _CANONICAL_DIR.mkdir(parents=True, exist_ok=True)
-            _OUTPUT_PATH.write_text(
-                json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8"
-            )
+            _OUTPUT_PATH.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
             print(f"  Saved → {_OUTPUT_PATH}")
-
         return result
 
 
@@ -439,7 +292,7 @@ def _build_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--stix-url",
         default=None,
-        help="Override STIX bundle URL (default: mitre/cti GitHub raw)",
+        help="Override the source with one STIX bundle URL (default: MITRE TAXII server)",
     )
     return p
 
@@ -458,8 +311,8 @@ def main() -> None:
             f"{meta['total_mapped']} mapped to 800-53 controls, "
             f"{meta['total_subtechniques']} sub-techniques"
         )
-        if meta["used_fallback"]:
-            print("  Note: keyword heuristic fallback used (NIST XLSX unavailable)")
+        print(f"  {meta['total_unmapped_left_blank']} left blank (no CTID mapping); "
+              f"{meta.get('total_mapping_notes', 0)} carry a rename note for review")
 
 
 if __name__ == "__main__":

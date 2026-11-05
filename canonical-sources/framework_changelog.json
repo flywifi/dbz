@@ -551,7 +551,38 @@
       "changed_at": "2026-10-26",
       "source_url": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_SRG-STIG_Library_October_2026.zip",
       "summary": "Quarterly library refresh (sha256 ea581eb2d5c4a210440852b67ea4dd9564fffdf57c8c94aec971047fe0c01d1d; HTTP Last-Modified 2026-10-26; DISA revision history dated 30 September 2026). Library: 387 benchmarks / 19,386 rules (+24 added, 159 version changes). 20 benchmarks DISA no longer carries are kept and flagged not_in_current_library (schema 3.19) — DISA's revision history lists most as sunset (e.g. RHEL 8 V2R9 on 09/30/2026, Windows Server 2019 V3R9 on 07/01/2026); the Exchange Mailbox STIGs have no deletion entry. 5 kept benchmarks were refreshed to DISA's final release (iOS 18 v2r4, Crunchy PostgreSQL v3r2, 3PAR 3.2.x v2r2, RHEL 8 v2r9, Windows Server 2019 v3r9); 2 out-of-cycle titles came from trackr (HP FlexFabric RTR v1r3, zOS SRRAUDIT TSS v7r2). Total 407 benchmarks / 20,842 rules / 539 distinct CCIs.",
-      "human_confirmed": true
+      "human_confirmed": true,
+      "provenance": {
+        "primary_source_url": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_SRG-STIG_Library_October_2026.zip",
+        "retrieved_at": "2026-11-04",
+        "verbatim": "SRG/STIG LIBRARY REVISION HISTORY 30 September 2026 … 09/30/2026 Deleted content that has been sunset/removed Deleted: … U_RHEL_8_V2R9_STIG.zip",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN",
+        "note": "Added in phase 51 (correction of record): the phase-50 entry shipped without the provenance block regulatory-provenance.md requires; the quote is from _SRG-STIG_Library_Revision_History.pdf inside the library zip."
+      }
+    },
+    {
+      "entry_id": "chg-mitre-attack-v19.1-to-v20.0",
+      "framework_id": "mitre-attack",
+      "change_type": "minor_revision",
+      "old_version": "v19.1 (Apr 2026)",
+      "new_version": "v20.0 (October 13, 2026)",
+      "changed_at": "2026-10-13",
+      "source_url": "https://attack.mitre.org/resources/updates/",
+      "summary": "Enterprise v20.0 ingested via MITRE TAXII: 706 live techniques (227 + 479 sub-techniques; v19.1 had 697) — +9 techniques, 0 removed, 0 renamed, 0 tactic changes between the committed v19.1 and v20. 800-53 mappings now come from CTID (rev5 / ATT&CK 16.1): 454 techniques with direct controls, 252 blank, 10 rename notes; the v19.1 file's controls were all keyword-guessed.",
+      "controls_added": [],
+      "controls_removed": [],
+      "controls_modified": [],
+      "human_confirmed": true,
+      "confirmation_source": "attack.mitre.org/resources/updates (read 2026-11-05) and the TAXII collection object",
+      "announcement_ref": null,
+      "provenance": {
+        "primary_source_url": "https://attack.mitre.org/resources/updates/",
+        "retrieved_at": "2026-11-05",
+        "verbatim": "The October 2026 (v20) ATT&CK release updates Techniques, Groups, Campaigns and Software for Enterprise, Mobile, and ICS.",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     }
   ]
 }
