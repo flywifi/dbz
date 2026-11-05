@@ -15,6 +15,10 @@ ritual was performed from memory. This harness makes the rehearsal mechanical:
   4. restore the stash unconditionally (finally:), report a per-step PASS/FAIL table, exit 1
      if any step failed.
 
+health.yml installs NO packages (setup-python only), so the health steps run here under a
+throwaway package-free venv placed first on PATH (phase 51): the first 0.16.0 CI run went red on
+`import pandas` in a test that passed this rehearsal, because the developer interpreter had pandas.
+
 `--standards-watch` mirrors the OTHER workflow instead (monthly standards-watch.yml, which
 builds on the runner and therefore needs the generated catalog + OSCAL cache produced first
 — the fresh-checkout mode that turned that workflow red on 2026-08-03). Slow and opt-in:
@@ -26,9 +30,11 @@ NEVER run concurrently with build_db.py: the stash move would pull the build's o
 out from under it (the standing rule is sequential builds only).
 """
 
+import os
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -102,6 +108,24 @@ def _hide():
                 shutil.move(str(f), str(dest))
 
 
+def _bare_env():
+    """(env, tmpdir) with a package-free venv's bin first on PATH, as on the health runner; (None,
+    None) with a warning when the venv cannot be made."""
+    tmp = tempfile.mkdtemp(prefix="ci-rehearsal-venv-")
+    try:
+        subprocess.run([sys.executable, "-m", "venv", "--without-pip", tmp], check=True,
+                       capture_output=True, text=True, timeout=120)
+    except (subprocess.SubprocessError, OSError) as e:
+        shutil.rmtree(tmp, ignore_errors=True)
+        print(f"WARN: could not make a package-free venv ({type(e).__name__}); steps run on this "
+              "interpreter, so a missing-package import on CI would NOT be caught")
+        return None, None
+    env = dict(os.environ)
+    env["PATH"] = str(Path(tmp) / ("Scripts" if os.name == "nt" else "bin")) + os.pathsep + env.get("PATH", "")
+    env.pop("PYTHONPATH", None)
+    return env, tmp
+
+
 def _drift_check():
     """health.yml is the authority — warn (not fail) when a mirrored command drifts."""
     text = HEALTH_YML.read_text(encoding="utf-8")
@@ -134,17 +158,22 @@ def main():
     if not watch:
         _drift_check()
     results = []
+    env, venv = (None, None) if watch else _bare_env()
+    if env:
+        print("[rehearsal] health steps run under a package-free interpreter (health.yml installs nothing)")
     try:
         _hide()
         for label, cmd in steps:
             if cmd is None:  # CI-conditional step: artifacts hidden -> CI's skip path
                 results.append((label, 0, "skipped (build artifacts absent, as on CI)"))
                 continue
-            p = subprocess.run(cmd.split(), capture_output=True, text=True, cwd=ROOT)
+            p = subprocess.run(cmd.split(), capture_output=True, text=True, cwd=ROOT, env=env)
             tail = (p.stdout or p.stderr).strip().splitlines()
             results.append((label, p.returncode, tail[-1][:88] if tail else ""))
     finally:
         _restore()
+        if venv:
+            shutil.rmtree(venv, ignore_errors=True)
 
     print(f"\nCI REHEARSAL (mirrors .github/workflows/{yml}, artifacts hidden):")
     failed = 0

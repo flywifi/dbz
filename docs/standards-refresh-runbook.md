@@ -55,6 +55,13 @@ ever diverge), restores the artifacts unconditionally — even after an interrup
 prints a per-step PASS/FAIL table. This closes the recurring failure class where a check
 passes on a built workspace but fails on CI. Never run it concurrently with `build_db.py`.
 
+**Package-free, like the runner (phase 51).** `health.yml` installs no packages, so the rehearsal
+runs the health steps under a throwaway venv with no packages, first on PATH. A health-step
+script or test must therefore need only the standard library (load one function from its source,
+as `test_attack_loader.py` does with `build_db.load_attack_data`, rather than import a module
+that pulls in pandas). The first 0.16.0 CI run (41958122419) went red on exactly that import,
+after a rehearsal on an interpreter that had pandas had passed.
+
 **Coverage limit:** the rehearsal mirrors `health.yml` only. `standards-watch.yml` runs a
 different step list (drift check + fresh build + benchmark) and has its own fresh-checkout
 failure mode — rehearse it with `python3 tools/ci_rehearsal.py --standards-watch` before

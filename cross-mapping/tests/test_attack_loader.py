@@ -5,14 +5,26 @@ an unmapped technique stays blank (no parent inheritance, no keyword guess); a t
 under another name carries a review note; deprecated/revoked objects are dropped; the newest
 collection version is stamped; no local path leaks into provenance; build_db keeps parent links."""
 
+import ast
 import json
 import sys
 import tempfile
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "engine"))
+ENGINE = Path(__file__).resolve().parents[1] / "engine"
+sys.path.insert(0, str(ENGINE))
 import attack_stix_loader as al  # noqa: E402
-import build_db  # noqa: E402
+
+
+def _shipped_load_attack_data():
+    """build_db.load_attack_data, taken from the shipped source. Importing build_db pulls in pandas,
+    which the health workflow does not install (the first 0.16.0 CI run went red on exactly that
+    import); the function itself needs only json and Path."""
+    src = (ENGINE / "build_db.py").read_text(encoding="utf-8")
+    fn = next(n for n in ast.parse(src).body if isinstance(n, ast.FunctionDef) and n.name == "load_attack_data")
+    ns = {"json": json, "Path": Path}
+    exec(compile(ast.Module(body=[fn], type_ignores=[]), "build_db.py", "exec"), ns)
+    return ns["load_attack_data"]
 
 PASS = 0
 
@@ -78,7 +90,7 @@ def test_pipeline():
     with tempfile.TemporaryDirectory() as d:
         p = Path(d) / "a.json"
         p.write_text(json.dumps(res), encoding="utf-8")
-        rows = {r["technique_id"]: r for r in build_db.load_attack_data(p)}
+        rows = {r["technique_id"]: r for r in _shipped_load_attack_data()(p)}
     ok(rows["T1078.001"]["parent_id"] == "T1078", "build_db keeps the parent link the loader writes (sub_technique_of)")
 
 

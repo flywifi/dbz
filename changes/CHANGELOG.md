@@ -3,6 +3,22 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.16.1] — 2026-11-05 (phase 51 close-out — defect found by the first CI run)
+
+PATCH. The first `health` run on 0.16.0 (run 41958122419) went red. Audit:
+`docs/audits/phase-51-adversarial-audit.md`, Pass 3 and Pass 4.
+
+- **Fixed — a health test imported pandas.** `test_attack_loader.py` imported `build_db` to check
+  the ATT&CK parent link, and `build_db` imports pandas, which `health.yml` does not install. The
+  test now loads the shipped `load_attack_data` from `build_db.py`'s source; that function needs
+  only `json` and `Path`.
+- **Fixed — the rehearsal could not see it.** `tools/ci_rehearsal.py` ran the health steps on the
+  developer's interpreter, which has pandas, so C2–C7 rehearsed green and would have been red on
+  CI. It now runs them under a throwaway package-free venv first on PATH, the runner's condition.
+  It is proven red on the old test and green on the fix.
+- **Corrected:** 0.16.0's audit said every commit was gated green. That was true of the local
+  gate, not of CI.
+
 ## [0.16.0] — 2026-11-05 (phase 51 — weekly keep-current rotation in PR mode; ATT&CK v20; KEV)
 
 MINOR: two new workflows, a new canonical registry (`fetch_schedule.json`), and a new ATT&CK mapping

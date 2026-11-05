@@ -78,7 +78,11 @@ in `docs/source-inventory.md` (Phase 51).
 - **A report-only job cannot leave a change,** and a change of volatile stamps alone is restored
   byte-for-byte (`test_rotation.py`, on the real 45 CFR 164 file).
 - **Each commit C0–C7 was gated after commit** with `ci_rehearsal` (the artifacts-hidden CI
-  condition), and the branch was bisect-walked before the push.
+  condition), and the branch was bisect-walked before the push. **That gate was weaker than CI**:
+  the rehearsal ran on an interpreter with pandas installed, and `health.yml` installs nothing.
+  So C2–C7 (`149c826`…`81a0055`) were green locally but each would have been red on CI.
+  `test_attack_loader.py` imported `build_db`, which imports pandas. CI ran once, on the pushed
+  head (run 41958122419), and went red. Fixed in 0.16.1 (see Pass 4).
 
 ## Pass 4 — adversary, run
 1. **"CTID's 16.1 mapping fits v20."**
@@ -131,6 +135,17 @@ in `docs/source-inventory.md` (Phase 51).
   bundle while the Thursday slot reads TAXII. Both now use the loader's TAXII + CTID default.
 - **The secret scan flagged the new test's placeholder git address.** It was replaced with a
   noreply-form address.
+- **Found by CI after the push: a package import on a package-free runner.**
+  - **Defect.** `test_attack_loader.py` (C2) imported `build_db` to check the parent link.
+    `build_db` imports pandas, which `health.yml` does not install. The first CI run on the head
+    went red at that step (run 41958122419); every later step was skipped.
+  - **Why the gates missed it.** The local rehearsal and the bisect-walk ran on an interpreter
+    that has pandas. This is the PyYAML class caught by hand in C5, missed in C2.
+  - **Fix (0.16.1).** The test loads the shipped `load_attack_data` from `build_db.py`'s source
+    (it needs only `json` and `Path`).
+  - **Root cause.** `ci_rehearsal.py` now runs the health steps under a throwaway package-free
+    venv first on PATH. Proven red on the old test and green on the fix. Every health step was
+    also run once under that venv, and all of them passed.
 
 ## Residual risk
 - **CTID maps ATT&CK 16.1, not 20.0.** The skew is recorded, and a newer CTID mapping is a human
