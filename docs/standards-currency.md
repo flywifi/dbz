@@ -9,6 +9,12 @@
 > fields (`auto_fetch` / `artifact_status` / `last_verified`) on all 129 feeds, and a
 > dead-cron alarm in `health_audit.py`. Operating procedure: `docs/standards-refresh-runbook.md`.
 >
+> **Superseded figures (phase 51, 2026-11-05):** KEV is catalogVersion 2026.11.04 (1,768 CVEs);
+> ATT&CK is v20.0 (706 live techniques: 227 + 479 sub-techniques, read from MITRE's TAXII server),
+> mapped to 800-53 by CTID's issuer mappings instead of keyword guesses (454 mapped, 252 left blank);
+> `standards-watch.yml` runs weekly (Monday) beside the Tuesday–Thursday `weekly-refresh.yml` slots.
+> The figures above are the 2026-07-02 state, kept as the record.
+>
 > **SOC report-type classification:** SOC 1/2 "Type 1" vs "Type 2" are report types
 > (point-in-time vs period), not framework versions. The four ER crosswalk CSVs map to two
 > standards: SOC 1 → SSAE clarified standards (AT-C 320, SSAE No. 22 current), SOC 2 → AICPA

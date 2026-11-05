@@ -18,7 +18,7 @@ All `human_review_required: true`. Never fabricate control IDs or crosswalk rela
 | NIST AI RMF | 1.0 | `https://nvlpubs.nist.gov/nistpubs/ai/nist.ai.100-1.pdf` | PDF | NIST news RSS | manual |
 | NIST AI 600-1 (GenAI) | 1.0 | `https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf` | PDF | NIST news RSS | manual |
 | NIST Privacy Framework | 1.0 | `https://www.nist.gov/system/files/documents/2020/01/16/NIST-Privacy-Framework-V1.0-Core.xlsx` | XLSX | Static | planned |
-| NIST ATT&CK↔800-53 Mapping | v13/Rev5 | `https://www.nist.gov/system/files/documents/2023/09/12/SP800-53_ATT%26CK_v13_v1.xlsx` | XLSX | Version-based | `attack_stix_loader.py` |
+| NIST ATT&CK↔800-53 Mapping | v13/Rev5 | `https://www.nist.gov/system/files/documents/2023/09/12/SP800-53_ATT%26CK_v13_v1.xlsx` — **404 since at least 2026-11-05**; superseded by the CTID mapping (MITRE section) | XLSX | — | retired (phase 51) |
 
 ---
 
@@ -129,8 +129,8 @@ Rule effective: Dec 15, 2023 (SEC rule 33-11216). Default start_date in `edgar_l
 
 | Framework | URL | Format | Freshness | Loader |
 |---|---|---|---|---|
-| ATT&CK Enterprise STIX 2.1 | `https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json` | STIX JSON | GitHub (mitre/cti) | `attack_stix_loader.py` |
-| ATT&CK TAXII 2.1 Server | `https://cti-taxii.mitre.org/taxii/` | TAXII/STIX | Real-time | planned |
+| ATT&CK Enterprise (TAXII 2.1) | `https://attack-taxii.mitre.org/api/v21/` collection `x-mitre-collection--1f5f1533-f617-4ca8-9ab4-6a02367fa019` (paged at 100; an unpaged query gets a 502) | STIX 2.1 via TAXII | weekly version check (Thursday slot) | `attack_stix_loader.py` (default source since phase 51; `--stix-url` takes a single bundle as an override) |
+| CTID Mappings Explorer — NIST 800-53 rev5 ↔ ATT&CK 16.1 (enterprise) | `https://ctid.mitre.org/mappings/data/nist_800_53/attack-16.1/nist_800_53-rev5/enterprise/nist_800_53-rev5_attack-16.1-enterprise_json.json` | JSON | pinned per ATT&CK version (`last_update` 04/16/2025) | `attack_stix_loader.py` (direct `mitigates` rows only) |
 | D3FEND | `https://d3fend.mitre.org/ontologies/d3fend.json` | JSON-LD | github_release | planned |
 | CAPEC XML | `https://capec.mitre.org/data/xml/capec_latest.xml` | XML | Annual | poll_landing |
 | CWE XML | `https://cwe.mitre.org/data/xml/cwec_latest.xml.zip` | XML | Annual | poll_landing |
@@ -317,7 +317,7 @@ https://www.federalreserve.gov/feeds/press_all.xml
 | `cci_trackr_loader.py` | `nist-catalog/ingestion/` | CCI Trackr API | `canonical-sources/disa-cci-trackr.json` |
 | `ecfr_loader.py` | `engine/` | eCFR REST API | `canonical-sources/cfr/{title}-cfr-{part}.json` |
 | `fr_watcher.py` | `engine/` | Federal Register API | `canonical-sources/announcements_feed.json` |
-| `attack_stix_loader.py` | `engine/` | MITRE ATT&CK STIX + NIST XLSX | `canonical-sources/mitre-attack-techniques.json` |
+| `attack_stix_loader.py` | `engine/` | MITRE ATT&CK TAXII 2.1 + CTID NIST 800-53 rev5 mapping | `canonical-sources/mitre-attack-techniques.json` |
 | `eurlex_loader.py` | `engine/` | EUR-Lex ELI HTML | `canonical-sources/eurlex/{reg_id}-articles.json` |
 | `nvd_api_loader.py` | `engine/` | NVD CVE API 2.0 | `canonical-sources/nvd-cve-{date}.json` |
 | `edgar_loader.py` | `engine/` | SEC EDGAR Search API | `canonical-sources/edgar-8k-cyber.json` |
@@ -383,19 +383,23 @@ no ingestion loader required.
 
 ## Automated Update Pipeline
 
+**Since phase 51 the scheduled cadence is `canonical-sources/fetch_schedule.json`, which is
+authoritative over this table.** A row not in it runs by hand. Procedure: runbook § Weekly rotation.
+
 | Layer | Script | Trigger | Sources |
 |---|---|---|---|
-| Daily | `kev_loader.py` | Cron / manual | CISA KEV JSON (primary or GitHub mirror) |
-| Daily | `nvd_api_loader.py` | Cron / manual | NVD CVE API 2.0 (incremental by `lastModified`) |
+| Weekly (Wednesday, PR) | `kev_loader.py` | `weekly-refresh.yml` | CISA KEV JSON (primary or GitHub mirror) |
+| Weekly (Wednesday, report only) | `nvd_api_loader.py --days 7 --dry-run` | `weekly-refresh.yml` → digest | NVD CVE API 2.0 (incremental by `lastModified`) |
 | Daily | `edgar_loader.py` | Cron / manual | SEC EDGAR 8-K Item 1.05 (incremental by filed date) |
-| Weekly | `announcement_monitor.py` | Cron / manual | All RSS/Atom feeds in feed_registry |
-| Weekly | `oscal_diff.py --check-remote` | Cron / manual | usnistgov/oscal-content GitHub |
-| Weekly | `olir_crawler.py --auto-download` | Cron / manual | NIST CPRT OLIR catalog |
-| Weekly | `eurlex_loader.py --all` | Cron / manual | EUR-Lex ELI endpoints |
-| Weekly | `ecfr_loader.py --all-configured-parts` | Cron / manual | eCFR versioner API |
-| Weekly | `attack_stix_loader.py --check-version` | Cron / manual | mitre/cti GitHub releases |
-| On-demand | `cprt_traverser.py` | Manual | NIST CPRT publications API |
+| Weekly (Monday, inside the drift check) | `announcement_monitor.py --dry-run` | `standards-watch.yml` | All RSS/Atom feeds in feed_registry |
+| Weekly (Monday build step, governed since phase 51) | `oscal_diff.py --oscal-cache … --dry-run` | `standards-watch.yml` | usnistgov/oscal-content GitHub (`--check-remote` stays manual) |
+| Not scheduled (phase 51: `/api/olir/finalized` 404) | `olir_crawler.py --auto-download` | manual | NIST CPRT OLIR catalog |
+| Not scheduled (phase 51: 0 articles extracted) | `eurlex_loader.py --all` | manual | EUR-Lex ELI endpoints |
+| Weekly (Tuesday, PR: 45 CFR 164 subpart C, 32 CFR 170) | `ecfr_loader.py --title … --part …` | `weekly-refresh.yml` | eCFR versioner API |
+| Weekly (Thursday, phase 51) | `attack_stix_loader.py` when `remote_attack_version()` differs | `weekly-refresh.yml` | MITRE ATT&CK TAXII 2.1 |
+| Not scheduled (phase 51: `/api/catalog/pubs/page` 404) | `cprt_traverser.py` | Manual | NIST CPRT publications API |
 | On-demand | `pdf_structure_extractor.py` | Manual | Local PDF files |
+| Weekly (Thursday, PR when DISA publishes a newer quarter) | `stig_harvest.py --auto-library` | `weekly-refresh.yml` | DISA SRG-STIG Library |
 | Quarterly | `stig_harvest.py --check/--refresh-stale/--full` | Manual | DISA SRG-STIG Library + cyber.trackr.live |
 | On CCI-list release | `cci_harvest.py --acasehs / --trackr --enrich` | Manual | acasehs republication + cyber.trackr.live/api/cci |
 | After any loader | `build_db.py` | Manual | All canonical-sources/ |
@@ -612,11 +616,11 @@ Last-Modified 2026-10-26.
 | Feed | Change | Status |
 |---|---|---|
 | openapi-spec | → 3.2.1 (10 Sep 2026) | current |
-| mitre-attack | → v20.0 (13 Oct 2026) | artifact_stale; ingest owed |
+| mitre-attack | → v20.0 (13 Oct 2026) | artifact_stale; ingest owed (ingested in phase 51) |
 | mcp-spec | → 2026-07-28 | current |
 | oscal-format | → v1.2.3 (6 Aug 2026) | current |
 | fedramp | repo repointed GSA/fedramp-automation (archived) → FedRAMP/rules | — |
-| cisa-kev | live catalogVersion 2026.11.04 vs committed 2026.07.01 | artifact_stale; `--fetch` owed |
+| cisa-kev | live catalogVersion 2026.11.04 vs committed 2026.07.01 | artifact_stale; `--fetch` owed (refreshed in phase 51) |
 
 - **Re-verified at origin** (7 staleness warnings cleared):
   - `disa-cci`: the live U_CCI_List.xml is byte-identical to the committed one, version
@@ -677,3 +681,80 @@ Its ledger refused two more things:
   entries is owed.
 - **One law.lis.virginia.gov statute page: a matcher defect, fixed.** A `Crawl-delay` line
   did not end the user-agent run, so `GPTBot: Disallow: /` merged into `*`.
+
+## Weekly rotation, every loader governed, ATT&CK v20, KEV (Phase 51, 2026-11-05)
+
+**Why:** everything that can be automated now runs weekly, spread across four weekdays, and every
+change to canonical data arrives as a pull request a human reviews. Before that, every hand-run
+loader had to go through the governor, and the ATT&CK layer had to stop guessing.
+
+**Every hand-run loader is governed.** Eleven loaders had their own retry and sleep loops and
+bypassed fetchkit: kev, nvd, fr_watcher, ecfr, eurlex, fips_cmvp, olir, cprt, oscal_diff,
+attack_stix and horizon_monitor `--check`. Each now calls one helper, `fetchkit.fetch()`. It does
+bounded retries on 429/5xx only, never retries a host-rule refusal, and writes a per-run ledger.
+Pacing is each host's recorded rule. `host_policies.json` gains `eur-lex.europa.eu` (none
+published; 3.0 s, the loader's old delay) and now holds 13 hosts. Measured live dry runs
+(2026-11-05, one fresh governor each, 0 refusals):
+
+| Loader | Requests | Result |
+|---|---|---|
+| kev | www.cisa.gov 1 | catalogVersion 2026.11.04, 1,768 CVEs |
+| nvd (7 days) | services.nvd.nist.gov 5 (22 s, NVD's 5-per-30 s window) | 9,676 CVEs |
+| fr_watcher (7 days) | www.federalregister.gov 2 | 135 documents |
+| ecfr 45 CFR 164 C / 32 CFR 170 | www.ecfr.gov 2 + 2 | 45 CFR 164 differs only in `_as_of_date`; 32 CFR 170 identical |
+| eurlex (4 regulations) | eur-lex.europa.eu 4 | **0 articles** (the committed files also hold 0, since 2026-07-02) |
+| fips_cmvp | csrc.nist.gov 1 | **0 modules**: CMVP API unavailable |
+| olir | csrc.nist.gov 1 | **404** `/api/olir/finalized` |
+| cprt (report only) | csrc.nist.gov 2 | **404** `/api/catalog/pubs/page` |
+
+**Correction of record.** 0.15.x said every monthly fetch went through the governor. The
+workflow's OSCAL warm-up (`oscal_diff --oscal-cache … --dry-run`: 1 Range probe + 10 windows of
+512 KiB for the 5,136,923 B catalog) did not, and the census, which replayed only `--check`, could
+not see it. It is governed now, and the census counts it on every building day.
+
+**ATT&CK v20.0, with issuer mappings.**
+- **Source.** MITRE's TAXII 2.1 server, Enterprise collection, paged at 100: 11 requests (1 version
+  check, 9 attack-pattern pages, 1 collection page). **706 live techniques: 227 + 479
+  sub-techniques**, MITRE's stated counts. The committed file had been v19.1 (697), with a session
+  `file://` path in its provenance; the new provenance names the issuer endpoint.
+- **Mapping.** CTID Mappings Explorer, NIST 800-53 rev5 ↔ ATT&CK 16.1 enterprise (`last_update`
+  04/16/2025). The old NIST v13 spreadsheet URL answers 404, which is why every committed mapping
+  had been the loader's keyword fallback (22 controls). Only direct `mitigates` rows are used:
+  5,314 rows collapse to 5,264 unique technique–control pairs over 470 techniques. Control ids are
+  normalised (`AC-02` → `AC-2`); all 109 exist in the catalog.
+- **Honest blanks.** 454 of 706 techniques carry controls. **252 are left blank**: no parent
+  inheritance and no keyword guess. The 15 CTID ids that v20 deprecated or revoked drop out.
+- **Rename notes.** 10 mapped techniques were renamed between 16.1 and v20 (for example T1176
+  "Browser Extensions" → "Software Extensions"). Each carries a `nist_mapping_note` for review.
+- **Build.** `build_db` now reads the loader's `sub_technique_of`: parent links 0 → 479. The
+  `attack-mapper` eval case (T1078 ⊇ {AC-2, IA-2}) passes.
+- **Records.** `feed_registry` `mitre-attack` is `current`. `source_manifest` has a new entry
+  `mitre-attack-enterprise`, and `framework_changelog` has `chg-mitre-attack-v19.1-to-v20.0` with
+  a verbatim provenance block. The phase-50 entry `chg-disa-stig-library-2026-10` gains the
+  provenance block it shipped without (a correction of record).
+- **Manual `--fetch`.** `standards_refresh --fetch` uses the same TAXII + CTID source as the
+  Thursday slot.
+
+**KEV refreshed:** 2026.07.01 (1,631) → 2026.11.04 (**1,768**): 137 added, 0 dropped. Every
+committed record changed upstream. CISA added `forensicTriage` and edited ransomware flags and
+descriptions, and the build stores the descriptions. The verbatim file is exempt from the
+secret scan's email pattern by exact path (`tools/secret_scan.py` `ALLOW_PATHS`). CISA's
+mailing-list archive URLs name organisational list addresses, which are public record, and
+upstream text is never edited.
+
+**The weekly rotation** (`canonical-sources/fetch_schedule.json`, procedure in the runbook §
+Weekly rotation):
+- **Monday:** the drift check, weekly instead of monthly.
+- **Tuesday:** Federal Register + two eCFR parts.
+- **Wednesday:** KEV, plus NVD report-only.
+- **Thursday:** ATT&CK and STIG library, each only when the issuer moved, plus horizon report-only.
+
+Planned load (upper bound): 241 / 17 / 17 / 76 requests.
+
+**Not scheduled:** EUR-Lex, FIPS, OLIR and CPRT. Each source returns nothing today (table above).
+NIST publishes no machine-readable CMVP listing (csrc.nist.gov, HTML search only), and the
+documented CSF 2.0 CPRT export now serves an XLSX. Each repair is its own phase.
+
+**Slot times.** Our own scheduled runs started 3h20m–8h08m after their 06:17 UTC cron (five runs,
+July–November). GitHub publishes no quiet hour. A temporary probe workflow measures six candidate
+times for 14 days. The slots are pinned from that data at the C8 hand-off (2026-11-19 or later).

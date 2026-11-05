@@ -3,6 +3,75 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.16.0] — 2026-11-05 (phase 51 — weekly keep-current rotation in PR mode; ATT&CK v20; KEV)
+
+MINOR: two new workflows, a new canonical registry (`fetch_schedule.json`), and a new ATT&CK mapping
+source. Audit: `docs/audits/phase-51-adversarial-audit.md`. Record: `docs/source-inventory.md`
+(Phase 51). Procedure: `docs/standards-refresh-runbook.md` § Weekly rotation.
+
+- **Everything automatable runs weekly, spread over four weekdays, as pull requests.**
+  - **The rotation.** `canonical-sources/fetch_schedule.json` is the schedule, and
+    `tools/fetch_rotation.py` runs the slot that the fired cron names. A run GitHub starts hours
+    late still runs its own slot.
+    - **Monday:** the drift check (`standards-watch.yml`, monthly → weekly).
+    - **Tuesday:** Federal Register + eCFR 45 CFR 164 subpart C / 32 CFR 170.
+    - **Wednesday:** KEV, plus NVD report-only.
+    - **Thursday:** ATT&CK and the STIG library, each only when the issuer published a newer
+      version (`stig_harvest --auto-library`), plus `horizon_monitor --check` report-only.
+  - **What reaches a pull request.** A change that is only a volatile stamp (`_as_of_date`,
+    `fetched_at`, …) is reverted, and a report-only job never leaves a change.
+  - **How the PR is made.** When a file changed, `weekly-refresh.yml` runs the battery on the
+    refreshed tree and commits it to `auto/refresh-<slot>` under GitHub's noreply bot identity
+    (`tools/rotation_commit.sh`, trailer-free). It then opens or updates one PR per slot and
+    dispatches `health.yml` on it. The default branch is never pushed by the bot.
+  - **Owner action:** enable *Allow GitHub Actions to create and approve pull requests*.
+- **Report-only results wait for the next session.** One `weekly-digest` issue is edited in place,
+  one section per slot. It carries "Suggested to commit at your next session", computed from the
+  run. For NVD: 9,676 CVEs / 7.3 MB a week, so the suggestion is "not as weekly snapshots". It
+  also names a failed battery or PR step. `CLAUDE.md` tells every new session to read it first.
+- **Not scheduled, with the measured reason:** EUR-Lex (0 articles extracted), FIPS (the CMVP API
+  is unavailable and NIST has no machine listing), OLIR and CPRT (both endpoints 404).
+- **Least GitHub traffic, measured rather than guessed.** Our 06:17 UTC cron started 3h20m–8h08m
+  late on all five runs.
+  - `schedule-probe.yml` (temporary) samples six candidate times a day.
+  - `tools/schedule_delay.py` ranks them by median, then p90 queue delay, never :00 or :30.
+  - The slots are pinned after 14 days (2026-11-19 or later) and the probe is deleted.
+- **Every hand-run loader is governed.**
+  - **Loaders:** eleven of them (kev, nvd, fr_watcher, ecfr, eurlex, fips_cmvp, olir, cprt,
+    oscal_diff, attack_stix, horizon_monitor `--check`). Each replaces its own retry and sleep
+    loop with `fetchkit.fetch()`, which retries 429/5xx only, never retries a refusal, and
+    writes a per-run ledger.
+  - **Host rules:** `host_policies.json` gains `eur-lex.europa.eu` (13 hosts).
+  - **Census:** `fetch_census.py --check` now also gates each weekday's planned load and checks
+    every slot's cron is in its workflow. Planned: 241 / 17 / 17 / 76 requests.
+- **ATT&CK v20.0, with issuer mappings instead of keyword guesses.**
+  - **Source:** MITRE's TAXII 2.1 server. It holds 706 live techniques (227 + 479), MITRE's
+    stated counts.
+  - **Mapping:** CTID Mappings Explorer, NIST 800-53 rev5 ↔ ATT&CK 16.1. It uses direct
+    `mitigates` rows only, with control ids normalised.
+  - **Result:** 454 techniques mapped to 109 controls, **252 left blank**, and 10 renamed since
+    16.1 flagged for review.
+  - **Build fix:** the build now reads the loader's parent field, so parent links go 0 → 479.
+  - **Retired:** the old NIST v13 spreadsheet URL answers 404, and the keyword fallback is
+    deleted.
+  - **Same source for manual fetches:** `standards_refresh --fetch` reads the same source as the
+    Thursday slot.
+- **KEV refreshed** to catalogVersion 2026.11.04: 1,768 CVEs (137 added, 0 dropped). The verbatim
+  file is exempt from the secret scan's email pattern by exact path, because CISA's mailing-list
+  archive URLs name organisational list addresses.
+- **Inactivity warning.** GitHub disables a public repository's schedules after 60 days without
+  activity. The Monday check warns from 45 days, as a row in the drift issue.
+- **New tests:** `test_governed_loaders.py`, `test_attack_loader.py`, `test_rotation.py`,
+  `test_weekly_workflows.py` (the shipped PR and digest scripts under node, the bot commit
+  script in a throwaway repository), and `test_schedule_delay.py`. All are in `health.yml` and
+  `ci_rehearsal.py`.
+- **Corrected of record:**
+  - 0.15.0/0.15.1 "every monthly fetch goes through the governor" was not true for the
+    workflow's OSCAL warm-up: 11 Range requests to raw.githubusercontent.com, invisible to a
+    census that replayed only `--check`. It is governed and counted now.
+  - The phase-50 changelog entry `chg-disa-stig-library-2026-10` gains the provenance block it
+    shipped without.
+
 ## [0.15.1] — 2026-11-05 (phase 50 close-out — defects found by the first CI dispatch)
 
 PATCH. The `standards-watch` dispatch on the 0.15.0 close-out (run 41936204283) read the first

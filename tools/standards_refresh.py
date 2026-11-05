@@ -61,9 +61,9 @@ GATES = [
 # auto-fetchable artifact recipes: feed id fragment -> (loader argv | direct url, dest)
 FETCHERS = {
     "kev":        {"loader": [sys.executable, str(ENGINE / "kev_loader.py"), "--format", "summary"]},
-    "attack":     {"loader": [sys.executable, str(ENGINE / "attack_stix_loader.py"),
-                              "--stix-url",
-                              "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json"]},
+    # Phase 51: the loader's default source (MITRE's TAXII 2.1 server + the CTID NIST mapping), the
+    # same one the Thursday weekly-refresh slot reads; --stix-url remains for an explicit override.
+    "attack":     {"loader": [sys.executable, str(ENGINE / "attack_stix_loader.py"), "--format", "summary"]},
     "disa-cci":   {"url": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CCI_List.zip",
                    "dest": "canonical-sources/source_data/U_CCI_List.zip",
                    "note": "unzip U_CCI_List.xml into source_data/ after download"},

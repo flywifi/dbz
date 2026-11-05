@@ -7,7 +7,8 @@ a human does the confirming.
 
 | When | What | How |
 |---|---|---|
-| Monthly (automated) | Drift check | `.github/workflows/standards-watch.yml` runs `tools/standards_refresh.py --check`, uploads the drift report, and files/updates a `standards-drift` issue when anything moved |
+| Weekly, Monday (automated; monthly until phase 51) | Drift check | `.github/workflows/standards-watch.yml` runs `tools/standards_refresh.py --check`, uploads the drift report, and files/updates a `standards-drift` issue when anything moved (including a 45-day inactivity warning) |
+| Weekly, Tuesday–Thursday (automated; phase 51) | Data refresh, proposed as pull requests | `.github/workflows/weekly-refresh.yml` runs one slot of `canonical-sources/fetch_schedule.json` per day and opens or updates one PR per slot for human review; report-only results go to the `weekly-digest` issue. See **Weekly rotation** below |
 | Quarterly (human) | Artifact refresh | `python3 tools/standards_refresh.py --check --fetch --gate` locally; review the diff; commit with sha256 + `retrieved` bumps in `source_manifest.json` |
 | On any `major_revision` in the drift report | Phase task | Open a dedicated phase (like Phase 13's ISO work) — a major revision is a data-model event, never a silent re-pin. The pending CMMC→800-171r3 transition is the canonical example |
 
@@ -25,7 +26,8 @@ a human does the confirming.
    "current" echo for ten weeks). A `registry_stale` row is **blocking-until-triaged**:
    re-verify at origin, update the feed via `registry_io`, and route any artifact impact
    through the normal human-reviewed loader phase.
-2. **fetch** (`--fetch`) — re-downloads ONLY `auto_fetch: true` feeds (KEV, ATT&CK STIX,
+2. **fetch** (`--fetch`) — re-downloads ONLY `auto_fetch: true` feeds (KEV, ATT&CK — from
+   MITRE's TAXII server with the CTID NIST mapping since phase 51, the Thursday slot's source —
    DISA CCI, 800-53 OSCAL, SCF). Nothing semantic is auto-merged.
 3. **diff** — version transitions land in `framework_changelog.json` as
    `human_confirmed: false` stubs; OSCAL sources can be diffed control-level with
@@ -96,7 +98,7 @@ the limits the governor enforces. The rules recorded on 2026-11-04 include:
 |---|---|---|
 | ncp.nist.gov | "use the META file … less than 200 requests per day" | read `.meta` before any `.xml.gz`/`.zip`; 10 per run |
 | services.nvd.nist.gov | 5 per rolling 30 s (50 with an API key) | the same rolling window |
-| api.github.com | 60/h unauthenticated; 1,000/h per repository with `GITHUB_TOKEN` | 50 per run; the monthly workflow passes its token |
+| api.github.com | 60/h unauthenticated; 1,000/h per repository with `GITHUB_TOKEN` | 50 per run; the Monday and weekly-refresh workflows pass their token |
 | www.ecfr.gov | the full-XML endpoint requires `Accept-Encoding` | header added automatically; 4 s; robots override for that one documented API path, with both citations |
 | github.com | robots.txt: "If you would like to crawl GitHub contact us … We also provide an extensive API"; `*` group disallows `/*.atom$` | `…/releases.atom` refused (release currency is read through api.github.com); 25 per run |
 | all others | none published | 1.5 s between requests, 25 per run |
@@ -120,14 +122,23 @@ How it is enforced:
   per-run ledger (`fetch_ledger` / `policy_refusals` in the drift report) and surfaces in the
   drift issue. It is never retried in the same run.
 
-The CI gate is `python3 tools/fetch_census.py --check`. It replays one monthly `--check`
+The CI gate is `python3 tools/fetch_census.py --check`. It replays one Monday `--check`
 offline and fails if any request bypasses the governor or any host's planned count exceeds its
-cap. It is an upper bound: every landing page costs HEAD+GET, and every GitHub repo answers "no
+cap. Since phase 51 it also sums each weekday's slot load from `fetch_schedule.json` against the
+same caps and checks that every slot's cron is in its workflow file (see **Weekly rotation**). It is an upper bound: every landing page costs HEAD+GET, and every GitHub repo answers "no
 releases", so each release feed also costs its tags call. It plans **327 requests to 96 hosts,
 with api.github.com the busiest at 38 of 50**; the first CI dispatch made 272. (The 0.15.0
 census answered GitHub with a release and counted 37, while the live run made 54. The monitor
 and `standards_refresh` both looked up every release feed. Since 0.15.1 the monitor skips them
 there with `--skip-strategy github_release`, and the census models the tags fallback.)
+
+**Correction of record (phase 51).** 0.15.0 and 0.15.1 said every monthly fetch went through
+the governor. It did not: `standards-watch.yml`'s build step warms the OSCAL cache with
+`oscal_diff.py --oscal-cache … --dry-run`, which read the 5,136,923 B catalog in 512 KiB Range
+windows (1 probe + 10 windows = 11 requests to raw.githubusercontent.com) through its own
+ungoverned loop. The census replayed only `--check`, so the step was invisible to it. Since
+phase 51 the windows are governed (`fetchkit.fetch`, one counted request each), and the census
+counts them as `build_requests_measured` on every day whose workflow builds.
 
 To add a host:
 1. Quote its rule from its own page into `host_policies.json` via `registry_io`, with `verified`
@@ -149,6 +160,78 @@ and trackr all `same`). It showed the four TLS/timeout hosts fail the same way f
 runners (the three TLS hosts fail certificate verification with "unable to get local issuer
 certificate"; cyber.gov.au timed out). It also found the two defects fixed in 0.15.1 (robots
 precedence; duplicate GitHub lookups).
+
+## Weekly rotation (Phase 51)
+
+Everything that can be automated runs once a week, spread over four weekdays so no host is hit by
+two slots on one day. The schedule is `canonical-sources/fetch_schedule.json` (written only via
+`registry_io`); it is the authority over any cadence written in prose.
+
+| Slot | Cron (UTC, provisional) | Workflow | Jobs | Mode |
+|---|---|---|---|---|
+| `mon-standards-check` | `17 6 * * 1` | `standards-watch.yml` | `standards_refresh.py --check` | drift issue |
+| `tue-regulatory` | `41 14 * * 2` | `weekly-refresh.yml` | `fr_watcher` (7 days), eCFR 45 CFR 164 subpart C, eCFR 32 CFR 170 | PR |
+| `wed-vulnerability` | `47 14 * * 3` | `weekly-refresh.yml` | KEV (PR); NVD 7-day window (report only) | PR + digest |
+| `thu-dod-mitre` | `53 14 * * 4` | `weekly-refresh.yml` | ATT&CK when MITRE's TAXII version differs from ours; STIG library when DISA publishes a newer quarter (`stig_harvest --auto-library`); `horizon_monitor --check` (report only) | PR + digest |
+
+How a slot runs (`tools/fetch_rotation.py`):
+- **The cron that fired picks the slot** (`github.event.schedule`), never the date. A run GitHub
+  starts hours late (measured: 3h20m–8h08m for our 06:17 cron) still runs its own slot.
+- **Date-only changes are reverted.** A `pr` job's output that differs only in a volatile stamp
+  (`volatile_keys`: `_as_of_date`, `fetched_at`, …) is restored byte-for-byte, so a PR never
+  carries date noise (measured 2026-11-05: the live 45 CFR 164 differed from the committed file
+  only in `_as_of_date`).
+- **A `report` job never leaves a change.** Its output is kept as a workflow artifact and
+  summarised in the digest.
+- **When a `pr` job changed a file,** the battery runs on the refreshed tree (generate, OSCAL
+  warm-up, build, oracle benchmark, scenarios). If it passes, `tools/rotation_commit.sh` commits
+  the changed files to `auto/refresh-<slot>` under GitHub's noreply bot identity, with a plain
+  trailer-free message, and force-pushes that branch only. The default branch is never pushed by
+  the bot. The workflow then opens or updates one PR per slot (label `auto-refresh`) and
+  dispatches `health.yml` on the branch, because pushes made with `GITHUB_TOKEN` start no
+  workflow (the documented exception is `workflow_dispatch`).
+- **Nothing merges automatically.** Review the PR's job table and battery output, then merge by
+  hand. A stale PR is simply superseded by the next week's force-push.
+
+**Owner setting (one time).** Settings → Actions → General → Workflow permissions → *Allow GitHub
+Actions to create and approve pull requests*. Until it is on, the PR step fails and the digest
+says so; the refresh branch is still pushed. Optional: an `NVD_API_KEY` repository secret raises
+NVD's window from 5 to 50 requests per 30 s.
+
+**The weekly digest.** One open issue labelled `weekly-digest`, edited in place: each slot
+replaces only its own section (job table, failed-battery or failed-PR notes, and "Suggested to
+commit at your next session"). Report-only datasets (NVD, FIPS, OLIR) are never committed by the
+schedule. `CLAUDE.md` tells every new session to read the digest and the open `auto-refresh` PRs
+first. The NVD suggestion is computed from the run: on 2026-11-05 a 7-day window was 9,676 CVEs,
+7.3 MB as one file, so the suggestion was "not as weekly snapshots" (about 382 MB a year of
+history; commit one rolling file or keep it local, since `build_db` loads it when present).
+
+**Not scheduled** (`fetch_schedule.json` `not_scheduled`, each with its measured reason):
+EUR-Lex (the loader extracts 0 articles, live and committed), FIPS (the CMVP API is unavailable and
+NIST publishes no machine listing), OLIR (`/api/olir/finalized` 404) and CPRT
+(`/api/catalog/pubs/page` 404). Scheduling them would automate emptiness; each repair is its own
+phase. OSCAL is not a separate job: the Monday build fetches it.
+
+**Load.** `fetch_census.py --check` (CI) sums each weekday's `requests_measured` per host, plus
+the build's 11 OSCAL requests on a building day, and fails on a cap breach or on one host in two
+slots of one day. Today: Monday 241, Tuesday 17, Wednesday 17, Thursday 76 requests (upper bound).
+
+**Slot times: least GitHub traffic, measured.** GitHub publishes no quiet hour, only that the top
+of every hour is busy and that queued scheduled jobs may be dropped under load. So the times above
+are provisional. `schedule-probe.yml` (temporary) fires at six candidate times a day and titles
+each run with the cron that fired; `tools/schedule_delay.py <runs.json>` gives each time's median
+and p90 queue delay and the pin order. **Pin rule:** per slot, the candidate with the lowest median
+delay (a tie goes to the lower p90), never minute :00 or :30. After 14 days (2026-11-19 or later)
+the slot crons are pinned in `fetch_schedule.json` and both workflows, and the probe is deleted.
+Re-check quarterly from the real slot runs; move any slot whose median delay passes 4 h.
+
+**Inactivity.** GitHub disables a public repository's scheduled workflows after 60 days without
+activity. The Monday check warns from 45 days since the last commit (drift issue row
+`inactivity`); merging a refresh PR counts as activity.
+
+**Add a job.** Add it to `jobs` (argv, mode, outputs, and `requests_measured` from a governed live
+dry run, with its date and probe) and to one slot, via `registry_io`; run
+`python3 tools/fetch_census.py --check` and `python3 tools/fetch_rotation.py --plan --slot <slot>`.
 
 ## STIG library harvest + delta procedure (Phase 21)
 
@@ -200,7 +283,7 @@ watcher: `cross-mapping/engine/horizon_monitor.py`; full model + per-authority s
   every open record whose dated window has passed, **regardless of the escalation grace**.
   Grace exists to pace escalation, not to hide an elapsed window (three elapsed windows sat
   mechanically "watching" inside grace in September 2026). A nonzero `elapsed_open` at the
-  monthly check means a human decides: materialize, supersede, or re-date from a source —
+  Monday check means a human decides: materialize, supersede, or re-date from a source —
   never silence the clock with a derived date.
 - **Add an anticipation (crawl-seed procedure):** whenever a source traversal encounters an
   anticipatable signal — a "not available yet" placeholder, a draft/IPD/FPD status, an ISO DIS ballot,
