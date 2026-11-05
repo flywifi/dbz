@@ -387,16 +387,21 @@ def run_monitor(
     dry_run: bool = False,
     feed_ids: Optional[List[str]] = None,
     deadline: Optional[float] = None,
+    skip_strategies: Optional[List[str]] = None,
 ) -> dict:
     """
     Run the framework monitor. Returns the full feed dict.
 
     Parameters
     ----------
-    registry_path : Path to feed_registry.json
-    out_path      : Where to write the output feed
-    dry_run       : If True, print results but don't write the output file
-    feed_ids      : If given, only check these feed IDs (for targeted updates)
+    registry_path   : Path to feed_registry.json
+    out_path        : Where to write the output feed
+    dry_run         : If True, print results but don't write the output file
+    feed_ids        : If given, only check these feed IDs (for targeted updates)
+    skip_strategies : check_strategy values NOT to check in this run. standards_refresh passes
+                      ["github_release"]: it compares every release feed live itself and reads
+                      only this monitor's exit code, so checking them here too doubled the
+                      GitHub calls (54 on dispatch run 41936204283, phase 50).
     """
     with open(registry_path, encoding="utf-8") as f:
         registry = json.load(f)
@@ -413,6 +418,12 @@ def run_monitor(
             pass
 
     target_ids = feed_ids or list(feeds.keys())
+    if skip_strategies:
+        skipped = [f for f in target_ids
+                   if (feeds.get(f) or {}).get("check_strategy", "poll_landing") in skip_strategies]
+        target_ids = [f for f in target_ids if f not in set(skipped)]
+        print(f"[*] Skipping {len(skipped)} feed(s) with strategy {', '.join(skip_strategies)} "
+              f"(checked by the caller)")
     results = []
 
     print(f"[*] Checking {len(target_ids)} framework sources …")
@@ -506,6 +517,10 @@ def main():
         "--dry-run", action="store_true",
         help="Print results without writing the output file",
     )
+    parser.add_argument(
+        "--skip-strategy", nargs="+", dest="skip_strategy", metavar="STRATEGY",
+        help="Do not check feeds with these check_strategy values (the caller checks them)",
+    )
     args = parser.parse_args()
 
     try:
@@ -514,6 +529,7 @@ def main():
             out_path=Path(args.out),
             dry_run=args.dry_run,
             feed_ids=args.feed,
+            skip_strategies=args.skip_strategy,
         )
     finally:
         fetchkit.save_state()  # persist learned host limits / breakers across runs

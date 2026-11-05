@@ -8,7 +8,8 @@ check run as the workflow runs them, and every request is counted per host again
 canonical-sources/host_policies.json. --check exits 1 when
   * any request bypasses fetchkit (an 'ungoverned' urlopen), or
   * a host's planned count exceeds its run_cap, or the total exceeds the runaway ceiling.
-Upper-bound mode: canned responses carry no validators, so poll_landing feeds cost HEAD+GET.
+Upper-bound mode: canned responses carry no validators, so poll_landing feeds cost HEAD+GET, and
+every GitHub releases lookup answers 404, so each release feed also costs its tags call.
 """
 from __future__ import annotations
 
@@ -19,6 +20,7 @@ import io
 import json
 import sys
 import time
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -55,6 +57,11 @@ def census(policies: dict) -> dict:
 
     def gov_open(req, timeout=None):
         governed.append(req.full_url)
+        if req.full_url.endswith("/releases/latest"):
+            # Upper bound: every repo answers "no releases", so each lookup also costs the tags
+            # call. The first census answered with a release and counted 37 GitHub calls; the
+            # first live dispatch (run 41936204283) made 54.
+            raise urllib.error.HTTPError(req.full_url, 404, "Not Found", {}, io.BytesIO(b""))
         return _Resp(req.full_url)
 
     def raw_open(req, timeout=None, *a, **k):
@@ -82,7 +89,7 @@ def census(policies: dict) -> dict:
     sink = io.StringIO()
     try:
         with contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
-            framework_monitor.run_monitor(dry_run=True)
+            framework_monitor.run_monitor(dry_run=True, skip_strategies=["github_release"])  # as standards_refresh runs it
             announcement_monitor.run(argparse.Namespace(
                 registry=str(reg_path), output=str(ROOT / "canonical-sources" / "announcements_feed.json"),
                 feed=None, days=45, dry_run=True, log_dir=None))

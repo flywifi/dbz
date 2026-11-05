@@ -303,6 +303,70 @@ def test_stdlib_blank_line_grouping_is_neutralised():
        "robots_verdict honours eCFR's Disallow after blank-line normalisation")
 
 
+def test_longest_match_wins():
+    """RFC 9309 §2.2.2: the most specific (longest) rule decides; allow wins a tie. The stdlib
+    parser applies the first match — on the first live dispatch (run 41936204283) it refused
+    www.ismap.go.jp/csm, the only path ISMAP's robots.txt allows."""
+    import urllib.robotparser
+    body = (ROBOTS_FIX / "www.ismap.go.jp.txt").read_text(encoding="utf-8")
+    naive = urllib.robotparser.RobotFileParser()
+    naive.parse(fetchkit.robots_lines(body))
+    ok(not naive.can_fetch(fetchkit.ROBOTS_AGENT, "https://www.ismap.go.jp/csm"),
+       "stdlib first-match refuses ISMAP /csm (the defect, pinned)")
+    v = fetchkit.robots_verdict(200, body)
+    ok(v.can_fetch(fetchkit.ROBOTS_AGENT, "https://www.ismap.go.jp/csm")
+       and v.can_fetch(fetchkit.ROBOTS_AGENT, "https://www.ismap.go.jp/csm/news"),
+       "ISMAP /csm allowed ('Allow: /csm' is longer than 'Disallow: /')")
+    ok(not v.can_fetch(fetchkit.ROBOTS_AGENT, "https://www.ismap.go.jp/")
+       and not v.can_fetch(fetchkit.ROBOTS_AGENT, "https://www.ismap.go.jp/en/"),
+       "ISMAP paths outside /csm stay disallowed")
+    rfc = [("allow: /p\ndisallow: /", "/page", True),
+           ("allow: /folder\ndisallow: /folder", "/folder/page", True),
+           ("allow: /page\ndisallow: /*.html", "/page.html", False),
+           ("allow: /page\ndisallow: /*.html", "/page.php5", True),
+           ("allow: /$\ndisallow: /", "/", True),
+           ("allow: /$\ndisallow: /", "/page.htm", False)]
+    for rules, path, want in rfc:
+        got = fetchkit.RobotsRules("user-agent: *\n" + rules).can_fetch(fetchkit.ROBOTS_AGENT, "https://x" + path)
+        ok(got == want, f"RFC 9309 §2.2.2 example {rules.splitlines()} {path} -> {'allow' if want else 'deny'}")
+    own = fetchkit.RobotsRules("User-agent: *\nDisallow: /\n\nUser-agent: dbz-standards-monitor\nDisallow:\n")
+    ok(own.can_fetch(fetchkit.ROBOTS_AGENT, "https://x/a"),
+       "a group naming our product token replaces the '*' group (§2.2.1)")
+    ok(not fetchkit.RobotsRules("User-agent: Googlebot\nDisallow: /\nUser-agent: *\nDisallow: /private\n")
+       .can_fetch(fetchkit.ROBOTS_AGENT, "https://x/private/x"),
+       "with no group of our own, the '*' group applies")
+    g, _ = policy_gov()
+    ok(refusal(g, "https://www.ismap.go.jp/csm") is None,
+       "the governor admits ISMAP /csm (the registered japan-ismap landing)")
+
+
+def test_state_path_none_is_stateless():
+    """state_path=None means no persisted state. Before 0.15.1 it silently meant the shared
+    .fetch-cache file, so after a live run these tests and the census inherited real breakers
+    (www.cisa.gov cooldown -> HostCooldown here; the census counted 304 instead of 327)."""
+    with tempfile.TemporaryDirectory() as d:
+        saved = fetchkit.STATE_DIR
+        fetchkit.STATE_DIR = Path(d)
+        try:
+            (Path(d) / "host_limits.json").write_text(json.dumps({"hosts": {"www.cisa.gov": {
+                "last_ts": 0.0, "interval": 1.5, "fails": 4, "breaker_until": 4e9}}}), encoding="utf-8")
+            (Path(d) / "fetch_state.json").write_text(json.dumps({"urls": {"https://x/a": {
+                "etag": '"e"', "last_modified": "", "sha256": "", "checked_at": ""}}}), encoding="utf-8")
+            try:
+                fetchkit.RateGovernor(policies=POLICIES).wait("www.cisa.gov", "")
+                shared = "admitted"
+            except fetchkit.HostCooldown:
+                shared = "cooldown"
+            ok(shared == "cooldown", "the default governor loads the shared state (a live breaker holds)")
+            g, _ = policy_gov()
+            ok(refusal(g, "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json") is None,
+               "state_path=None ignores persisted breakers (offline tests, census)")
+            ok(fetchkit.FetchCache().validators("https://x/a") and not fetchkit.FetchCache(state_path=None).validators("https://x/a"),
+               "FetchCache(state_path=None) carries no persisted validators")
+        finally:
+            fetchkit.STATE_DIR = saved
+
+
 def test_required_header_and_no_wayback_after_refusal():
     g, _ = policy_gov()
     SENT.clear()
@@ -339,7 +403,8 @@ if __name__ == "__main__":
                test_resilient_live_and_unchanged, test_wayback_only_on_hard_fail,
                test_no_wayback_on_success, test_policy_registry_cites_every_rule,
                test_ncp_meta_first_and_run_cap, test_nvd_rolling_window, test_robots_rfc9309,
-               test_stdlib_blank_line_grouping_is_neutralised,
+               test_stdlib_blank_line_grouping_is_neutralised, test_longest_match_wins,
+               test_state_path_none_is_stateless,
                test_required_header_and_no_wayback_after_refusal, test_save_ledger_roundtrip]:
         fn()
     print(f"\nfetchkit tests: {PASS} assertions PASS")

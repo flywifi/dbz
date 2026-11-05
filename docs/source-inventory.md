@@ -573,7 +573,8 @@ robots.txt follows RFC 9309. Python's blank-line grouping, which silently drops 
 Federal Register Disallow rules, is neutralised. The offline census
 (`tools/fetch_census.py --check`, in CI) plans one monthly run at **328 requests to 96 hosts,
 none ungoverned**. Before phase 50 it was 423, with 193 ungoverned and two hosts over their
-cap.
+cap. (Corrected by the first CI dispatch, below: GitHub was undercounted. The 0.15.1 upper
+bound is 327, api.github.com 38 of 50.)
 
 **What the first governed live run refused** (from the run ledger):
 - `texas-tdpsa` polled `capitol.texas.gov/BillLookup/…`, which that host's robots disallows. It
@@ -625,3 +626,41 @@ Last-Modified 2026-10-26.
 - **Still pending** (no issuer page stated the version): scf (live tag 2026.3), mitre-atlas
   (v2026.10), cisa-scubagear, cisa-csaf, the OWASP feeds, openai-api, and the no-release
   repositories. The tags fallback and the dispatch run decide them.
+
+**The first CI dispatch** (run 41936204283, 2026-11-04, `fetch=false`) proved the pipe from
+GitHub's runners:
+- **STIG verdict:** `stig_status: current` — library, NCP and trackr all `same` (NCP entry
+  digest `c401538de35cfe04`, 96 joined). This is the first live STIG verdict since July.
+- **Oracle benchmark:** green on the runner.
+- **Fetch ledger:** 272 requests to 96 hosts and 7 refusals.
+  - Six refusals came from the four TLS/timeout hosts (`www.acq.osd.mil`, `www.cnss.gov`,
+    `www.ilga.gov`: "unable to get local issuer certificate"; `www.cyber.gov.au`: timeout).
+    They fail the same way from the runners.
+  - The ledger also exposed two **defects, fixed in 0.15.1**:
+    1. **Robots precedence (the seventh refusal).** `www.ismap.go.jp/csm` was refused. The stdlib robots parser
+       applies the first matching rule, and RFC 9309 §2.2.2 requires the longest
+       (`Allow: /csm` beats `Disallow: /`). fetchkit now evaluates robots itself. Re-swept,
+       64 registry and seed URLs on 16 hosts with fetched robots files gave exactly one changed
+       verdict: this one.
+    2. **GitHub counted twice (no refusal).** api.github.com took 54 calls, while the census had said 37.
+       No single process passed its 50-call cap, but the run total did.
+       The monitor and `standards_refresh` both looked up all 19 release feeds, and the
+       census answered with a release, so it never counted the tags fallback. Now the monitor
+       skips those feeds in the monthly path. The census models a 404 on every release lookup:
+       74 > 50 was red before the skip, and 38 ≤ 50 is green after. The upper-bound plan is
+       327 requests.
+- **Release rows (live tags):** openapi-spec, mitre-attack, mcp-spec and oscal-format read
+  `current` against their pins. Seven rows stay `registry_stale`, none moved without an issuer
+  statement:
+  - **scf** 2026.3: the SCF download page still names 2026.2.
+  - **mitre-atlas** v2026.10: atlas.mitre.org states no version.
+  - **cisa-scubagear** v2.0.0 and **openai-api** 2.0.0: the registry carries free text.
+  - **owasp-asvs** `latest`, **owasp-top10** `2017-RC2` and **owasp-llm-top10** `2024`: the
+    first tags-API entry is not a release of record.
+- **Release rows (check_failed):** eight rows have no tag at all.
+  - No releases or tags: cisa-csaf, cisa-kev, enisa-ecsf, fedramp (`FedRAMP/rules`) and
+    huggingface-hub.
+  - The repository itself answers 404: csa-ccm, csa-star-ccm5 and nist-ai-rmf.
+
+  These need a different check strategy or a repo repoint, and both need evidence from
+  outside this phase's scope.

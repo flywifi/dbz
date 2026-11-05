@@ -3,6 +3,33 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.15.1] — 2026-11-05 (phase 50 close-out — defects found by the first CI dispatch)
+
+PATCH. The `standards-watch` dispatch on the 0.15.0 close-out (run 41936204283) read the first
+live STIG verdict since July: library, NCP and trackr all `same`. Its run ledger also showed
+two defects in 0.15.0's host-rule enforcement. Audit: `docs/audits/phase-50-adversarial-audit.md`,
+Pass 4 item 5.
+
+- **Fixed — robots.txt precedence.** fetchkit used the stdlib parser's first-match rule, while
+  RFC 9309 §2.2.2 requires the most specific (longest) rule, with allow winning a tie. As a
+  result it refused `www.ismap.go.jp/csm`, the only path ISMAP's robots allows and the
+  `japan-ismap` landing since 0.15.0. fetchkit now evaluates robots itself (`RobotsRules`:
+  longest match, `*`/`$`, group merging). The crawler uses the same verdict. It is pinned by
+  the real ISMAP file and the RFC's precedence examples (`test_fetchkit.py`, 70 assertions).
+  Re-swept over 64 registry and seed URLs on 16 hosts, exactly one verdict changed: that one.
+- **Fixed — GitHub calls counted twice; census undercount.** The monthly path looked up every
+  release feed in both `framework_monitor` and `standards_refresh`: 54 GitHub calls, against a
+  census figure of 37. The monitor now takes `--skip-strategy github_release` there. The census
+  answers every release lookup with "no releases", so each feed also costs its tags call: a
+  true upper bound, red at 74 > 50 before the skip and green at 38 ≤ 50 after. The plan is
+  **327 requests to 96 hosts**.
+- **Fixed — `state_path=None` was not stateless.** `RateGovernor` and `FetchCache` treated `None`
+  as "the shared `.fetch-cache` file". So the offline tests, the census and the release
+  selftest inherited live breakers after a real run. The tests hit a `www.cisa.gov` cooldown
+  (caught by the pre-push rehearsal), and the census quietly counted 304 instead of 327. Now
+  `None` means no persisted state, and omitting the argument means the shared file.
+- **Corrected:** 0.15.0's "measured plan is 328 requests" understated GitHub use, as above.
+
 ## [0.15.0] — 2026-11-04 (phase 50 — STIGs in the monthly feed, host usage rules enforced)
 
 MINOR: schema 3.18 → 3.19 (`stig_catalog.lifecycle`, `last_library`) and a new canonical

@@ -107,13 +107,24 @@ How it is enforced:
   answering for `/robots.txt` is not a robots file.
 - **Blank lines are not group breaks.** Python's stdlib parser treats them as breaks and so
   drops real Disallow rules. fetchkit strips blank lines first; this is pinned by a fixture.
+- **The most specific rule wins** (RFC 9309 §2.2.2): the longest matching pattern decides, an
+  `Allow` wins a tie, and `*` / `$` are honoured. Every group naming our product token is
+  merged; failing that, the `*` groups apply. The stdlib parser applies the *first* match, and
+  on the first CI dispatch it refused `www.ismap.go.jp/csm`, the one path that file allows
+  (`Disallow: /` is listed before `Allow: /csm`). Since 0.15.1 fetchkit evaluates robots
+  itself (`RobotsRules`), pinned by the ISMAP fixture and the RFC's own examples.
 - **Every refusal is recorded.** A broken rule raises `PolicyRefused`. It is written to the
   per-run ledger (`fetch_ledger` / `policy_refusals` in the drift report) and surfaces in the
   drift issue. It is never retried in the same run.
 
 The CI gate is `python3 tools/fetch_census.py --check`. It replays one monthly `--check`
 offline and fails if any request bypasses the governor or any host's planned count exceeds its
-cap. It measured 328 requests to 96 hosts, with api.github.com the busiest at 37.
+cap. It is an upper bound: every landing page costs HEAD+GET, and every GitHub repo answers "no
+releases", so each release feed also costs its tags call. It plans **327 requests to 96 hosts,
+with api.github.com the busiest at 38 of 50**; the first CI dispatch made 272. (The 0.15.0
+census answered GitHub with a release and counted 37, while the live run made 54. The monitor
+and `standards_refresh` both looked up every release feed. Since 0.15.1 the monitor skips them
+there with `--skip-strategy github_release`, and the census models the tags fallback.)
 
 To add a host:
 1. Quote its rule from its own page into `host_policies.json` via `registry_io`, with `verified`
@@ -129,6 +140,12 @@ The first governed live run (2026-11-04) refused exactly what the rules require:
 - Four hosts' robots.txt failed TLS or timed out from that network (`www.acq.osd.mil`,
   `www.cnss.gov`, `www.ilga.gov`, `www.cyber.gov.au`). Their pages fail the same way, so this is
   no regression. The ledger now names the cause.
+
+The first CI dispatch (run 41936204283, 2026-11-04) read the STIG verdict live (library, NCP
+and trackr all `same`). It showed the four TLS/timeout hosts fail the same way from GitHub's
+runners (the three TLS hosts fail certificate verification with "unable to get local issuer
+certificate"; cyber.gov.au timed out). It also found the two defects fixed in 0.15.1 (robots
+precedence; duplicate GitHub lookups).
 
 ## STIG library harvest + delta procedure (Phase 21)
 

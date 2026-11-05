@@ -41,8 +41,8 @@ import random
 import re
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
-import urllib.robotparser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -60,6 +60,7 @@ BREAKER_STATUSES = {403, 429, 503}
 USER_AGENT = ("Mozilla/5.0 (X11; Linux x86_64) dbz-standards-monitor "
               "(GRC framework currency check; contact via repo)")
 WAYBACK_API = "https://archive.org/wayback/available?url="
+_STATE_FILE = object()      # default state_path: the shared file under .fetch-cache/
 
 
 class HostCooldown(Exception):
@@ -114,11 +115,66 @@ def robots_lines(body: str) -> list:
     return [ln for ln in (x.split("#", 1)[0].strip() for x in body.splitlines()) if ln]
 
 
+def _robots_match(pattern: str, path: str) -> bool:
+    """RFC 9309 §2.2.3 path match: '*' matches any sequence, a trailing '$' anchors the end."""
+    anchored = pattern.endswith("$")
+    core = pattern[:-1] if anchored else pattern
+    rx = "".join(".*" if c == "*" else re.escape(c) for c in core)
+    return re.match(rx + ("$" if anchored else ""), path, re.S) is not None
+
+
+class RobotsRules:
+    """robots.txt rules evaluated as RFC 9309 requires. Replaces urllib.robotparser, which
+    (1) ends a group at a blank line and (2) applies the FIRST matching rule, where §2.2.2 requires
+    the MOST SPECIFIC match (the longest pattern) with an allow winning a tie. Both were measured
+    on real files in phase 50: (1) dropped eCFR's and the Federal Register's Disallows; (2) refused
+    www.ismap.go.jp/csm ('Disallow: /' listed before 'Allow: /csm') on the first live dispatch.
+    Groups (§2.2.1): consecutive user-agent lines open one group; every group whose product token
+    equals ours (case-insensitive) is merged, else every '*' group; no group -> allow."""
+
+    def __init__(self, body: str):
+        self.groups: list = []          # [(agents: set[str], rules: [(allow: bool, pattern: str)])]
+        agents, rules, in_rules = set(), [], False
+        for ln in robots_lines(body):
+            key, _, val = ln.partition(":")
+            key, val = key.strip().lower(), urllib.parse.unquote(val.strip())
+            if key == "user-agent":
+                if in_rules:
+                    self.groups.append((agents, rules))
+                    agents, rules, in_rules = set(), [], False
+                agents.add(val.lower().split("/", 1)[0].strip())
+            elif key in ("allow", "disallow") and agents:
+                in_rules = True
+                if val:                      # an empty Disallow is no rule (allow all)
+                    rules.append((key == "allow", val))
+        if agents:
+            self.groups.append((agents, rules))
+
+    def rules_for(self, agent: str) -> list:
+        token = agent.lower().split("/", 1)[0].strip()
+        matched = [r for ags, r in self.groups if token in ags]
+        if not matched:
+            matched = [r for ags, r in self.groups if "*" in ags]
+        return [rule for r in matched for rule in r]
+
+    def can_fetch(self, agent: str, url: str) -> bool:
+        path = urllib.parse.unquote(_path_of(url).split("#", 1)[0])
+        if path == "/robots.txt":
+            return True                      # §2.2.2: /robots.txt is implicitly allowed
+        best = None                          # (pattern length, allow)
+        for allow, pattern in self.rules_for(agent):
+            if _robots_match(pattern, path):
+                n = len(pattern.encode("utf-8"))
+                if best is None or n > best[0] or (n == best[0] and allow):
+                    best = (n, allow)
+        return True if best is None else best[1]
+
+
 def robots_verdict(status: int, body: str):
     """RFC 9309 status semantics. 2xx -> parse (an HTML page, or a body without directives, is not
     a robots file -> no rules); 4xx 'unavailable' -> allow all (§2.3.1.3); 5xx or a network
     failure 'unreachable' -> complete disallow (§2.3.1.4). Returns "allow_all" | "disallow_all" |
-    a RobotFileParser."""
+    a RobotsRules."""
     if status == 0 or 500 <= status <= 599:
         return "disallow_all"
     if 400 <= status <= 499:
@@ -127,9 +183,7 @@ def robots_verdict(status: int, body: str):
     if (head.startswith(("<!doctype", "<html")) or "<head" in head
             or not re.search(r"(?im)^\s*(user-agent|disallow|allow)\s*:", body)):
         return "allow_all"
-    rp = urllib.robotparser.RobotFileParser()
-    rp.parse(robots_lines(body))
-    return rp
+    return RobotsRules(body)
 
 
 def _path_of(url: str) -> str:
@@ -146,12 +200,15 @@ class RateGovernor:
     """Per-host pacing + breaker + recorded host usage rules + runaway ceiling.
     Learned limits persist across runs (.fetch-cache/host_limits.json); per-run counts never do."""
 
-    def __init__(self, state_path: Path | None = None, *,
+    def __init__(self, state_path=_STATE_FILE, *,
                  min_interval: float = DEFAULT_MIN_INTERVAL,
                  budget: int = DEFAULT_BUDGET,
                  opener=_default_open, clock=time.time, sleeper=time.sleep,
                  policies: dict | None = None):
-        self.state_path = state_path if state_path is not None else STATE_DIR / "host_limits.json"
+        # Omitted -> the shared .fetch-cache/host_limits.json. None -> no persisted state: nothing
+        # loaded, nothing saved. (Before 0.15.1 None also meant the shared file, so offline tests and
+        # the census inherited live breakers: the census undercounted 304 vs 327 after a live run.)
+        self.state_path = STATE_DIR / "host_limits.json" if state_path is _STATE_FILE else state_path
         self.min_interval = min_interval
         self.budget_remaining = budget
         self._opener = opener
@@ -315,8 +372,9 @@ class RateGovernor:
 class FetchCache:
     """Conditional-GET validators + sha256 unchanged detection, persisted per URL."""
 
-    def __init__(self, state_path: Path | None = None):
-        self.state_path = state_path if state_path is not None else STATE_DIR / "fetch_state.json"
+    def __init__(self, state_path=_STATE_FILE):
+        # Omitted -> the shared .fetch-cache/fetch_state.json; None -> no persisted validators.
+        self.state_path = STATE_DIR / "fetch_state.json" if state_path is _STATE_FILE else state_path
         self.hits = 0
         self.misses = 0
         self.urls: dict = {}

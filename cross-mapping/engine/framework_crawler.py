@@ -21,7 +21,7 @@ Design (ethical public-data crawler — NOT an evasion tool)
 Pattern adapted from the educator-tools standards-updater crawler
 (tools/standards_refresh.py) — the proven "detect → polite-crawl → report" design.
 
-Stdlib only (urllib + robotparser + html.parser). Network required for --crawl.
+Stdlib only (urllib + html.parser; robots.txt via fetchkit.robots_verdict, RFC 9309). Network required for --crawl.
 
 Usage
 -----
@@ -43,7 +43,6 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-import urllib.robotparser
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
@@ -140,7 +139,7 @@ class Fetcher:
         self.ua = ua
         self.timeout = timeout
         self.respect_robots = respect_robots
-        # base -> fetchkit.robots_verdict(): "allow_all" | "disallow_all" | RobotFileParser
+        # base -> fetchkit.robots_verdict(): "allow_all" | "disallow_all" | fetchkit.RobotsRules
         self._robots: Dict[str, object] = {}
 
     def allowed(self, url: str) -> bool:

@@ -352,7 +352,9 @@ def stage_check() -> dict:
     if LEDGER_DIR.exists():
         for f in LEDGER_DIR.glob("*.json"):
             f.unlink()
-    monitor_rc, monitor_out = _run([sys.executable, str(ENGINE / "framework_monitor.py"), "--dry-run"])
+    # github_release feeds are compared live below; the monitor skips them (one lookup per repo).
+    monitor_rc, monitor_out = _run([sys.executable, str(ENGINE / "framework_monitor.py"), "--dry-run",
+                                    "--skip-strategy", "github_release"])
     ann_rc, ann_out = _run([sys.executable, str(ENGINE / "announcement_monitor.py"), "--dry-run"])
     stig_signal = stage_stig_check()
     cci_signal = stage_cci_check()
