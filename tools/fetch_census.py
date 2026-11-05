@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """
-fetch_census.py — offline census of one monthly standards-watch network plan (phase 50).
+fetch_census.py — offline census of the standards-watch network plan (phase 50; weekly since phase 51).
 
-Every request the monthly `standards_refresh.py --check` makes is answered locally (no network):
+Every request the Monday `standards_refresh.py --check` makes is answered locally (no network):
 the two registry-driven monitors, the GitHub release checks, the STIG currency signals and the CCI
 check run as the workflow runs them, and every request is counted per host against
 canonical-sources/host_policies.json. --check exits 1 when
   * any request bypasses fetchkit (an 'ungoverned' urlopen), or
-  * a host's planned count exceeds its run_cap, or the total exceeds the runaway ceiling.
+  * a host's planned count exceeds its run_cap, or the total exceeds the runaway ceiling, or
+  * (phase 51) a weekday's planned slot load breaks a host rule (fetch_schedule.json), or a
+    slot's cron is missing from its workflow file.
 Upper-bound mode: canned responses carry no validators, so poll_landing feeds cost HEAD+GET, and
 every GitHub releases lookup answers 404, so each release feed also costs its tags call.
 """
@@ -137,13 +139,14 @@ def main(argv=None) -> int:
     r = census(policies)
     # Phase 51: the weekly rotation's per-day plan (fetch_schedule.json requests_measured) joins the gate.
     import fetch_rotation
-    days, slot_bad = fetch_rotation.census_slots(fetch_rotation.load_schedule(), policies)
-    r["violations"] += [f"rotation {v}" for v in slot_bad]
+    sched = fetch_rotation.load_schedule()
+    days, slot_bad = fetch_rotation.census_slots(sched, policies)
+    r["violations"] += [f"rotation {v}" for v in slot_bad + fetch_rotation.verify_workflows(sched)]
     r["rotation_days"] = {d: sum(v["requests"] for v in h.values()) for d, h in sorted(days.items())}
     if a.json:
         print(json.dumps(r, indent=2, sort_keys=True))
     else:
-        print(f"[census] {r['total']} requests to {r['hosts']} hosts per monthly --check "
+        print(f"[census] {r['total']} requests to {r['hosts']} hosts per Monday --check "
               f"({r['governed']} governed, {r['ungoverned']} ungoverned; {r['robots']} robots.txt)")
         for h, n in list(r["per_host"].items())[:8]:
             print(f"  {n:4} / cap {r['caps'][h]:<4} {h}")

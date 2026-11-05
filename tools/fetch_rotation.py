@@ -147,7 +147,9 @@ def verify_workflows(sched: dict) -> list:
 
 
 def census_slots(sched: dict, policies: dict) -> tuple:
-    """Per weekday: summed measured requests per host vs run_cap; one slot per host per day."""
+    """Per weekday: summed measured requests per host vs run_cap; one slot per host per day. A slot
+    whose workflow builds (its 'builds' field) also carries build_requests_measured, the OSCAL
+    warm-up of the build (upper bound: a weekly-refresh slot builds only when a file changed)."""
     def cap(h):
         p = dict(policies.get("_default", {}).get("enforced", {}))
         p.update(policies.get("hosts", {}).get(h, {}).get("enforced", {}))
@@ -155,8 +157,11 @@ def census_slots(sched: dict, policies: dict) -> tuple:
     days, violations = {}, []
     for name, s in sched["slots"].items():
         dow = s["cron"].split()[4]
-        for jid in s["jobs"]:
-            for h, n in sched["jobs"][jid].get("requests_measured", {}).items():
+        loads = [sched["jobs"][jid].get("requests_measured", {}) for jid in s["jobs"]]
+        if s.get("builds"):
+            loads.append(sched.get("build_requests_measured", {}))
+        for load in loads:
+            for h, n in load.items():
                 if h.startswith("_"):
                     continue
                 d = days.setdefault(dow, {}).setdefault(h, {"requests": 0, "slots": set()})

@@ -17,7 +17,8 @@
       "workflow": "standards-watch.yml",
       "jobs": [
         "standards-check"
-      ]
+      ],
+      "builds": "always"
     },
     "tue-regulatory": {
       "cron": "41 14 * * 2",
@@ -26,7 +27,8 @@
         "fr-watcher",
         "ecfr-45-164",
         "ecfr-32-170"
-      ]
+      ],
+      "builds": "when_changed"
     },
     "wed-vulnerability": {
       "cron": "47 14 * * 3",
@@ -34,7 +36,8 @@
       "jobs": [
         "kev",
         "nvd-7d"
-      ]
+      ],
+      "builds": "when_changed"
     },
     "thu-dod-mitre": {
       "cron": "53 14 * * 4",
@@ -43,7 +46,8 @@
         "attack",
         "stig-library",
         "horizon-check"
-      ]
+      ],
+      "builds": "when_changed"
     }
   },
   "jobs": {
@@ -321,5 +325,9 @@
     "olir": "https://csrc.nist.gov/api/olir/finalized answers 404 (2026-11-05)",
     "cprt": "https://csrc.nist.gov/api/catalog/pubs/page answers 404 (2026-11-05); the nudp REST retirement is recorded in docs/source-audit-phase25.md:76",
     "oscal": "not a separate job: the Monday standards-check build step fetches the OSCAL catalog (governed since C1), and oscal-format / nist-800-53 currency is in the Monday check"
-  }
+  },
+  "build_requests_measured": {
+    "raw.githubusercontent.com": 11
+  },
+  "build_measured": "computed 2026-11-05 (plan R2): the build's OSCAL warm-up (oscal_diff --oscal-cache … --dry-run) reads the 5,136,923 B catalog as 1 Range probe + 10 windows of 512 KiB, governed since phase 51 C1. Counted on every slot whose workflow builds: Monday always (standards-watch), a weekly-refresh slot only when a pr job changed a file (upper bound)"
 }

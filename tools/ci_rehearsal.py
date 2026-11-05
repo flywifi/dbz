@@ -48,6 +48,7 @@ STEPS = [
     ("governed-loader tests", "python3 cross-mapping/tests/test_governed_loaders.py"),
     ("attack loader tests", "python3 cross-mapping/tests/test_attack_loader.py"),
     ("weekly-rotation tests", "python3 cross-mapping/tests/test_rotation.py"),
+    ("weekly-workflow tests", "python3 cross-mapping/tests/test_weekly_workflows.py"),
     ("stig retention tests", "python3 cross-mapping/tests/test_stig_retention.py"),
     ("fetch census (host rules)", "python3 tools/fetch_census.py --check"),
     ("health audit — scan", "python3 tools/health_audit.py --scan"),

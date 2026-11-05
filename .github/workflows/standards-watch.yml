@@ -1,13 +1,13 @@
 name: standards-watch
 
-# Monthly standards drift check: runs the registry-driven monitors, uploads the
+# Weekly (Monday) standards drift check: runs the registry-driven monitors, uploads the
 # drift report, and files/updates a "standards drift report" issue when anything
 # moved. Artifact fetch + rebuild is HUMAN-TRIGGERED only (workflow_dispatch with
 # fetch=true) so canonical-source changes always arrive as a reviewable commit.
 
 on:
   schedule:
-    - cron: '17 6 3 * *'   # 06:17 UTC on the 3rd of every month
+    - cron: '17 6 * * 1'   # weekly, Monday (phase 51; provisional until the WS-5 delay probe pins it)
   workflow_dispatch:
     inputs:
       fetch:
@@ -81,8 +81,9 @@ jobs:
             const bad = (s) => s === 'drift' || s === 'check_failed';
             const dedicated = [['stig', report.stig_status], ['cci', report.cci_status]];
             const refusals = report.policy_refusals || 0;
+            const idle = report.inactivity_warning ? report.days_since_last_commit : 0;
             const drifted = (summary.registry_stale || 0) + (summary.artifact_stale || 0) + (summary.check_failed || 0)
-              + dedicated.filter(([, s]) => bad(s)).length + (refusals > 0 ? 1 : 0);
+              + dedicated.filter(([, s]) => bad(s)).length + (refusals > 0 ? 1 : 0) + (idle ? 1 : 0);
             if (drifted === 0) { core.info('no drift — no issue'); return; }
             const title = 'standards drift report';
             const sig = ['| dedicated check | status | detail |', '|---|---|---|'];
@@ -92,6 +93,7 @@ jobs:
               sig.push(`| stig/${name} | ${s.status} | ${detail} |`);
             }
             if (refusals) sig.push(`| fetch policy | ${refusals} refused | per-host reasons in fetch_ledger (artifact) |`);
+            if (idle) sig.push(`| inactivity | ${idle} days since the last commit | GitHub disables scheduled workflows at 60 days; merge a refresh PR or commit |`);
             const lines = ['| framework | version | status | last_verified |', '|---|---|---|---|'];
             for (const f of report.feeds) {
               if (['registry_stale', 'artifact_stale', 'check_failed'].includes(f.classification)) {

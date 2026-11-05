@@ -100,3 +100,7 @@ Describe the change and reference the affected component (ingestion loader, over
   every doc `doc_claims.json` cites, and a half-landed bump shipped a red CI run once.
 - GitHub schedules a workflow run 1–10 minutes after a push; absence of a run inside that
   window is not evidence of failure.
+- **Start every session with the weekly digest.** Read the open issue labelled `weekly-digest` and
+  any open `auto-refresh` pull requests (GitHub MCP), and present the digest's "Suggested to
+  commit" lines before other work. Report-only datasets (NVD, FIPS, OLIR) are never committed by the
+  schedule; a commit of one is the user's decision, taken from that list (phase 51).

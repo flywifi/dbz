@@ -1,0 +1,135 @@
+name: weekly-refresh
+
+# Phase 51. One cron per slot; tools/fetch_rotation.py maps github.event.schedule to its slot, so a
+# delayed run still runs its own slot. Times are provisional until the WS-5 delay probe pins them.
+on:
+  schedule:
+    - cron: '41 14 * * 2'   # tue-regulatory
+    - cron: '47 14 * * 3'   # wed-vulnerability
+    - cron: '53 14 * * 4'   # thu-dod-mitre
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: 'slot to run (tue-regulatory | wed-vulnerability | thu-dod-mitre)'
+        required: true
+
+permissions:
+  contents: write        # push the slot's refresh branch (never the default branch)
+  pull-requests: write   # open / update the slot's pull request
+  issues: write          # update the weekly digest issue (WS-4)
+  actions: write         # dispatch health.yml on the refresh branch (GITHUB_TOKEN pushes start no run)
+
+concurrency:
+  group: weekly-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: pip install -r requirements.txt
+      - name: Run the slot
+        id: slot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DBZ_FF_GITHUB_AUTHENTICATED: '1'
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+          SLOT: ${{ inputs.slot }}
+          FIRED: ${{ github.event.schedule }}
+        run: |
+          if [ -n "$SLOT" ]; then python3 tools/fetch_rotation.py --slot "$SLOT"; else python3 tools/fetch_rotation.py --cron "$FIRED"; fi
+          f=$(ls .fetch-cache/rotation/*.json | grep -v digest | head -1)
+          echo "report=$f" >> "$GITHUB_OUTPUT"
+          echo "slot=$(python3 -c "import json;print(json.load(open('$f'))['slot'])")" >> "$GITHUB_OUTPUT"
+          echo "changed=$(python3 -c "import json;print(str(json.load(open('$f'))['changed']).lower())")" >> "$GITHUB_OUTPUT"
+      - name: Battery on the refreshed tree (build, oracle benchmark, scenarios)
+        id: battery
+        if: steps.slot.outputs.changed == 'true'
+        run: |
+          set -o pipefail
+          { python3 cross-mapping/nist-catalog/ingestion/generate_controls.py \
+            && python3 cross-mapping/engine/oscal_diff.py --oscal-cache cross-mapping/output/oscal_v5.2.0_cache.json --dry-run \
+            && python3 cross-mapping/engine/build_db.py \
+            && python3 cross-mapping/tests/benchmark_oracles.py --check \
+            && python3 cross-mapping/tests/run_scenarios.py ; } 2>&1 | tail -60 | tee .fetch-cache/rotation/battery.txt
+      - name: Commit to the slot's refresh branch
+        if: steps.slot.outputs.changed == 'true' && steps.battery.outcome == 'success'
+        env:
+          SLOT: ${{ steps.slot.outputs.slot }}
+          REPORT: ${{ steps.slot.outputs.report }}
+        run: bash tools/rotation_commit.sh "$SLOT" "$REPORT"
+      - name: Open or update the slot's pull request; dispatch health.yml on it
+        id: pr
+        if: steps.slot.outputs.changed == 'true' && steps.battery.outcome == 'success'
+        uses: actions/github-script@v7
+        env:
+          REPORT: ${{ steps.slot.outputs.report }}
+        with:
+          script: |
+            const fs = require('fs');
+            const rep = JSON.parse(fs.readFileSync(process.env.REPORT, 'utf8'));
+            const bat = fs.existsSync('.fetch-cache/rotation/battery.txt') ? fs.readFileSync('.fetch-cache/rotation/battery.txt', 'utf8') : '(no battery output)';
+            const head = `auto/refresh-${rep.slot}`;
+            const base = context.payload.repository.default_branch;
+            const rows = rep.jobs.map(j => `| ${j.job} | ${j.mode} | ${j.status} | ${(j.changed || []).join('<br>') || '—'} | ${j.why} |`);
+            const body = [
+              `Automated weekly refresh, slot \`${rep.slot}\`. Review and merge by hand; nothing merges automatically.`, '',
+              '| job | mode | status | changed files | condition |', '|---|---|---|---|---|', ...rows, '',
+              'Battery on this tree (build, oracle benchmark, scenarios):', '```', bat.slice(-3000), '```',
+              '`health.yml` was dispatched on this branch; its result appears in this pull request\'s checks.'].join('\n');
+            const {owner, repo} = context.repo;
+            const open = await github.rest.pulls.list({owner, repo, state: 'open', head: `${owner}:${head}`});
+            let pr;
+            if (open.data.length) {
+              pr = open.data[0];
+              await github.rest.pulls.update({owner, repo, pull_number: pr.number, body});
+            } else {
+              pr = (await github.rest.pulls.create({owner, repo, head, base, title: `Weekly refresh: ${rep.slot}`, body})).data;
+              await github.rest.issues.addLabels({owner, repo, issue_number: pr.number, labels: ['auto-refresh']});
+            }
+            await github.rest.actions.createWorkflowDispatch({owner, repo, workflow_id: 'health.yml', ref: head});
+            core.info(`PR #${pr.number} ${open.data.length ? 'updated' : 'opened'}; health.yml dispatched on ${head}`);
+      - name: Update the weekly digest issue (read first by every new session; CLAUDE.md)
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          SLOT: ${{ steps.slot.outputs.slot || inputs.slot || 'unknown-slot' }}
+          BATTERY: ${{ steps.battery.outcome }}
+          PR_STEP: ${{ steps.pr.outcome }}
+        with:
+          script: |
+            const fs = require('fs');
+            const slot = process.env.SLOT;
+            const path = `.fetch-cache/rotation/digest-${slot}.md`;
+            let section = fs.existsSync(path) ? fs.readFileSync(path, 'utf8').trim()
+              : `<!-- slot:${slot} -->\n### ${slot}\n\nThe slot did not produce a report (see the run's log). If the PR step failed, check Settings → Actions → General → Workflow permissions → "Allow GitHub Actions to create and approve pull requests".\n<!-- /slot:${slot} -->`;
+            const notes = [];
+            if (process.env.BATTERY === 'failure') notes.push('**The battery failed on the refreshed tree, so no pull request was proposed.** See the run log and the battery.txt artifact.');
+            if (process.env.PR_STEP === 'failure') notes.push('**The pull-request step failed.** If this is the first run, the owner must switch on Settings → Actions → General → Workflow permissions → "Allow GitHub Actions to create and approve pull requests". The refresh branch was pushed; the next run proposes it again.');
+            if (notes.length) section = section.replace(`<!-- /slot:${slot} -->`, notes.join('\n\n') + `\n<!-- /slot:${slot} -->`);
+            const {owner, repo} = context.repo;
+            const head = '# Weekly refresh digest\n\nRead by every new session first (CLAUDE.md). Each slot replaces only its own section.\n';
+            const found = await github.rest.issues.listForRepo({owner, repo, state: 'open', labels: 'weekly-digest'});
+            if (!found.data.length) {
+              await github.rest.issues.create({owner, repo, title: 'weekly refresh digest', labels: ['weekly-digest'], body: head + '\n' + section});
+              core.info('digest issue created'); return;
+            }
+            const issue = found.data[0];
+            const re = new RegExp(`<!-- slot:${slot} -->[\\s\\S]*?<!-- /slot:${slot} -->`);
+            const body = re.test(issue.body || '') ? issue.body.replace(re, section) : (issue.body || head) + '\n\n' + section;
+            await github.rest.issues.update({owner, repo, issue_number: issue.number, body});
+            core.info(`digest #${issue.number} updated (${slot})`);
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: weekly-refresh-${{ steps.slot.outputs.slot }}
+          path: .fetch-cache/rotation/
+          retention-days: 30

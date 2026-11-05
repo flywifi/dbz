@@ -36,6 +36,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -345,6 +346,20 @@ def selftest_stig_check() -> int:
     return 1 if bad else 0
 
 
+INACTIVITY_WARN_DAYS = 45   # GitHub disables a public repo's schedules after 60 days without activity
+
+
+def days_since_last_commit(_runner=None) -> int | None:
+    """Days since HEAD's commit (phase 51). None when git is unavailable. A fresh shallow checkout
+    still carries HEAD's commit time, so the Monday runner can measure it."""
+    try:
+        out = (_runner or (lambda: subprocess.run(["git", "log", "-1", "--format=%ct"], capture_output=True,
+                                                  text=True, cwd=str(ROOT), timeout=30).stdout))()
+        return int((time.time() - int(out.strip())) // 86400)
+    except (ValueError, OSError, subprocess.SubprocessError):
+        return None
+
+
 def stage_check() -> dict:
     """Run the monitors, then classify every registry feed. github_release feeds get a LIVE
     comparison (against github_tag_pin when set); every other row is labeled stored_status_only.
@@ -386,6 +401,9 @@ def stage_check() -> dict:
               "cci_status": cci_signal.get("cci_status"), "horizon_overdue": horizon_signal.get("horizon_overdue"),
               "fetch_ledger": ledger, "policy_refusals": sum(v["refused"] for v in ledger.values()),
               "feeds": rows, "summary": {}}
+    idle = days_since_last_commit()
+    report["days_since_last_commit"] = idle
+    report["inactivity_warning"] = idle is not None and idle >= INACTIVITY_WARN_DAYS
     for r in rows:
         report["summary"][r["classification"]] = report["summary"].get(r["classification"], 0) + 1
     REPORT.parent.mkdir(parents=True, exist_ok=True)
@@ -397,6 +415,9 @@ def stage_check() -> dict:
     for r in rows:
         if r["classification"] == "registry_stale":
             print(f"[check] REGISTRY STALE {r['framework_id']}: {r['reason']} — re-verify at origin and update via registry_io")
+    if report["inactivity_warning"]:
+        print(f"[check] INACTIVITY WARNING: last commit {idle} days ago — GitHub disables this public repository's "
+              f"scheduled workflows at 60 days without activity; merge a pending refresh PR or commit")
     print(f"[check] report: {REPORT.relative_to(ROOT)}")
     return report
 
