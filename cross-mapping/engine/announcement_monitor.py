@@ -307,8 +307,15 @@ def _keywords_in_text(keywords: list[str], text: str) -> bool:
     return any(k.lower() in tl for k in keywords)
 
 
+GATED: list = []   # (framework_id, url) of entries skipped this run because "enabled": false (phase 52)
+
+
 def process_feed_entry(framework_id: str, feed_cfg: dict, window_days: int, dry_run: bool) -> list[dict]:
     """Fetch one announcement feed config; produce classified entry dicts."""
+    if isinstance(feed_cfg, dict) and feed_cfg.get("enabled") is False:
+        GATED.append((framework_id, feed_cfg.get("url")))
+        print(f"    GATED {feed_cfg.get('url')} — {str(feed_cfg.get('gated_reason', 'no reason recorded'))[:70]}")
+        return []
     url = feed_cfg["url"]
     feed_type = feed_cfg.get("type", "rss").upper()
     filter_keywords: list[str] = feed_cfg.get("filter_keywords", [])
@@ -444,6 +451,8 @@ def run(args: argparse.Namespace) -> int:
         f"{'[DRY-RUN] ' if args.dry_run else ''}Found {len(all_new)} matching entries "
         f"across feeds ({skipped} feeds skipped — no announcement_feeds configured)"
     )
+    if GATED:
+        summary += f"; {len(GATED)} gated (enabled: false)"
     if not_checked:
         summary += f"; {len(not_checked)} feeds NOT checked (deadline)"
     print(f"\n{summary}")

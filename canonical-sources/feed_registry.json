@@ -393,7 +393,9 @@
             "baseline",
             "OSCAL"
           ],
-          "notes": "GSA fedramp-automation GitHub releases Atom feed [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+          "notes": "GSA fedramp-automation GitHub releases Atom feed [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         }
       ],
       "draft_landing_url": "https://www.fedramp.gov/20x/",
@@ -628,7 +630,9 @@
             "v4",
             "CCM"
           ],
-          "notes": "GitHub releases Atom for CCM v4 point releases [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+          "notes": "GitHub releases Atom for CCM v4 point releases [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         }
       ],
       "draft_landing_url": "https://cloudsecurityalliance.org/research/cloud-controls-matrix/",
@@ -1270,7 +1274,9 @@
             "v2024",
             "release"
           ],
-          "notes": "GitHub Atom feed for Top 10 releases"
+          "notes": "GitHub Atom feed for Top 10 releases",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         }
       ],
       "draft_landing_url": "https://github.com/OWASP/Top10",
@@ -1319,7 +1325,9 @@
             "v4.1",
             "release"
           ],
-          "notes": "GitHub Atom feed for ASVS releases"
+          "notes": "GitHub Atom feed for ASVS releases",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         },
         {
           "url": "https://owasp.org/feed.xml",
@@ -1434,7 +1442,9 @@
             "v5",
             "5.0"
           ],
-          "notes": "GitHub releases — catch v5 pre-releases and RCs [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+          "notes": "GitHub releases — catch v5 pre-releases and RCs [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         }
       ],
       "draft_landing_url": "https://cloudsecurityalliance.org/star/",
@@ -1510,7 +1520,9 @@
             "playbook",
             "release"
           ],
-          "notes": "usnistgov/AI-RMF GitHub releases for playbook and profile updates [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+          "notes": "usnistgov/AI-RMF GitHub releases for playbook and profile updates [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         }
       ],
       "draft_landing_url": "https://airc.nist.gov/home",
@@ -1659,7 +1671,9 @@
             "catalog",
             "breaking"
           ],
-          "notes": "usnistgov/OSCAL GitHub releases Atom — primary signal for schema changes affecting ingestion"
+          "notes": "usnistgov/OSCAL GitHub releases Atom — primary signal for schema changes affecting ingestion",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         },
         {
           "url": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
@@ -1751,7 +1765,9 @@
             "20x",
             "pilot"
           ],
-          "notes": "GitHub releases for KSI artifacts and OSCAL templates [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
+          "notes": "GitHub releases for KSI artifacts and OSCAL templates [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         }
       ],
       "draft_landing_url": "https://www.fedramp.gov/20x/",
@@ -1910,7 +1926,9 @@
             "KEV",
             "known exploited"
           ],
-          "notes": "CISA KEV data releases atom feed (cisagov/kev-data)"
+          "notes": "CISA KEV data releases atom feed (cisagov/kev-data)",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         }
       ],
       "draft_status": "none",
@@ -1996,7 +2014,9 @@
             "M365",
             "baseline"
           ],
-          "notes": "ScubaGear GitHub releases atom (cisagov/ScubaGear)"
+          "notes": "ScubaGear GitHub releases atom (cisagov/ScubaGear)",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         }
       ],
       "draft_status": "none",
@@ -2037,7 +2057,9 @@
             "CSAF",
             "advisory"
           ],
-          "notes": "CISA CSAF GitHub releases atom (cisagov/CSAF)"
+          "notes": "CISA CSAF GitHub releases atom (cisagov/CSAF)",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         }
       ],
       "draft_status": "none",
@@ -2214,7 +2236,9 @@
             "ATT&CK",
             "enterprise-attack"
           ],
-          "notes": "MITRE ATT&CK STIX releases atom (mitre-attack/attack-stix-data; mitre/cti is deprecated)"
+          "notes": "MITRE ATT&CK STIX releases atom (mitre-attack/attack-stix-data; mitre/cti is deprecated)",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         }
       ],
       "draft_status": "none",
@@ -4716,7 +4740,9 @@
             "schema",
             "mcp"
           ],
-          "notes": "GitHub Releases atom feed for the MCP specification repository"
+          "notes": "GitHub Releases atom feed for the MCP specification repository",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         }
       ],
       "urls": {
@@ -4768,7 +4794,9 @@
             "oas",
             "openapi"
           ],
-          "notes": "GitHub Releases for OAI/OpenAPI-Specification"
+          "notes": "GitHub Releases for OAI/OpenAPI-Specification",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         },
         {
           "url": "https://www.openapis.org/feed",
@@ -4944,7 +4972,9 @@
             "openapi",
             "api spec"
           ],
-          "notes": "GitHub Releases for OpenAI's official OpenAPI specification (openai-openapi repo)"
+          "notes": "GitHub Releases for OpenAI's official OpenAPI specification (openai-openapi repo)",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         },
         {
           "url": "https://openai.com/rss.xml",
@@ -5071,7 +5101,9 @@
             "top 10",
             "llm"
           ],
-          "notes": "GitHub Releases for OWASP LLM Top 10 project"
+          "notes": "GitHub Releases for OWASP LLM Top 10 project",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         }
       ],
       "urls": {
@@ -5121,7 +5153,9 @@
             "update",
             "technique"
           ],
-          "notes": "GitHub Releases for MITRE ATLAS data repository"
+          "notes": "GitHub Releases for MITRE ATLAS data repository",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         }
       ],
       "urls": {
@@ -5393,7 +5427,9 @@
             "security",
             "spec"
           ],
-          "notes": "GitHub Releases for Hugging Face Hub documentation"
+          "notes": "GitHub Releases for Hugging Face Hub documentation",
+          "enabled": false,
+          "gated_reason": "github.com robots.txt disallows /*.atom$ for all crawlers (RFC 9309; fetchkit refuses before sending). Release currency for this repository is read through api.github.com by standards_refresh. Gated by the user's decision (phase 52): kept for reference, default off; re-enable only with a robots-compliant URL."
         },
         {
           "url": "https://huggingface.co/blog/feed.xml",

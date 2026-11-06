@@ -188,9 +188,69 @@ def test_digest_rules():
     ok("nvd-7d" in fr.SUGGEST_RULES, "Wednesday digest still suggests the NVD dataset")
 
 
+def test_gated_atom_entries():
+    """Phase 52: the 18 releases.atom announcement entries are kept but gated ("enabled": false): a gated
+    entry makes no request at all, so github.com's robots refusals (16 per run) vanish and every other
+    request is unchanged. Whole dry-run of the monitor against a fake governor serving github.com's real
+    '/*.atom$' rule."""
+    import announcement_monitor as am
+    import urllib.error
+
+    class R(io.BytesIO):
+        def __init__(s, b):
+            super().__init__(b)
+            s.status = 200
+            s.headers = {"Content-Type": "text/xml"}
+
+        def __enter__(s):
+            return s
+
+        def __exit__(s, *a):
+            return False
+
+    def run_with(registry):
+        sent = []
+
+        def opener(req, t):
+            u = req.full_url
+            if u == "https://github.com/robots.txt":
+                return R(b"User-agent: *\nDisallow: /*.atom$\n")
+            if u.endswith("/robots.txt"):
+                raise urllib.error.HTTPError(u, 404, "nf", {}, io.BytesIO(b""))
+            sent.append(u)
+            return R(b'<?xml version="1.0"?><rss><channel></channel></rss>')
+        g = fetchkit.RateGovernor(state_path=None, opener=opener, sleeper=lambda s: None, budget=10 ** 6,
+                                  policies={"_default": {"enforced": {"min_interval_s": 0, "run_cap": 10 ** 6}}, "hosts": {}})
+        fetchkit._GOV = g
+        am.GATED.clear()
+        am._FETCH_MEMO.clear()
+        d = Path(tempfile.mkdtemp())
+        (d / "reg.json").write_text(json.dumps(registry), encoding="utf-8")
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            am.run(argparse.Namespace(registry=str(d / "reg.json"), output=str(d / "out.json"), feed=None,
+                                      days=45, dry_run=True, log_dir=None))
+        return g, sent
+    reg = json.loads((ROOT / "canonical-sources" / "feed_registry.json").read_text(encoding="utf-8"))
+    atoms = [a for e in reg["feeds"].values() if isinstance(e, dict) for a in e.get("announcement_feeds") or []
+             if isinstance(a, dict) and (a.get("url") or "").endswith("/releases.atom")]
+    ok(len(atoms) == 18 and all(a.get("enabled") is False and a.get("gated_reason") for a in atoms),
+       "the 18 releases.atom entries are gated with a recorded reason")
+    g1, s1 = run_with(reg)
+    ok(len(g1.refusals.get("github.com", [])) == 0 and len(am.GATED) == 18, "gated entries make no request: 0 github.com refusals, 18 gated")
+    ungated = copy.deepcopy(reg)
+    for e in ungated["feeds"].values():
+        for a in (e.get("announcement_feeds") or []) if isinstance(e, dict) else []:
+            if isinstance(a, dict):
+                a.pop("enabled", None)
+    g0, s0 = run_with(ungated)
+    ok(len(g0.refusals.get("github.com", [])) == 16 and sorted(s0) == sorted(s1),
+       f"RED without the gate: 16 refusals; every other request unchanged ({len(s1)} sent either way)")
+    fetchkit._GOV = None
+
+
 if __name__ == "__main__":
     for fn in (test_slot_resolution, test_volatile_and_report_reverts, test_census,
                test_commit_message_and_suggestions, test_auto_library,
-               test_writers_no_churn, test_digest_rules):
+               test_writers_no_churn, test_digest_rules, test_gated_atom_entries):
         fn()
     print(f"\nrotation tests: {PASS} assertions PASS")
