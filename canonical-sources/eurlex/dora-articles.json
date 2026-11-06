@@ -1,15 +1,1231 @@
 {
   "_celex_id": "32022R2554",
-  "_eli_version": "32022/R2554",
-  "_consolidated_date": "2026-07-02",
   "metadata": {
     "regulation_id": "dora",
     "celex_id": "32022R2554",
     "full_name": "Digital Operational Resilience Act (EU) 2022/2554",
-    "eli_uri": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2554",
-    "generated_at": "2026-07-02T14:12:53.000539+00:00",
-    "total_articles": 0,
+    "cellar_uri": "https://publications.europa.eu/resource/celex/32022R2554",
+    "superseded_source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2554 answers automated clients with HTTP 202 and an AWS WAF JavaScript challenge (2026-11-05); EUR-Lex documents the Cellar RESTful API as its machine reuse channel",
+    "generated_at": "2026-11-06T13:49:12.345796+00:00",
+    "total_articles": 64,
     "human_review_required": true
   },
-  "articles": []
+  "articles": [
+    {
+      "regulation_id": "dora",
+      "article_number": "1",
+      "article_title": "Subject matter",
+      "text_snippet": "1.   In order to achieve a high common level of digital operational resilience, this Regulation lays down uniform requirements concerning the security of network and information systems supporting the business processes of financial entities as follows:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nrequirements applicable to financial entities in relation to:\n \n\n \n \n \n\n \n\n \n\n \n(i)\n \n \n\n \ninformation and communication technology (ICT) risk management;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(ii)\n \n \n\n \nreporting of major ICT-r…",
+      "keywords": [
+        "requirements",
+        "subject",
+        "matter",
+        "order",
+        "achieve",
+        "high",
+        "common",
+        "level",
+        "digital",
+        "operational"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "2",
+      "article_title": "Scope",
+      "text_snippet": "1.   Without prejudice to paragraphs 3 and 4, this Regulation applies to the following entities:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \ncredit institutions;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \npayment institutions, including payment institutions exempted pursuant to Directive (EU) 2015/2366;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(c)\n \n \n\n \naccount information service providers;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(d)\n \n \n\n \nelectronic money institutions, including electronic money institutions exempted pursuant to Directive 2…",
+      "keywords": [
+        "institutions",
+        "payment",
+        "scope",
+        "without",
+        "prejudice",
+        "paragraphs",
+        "applies",
+        "following",
+        "entities",
+        "credit"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "3",
+      "article_title": "Definitions",
+      "text_snippet": "For the purposes of this Regulation, the following definitions shall apply:\n \n\n \n \n \n\n \n\n \n\n \n(1)\n \n \n\n \n‘digital operational resilience’ means the ability of a financial entity to build, assure and review its operational integrity and reliability by ensuring, either directly or indirectly through the use of services provided by ICT third-party service providers, the full range of ICT-related capabilities needed to address the security of the network and information systems which a financial ent…",
+      "keywords": [
+        "definitions",
+        "operational",
+        "purposes",
+        "following",
+        "apply",
+        "digital",
+        "resilience",
+        "means",
+        "ability",
+        "financial"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "4",
+      "article_title": "Proportionality principle",
+      "text_snippet": "1.   Financial entities shall implement the rules laid down in Chapter II in accordance with the principle of proportionality, taking into account their size and overall risk profile, and the nature, scale and complexity of their services, activities and operations.\n \n \n\n \n2.   In addition, the application by financial entities of Chapters III, IV and V, Section I, shall be proportionate to their size and overall risk profile, and to the nature, scale and complexity of their services, activities…",
+      "keywords": [
+        "proportionality",
+        "principle",
+        "financial",
+        "entities",
+        "implement",
+        "rules",
+        "laid",
+        "down",
+        "chapter",
+        "accordance"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "5",
+      "article_title": "Governance and organisation",
+      "text_snippet": "1.   Financial entities shall have in place an internal governance and control framework that ensures an effective and prudent management of ICT risk, in accordance with Article 6(4), in order to achieve a high level of digital operational resilience.\n \n \n\n \n2.   The management body of the financial entity shall define, approve, oversee and be responsible for the implementation of all arrangements related to the ICT risk management framework referred to in Article 6(1).\n \nFor the purposes of the…",
+      "keywords": [
+        "governance",
+        "financial",
+        "management",
+        "organisation",
+        "entities",
+        "place",
+        "internal",
+        "control",
+        "framework",
+        "ensures"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "6",
+      "article_title": "ICT risk management framework",
+      "text_snippet": "1.   Financial entities shall have a sound, comprehensive and well-documented ICT risk management framework as part of their overall risk management system, which enables them to address ICT risk quickly, efficiently and comprehensively and to ensure a high level of digital operational resilience.\n \n \n\n \n2.   The ICT risk management framework shall include at least strategies, policies, procedures, ICT protocols and tools that are necessary to duly and adequately protect all information assets a…",
+      "keywords": [
+        "risk",
+        "management",
+        "framework",
+        "financial",
+        "entities",
+        "sound",
+        "comprehensive",
+        "well",
+        "documented",
+        "part"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "7",
+      "article_title": "ICT systems, protocols and tools",
+      "text_snippet": "In order to address and manage ICT risk, financial entities shall use and maintain updated ICT systems, protocols and tools that are:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nappropriate to the magnitude of operations supporting the conduct of their activities, in accordance with the proportionality principle as referred to in Article 4;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nreliable;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(c)\n \n \n\n \nequipped with sufficient capacity to accurately process the data necessary for the perfo…",
+      "keywords": [
+        "systems",
+        "protocols",
+        "tools",
+        "order",
+        "address",
+        "manage",
+        "risk",
+        "financial",
+        "entities",
+        "maintain"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "8",
+      "article_title": "Identification",
+      "text_snippet": "1.   As part of the ICT risk management framework referred to in Article 6(1), financial entities shall identify, classify and adequately document all ICT supported business functions, roles and responsibilities, the information assets and ICT assets supporting those functions, and their roles and dependencies in relation to ICT risk. Financial entities shall review as needed, and at least yearly, the adequacy of this classification and of any relevant documentation.\n \n \n\n \n2.   Financial entiti…",
+      "keywords": [
+        "functions",
+        "roles",
+        "assets",
+        "identification",
+        "part",
+        "risk",
+        "management",
+        "framework",
+        "referred",
+        "article"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "9",
+      "article_title": "Protection and prevention",
+      "text_snippet": "1.   For the purposes of adequately protecting ICT systems and with a view to organising response measures, financial entities shall continuously monitor and control the security and functioning of ICT systems and tools and shall minimise the impact of ICT risk on ICT systems through the deployment of appropriate ICT security tools, policies and procedures.\n \n \n\n \n2.   Financial entities shall design, procure and implement ICT security policies, procedures, protocols and tools that aim to ensure…",
+      "keywords": [
+        "systems",
+        "protection",
+        "prevention",
+        "purposes",
+        "adequately",
+        "protecting",
+        "view",
+        "organising",
+        "response",
+        "measures"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "10",
+      "article_title": "Detection",
+      "text_snippet": "1.   Financial entities shall have in place mechanisms to promptly detect anomalous activities, in accordance with Article 17, including ICT network performance issues and ICT-related incidents, and to identify potential material single points of failure.\n \nAll detection mechanisms referred to in the first subparagraph shall be regularly tested in accordance with Article 25.\n \n \n\n \n2.   The detection mechanisms referred to in paragraph 1 shall enable multiple layers of control, define alert thre…",
+      "keywords": [
+        "detection",
+        "mechanisms",
+        "financial",
+        "entities",
+        "place",
+        "promptly",
+        "detect",
+        "anomalous",
+        "activities",
+        "accordance"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "11",
+      "article_title": "Response and recovery",
+      "text_snippet": "1.   As part of the ICT risk management framework referred to in Article 6(1) and based on the identification requirements set out in Article 8, financial entities shall put in place a comprehensive ICT business continuity policy, which may be adopted as a dedicated specific policy, forming an integral part of the overall business continuity policy of the financial entity.\n \n \n\n \n2.   Financial entities shall implement the ICT business continuity policy through dedicated, appropriate and documen…",
+      "keywords": [
+        "article",
+        "policy",
+        "response",
+        "recovery",
+        "part",
+        "risk",
+        "management",
+        "framework",
+        "referred",
+        "based"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "12",
+      "article_title": "Backup policies and procedures, restoration and recovery procedures and methods",
+      "text_snippet": "1.   For the purpose of ensuring the restoration of ICT systems and data with minimum downtime, limited disruption and loss, as part of their ICT risk management framework, financial entities shall develop and document:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nbackup policies and procedures specifying the scope of the data that is subject to the backup and the minimum frequency of the backup, based on the criticality of information or the confidentiality level of the data;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n…",
+      "keywords": [
+        "procedures",
+        "backup",
+        "policies",
+        "restoration",
+        "recovery",
+        "methods",
+        "purpose",
+        "ensuring",
+        "systems",
+        "data"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "13",
+      "article_title": "Learning and evolving",
+      "text_snippet": "1.   Financial entities shall have in place capabilities and staff to gather information on vulnerabilities and cyber threats, ICT-related incidents, in particular cyber-attacks, and analyse the impact they are likely to have on their digital operational resilience.\n \n \n\n \n2.   Financial entities shall put in place post ICT-related incident reviews after a major ICT-related incident disrupts their core activities, analysing the causes of disruption and identifying required improvements to the IC…",
+      "keywords": [
+        "financial",
+        "entities",
+        "cyber",
+        "learning",
+        "evolving",
+        "place",
+        "capabilities",
+        "staff",
+        "gather",
+        "information"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "14",
+      "article_title": "Communication",
+      "text_snippet": "1.   As part of the ICT risk management framework referred to in Article 6(1), financial entities shall have in place crisis communication plans enabling a responsible disclosure of, at least, major ICT-related incidents or vulnerabilities to clients and counterparts as well as to the public, as appropriate.\n \n \n\n \n2.   As part of the ICT risk management framework, financial entities shall implement communication policies for internal staff and for external stakeholders. Communication policies f…",
+      "keywords": [
+        "communication",
+        "part",
+        "risk",
+        "management",
+        "framework",
+        "referred",
+        "article",
+        "financial",
+        "entities",
+        "place"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "15",
+      "article_title": "Further harmonisation of ICT risk management tools, methods, processes and policies",
+      "text_snippet": "The ESAs shall, through the Joint Committee, in consultation with the European Union Agency on Cybersecurity (ENISA), develop common draft regulatory technical standards in order to:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nspecify further elements to be included in the ICT security policies, procedures, protocols and tools referred to in Article 9(2), with a view to ensuring the security of networks, enable adequate safeguards against intrusions and data misuse, preserve the availability, authenticity, int…",
+      "keywords": [
+        "further",
+        "policies",
+        "harmonisation",
+        "risk",
+        "management",
+        "tools",
+        "methods",
+        "processes",
+        "esas",
+        "through"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "16",
+      "article_title": "Simplified ICT risk management framework",
+      "text_snippet": "1.   Articles 5 to 15 of this Regulation shall not apply to small and non-interconnected investment firms, payment institutions exempted pursuant to Directive (EU) 2015/2366; institutions exempted pursuant to Directive 2013/36/EU in respect of which Member States have decided not to apply the option referred to in Article 2(4) of this Regulation; electronic money institutions exempted pursuant to Directive 2009/110/EC; and small institutions for occupational retirement provision.\n \nWithout preju…",
+      "keywords": [
+        "apply",
+        "institutions",
+        "exempted",
+        "pursuant",
+        "simplified",
+        "risk",
+        "management",
+        "framework",
+        "articles",
+        "small"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "17",
+      "article_title": "ICT-related incident management process",
+      "text_snippet": "1.   Financial entities shall define, establish and implement an ICT-related incident management process to detect, manage and notify ICT-related incidents.\n \n \n\n \n2.   Financial entities shall record all ICT-related incidents and significant cyber threats. Financial entities shall establish appropriate procedures and processes to ensure a consistent and integrated monitoring, handling and follow-up of ICT-related incidents, to ensure that root causes are identified, documented and addressed in …",
+      "keywords": [
+        "related",
+        "financial",
+        "entities",
+        "incident",
+        "management",
+        "process",
+        "establish",
+        "incidents",
+        "define",
+        "implement"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "18",
+      "article_title": "Classification of ICT-related incidents and cyber threats",
+      "text_snippet": "1.   Financial entities shall classify ICT-related incidents and shall determine their impact based on the following criteria:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe number and/or relevance of clients or financial counterparts affected and, where applicable, the amount or number of transactions affected by the ICT-related incident, and whether the ICT-related incident has caused reputational impact;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nthe duration of the ICT-related incident, including the service do…",
+      "keywords": [
+        "related",
+        "incidents",
+        "financial",
+        "number",
+        "affected",
+        "classification",
+        "cyber",
+        "threats",
+        "entities",
+        "classify"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "19",
+      "article_title": "Reporting of major ICT-related incidents and voluntary notification of significant cyber threats",
+      "text_snippet": "1.   Financial entities shall report major ICT-related incidents to the relevant competent authority as referred to in Article 46 in accordance with paragraph 4 of this Article.\n \nWhere a financial entity is subject to supervision by more than one national competent authority referred to in Article 46, Member States shall designate a single competent authority as the relevant competent authority responsible for carrying out the functions and duties provided for in this Article.\n \nCredit institut…",
+      "keywords": [
+        "article",
+        "major",
+        "related",
+        "incidents",
+        "financial",
+        "competent",
+        "authority",
+        "referred",
+        "reporting",
+        "voluntary"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "20",
+      "article_title": "Harmonisation of reporting content and templates",
+      "text_snippet": "The ESAs, through the Joint Committee, and in consultation with ENISA and the ECB, shall develop:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \ncommon draft regulatory technical standards in order to:\n \n\n \n \n \n\n \n\n \n\n \n(i)\n \n \n\n \nestablish the content of the reports for major ICT-related incidents in order to reflect the criteria laid down in Article 18(1) and incorporate further elements, such as details for establishing the relevance of the reporting for other Member States and whether it constitutes a major o…",
+      "keywords": [
+        "content",
+        "order",
+        "harmonisation",
+        "reporting",
+        "templates",
+        "esas",
+        "through",
+        "joint",
+        "committee",
+        "consultation"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "21",
+      "article_title": "Centralisation of reporting of major ICT-related incidents",
+      "text_snippet": "1.   The ESAs, through the Joint Committee, and in consultation with the ECB and ENISA, shall prepare a joint report assessing the feasibility of further centralisation of incident reporting through the establishment of a single EU Hub for major ICT-related incident reporting by financial entities. The joint report shall explore ways to facilitate the flow of ICT-related incident reporting, reduce associated costs and underpin thematic analyses with a view to enhancing supervisory convergence.\n …",
+      "keywords": [
+        "reporting",
+        "centralisation",
+        "major",
+        "related",
+        "through",
+        "joint",
+        "incident",
+        "incidents",
+        "esas",
+        "committee"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "22",
+      "article_title": "Supervisory feedback",
+      "text_snippet": "1.   Without prejudice to the technical input, advice or remedies and subsequent follow-up which may be provided, where applicable, in accordance with national law, by the CSIRTs under Directive (EU) 2022/2555, the competent authority shall, upon receipt of the initial notification and of each report as referred to in Article 19(4), acknowledge receipt and may, where feasible, provide in a timely manner relevant and proportionate feedback or high-level guidance to the financial entity, in partic…",
+      "keywords": [
+        "supervisory",
+        "feedback",
+        "without",
+        "prejudice",
+        "technical",
+        "input",
+        "advice",
+        "remedies",
+        "subsequent",
+        "follow"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "23",
+      "article_title": "Operational or security payment-related incidents concerning credit institutions, payment institutions, account informat",
+      "text_snippet": "ion service providers, and electronic money institutions\n \n \nThe requirements laid down in this Chapter shall also apply to operational or security payment-related incidents and to major operational or security payment-related incidents, where they concern credit institutions, payment institutions, account information service providers, and electronic money institutions.\n \n \n \n\n \n\n CHAPTER IV\n \n \n\n \n\n \n Digital operational resilience testing",
+      "keywords": [
+        "payment",
+        "institutions",
+        "operational",
+        "security",
+        "related",
+        "incidents",
+        "credit",
+        "concerning",
+        "account",
+        "informat"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "24",
+      "article_title": "General requirements for the performance of digital operational resilience testing",
+      "text_snippet": "1.   For the purpose of assessing preparedness for handling ICT-related incidents, of identifying weaknesses, deficiencies and gaps in digital operational resilience, and of promptly implementing corrective measures, financial entities, other than microenterprises, shall, taking into account the criteria set out in Article 4(2), establish, maintain and review a sound and comprehensive digital operational resilience testing programme as an integral part of the ICT risk-management framework referr…",
+      "keywords": [
+        "digital",
+        "operational",
+        "resilience",
+        "general",
+        "requirements",
+        "performance",
+        "testing",
+        "purpose",
+        "assessing",
+        "preparedness"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "25",
+      "article_title": "Testing of ICT tools and systems",
+      "text_snippet": "1.   The digital operational resilience testing programme referred to in Article 24 shall provide, in accordance with the criteria set out in Article 4(2), for the execution of appropriate tests, such as vulnerability assessments and scans, open source analyses, network security assessments, gap analyses, physical security reviews, questionnaires and scanning software solutions, source code reviews where feasible, scenario-based tests, compatibility testing, performance testing, end-to-end testi…",
+      "keywords": [
+        "testing",
+        "article",
+        "assessments",
+        "tools",
+        "systems",
+        "digital",
+        "operational",
+        "resilience",
+        "programme",
+        "referred"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "26",
+      "article_title": "Advanced testing of ICT tools, systems and processes based on TLPT",
+      "text_snippet": "1.   Financial entities, other than entities referred to in Article 16(1), first subparagraph, and other than microenterprises, which are identified in accordance with paragraph 8, third subparagraph, of this Article, shall carry out at least every 3 years advanced testing by means of TLPT. Based on the risk profile of the financial entity and taking into account operational circumstances, the competent authority may, where necessary, request the financial entity to reduce or increase this frequ…",
+      "keywords": [
+        "advanced",
+        "testing",
+        "based",
+        "tlpt",
+        "entities",
+        "than",
+        "article",
+        "subparagraph",
+        "tools",
+        "systems"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "27",
+      "article_title": "Requirements for testers for the carrying out of TLPT",
+      "text_snippet": "1.   Financial entities shall only use testers for the carrying out of TLPT, that:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nare of the highest suitability and reputability;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \npossess technical and organisational capabilities and demonstrate specific expertise in threat intelligence, penetration testing and red team testing;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(c)\n \n \n\n \nare certified by an accreditation body in a Member State or adhere to formal codes of conduct or ethical framework…",
+      "keywords": [
+        "testers",
+        "carrying",
+        "tlpt",
+        "requirements",
+        "financial",
+        "entities",
+        "only",
+        "highest",
+        "suitability",
+        "reputability"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "28",
+      "article_title": "General principles",
+      "text_snippet": "1.   Financial entities shall manage ICT third-party risk as an integral component of ICT risk within their ICT risk management framework as referred to in Article 6(1), and in accordance with the following principles:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nfinancial entities that have in place contractual arrangements for the use of ICT services to run their business operations shall, at all times, remain fully responsible for compliance with, and the discharge of, all obligations under this Regulation a…",
+      "keywords": [
+        "risk",
+        "principles",
+        "financial",
+        "entities",
+        "general",
+        "manage",
+        "third",
+        "party",
+        "integral",
+        "component"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "29",
+      "article_title": "Preliminary assessment of ICT concentration risk at entity level",
+      "text_snippet": "1.   When performing the identification and assessment of risks referred to in Article 28(4), point (c), financial entities shall also take into account whether the envisaged conclusion of a contractual arrangement in relation to ICT services supporting critical or important functions would lead to any of the following:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \ncontracting an ICT third-party service provider that is not easily substitutable; or\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nhaving in place multiple co…",
+      "keywords": [
+        "assessment",
+        "preliminary",
+        "concentration",
+        "risk",
+        "entity",
+        "level",
+        "when",
+        "performing",
+        "identification",
+        "risks"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "30",
+      "article_title": "Key contractual provisions",
+      "text_snippet": "1.   The rights and obligations of the financial entity and of the ICT third-party service provider shall be clearly allocated and set out in writing. The full contract shall include the service level agreements and be documented in one written document which shall be available to the parties on paper, or in a document with another downloadable, durable and accessible format.\n \n \n\n \n2.   The contractual arrangements on the use of ICT services shall include at least the following elements:\n \n\n \n …",
+      "keywords": [
+        "service",
+        "contractual",
+        "provisions",
+        "rights",
+        "obligations",
+        "financial",
+        "entity",
+        "third",
+        "party",
+        "provider"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "31",
+      "article_title": "Designation of critical ICT third-party service providers",
+      "text_snippet": "1.   The ESAs, through the Joint Committee and upon recommendation from the Oversight Forum established pursuant to Article 32(1), shall:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \ndesignate the ICT third-party service providers that are critical for financial entities, following an assessment that takes into account the criteria specified in paragraph 2;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nappoint as Lead Overseer for each critical ICT third-party service provider the ESA that is responsible, in accordance …",
+      "keywords": [
+        "critical",
+        "third",
+        "party",
+        "service",
+        "providers",
+        "designation",
+        "esas",
+        "through",
+        "joint",
+        "committee"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "32",
+      "article_title": "Structure of the Oversight Framework",
+      "text_snippet": "1.   The Joint Committee, in accordance with Article 57(1) of Regulations (EU) No 1093/2010, (EU) No 1094/2010 and (EU) No 1095/2010, shall establish the Oversight Forum as a sub-committee for the purposes of supporting the work of the Joint Committee and of the Lead Overseer referred to in Article 31(1), point (b), in the area of ICT third-party risk across financial sectors. The Oversight Forum shall prepare the draft joint positions and the draft common acts of the Joint Committee in that are…",
+      "keywords": [
+        "committee",
+        "oversight",
+        "joint",
+        "article",
+        "structure",
+        "framework",
+        "accordance",
+        "regulations",
+        "establish",
+        "forum"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "33",
+      "article_title": "Tasks of the Lead Overseer",
+      "text_snippet": "1.   The Lead Overseer, appointed in accordance with Article 31(1), point (b), shall conduct the oversight of the assigned critical ICT third-party service providers and shall be, for the purposes of all matters related to the oversight, the primary point of contact for those critical ICT third-party service providers.\n \n \n\n \n2.   For the purposes of paragraph 1, the Lead Overseer shall assess whether each critical ICT third-party service provider has in place comprehensive, sound and effective …",
+      "keywords": [
+        "lead",
+        "overseer",
+        "point",
+        "oversight",
+        "critical",
+        "third",
+        "tasks",
+        "appointed",
+        "accordance",
+        "article"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "34",
+      "article_title": "Operational coordination between Lead Overseers",
+      "text_snippet": "1.   To ensure a consistent approach to oversight activities and with a view to enabling coordinated general oversight strategies and cohesive operational approaches and work methodologies, the three Lead Overseers appointed in accordance with Article 31(1), point (b), shall set up a JON to coordinate among themselves in the preparatory stages and to coordinate the conduct of oversight activities over their respective overseen critical ICT third-party service providers, as well as in the course …",
+      "keywords": [
+        "operational",
+        "lead",
+        "overseers",
+        "oversight",
+        "coordination",
+        "between",
+        "ensure",
+        "consistent",
+        "approach",
+        "activities"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "35",
+      "article_title": "Powers of the Lead Overseer",
+      "text_snippet": "1.   For the purposes of carrying out the duties laid down in this Section, the Lead Overseer shall have the following powers in respect of the critical ICT third-party service providers:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nto request all relevant information and documentation in accordance with Article 37;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nto conduct general investigations and inspections in accordance with Articles 38 and 39, respectively;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(c)\n \n \n\n \nto request, after the…",
+      "keywords": [
+        "powers",
+        "lead",
+        "overseer",
+        "purposes",
+        "carrying",
+        "duties",
+        "laid",
+        "down",
+        "section",
+        "following"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "36",
+      "article_title": "Exercise of the powers of the Lead Overseer outside the Union",
+      "text_snippet": "1.   When oversight objectives cannot be attained by means of interacting with the subsidiary set up for the purpose of Article 31(12), or by exercising oversight activities on premises located in the Union, the Lead Overseer may exercise the powers, referred to in the following provisions, on any premises located in a third-country which is owned, or used in any way, for the purposes of providing services to Union financial entities, by a critical ICT third-party service provider, in connection…",
+      "keywords": [
+        "exercise",
+        "powers",
+        "lead",
+        "overseer",
+        "oversight",
+        "outside",
+        "when",
+        "objectives",
+        "cannot",
+        "attained"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "37",
+      "article_title": "Request for information",
+      "text_snippet": "1.   The Lead Overseer may, by simple request or by decision, require critical ICT third-party service providers to provide all information that is necessary for the Lead Overseer to carry out its duties under this Regulation, including all relevant business or operational documents, contracts, policies, documentation, ICT security audit reports, ICT-related incident reports, as well as any information relating to parties to whom the critical ICT third-party service provider has outsourced opera…",
+      "keywords": [
+        "request",
+        "information",
+        "lead",
+        "overseer",
+        "simple",
+        "decision",
+        "require",
+        "critical",
+        "third",
+        "party"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "38",
+      "article_title": "General investigations",
+      "text_snippet": "1.   In order to carry out its duties under this Regulation, the Lead Overseer, assisted by the joint examination team referred to in Article 40(1), may, where necessary, conduct investigations of critical ICT third-party service providers.\n \n \n\n \n2.   The Lead Overseer shall have the power to:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nexamine records, data, procedures and any other material relevant to the execution of its tasks, irrespective of the medium on which they are stored;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n …",
+      "keywords": [
+        "investigations",
+        "lead",
+        "overseer",
+        "general",
+        "order",
+        "carry",
+        "duties",
+        "assisted",
+        "joint",
+        "examination"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "39",
+      "article_title": "Inspections",
+      "text_snippet": "1.   In order to carry out its duties under this Regulation, the Lead Overseer, assisted by the joint examination teams referred to in Article 40(1), may enter in, and conduct all necessary onsite inspections on, any business premises, land or property of the ICT third-party service providers, such as head offices, operation centres, secondary premises, as well as to conduct off-site inspections.\n \nFor the purposes of exercising the powers referred to in the first subparagraph, the Lead Overseer…",
+      "keywords": [
+        "inspections",
+        "order",
+        "carry",
+        "duties",
+        "lead",
+        "overseer",
+        "assisted",
+        "joint",
+        "examination",
+        "teams"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "40",
+      "article_title": "Ongoing oversight",
+      "text_snippet": "1.   When conducting oversight activities, in particular general investigations or inspections, the Lead Overseer shall be assisted by a joint examination team established for each critical ICT third-party service provider.\n \n \n\n \n2.   The joint examination team referred to in paragraph 1 shall be composed of staff members from:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe ESAs;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nthe relevant competent authorities supervising the financial entities to which the critical I…",
+      "keywords": [
+        "oversight",
+        "joint",
+        "examination",
+        "team",
+        "ongoing",
+        "when",
+        "conducting",
+        "activities",
+        "particular",
+        "general"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "41",
+      "article_title": "Harmonisation of conditions enabling the conduct of the oversight activities",
+      "text_snippet": "1.   The ESAs shall, through the Joint Committee, develop draft regulatory technical standards to specify:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe information to be provided by an ICT third-party service provider in the application for a voluntary request to be designated as critical under Article 31(11);\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nthe content, structure and format of the information to be submitted, disclosed or reported by the ICT third-party service providers pursuant to Article 35(1), inc…",
+      "keywords": [
+        "harmonisation",
+        "conditions",
+        "enabling",
+        "conduct",
+        "oversight",
+        "activities",
+        "esas",
+        "through",
+        "joint",
+        "committee"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "42",
+      "article_title": "Follow-up by competent authorities",
+      "text_snippet": "1.   Within 60 calendar days of the receipt of the recommendations issued by the Lead Overseer pursuant to Article 35(1), point (d), critical ICT third-party service providers shall either notify the Lead Overseer of their intention to follow the recommendations or provide a reasoned explanation for not following such recommendations. The Lead Overseer shall immediately transmit this information to the competent authorities of the financial entities concerned.\n \n \n\n \n2.   The Lead Overseer shall…",
+      "keywords": [
+        "follow",
+        "recommendations",
+        "lead",
+        "overseer",
+        "competent",
+        "authorities",
+        "calendar",
+        "days",
+        "receipt",
+        "issued"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "43",
+      "article_title": "Oversight fees",
+      "text_snippet": "1.   The Lead Overseer shall, in accordance with the delegated act referred to in paragraph 2 of this Article, charge critical ICT third-party service providers fees that fully cover the Lead Overseer’s necessary expenditure in relation to the conduct of oversight tasks pursuant to this Regulation, including the reimbursement of any costs which may be incurred as a result of work carried out by the joint examination team referred to in Article 40, as well as the costs of advice provided by the i…",
+      "keywords": [
+        "oversight",
+        "fees",
+        "lead",
+        "overseer",
+        "accordance",
+        "delegated",
+        "referred",
+        "paragraph",
+        "article",
+        "charge"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "44",
+      "article_title": "International cooperation",
+      "text_snippet": "1.   Without prejudice to Article 36, EBA, ESMA and EIOPA may, in accordance with Article 33 of Regulations (EU) No 1093/2010, (EU) No 1095/2010 and (EU) No 1094/2010, respectively, conclude administrative arrangements with third-country regulatory and supervisory authorities to foster international cooperation on ICT third-party risk across different financial sectors, in particular by developing best practices for the review of ICT risk management practices and controls, mitigation measures an…",
+      "keywords": [
+        "international",
+        "article",
+        "cooperation",
+        "without",
+        "prejudice",
+        "esma",
+        "eiopa",
+        "accordance",
+        "regulations",
+        "respectively"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "45",
+      "article_title": "Information-sharing arrangements on cyber threat information and intelligence",
+      "text_snippet": "1.   Financial entities may exchange amongst themselves cyber threat information and intelligence, including indicators of compromise, tactics, techniques, and procedures, cyber security alerts and configuration tools, to the extent that such information and intelligence sharing:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \naims to enhance the digital operational resilience of financial entities, in particular through raising awareness in relation to cyber threats, limiting or impeding the cyber threats’ abilit…",
+      "keywords": [
+        "information",
+        "cyber",
+        "intelligence",
+        "sharing",
+        "threat",
+        "arrangements",
+        "financial",
+        "entities",
+        "exchange",
+        "amongst"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "46",
+      "article_title": "Competent authorities",
+      "text_snippet": "Without prejudice to the provisions on the Oversight Framework for critical ICT third-party service providers referred to in Chapter V, Section II, of this Regulation, compliance with this Regulation shall be ensured by the following competent authorities in accordance with the powers granted by the respective legal acts:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nfor credit institutions and for institutions exempted pursuant to Directive 2013/36/EU, the competent authority designated in accordance with Artic…",
+      "keywords": [
+        "competent",
+        "authorities",
+        "without",
+        "prejudice",
+        "provisions",
+        "oversight",
+        "framework",
+        "critical",
+        "third",
+        "party"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "47",
+      "article_title": "Cooperation with structures and authorities established by Directive (EU) 2022/2555",
+      "text_snippet": "1.   To foster cooperation and enable supervisory exchanges between the competent authorities designated under this Regulation and the Cooperation Group established by Article 14 of Directive (EU) 2022/2555, the ESAs and the competent authorities may participate in the activities of the Cooperation Group for matters that concern their supervisory activities in relation to financial entities. The ESAs and the competent authorities may request to be invited to participate in the activities of the …",
+      "keywords": [
+        "cooperation",
+        "authorities",
+        "established",
+        "competent",
+        "structures",
+        "foster",
+        "enable",
+        "supervisory",
+        "exchanges",
+        "between"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "48",
+      "article_title": "Cooperation between authorities",
+      "text_snippet": "1.   Competent authorities shall cooperate closely among themselves and, where applicable, with the Lead Overseer.\n \n \n\n \n2.   Competent authorities and the Lead Overseer shall, in a timely manner, mutually exchange all relevant information concerning critical ICT third-party service providers which is necessary for them to carry out their respective duties under this Regulation, in particular in relation to identified risks, approaches and measures taken as part of the Lead Overseer’s oversight…",
+      "keywords": [
+        "authorities",
+        "competent",
+        "lead",
+        "overseer",
+        "cooperation",
+        "between",
+        "cooperate",
+        "closely",
+        "among",
+        "themselves"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "49",
+      "article_title": "Financial cross-sector exercises, communication and cooperation",
+      "text_snippet": "1.   The ESAs, through the Joint Committee and in collaboration with competent authorities, resolution authorities as referred to in Article 3 of Directive 2014/59/EU, the ECB, the Single Resolution Board as regards information relating to entities falling under the scope of Regulation (EU) No 806/2014, the ESRB and ENISA, as appropriate, may establish mechanisms to enable the sharing of effective practices across financial sectors to enhance situational awareness and identify common cyber vulne…",
+      "keywords": [
+        "authorities",
+        "resolution",
+        "financial",
+        "cross",
+        "sector",
+        "exercises",
+        "communication",
+        "cooperation",
+        "esas",
+        "through"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "50",
+      "article_title": "Administrative penalties and remedial measures",
+      "text_snippet": "1.   Competent authorities shall have all supervisory, investigatory and sanctioning powers necessary to fulfil their duties under this Regulation.\n \n \n\n \n2.   The powers referred to in paragraph 1 shall include at least the following powers to:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nhave access to any document or data held in any form that the competent authority considers relevant for the performance of its duties and receive or take a copy of it;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \ncarry out on-site i…",
+      "keywords": [
+        "powers",
+        "administrative",
+        "penalties",
+        "remedial",
+        "measures",
+        "competent",
+        "authorities",
+        "supervisory",
+        "investigatory",
+        "sanctioning"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "51",
+      "article_title": "Exercise of the power to impose administrative penalties and remedial measures",
+      "text_snippet": "1.   Competent authorities shall exercise the powers to impose administrative penalties and remedial measures referred to in Article 50 in accordance with their national legal frameworks, where appropriate, as follows:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \ndirectly;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nin collaboration with other authorities;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(c)\n \n \n\n \nunder their responsibility by delegation to other authorities; or\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(d)\n \n \n\n \nby application to the co…",
+      "keywords": [
+        "exercise",
+        "impose",
+        "administrative",
+        "penalties",
+        "remedial",
+        "measures",
+        "power",
+        "competent",
+        "authorities",
+        "powers"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "52",
+      "article_title": "Criminal penalties",
+      "text_snippet": "1.   Member States may decide not to lay down rules for administrative penalties or remedial measures for breaches that are subject to criminal penalties under their national law.\n \n \n\n \n2.   Where Member States have chosen to lay down criminal penalties for breaches of this Regulation, they shall ensure that appropriate measures are in place so that competent authorities have all the necessary powers to liaise with judicial, prosecuting, or criminal justice authorities within their jurisdiction…",
+      "keywords": [
+        "penalties",
+        "criminal",
+        "down",
+        "breaches",
+        "decide",
+        "rules",
+        "administrative",
+        "remedial",
+        "measures",
+        "subject"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "53",
+      "article_title": "Notification duties",
+      "text_snippet": "Member States shall notify the laws, regulations and administrative provisions implementing this Chapter, including any relevant criminal law provisions, to the Commission, ESMA, the EBA and EIOPA by 17 January 2025. Member States shall notify the Commission, ESMA, the EBA and EIOPA without undue delay of any subsequent amendments thereto.",
+      "keywords": [
+        "notify",
+        "provisions",
+        "commission",
+        "esma",
+        "eiopa",
+        "notification",
+        "duties",
+        "laws",
+        "regulations",
+        "administrative"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "54",
+      "article_title": "Publication of administrative penalties",
+      "text_snippet": "1.   Competent authorities shall publish on their official websites, without undue delay, any decision imposing an administrative penalty against which there is no appeal after the addressee of the penalty has been notified of that decision.\n \n \n\n \n2.   The publication referred to in paragraph 1 shall include information on the type and nature of the breach, the identity of the persons responsible and the penalties imposed.\n \n \n\n \n3.   Where the competent authority, following a case-by-case asse…",
+      "keywords": [
+        "publication",
+        "administrative",
+        "decision",
+        "penalty",
+        "penalties",
+        "competent",
+        "authorities",
+        "publish",
+        "official",
+        "websites"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "55",
+      "article_title": "Professional secrecy",
+      "text_snippet": "1.   Any confidential information received, exchanged or transmitted pursuant to this Regulation shall be subject to the conditions of professional secrecy laid down in paragraph 2.\n \n \n\n \n2.   The obligation of professional secrecy applies to all persons who work, or who have worked, for the competent authorities pursuant to this Regulation, or for any authority or market undertaking or natural or legal person to whom those competent authorities have delegated their powers, including auditors a…",
+      "keywords": [
+        "professional",
+        "secrecy",
+        "confidential",
+        "information",
+        "received",
+        "exchanged",
+        "transmitted",
+        "pursuant",
+        "subject",
+        "conditions"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "56",
+      "article_title": "Data Protection",
+      "text_snippet": "1.   The ESAs and the competent authorities shall be allowed to process personal data only where necessary for the purpose of carrying out their respective obligations and duties pursuant to this Regulation, in particular for investigation, inspection, request for information, communication, publication, evaluation, verification, assessment and drafting of oversight plans. The personal data shall be processed in accordance with Regulation (EU) 2016/679 or Regulation (EU) 2018/1725, whichever is …",
+      "keywords": [
+        "data",
+        "protection",
+        "esas",
+        "competent",
+        "authorities",
+        "allowed",
+        "process",
+        "personal",
+        "only",
+        "necessary"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "57",
+      "article_title": "Exercise of the delegation",
+      "text_snippet": "1.   The power to adopt delegated acts is conferred on the Commission subject to the conditions laid down in this Article.\n \n \n\n \n2.   The power to adopt delegated acts referred to in Articles 31(6) and 43(2) shall be conferred on the Commission for a period of five years from 17 January 2024. The Commission shall draw up a report in respect of the delegation of power not later than nine months before the end of the five-year period. The delegation of power shall be tacitly extended for periods …",
+      "keywords": [
+        "power",
+        "adopt",
+        "delegated",
+        "acts",
+        "conferred",
+        "commission",
+        "exercise",
+        "delegation",
+        "subject",
+        "conditions"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "58",
+      "article_title": "Review clause",
+      "text_snippet": "1.   By 17 January 2028, the Commission shall, after consulting the ESAs and the ESRB, as appropriate, carry out a review and submit a report to the European Parliament and the Council, accompanied, where appropriate, by a legislative proposal. The review shall include at least the following:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe criteria for the designation of critical ICT third-party service providers in accordance with Article 31(2);\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nthe voluntary nature of the…",
+      "keywords": [
+        "review",
+        "appropriate",
+        "clause",
+        "january",
+        "commission",
+        "after",
+        "consulting",
+        "esas",
+        "esrb",
+        "carry"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "59",
+      "article_title": "Amendments to Regulation (EC) No 1060/2009",
+      "text_snippet": "Regulation (EC) No 1060/2009 is amended as follows:\n \n\n \n \n \n\n \n\n \n\n \n(1)\n \n \n\n \nin Annex I, Section A, point 4, the first subparagraph is replaced by the following:\n \n\n ‘A credit rating agency shall have sound administrative and accounting procedures, internal control mechanisms, effective procedures for risk assessment, and effective control and safeguard arrangements for managing ICT systems in accordance with Regulation (EU) 2022/2554 of the European Parliament and of the Council (*1).\n \n\n (…",
+      "keywords": [
+        "amendments",
+        "amended",
+        "follows",
+        "annex",
+        "section",
+        "point",
+        "first",
+        "subparagraph",
+        "replaced",
+        "following"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "60",
+      "article_title": "Amendments to Regulation (EU) No 648/2012",
+      "text_snippet": "Regulation (EU) No 648/2012 is amended as follows:\n \n\n \n \n \n\n \n\n \n\n \n(1)\n \n \n\n \nArticle 26 is amended as follows:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nparagraph 3 is replaced by the following:\n \n\n \n‘3.   A CCP shall maintain and operate an organisational structure that ensures continuity and orderly functioning in the performance of its services and activities. It shall employ appropriate and proportionate systems, resources and procedures, including ICT systems managed in accordance with Regulation (EU…",
+      "keywords": [
+        "amended",
+        "follows",
+        "amendments",
+        "article",
+        "paragraph",
+        "replaced",
+        "following",
+        "maintain",
+        "operate",
+        "organisational"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "61",
+      "article_title": "Amendments to Regulation (EU) No 909/2014",
+      "text_snippet": "Article 45 of Regulation (EU) No 909/2014 is amended as follows:\n \n\n \n \n \n\n \n\n \n\n \n(1)\n \n \n\n \nparagraph 1 is replaced by the following:\n \n\n \n‘1.   A CSD shall identify sources of operational risk, both internal and external, and minimise their impact also through the deployment of appropriate ICT tools, processes and policies set up and managed in accordance with Regulation (EU) 2022/2554 of the European Parliament and of the Council (*3), as well as through any other relevant appropriate tools,…",
+      "keywords": [
+        "amendments",
+        "article",
+        "amended",
+        "follows",
+        "paragraph",
+        "replaced",
+        "following",
+        "identify",
+        "sources",
+        "operational"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "62",
+      "article_title": "Amendments to Regulation (EU) No 600/2014",
+      "text_snippet": "Regulation (EU) No 600/2014 is amended as follows:\n \n\n \n \n \n\n \n\n \n\n \n(1)\n \n \n\n \nArticle 27g is amended as follows:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nparagraph 4 is replaced by the following:\n \n\n \n \n \n\n \n\n \n\n \n‘4.\n \n \n\n \nAn APA shall comply with the requirements concerning the security of network and information systems set out in Regulation (EU) 2022/2554 of the European Parliament and of the Council (*4).\n \n \n \n \n \n\n (*4)  Regulation (EU) 2022/2554 of the European Parliament and of the Council of 14…",
+      "keywords": [
+        "amended",
+        "follows",
+        "amendments",
+        "article",
+        "paragraph",
+        "replaced",
+        "following",
+        "comply",
+        "requirements",
+        "concerning"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "63",
+      "article_title": "Amendment to Regulation (EU) 2016/1011",
+      "text_snippet": "In Article 6 of Regulation (EU) 2016/1011, the following paragraph is added:\n \n\n \n \n \n\n \n\n \n\n \n‘6.\n \n \n\n \nFor critical benchmarks, an administrator shall have sound administrative and accounting procedures, internal control mechanisms, effective procedures for risk assessment, and effective control and safeguard arrangements for managing ICT systems in accordance with Regulation (EU) 2022/2554 of the European Parliament and of the Council (*5).",
+      "keywords": [
+        "procedures",
+        "control",
+        "effective",
+        "amendment",
+        "article",
+        "following",
+        "paragraph",
+        "added",
+        "critical",
+        "benchmarks"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "dora",
+      "article_number": "64",
+      "article_title": "Entry into force and application",
+      "text_snippet": "This Regulation shall enter into force on the twentieth day following that of its publication in the Official Journal of the European Union.\n \nIt shall apply from 17 January 2025.\n \n \n \n \n \n\n \n\n \nThis Regulation shall be binding in its entirety and directly applicable in all Member States.\n \nDone at Strasbourg, 14 December 2022.\n \n\n \n\n For the European Parliament\n \n \n\n The President\n \n \nR. METSOLA\n \n \n \n\n \n\n For the Council\n \n \n\n The President\n \n \nM. BEK\n \n \n \n \n \n \n\n (1)  \n OJ C 343, 26.8.2021,…",
+      "keywords": [
+        "into",
+        "force",
+        "entry",
+        "application",
+        "enter",
+        "twentieth",
+        "following",
+        "publication",
+        "official",
+        "journal"
+      ],
+      "nist_families": []
+    }
+  ]
 }

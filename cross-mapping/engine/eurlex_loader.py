@@ -13,8 +13,10 @@ Supported regulations:
   DORA        — Digital Operational Resilience Act        (32022R2554)
   EU AI Act   — EU Artificial Intelligence Act            (32024R1689)
 
-ELI URI pattern:
-  https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:{CELEX_ID}
+Source (phase 52): the Publications Office Cellar, the documented machine reuse channel —
+  https://publications.europa.eu/resource/celex/{CELEX_ID}  (Accept: application/xhtml+xml)
+Superseded: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:{CELEX_ID} answers automated
+  clients with HTTP 202 and an AWS WAF JavaScript challenge (2026-11-05); the loader refused it as data.
 
 Output: canonical-sources/eurlex/{reg_id}-articles.json  (one file per regulation)
 
@@ -69,7 +71,15 @@ REGULATIONS: Dict[str, Dict[str, str]] = {
     },
 }
 
-ELI_BASE = "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:{celex_id}"
+CELLAR_BASE = "https://publications.europa.eu/resource/celex/{celex_id}"
+SUPERSEDED_SOURCE = ("https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:{celex_id} answers automated clients "
+                     "with HTTP 202 and an AWS WAF JavaScript challenge (2026-11-05); EUR-Lex documents the Cellar RESTful "
+                     "API as its machine reuse channel")
+MIN_ARTICLES = {"gdpr": 99, "nis2": 46, "dora": 64, "eu-ai-act": 113}
+
+
+class FetchRejected(RuntimeError):
+    """The response is not the act; nothing is written."""
 
 # ── NIST family keyword heuristic ────────────────────────────────────────────
 
@@ -224,26 +234,19 @@ def _extract_keywords(text: str, max_kw: int = 10) -> List[str]:
 
 # ── network ───────────────────────────────────────────────────────────────────
 
-def _fetch_url(url: str, max_retries: int = 3, initial_delay: float = 3.0, timeout: int = 60) -> str:
-    """Fetch URL through the governor; return decoded text (charset from Content-Type)."""
-    hdrs = {"User-Agent": "dbz-grc-eurlex-loader/1.0 (GRC cross-mapping backend)",
-            "Accept-Language": "en-GB,en;q=0.9", "Accept": "text/html,application/xhtml+xml"}
-    try:
-        r = fetchkit.fetch(url, headers=hdrs, timeout=timeout, retries=max_retries,
-                           retry_on=(429, 503), backoff=initial_delay)
-    except urllib.error.HTTPError as exc:
-        if exc.code in (429, 503):
-            raise RuntimeError(f"Failed to fetch {url} after {max_retries} attempts") from exc
-        raise
-    except (fetchkit.PolicyRefused, fetchkit.HostCooldown):
-        raise
-    except Exception as exc:  # noqa: BLE001
-        raise RuntimeError(f"Failed to fetch {url} after {max_retries} attempts") from exc
-    m = re.search(r"charset=([^\s;]+)", r.headers.get("content-type", ""), re.IGNORECASE)
-    try:
-        return r.body.decode(m.group(1) if m else "utf-8", errors="replace")
-    except LookupError:
-        return r.body.decode("utf-8", errors="replace")
+def _fetch_cellar(celex_id: str, timeout: int = 90) -> str:
+    r = fetchkit.fetch(CELLAR_BASE.format(celex_id=celex_id),
+                       headers={"User-Agent": "dbz-grc-eurlex-loader/1.0 (GRC cross-mapping backend)",
+                                "Accept": "application/xhtml+xml", "Accept-Language": "eng"},
+                       timeout=timeout, retries=3, retry_on=(429, 503), backoff=3.0)
+    text = r.body.decode("utf-8", errors="replace")
+    if r.status != 200:
+        raise FetchRejected(f"{celex_id}: HTTP {r.status}, expected 200")
+    if "awswaf" in text or "challenge.js" in text:
+        raise FetchRejected(f"{celex_id}: a bot-challenge page, not the act")
+    if "application/xhtml+xml" not in r.headers.get("content-type", ""):
+        raise FetchRejected(f"{celex_id}: content-type {r.headers.get('content-type')!r}, expected application/xhtml+xml")
+    return text
 
 
 # ── main class ────────────────────────────────────────────────────────────────
@@ -255,20 +258,11 @@ class EURLexLoader:
     """
 
     def fetch_regulation(self, reg_id: str) -> str:
-        """
-        Fetch raw HTML for a regulation identified by reg_id (e.g. 'gdpr').
-
-        Returns the HTML as a string. Raises ValueError for unknown reg_id,
-        RuntimeError on network failure.
-        """
         if reg_id not in REGULATIONS:
-            raise ValueError(
-                f"Unknown regulation '{reg_id}'. Known: {list(REGULATIONS.keys())}"
-            )
+            raise ValueError(f"Unknown regulation '{reg_id}'. Known: {list(REGULATIONS.keys())}")
         celex_id = REGULATIONS[reg_id]["celex_id"]
-        url = ELI_BASE.format(celex_id=celex_id)
-        print(f"  Fetching {reg_id.upper()} ({celex_id}) from EUR-Lex…")
-        return _fetch_url(url)
+        print(f"  Fetching {reg_id.upper()} ({celex_id}) from the Publications Office Cellar…")
+        return _fetch_cellar(celex_id)
 
     def parse_articles(self, html: str, reg_id: str) -> List[Dict[str, Any]]:
         """
@@ -286,69 +280,36 @@ class EURLexLoader:
             art["nist_families"] = []   # no issuer mapping; the keyword table (default 'SI') was a guess
         return articles
 
-    def run(self, reg_ids: List[str], dry_run: bool = False) -> Dict[str, Any]:
-        """
-        Full pipeline for the given list of regulation IDs.
-
-        Returns dict of {reg_id: result} for all successfully processed regulations.
-        """
-        print("=== EUR-Lex Regulation Loader ===")
-        results: Dict[str, Any] = {}
-        errors: Dict[str, str] = {}
-
-        for idx, reg_id in enumerate(reg_ids):
+    def run(self, reg_ids, dry_run: bool = False):
+        print("=== EUR-Lex Regulation Loader (Cellar) ===")
+        results, errors = {}, {}
+        for reg_id in reg_ids:
             reg_info = REGULATIONS.get(reg_id)
             if not reg_info:
-                print(f"  [skip] Unknown regulation ID: {reg_id}", file=sys.stderr)
                 errors[reg_id] = f"Unknown regulation ID: {reg_id}"
                 continue
-
             try:
-                html     = self.fetch_regulation(reg_id)
-                articles = self.parse_articles(html, reg_id)
-                articles = self.map_articles_to_nist(articles)
-
+                articles = self.map_articles_to_nist(self.parse_articles(self.fetch_regulation(reg_id), reg_id))
+                if len(articles) < MIN_ARTICLES.get(reg_id, 1):
+                    raise FetchRejected(f"{reg_id}: {len(articles)} articles < floor {MIN_ARTICLES.get(reg_id, 1)}")
                 celex_id = reg_info["celex_id"]
-                fetched_at = datetime.now(timezone.utc).isoformat()
-                result: Dict[str, Any] = {
-                    "_celex_id":          celex_id,
-                    "_eli_version":       f"{celex_id[:5]}/{celex_id[5:]}",
-                    "_consolidated_date": fetched_at[:10],
-                    "metadata": {
-                        "regulation_id":     reg_id,
-                        "celex_id":          celex_id,
-                        "full_name":         reg_info["full_name"],
-                        "eli_uri":           ELI_BASE.format(celex_id=celex_id),
-                        "generated_at":      fetched_at,
-                        "total_articles":    len(articles),
-                        "human_review_required": True,
-                    },
-                    "articles": articles,
-                }
+                result = {"_celex_id": celex_id,
+                          "metadata": {"regulation_id": reg_id, "celex_id": celex_id, "full_name": reg_info["full_name"],
+                                       "cellar_uri": CELLAR_BASE.format(celex_id=celex_id),
+                                       "superseded_source": SUPERSEDED_SOURCE.format(celex_id=celex_id),
+                                       "generated_at": datetime.now(timezone.utc).isoformat(),
+                                       "total_articles": len(articles), "human_review_required": True},
+                          "articles": articles}
                 results[reg_id] = result
-
                 if not dry_run:
                     _EURLEX_DIR.mkdir(parents=True, exist_ok=True)
-                    out_path = _EURLEX_DIR / f"{reg_id}-articles.json"
-                    out_path.write_text(
-                        json.dumps(result, indent=2, ensure_ascii=False),
-                        encoding="utf-8",
-                    )
-                    print(f"  Saved → {out_path}")
-                else:
-                    print(f"  [dry-run] Skipping file write for {reg_id}")
-
-            except Exception as exc:
-                msg = f"Failed to load {reg_id}: {exc}"
-                print(f"  [error] {msg}", file=sys.stderr)
-                errors[reg_id] = msg
-
-        # Summary
+                    (_EURLEX_DIR / f"{reg_id}-articles.json").write_text(
+                        json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            except Exception as exc:  # noqa: BLE001 — fail closed: nothing is written for this regulation
+                errors[reg_id] = f"{type(exc).__name__}: {exc}"
+                print(f"  [error] {reg_id}: {errors[reg_id]}", file=sys.stderr)
         print(f"\n  Done: {len(results)} regulation(s) processed, {len(errors)} error(s)")
-        if errors:
-            for reg_id, err in errors.items():
-                print(f"    {reg_id}: {err}", file=sys.stderr)
-
+        self.errors = errors
         return results
 
 

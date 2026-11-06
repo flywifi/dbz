@@ -1,15 +1,1896 @@
 {
   "_celex_id": "32016R0679",
-  "_eli_version": "32016/R0679",
-  "_consolidated_date": "2026-07-02",
   "metadata": {
     "regulation_id": "gdpr",
     "celex_id": "32016R0679",
     "full_name": "General Data Protection Regulation (EU) 2016/679",
-    "eli_uri": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679",
-    "generated_at": "2026-07-02T14:12:42.566690+00:00",
-    "total_articles": 0,
+    "cellar_uri": "https://publications.europa.eu/resource/celex/32016R0679",
+    "superseded_source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679 answers automated clients with HTTP 202 and an AWS WAF JavaScript challenge (2026-11-05); EUR-Lex documents the Cellar RESTful API as its machine reuse channel",
+    "generated_at": "2026-11-06T13:49:06.023733+00:00",
+    "total_articles": 99,
     "human_review_required": true
   },
-  "articles": []
+  "articles": [
+    {
+      "regulation_id": "gdpr",
+      "article_number": "1",
+      "article_title": "Subject-matter and objectives",
+      "text_snippet": "1.   This Regulation lays down rules relating to the protection of natural persons with regard to the processing of personal data and rules relating to the free movement of personal data.\n \n \n\n \n2.   This Regulation protects fundamental rights and freedoms of natural persons and in particular their right to the protection of personal data.\n \n \n\n \n3.   The free movement of personal data within the Union shall be neither restricted nor prohibited for reasons connected with the protection of natura…",
+      "keywords": [
+        "rules",
+        "relating",
+        "natural",
+        "persons",
+        "personal",
+        "data",
+        "subject",
+        "matter",
+        "objectives",
+        "lays"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "2",
+      "article_title": "Material scope",
+      "text_snippet": "1.   This Regulation applies to the processing of personal data wholly or partly by automated means and to the processing other than by automated means of personal data which form part of a filing system or are intended to form part of a filing system.\n \n \n\n \n2.   This Regulation does not apply to the processing of personal data:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nin the course of an activity which falls outside the scope of Union law;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nby the Member States when car…",
+      "keywords": [
+        "processing",
+        "personal",
+        "data",
+        "automated",
+        "means",
+        "form",
+        "part",
+        "filing",
+        "system",
+        "material"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "3",
+      "article_title": "Territorial scope",
+      "text_snippet": "1.   This Regulation applies to the processing of personal data in the context of the activities of an establishment of a controller or a processor in the Union, regardless of whether the processing takes place in the Union or not.\n \n \n\n \n2.   This Regulation applies to the processing of personal data of data subjects who are in the Union by a controller or processor not established in the Union, where the processing activities are related to:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe offering of goods o…",
+      "keywords": [
+        "processing",
+        "applies",
+        "personal",
+        "territorial",
+        "scope",
+        "data",
+        "context",
+        "activities",
+        "establishment",
+        "controller"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "4",
+      "article_title": "Definitions",
+      "text_snippet": "For the purposes of this Regulation:\n \n\n \n \n \n\n \n\n \n\n \n(1)\n \n \n\n \n‘personal data’ means any information relating to an identified or identifiable natural person (‘data subject’); an identifiable natural person is one who can be identified, directly or indirectly, in particular by reference to an identifier such as a name, an identification number, location data, an online identifier or to one or more factors specific to the physical, physiological, genetic, mental, economic, cultural or social i…",
+      "keywords": [
+        "data",
+        "identified",
+        "identifiable",
+        "natural",
+        "person",
+        "definitions",
+        "purposes",
+        "personal",
+        "means",
+        "information"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "5",
+      "article_title": "Principles relating to processing of personal data",
+      "text_snippet": "1.   Personal data shall be:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nprocessed lawfully, fairly and in a transparent manner in relation to the data subject (‘lawfulness, fairness and transparency’);\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \ncollected for specified, explicit and legitimate purposes and not further processed in a manner that is incompatible with those purposes; further processing for archiving purposes in the public interest, scientific or historical research purposes or statistical purposes shal…",
+      "keywords": [
+        "data",
+        "personal",
+        "principles",
+        "relating",
+        "processing",
+        "processed",
+        "lawfully",
+        "fairly",
+        "transparent",
+        "manner"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "6",
+      "article_title": "Lawfulness of processing",
+      "text_snippet": "1.   Processing shall be lawful only if and to the extent that at least one of the following applies:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe data subject has given consent to the processing of his or her personal data for one or more specific purposes;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nprocessing is necessary for the performance of a contract to which the data subject is party or in order to take steps at the request of the data subject prior to entering into a contract;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(…",
+      "keywords": [
+        "processing",
+        "data",
+        "lawfulness",
+        "lawful",
+        "only",
+        "extent",
+        "least",
+        "following",
+        "applies",
+        "subject"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "7",
+      "article_title": "Conditions for consent",
+      "text_snippet": "1.   Where processing is based on consent, the controller shall be able to demonstrate that the data subject has consented to processing of his or her personal data.\n \n \n\n \n2.   If the data subject's consent is given in the context of a written declaration which also concerns other matters, the request for consent shall be presented in a manner which is clearly distinguishable from the other matters, in an intelligible and easily accessible form, using clear and plain language. Any part of such …",
+      "keywords": [
+        "consent",
+        "data",
+        "processing",
+        "subject",
+        "conditions",
+        "based",
+        "controller",
+        "able",
+        "demonstrate",
+        "consented"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "8",
+      "article_title": "Conditions applicable to child's consent in relation to information society services",
+      "text_snippet": "1.   Where point (a) of Article 6(1) applies, in relation to the offer of information society services directly to a child, the processing of the personal data of a child shall be lawful where the child is at least 16 years old. Where the child is below the age of 16 years, such processing shall be lawful only if and to the extent that consent is given or authorised by the holder of parental responsibility over the child.\n \nMember States may provide by law for a lower age for those purposes prov…",
+      "keywords": [
+        "child",
+        "relation",
+        "information",
+        "society",
+        "services",
+        "processing",
+        "years",
+        "conditions",
+        "applicable",
+        "consent"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "9",
+      "article_title": "Processing of special categories of personal data",
+      "text_snippet": "1.   Processing of personal data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, or trade union membership, and the processing of genetic data, biometric data for the purpose of uniquely identifying a natural person, data concerning health or data concerning a natural person's sex life or sexual orientation shall be prohibited.\n \n \n\n \n2.   Paragraph 1 shall not apply if one of the following applies:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe data subject has give…",
+      "keywords": [
+        "data",
+        "processing",
+        "personal",
+        "special",
+        "categories",
+        "revealing",
+        "racial",
+        "ethnic",
+        "origin",
+        "political"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "10",
+      "article_title": "Processing of personal data relating to criminal convictions and offences",
+      "text_snippet": "Processing of personal data relating to criminal convictions and offences or related security measures based on Article 6(1) shall be carried out only under the control of official authority or when the processing is authorised by Union or Member State law providing for appropriate safeguards for the rights and freedoms of data subjects. Any comprehensive register of criminal convictions shall be kept only under the control of official authority.",
+      "keywords": [
+        "processing",
+        "personal",
+        "data",
+        "relating",
+        "criminal",
+        "convictions",
+        "offences",
+        "related",
+        "security",
+        "measures"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "11",
+      "article_title": "Processing which does not require identification",
+      "text_snippet": "1.   If the purposes for which a controller processes personal data do not or do no longer require the identification of a data subject by the controller, the controller shall not be obliged to maintain, acquire or process additional information in order to identify the data subject for the sole purpose of complying with this Regulation.\n \n \n\n \n2.   Where, in cases referred to in paragraph 1 of this Article, the controller is able to demonstrate that it is not in a position to identify the data …",
+      "keywords": [
+        "controller",
+        "data",
+        "require",
+        "identification",
+        "subject",
+        "processing",
+        "does",
+        "purposes",
+        "processes",
+        "personal"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "12",
+      "article_title": "Transparent information, communication and modalities for the exercise of the rights of the data subject",
+      "text_snippet": "1.   The controller shall take appropriate measures to provide any information referred to in Articles 13 and 14 and any communication under Articles 15 to 22 and 34 relating to processing to the data subject in a concise, transparent, intelligible and easily accessible form, using clear and plain language, in particular for any information addressed specifically to a child. The information shall be provided in writing, or by other means, including, where appropriate, by electronic means. When r…",
+      "keywords": [
+        "transparent",
+        "information",
+        "communication",
+        "data",
+        "subject",
+        "articles",
+        "modalities",
+        "exercise",
+        "rights",
+        "controller"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "13",
+      "article_title": "Information to be provided where personal data are collected from the data subject",
+      "text_snippet": "1.   Where personal data relating to a data subject are collected from the data subject, the controller shall, at the time when personal data are obtained, provide the data subject with all of the following information:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe identity and the contact details of the controller and, where applicable, of the controller's representative;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nthe contact details of the data protection officer, where applicable;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(c)\n…",
+      "keywords": [
+        "data",
+        "subject",
+        "personal",
+        "information",
+        "collected",
+        "provided",
+        "relating",
+        "controller",
+        "time",
+        "when"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "14",
+      "article_title": "Information to be provided where personal data have not been obtained from the data subject",
+      "text_snippet": "1.   Where personal data have not been obtained from the data subject, the controller shall provide the data subject with the following information:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe identity and the contact details of the controller and, where applicable, of the controller's representative;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nthe contact details of the data protection officer, where applicable;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(c)\n \n \n\n \nthe purposes of the processing for which the personal data are i…",
+      "keywords": [
+        "data",
+        "subject",
+        "controller",
+        "information",
+        "personal",
+        "obtained",
+        "provided",
+        "provide",
+        "following",
+        "identity"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "15",
+      "article_title": "Right of access by the data subject",
+      "text_snippet": "1.   The data subject shall have the right to obtain from the controller confirmation as to whether or not personal data concerning him or her are being processed, and, where that is the case, access to the personal data and the following information:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe purposes of the processing;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nthe categories of personal data concerned;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(c)\n \n \n\n \nthe recipients or categories of recipient to whom the personal data ha…",
+      "keywords": [
+        "data",
+        "right",
+        "access",
+        "subject",
+        "personal",
+        "obtain",
+        "controller",
+        "confirmation",
+        "whether",
+        "concerning"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "16",
+      "article_title": "Right to rectification",
+      "text_snippet": "The data subject shall have the right to obtain from the controller without undue delay the rectification of inaccurate personal data concerning him or her. Taking into account the purposes of the processing, the data subject shall have the right to have incomplete personal data completed, including by means of providing a supplementary statement.",
+      "keywords": [
+        "data",
+        "right",
+        "rectification",
+        "subject",
+        "personal",
+        "obtain",
+        "controller",
+        "without",
+        "undue",
+        "delay"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "17",
+      "article_title": "Right to erasure (‘right to be forgotten’)",
+      "text_snippet": "1.   The data subject shall have the right to obtain from the controller the erasure of personal data concerning him or her without undue delay and the controller shall have the obligation to erase personal data without undue delay where one of the following grounds applies:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe personal data are no longer necessary in relation to the purposes for which they were collected or otherwise processed;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nthe data subject withdraws consent…",
+      "keywords": [
+        "right",
+        "data",
+        "erasure",
+        "controller",
+        "personal",
+        "without",
+        "undue",
+        "delay",
+        "forgotten",
+        "subject"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "18",
+      "article_title": "Right to restriction of processing",
+      "text_snippet": "1.   The data subject shall have the right to obtain from the controller restriction of processing where one of the following applies:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe accuracy of the personal data is contested by the data subject, for a period enabling the controller to verify the accuracy of the personal data;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nthe processing is unlawful and the data subject opposes the erasure of the personal data and requests the restriction of their use instead;\n \n \n \n \n …",
+      "keywords": [
+        "data",
+        "right",
+        "restriction",
+        "processing",
+        "subject",
+        "controller",
+        "accuracy",
+        "obtain",
+        "following",
+        "applies"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "19",
+      "article_title": "Notification obligation regarding rectification or erasure of personal data or restriction of processing",
+      "text_snippet": "The controller shall communicate any rectification or erasure of personal data or restriction of processing carried out in accordance with Article 16, Article 17(1) and Article 18 to each recipient to whom the personal data have been disclosed, unless this proves impossible or involves disproportionate effort. The controller shall inform the data subject about those recipients if the data subject requests it.",
+      "keywords": [
+        "personal",
+        "data",
+        "article",
+        "rectification",
+        "erasure",
+        "restriction",
+        "processing",
+        "notification",
+        "obligation",
+        "regarding"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "20",
+      "article_title": "Right to data portability",
+      "text_snippet": "1.   The data subject shall have the right to receive the personal data concerning him or her, which he or she has provided to a controller, in a structured, commonly used and machine-readable format and have the right to transmit those data to another controller without hindrance from the controller to which the personal data have been provided, where:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe processing is based on consent pursuant to point (a) of Article 6(1) or point (a) of Article 9(2) or on a contr…",
+      "keywords": [
+        "data",
+        "right",
+        "controller",
+        "portability",
+        "subject",
+        "receive",
+        "personal",
+        "concerning",
+        "provided",
+        "structured"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "21",
+      "article_title": "Right to object",
+      "text_snippet": "1.   The data subject shall have the right to object, on grounds relating to his or her particular situation, at any time to processing of personal data concerning him or her which is based on point (e) or (f) of Article 6(1), including profiling based on those provisions. The controller shall no longer process the personal data unless the controller demonstrates compelling legitimate grounds for the processing which override the interests, rights and freedoms of the data subject or for the esta…",
+      "keywords": [
+        "right",
+        "object",
+        "data",
+        "based",
+        "subject",
+        "grounds",
+        "relating",
+        "particular",
+        "situation",
+        "time"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "22",
+      "article_title": "Automated individual decision-making, including profiling",
+      "text_snippet": "1.   The data subject shall have the right not to be subject to a decision based solely on automated processing, including profiling, which produces legal effects concerning him or her or similarly significantly affects him or her.\n \n \n\n \n2.   Paragraph 1 shall not apply if the decision:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nis necessary for entering into, or performance of, a contract between the data subject and a data controller;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nis authorised by Union or Member St…",
+      "keywords": [
+        "decision",
+        "automated",
+        "profiling",
+        "subject",
+        "individual",
+        "making",
+        "data",
+        "right",
+        "based",
+        "solely"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "23",
+      "article_title": "Restrictions",
+      "text_snippet": "1.   Union or Member State law to which the data controller or processor is subject may restrict by way of a legislative measure the scope of the obligations and rights provided for in Articles 12 to 22 and Article 34, as well as Article 5 in so far as its provisions correspond to the rights and obligations provided for in Articles 12 to 22, when such a restriction respects the essence of the fundamental rights and freedoms and is a necessary and proportionate measure in a democratic society to …",
+      "keywords": [
+        "rights",
+        "article",
+        "restrictions",
+        "data",
+        "controller",
+        "processor",
+        "subject",
+        "restrict",
+        "legislative",
+        "measure"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "24",
+      "article_title": "Responsibility of the controller",
+      "text_snippet": "1.   Taking into account the nature, scope, context and purposes of processing as well as the risks of varying likelihood and severity for the rights and freedoms of natural persons, the controller shall implement appropriate technical and organisational measures to ensure and to be able to demonstrate that processing is performed in accordance with this Regulation. Those measures shall be reviewed and updated where necessary.\n \n \n\n \n2.   Where proportionate in relation to processing activities,…",
+      "keywords": [
+        "controller",
+        "responsibility",
+        "taking",
+        "into",
+        "account",
+        "nature",
+        "scope",
+        "context",
+        "purposes",
+        "processing"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "25",
+      "article_title": "Data protection by design and by default",
+      "text_snippet": "1.   Taking into account the state of the art, the cost of implementation and the nature, scope, context and purposes of processing as well as the risks of varying likelihood and severity for rights and freedoms of natural persons posed by the processing, the controller shall, both at the time of the determination of the means for processing and at the time of the processing itself, implement appropriate technical and organisational measures, such as pseudonymisation, which are designed to imple…",
+      "keywords": [
+        "processing",
+        "data",
+        "protection",
+        "design",
+        "default",
+        "taking",
+        "into",
+        "account",
+        "cost",
+        "implementation"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "26",
+      "article_title": "Joint controllers",
+      "text_snippet": "1.   Where two or more controllers jointly determine the purposes and means of processing, they shall be joint controllers. They shall in a transparent manner determine their respective responsibilities for compliance with the obligations under this Regulation, in particular as regards the exercising of the rights of the data subject and their respective duties to provide the information referred to in Articles 13 and 14, by means of an arrangement between them unless, and in so far as, the resp…",
+      "keywords": [
+        "controllers",
+        "joint",
+        "determine",
+        "they",
+        "more",
+        "jointly",
+        "purposes",
+        "means",
+        "processing",
+        "transparent"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "27",
+      "article_title": "Representatives of controllers or processors not established in the Union",
+      "text_snippet": "1.   Where Article 3(2) applies, the controller or the processor shall designate in writing a representative in the Union.\n \n \n\n \n2.   The obligation laid down in paragraph 1 of this Article shall not apply to:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nprocessing which is occasional, does not include, on a large scale, processing of special categories of data as referred to in Article 9(1) or processing of personal data relating to criminal convictions and offences referred to in Article 10, and is unlikely …",
+      "keywords": [
+        "article",
+        "representatives",
+        "controllers",
+        "processors",
+        "established",
+        "applies",
+        "controller",
+        "processor",
+        "designate",
+        "writing"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "28",
+      "article_title": "Processor",
+      "text_snippet": "1.   Where processing is to be carried out on behalf of a controller, the controller shall use only processors providing sufficient guarantees to implement appropriate technical and organisational measures in such a manner that processing will meet the requirements of this Regulation and ensure the protection of the rights of the data subject.\n \n \n\n \n2.   The processor shall not engage another processor without prior specific or general written authorisation of the controller. In the case of gen…",
+      "keywords": [
+        "processing",
+        "controller",
+        "processor",
+        "carried",
+        "behalf",
+        "only",
+        "processors",
+        "providing",
+        "sufficient",
+        "guarantees"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "29",
+      "article_title": "Processing under the authority of the controller or processor",
+      "text_snippet": "The processor and any person acting under the authority of the controller or of the processor, who has access to personal data, shall not process those data except on instructions from the controller, unless required to do so by Union or Member State law.",
+      "keywords": [
+        "controller",
+        "processor",
+        "authority",
+        "data",
+        "processing",
+        "person",
+        "acting",
+        "access",
+        "personal",
+        "process"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "30",
+      "article_title": "Records of processing activities",
+      "text_snippet": "1.   Each controller and, where applicable, the controller's representative, shall maintain a record of processing activities under its responsibility. That record shall contain all of the following information:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe name and contact details of the controller and, where applicable, the joint controller, the controller's representative and the data protection officer;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nthe purposes of the processing;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(c)\n \n …",
+      "keywords": [
+        "controller",
+        "processing",
+        "activities",
+        "record",
+        "records",
+        "applicable",
+        "representative",
+        "maintain",
+        "responsibility",
+        "contain"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "31",
+      "article_title": "Cooperation with the supervisory authority",
+      "text_snippet": "The controller and the processor and, where applicable, their representatives, shall cooperate, on request, with the supervisory authority in the performance of its tasks.\n \n \n \n\n \n\n Section 2\n \n \n\n \n\n \n Security of personal data",
+      "keywords": [
+        "supervisory",
+        "authority",
+        "cooperation",
+        "controller",
+        "processor",
+        "applicable",
+        "representatives",
+        "cooperate",
+        "request",
+        "performance"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "32",
+      "article_title": "Security of processing",
+      "text_snippet": "1.   Taking into account the state of the art, the costs of implementation and the nature, scope, context and purposes of processing as well as the risk of varying likelihood and severity for the rights and freedoms of natural persons, the controller and the processor shall implement appropriate technical and organisational measures to ensure a level of security appropriate to the risk, including inter alia as appropriate:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe pseudonymisation and encryption of perso…",
+      "keywords": [
+        "processing",
+        "security",
+        "taking",
+        "into",
+        "account",
+        "costs",
+        "implementation",
+        "nature",
+        "scope",
+        "context"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "33",
+      "article_title": "Notification of a personal data breach to the supervisory authority",
+      "text_snippet": "1.   In the case of a personal data breach, the controller shall without undue delay and, where feasible, not later than 72 hours after having become aware of it, notify the personal data breach to the supervisory authority competent in accordance with Article 55, unless the personal data breach is unlikely to result in a risk to the rights and freedoms of natural persons. Where the notification to the supervisory authority is not made within 72 hours, it shall be accompanied by reasons for the …",
+      "keywords": [
+        "personal",
+        "data",
+        "breach",
+        "supervisory",
+        "authority",
+        "notification",
+        "case",
+        "controller",
+        "without",
+        "undue"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "34",
+      "article_title": "Communication of a personal data breach to the data subject",
+      "text_snippet": "1.   When the personal data breach is likely to result in a high risk to the rights and freedoms of natural persons, the controller shall communicate the personal data breach to the data subject without undue delay.\n \n \n\n \n2.   The communication to the data subject referred to in paragraph 1 of this Article shall describe in clear and plain language the nature of the personal data breach and contain at least the information and measures referred to in points (b), (c) and (d) of Article 33(3).\n \n…",
+      "keywords": [
+        "data",
+        "personal",
+        "breach",
+        "subject",
+        "communication",
+        "when",
+        "likely",
+        "result",
+        "high",
+        "risk"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "35",
+      "article_title": "Data protection impact assessment",
+      "text_snippet": "1.   Where a type of processing in particular using new technologies, and taking into account the nature, scope, context and purposes of the processing, is likely to result in a high risk to the rights and freedoms of natural persons, the controller shall, prior to the processing, carry out an assessment of the impact of the envisaged processing operations on the protection of personal data. A single assessment may address a set of similar processing operations that present similar high risks.\n …",
+      "keywords": [
+        "processing",
+        "data",
+        "protection",
+        "impact",
+        "assessment",
+        "type",
+        "particular",
+        "using",
+        "technologies",
+        "taking"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "36",
+      "article_title": "Prior consultation",
+      "text_snippet": "1.   The controller shall consult the supervisory authority prior to processing where a data protection impact assessment under Article 35 indicates that the processing would result in a high risk in the absence of measures taken by the controller to mitigate the risk.\n \n \n\n \n2.   Where the supervisory authority is of the opinion that the intended processing referred to in paragraph 1 would infringe this Regulation, in particular where the controller has insufficiently identified or mitigated th…",
+      "keywords": [
+        "prior",
+        "controller",
+        "processing",
+        "risk",
+        "consultation",
+        "consult",
+        "supervisory",
+        "authority",
+        "data",
+        "protection"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "37",
+      "article_title": "Designation of the data protection officer",
+      "text_snippet": "1.   The controller and the processor shall designate a data protection officer in any case where:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe processing is carried out by a public authority or body, except for courts acting in their judicial capacity;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nthe core activities of the controller or the processor consist of processing operations which, by virtue of their nature, their scope and/or their purposes, require regular and systematic monitoring of data subjects on a …",
+      "keywords": [
+        "data",
+        "protection",
+        "officer",
+        "designation",
+        "controller",
+        "processor",
+        "designate",
+        "case",
+        "processing",
+        "carried"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "38",
+      "article_title": "Position of the data protection officer",
+      "text_snippet": "1.   The controller and the processor shall ensure that the data protection officer is involved, properly and in a timely manner, in all issues which relate to the protection of personal data.\n \n \n\n \n2.   The controller and processor shall support the data protection officer in performing the tasks referred to in Article 39 by providing resources necessary to carry out those tasks and access to personal data and processing operations, and to maintain his or her expert knowledge.\n \n \n\n \n3.   The …",
+      "keywords": [
+        "data",
+        "protection",
+        "officer",
+        "controller",
+        "processor",
+        "position",
+        "ensure",
+        "involved",
+        "properly",
+        "timely"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "39",
+      "article_title": "Tasks of the data protection officer",
+      "text_snippet": "1.   The data protection officer shall have at least the following tasks:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nto inform and advise the controller or the processor and the employees who carry out processing of their obligations pursuant to this Regulation and to other Union or Member State data protection provisions;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nto monitor compliance with this Regulation, with other Union or Member State data protection provisions and with the policies of the controller or proce…",
+      "keywords": [
+        "data",
+        "protection",
+        "tasks",
+        "officer",
+        "least",
+        "following",
+        "inform",
+        "advise",
+        "controller",
+        "processor"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "40",
+      "article_title": "Codes of conduct",
+      "text_snippet": "1.   The Member States, the supervisory authorities, the Board and the Commission shall encourage the drawing up of codes of conduct intended to contribute to the proper application of this Regulation, taking account of the specific features of the various processing sectors and the specific needs of micro, small and medium-sized enterprises.\n \n \n\n \n2.   Associations and other bodies representing categories of controllers or processors may prepare codes of conduct, or amend or extend such codes,…",
+      "keywords": [
+        "codes",
+        "conduct",
+        "specific",
+        "supervisory",
+        "authorities",
+        "board",
+        "commission",
+        "encourage",
+        "drawing",
+        "intended"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "41",
+      "article_title": "Monitoring of approved codes of conduct",
+      "text_snippet": "1.   Without prejudice to the tasks and powers of the competent supervisory authority under Articles 57 and 58, the monitoring of compliance with a code of conduct pursuant to Article 40 may be carried out by a body which has an appropriate level of expertise in relation to the subject-matter of the code and is accredited for that purpose by the competent supervisory authority.\n \n \n\n \n2.   A body as referred to in paragraph 1 may be accredited to monitor compliance with a code of conduct where t…",
+      "keywords": [
+        "monitoring",
+        "conduct",
+        "approved",
+        "codes",
+        "without",
+        "prejudice",
+        "tasks",
+        "powers",
+        "competent",
+        "supervisory"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "42",
+      "article_title": "Certification",
+      "text_snippet": "1.   The Member States, the supervisory authorities, the Board and the Commission shall encourage, in particular at Union level, the establishment of data protection certification mechanisms and of data protection seals and marks, for the purpose of demonstrating compliance with this Regulation of processing operations by controllers and processors. The specific needs of micro, small and medium-sized enterprises shall be taken into account.\n \n \n\n \n2.   In addition to adherence by controllers or …",
+      "keywords": [
+        "certification",
+        "data",
+        "protection",
+        "supervisory",
+        "authorities",
+        "board",
+        "commission",
+        "encourage",
+        "particular",
+        "level"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "43",
+      "article_title": "Certification bodies",
+      "text_snippet": "1.   Without prejudice to the tasks and powers of the competent supervisory authority under Articles 57 and 58, certification bodies which have an appropriate level of expertise in relation to data protection shall, after informing the supervisory authority in order to allow it to exercise its powers pursuant to point (h) of Article 58(2) where necessary, issue and renew certification. Member States shall ensure that those certification bodies are accredited by one or both of the following:\n \n\n …",
+      "keywords": [
+        "certification",
+        "bodies",
+        "supervisory",
+        "authority",
+        "without",
+        "prejudice",
+        "tasks",
+        "powers",
+        "competent",
+        "articles"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "44",
+      "article_title": "General principle for transfers",
+      "text_snippet": "Any transfer of personal data which are undergoing processing or are intended for processing after transfer to a third country or to an international organisation shall take place only if, subject to the other provisions of this Regulation, the conditions laid down in this Chapter are complied with by the controller and processor, including for onward transfers of personal data from the third country or an international organisation to another third country or to another international organisati…",
+      "keywords": [
+        "transfer",
+        "processing",
+        "general",
+        "principle",
+        "transfers",
+        "personal",
+        "data",
+        "undergoing",
+        "intended",
+        "after"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "45",
+      "article_title": "Transfers on the basis of an adequacy decision",
+      "text_snippet": "1.   A transfer of personal data to a third country or an international organisation may take place where the Commission has decided that the third country, a territory or one or more specified sectors within that third country, or the international organisation in question ensures an adequate level of protection. Such a transfer shall not require any specific authorisation.\n \n \n\n \n2.   When assessing the adequacy of the level of protection, the Commission shall, in particular, take account of t…",
+      "keywords": [
+        "third",
+        "country",
+        "international",
+        "organisation",
+        "transfers",
+        "basis",
+        "adequacy",
+        "decision",
+        "transfer",
+        "personal"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "46",
+      "article_title": "Transfers subject to appropriate safeguards",
+      "text_snippet": "1.   In the absence of a decision pursuant to Article 45(3), a controller or processor may transfer personal data to a third country or an international organisation only if the controller or processor has provided appropriate safeguards, and on condition that enforceable data subject rights and effective legal remedies for data subjects are available.\n \n \n\n \n2.   The appropriate safeguards referred to in paragraph 1 may be provided for, without requiring any specific authorisation from a superv…",
+      "keywords": [
+        "subject",
+        "appropriate",
+        "safeguards",
+        "controller",
+        "processor",
+        "data",
+        "transfers",
+        "absence",
+        "decision",
+        "pursuant"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "47",
+      "article_title": "Binding corporate rules",
+      "text_snippet": "1.   The competent supervisory authority shall approve binding corporate rules in accordance with the consistency mechanism set out in Article 63, provided that they:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nare legally binding and apply to and are enforced by every member concerned of the group of undertakings, or group of enterprises engaged in a joint economic activity, including their employees;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nexpressly confer enforceable rights on data subjects with regard to the …",
+      "keywords": [
+        "binding",
+        "corporate",
+        "rules",
+        "competent",
+        "supervisory",
+        "authority",
+        "approve",
+        "accordance",
+        "consistency",
+        "mechanism"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "48",
+      "article_title": "Transfers or disclosures not authorised by Union law",
+      "text_snippet": "Any judgment of a court or tribunal and any decision of an administrative authority of a third country requiring a controller or processor to transfer or disclose personal data may only be recognised or enforceable in any manner if based on an international agreement, such as a mutual legal assistance treaty, in force between the requesting third country and the Union or a Member State, without prejudice to other grounds for transfer pursuant to this Chapter.",
+      "keywords": [
+        "transfers",
+        "disclosures",
+        "authorised",
+        "judgment",
+        "court",
+        "tribunal",
+        "decision",
+        "administrative",
+        "authority",
+        "third"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "49",
+      "article_title": "Derogations for specific situations",
+      "text_snippet": "1.   In the absence of an adequacy decision pursuant to Article 45(3), or of appropriate safeguards pursuant to Article 46, including binding corporate rules, a transfer or a set of transfers of personal data to a third country or an international organisation shall take place only on one of the following conditions:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe data subject has explicitly consented to the proposed transfer, after having been informed of the possible risks of such transfers for the data subj…",
+      "keywords": [
+        "pursuant",
+        "article",
+        "derogations",
+        "specific",
+        "situations",
+        "absence",
+        "adequacy",
+        "decision",
+        "appropriate",
+        "safeguards"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "50",
+      "article_title": "International cooperation for the protection of personal data",
+      "text_snippet": "In relation to third countries and international organisations, the Commission and supervisory authorities shall take appropriate steps to:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \ndevelop international cooperation mechanisms to facilitate the effective enforcement of legislation for the protection of personal data;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nprovide international mutual assistance in the enforcement of legislation for the protection of personal data, including through notification, complaint refe…",
+      "keywords": [
+        "international",
+        "cooperation",
+        "protection",
+        "personal",
+        "data",
+        "relation",
+        "third",
+        "countries",
+        "organisations",
+        "commission"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "51",
+      "article_title": "Supervisory authority",
+      "text_snippet": "1.   Each Member State shall provide for one or more independent public authorities to be responsible for monitoring the application of this Regulation, in order to protect the fundamental rights and freedoms of natural persons in relation to processing and to facilitate the free flow of personal data within the Union (‘supervisory authority’).\n \n \n\n \n2.   Each supervisory authority shall contribute to the consistent application of this Regulation throughout the Union. For that purpose, the supe…",
+      "keywords": [
+        "supervisory",
+        "authority",
+        "provide",
+        "more",
+        "independent",
+        "public",
+        "authorities",
+        "responsible",
+        "monitoring",
+        "application"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "52",
+      "article_title": "Independence",
+      "text_snippet": "1.   Each supervisory authority shall act with complete independence in performing its tasks and exercising its powers in accordance with this Regulation.\n \n \n\n \n2.   The member or members of each supervisory authority shall, in the performance of their tasks and exercise of their powers in accordance with this Regulation, remain free from external influence, whether direct or indirect, and shall neither seek nor take instructions from anybody.\n \n \n\n \n3.   Member or members of each supervisory a…",
+      "keywords": [
+        "independence",
+        "supervisory",
+        "authority",
+        "tasks",
+        "powers",
+        "complete",
+        "performing",
+        "exercising",
+        "accordance",
+        "members"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "53",
+      "article_title": "General conditions for the members of the supervisory authority",
+      "text_snippet": "1.   Member States shall provide for each member of their supervisory authorities to be appointed by means of a transparent procedure by:\n \n\n \n \n \n\n \n\n \n\n \n—\n \n \n\n \ntheir parliament;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n—\n \n \n\n \ntheir government;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n—\n \n \n\n \ntheir head of State; or\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n—\n \n \n\n \nan independent body entrusted with the appointment under Member State law.\n \n \n \n \n \n \n\n \n2.   Each member shall have the qualifications, experience and skills, in partic…",
+      "keywords": [
+        "supervisory",
+        "general",
+        "conditions",
+        "members",
+        "authority",
+        "provide",
+        "authorities",
+        "appointed",
+        "means",
+        "transparent"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "54",
+      "article_title": "Rules on the establishment of the supervisory authority",
+      "text_snippet": "1.   Each Member State shall provide by law for all of the following:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe establishment of each supervisory authority;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nthe qualifications and eligibility conditions required to be appointed as member of each supervisory authority;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(c)\n \n \n\n \nthe rules and procedures for the appointment of the member or members of each supervisory authority;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(d)\n \n \n\n \nthe duration of the term of …",
+      "keywords": [
+        "supervisory",
+        "authority",
+        "establishment",
+        "rules",
+        "provide",
+        "following",
+        "qualifications",
+        "eligibility",
+        "conditions",
+        "required"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "55",
+      "article_title": "Competence",
+      "text_snippet": "1.   Each supervisory authority shall be competent for the performance of the tasks assigned to and the exercise of the powers conferred on it in accordance with this Regulation on the territory of its own Member State.\n \n \n\n \n2.   Where processing is carried out by public authorities or private bodies acting on the basis of point (c) or (e) of Article 6(1), the supervisory authority of the Member State concerned shall be competent. In such cases Article 56 does not apply.\n \n \n\n \n3.   Supervisor…",
+      "keywords": [
+        "competence",
+        "supervisory",
+        "authority",
+        "competent",
+        "performance",
+        "tasks",
+        "assigned",
+        "exercise",
+        "powers",
+        "conferred"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "56",
+      "article_title": "Competence of the lead supervisory authority",
+      "text_snippet": "1.   Without prejudice to Article 55, the supervisory authority of the main establishment or of the single establishment of the controller or processor shall be competent to act as lead supervisory authority for the cross-border processing carried out by that controller or processor in accordance with the procedure provided in Article 60.\n \n \n\n \n2.   By derogation from paragraph 1, each supervisory authority shall be competent to handle a complaint lodged with it or a possible infringement of th…",
+      "keywords": [
+        "supervisory",
+        "authority",
+        "lead",
+        "establishment",
+        "controller",
+        "processor",
+        "competence",
+        "without",
+        "prejudice",
+        "article"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "57",
+      "article_title": "Tasks",
+      "text_snippet": "1.   Without prejudice to other tasks set out under this Regulation, each supervisory authority shall on its territory:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nmonitor and enforce the application of this Regulation;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \npromote public awareness and understanding of the risks, rules, safeguards and rights in relation to processing. Activities addressed specifically to children shall receive specific attention;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(c)\n \n \n\n \nadvise, in accordance with M…",
+      "keywords": [
+        "tasks",
+        "without",
+        "prejudice",
+        "supervisory",
+        "authority",
+        "territory",
+        "monitor",
+        "enforce",
+        "application",
+        "promote"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "58",
+      "article_title": "Powers",
+      "text_snippet": "1.   Each supervisory authority shall have all of the following investigative powers:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nto order the controller and the processor, and, where applicable, the controller's or the processor's representative to provide any information it requires for the performance of its tasks;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nto carry out investigations in the form of data protection audits;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(c)\n \n \n\n \nto carry out a review on certifications issued pursuan…",
+      "keywords": [
+        "powers",
+        "controller",
+        "processor",
+        "supervisory",
+        "authority",
+        "following",
+        "investigative",
+        "order",
+        "applicable",
+        "representative"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "59",
+      "article_title": "Activity reports",
+      "text_snippet": "Each supervisory authority shall draw up an annual report on its activities, which may include a list of types of infringement notified and types of measures taken in accordance with Article 58(2). Those reports shall be transmitted to the national parliament, the government and other authorities as designated by Member State law. They shall be made available to the public, to the Commission and to the Board.\n \n \n \n \n\n \n\n CHAPTER VII\n \n \n\n \n\n \n Cooperation and consistency\n \n \n \n \n\n \n\n Section 1\n…",
+      "keywords": [
+        "reports",
+        "types",
+        "activity",
+        "supervisory",
+        "authority",
+        "draw",
+        "annual",
+        "report",
+        "activities",
+        "include"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "60",
+      "article_title": "Cooperation between the lead supervisory authority and the other supervisory authorities concerned",
+      "text_snippet": "1.   The lead supervisory authority shall cooperate with the other supervisory authorities concerned in accordance with this Article in an endeavour to reach consensus. The lead supervisory authority and the supervisory authorities concerned shall exchange all relevant information with each other.\n \n \n\n \n2.   The lead supervisory authority may request at any time other supervisory authorities concerned to provide mutual assistance pursuant to Article 61 and may conduct joint operations pursuant …",
+      "keywords": [
+        "supervisory",
+        "lead",
+        "authority",
+        "authorities",
+        "concerned",
+        "cooperation",
+        "between",
+        "cooperate",
+        "accordance",
+        "article"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "61",
+      "article_title": "Mutual assistance",
+      "text_snippet": "1.   Supervisory authorities shall provide each other with relevant information and mutual assistance in order to implement and apply this Regulation in a consistent manner, and shall put in place measures for effective cooperation with one another. Mutual assistance shall cover, in particular, information requests and supervisory measures, such as requests to carry out prior authorisations and consultations, inspections and investigations.\n \n \n\n \n2.   Each supervisory authority shall take all a…",
+      "keywords": [
+        "mutual",
+        "assistance",
+        "supervisory",
+        "authorities",
+        "provide",
+        "relevant",
+        "information",
+        "order",
+        "implement",
+        "apply"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "62",
+      "article_title": "Joint operations of supervisory authorities",
+      "text_snippet": "1.   The supervisory authorities shall, where appropriate, conduct joint operations including joint investigations and joint enforcement measures in which members or staff of the supervisory authorities of other Member States are involved.\n \n \n\n \n2.   Where the controller or processor has establishments in several Member States or where a significant number of data subjects in more than one Member State are likely to be substantially affected by processing operations, a supervisory authority of …",
+      "keywords": [
+        "joint",
+        "supervisory",
+        "authorities",
+        "operations",
+        "appropriate",
+        "conduct",
+        "investigations",
+        "enforcement",
+        "measures",
+        "members"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "63",
+      "article_title": "Consistency mechanism",
+      "text_snippet": "In order to contribute to the consistent application of this Regulation throughout the Union, the supervisory authorities shall cooperate with each other and, where relevant, with the Commission, through the consistency mechanism as set out in this Section.",
+      "keywords": [
+        "consistency",
+        "mechanism",
+        "order",
+        "contribute",
+        "consistent",
+        "application",
+        "throughout",
+        "supervisory",
+        "authorities",
+        "cooperate"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "64",
+      "article_title": "Opinion of the Board",
+      "text_snippet": "1.   The Board shall issue an opinion where a competent supervisory authority intends to adopt any of the measures below. To that end, the competent supervisory authority shall communicate the draft decision to the Board, when it:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \naims to adopt a list of the processing operations subject to the requirement for a data protection impact assessment pursuant to Article 35(4);\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nconcerns a matter pursuant to Article 40(7) whether a draft…",
+      "keywords": [
+        "board",
+        "opinion",
+        "competent",
+        "supervisory",
+        "authority",
+        "adopt",
+        "issue",
+        "intends",
+        "measures",
+        "below"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "65",
+      "article_title": "Dispute resolution by the Board",
+      "text_snippet": "1.   In order to ensure the correct and consistent application of this Regulation in individual cases, the Board shall adopt a binding decision in the following cases:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nwhere, in a case referred to in Article 60(4), a supervisory authority concerned has raised a relevant and reasoned objection to a draft decision of the lead authority or the lead authority has rejected such an objection as being not relevant or reasoned. The binding decision shall concern all the matt…",
+      "keywords": [
+        "board",
+        "cases",
+        "dispute",
+        "resolution",
+        "order",
+        "ensure",
+        "correct",
+        "consistent",
+        "application",
+        "individual"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "66",
+      "article_title": "Urgency procedure",
+      "text_snippet": "1.   In exceptional circumstances, where a supervisory authority concerned considers that there is an urgent need to act in order to protect the rights and freedoms of data subjects, it may, by way of derogation from the consistency mechanism referred to in Articles 63, 64 and 65 or the procedure referred to in Article 60, immediately adopt provisional measures intended to produce legal effects on its own territory with a specified period of validity which shall not exceed three months. The supe…",
+      "keywords": [
+        "procedure",
+        "urgency",
+        "exceptional",
+        "circumstances",
+        "supervisory",
+        "authority",
+        "concerned",
+        "considers",
+        "there",
+        "urgent"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "67",
+      "article_title": "Exchange of information",
+      "text_snippet": "The Commission may adopt implementing acts of general scope in order to specify the arrangements for the exchange of information by electronic means between supervisory authorities, and between supervisory authorities and the Board, in particular the standardised format referred to in Article 64.\n \nThose implementing acts shall be adopted in accordance with the examination procedure referred to in Article 93(2).\n \n \n \n\n \n\n Section 3\n \n \n\n \n\n \n European data protection board",
+      "keywords": [
+        "exchange",
+        "information",
+        "between",
+        "supervisory",
+        "authorities",
+        "commission",
+        "adopt",
+        "implementing",
+        "acts",
+        "general"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "68",
+      "article_title": "European Data Protection Board",
+      "text_snippet": "1.   The European Data Protection Board (the ‘Board’) is hereby established as a body of the Union and shall have legal personality.\n \n \n\n \n2.   The Board shall be represented by its Chair.\n \n \n\n \n3.   The Board shall be composed of the head of one supervisory authority of each Member State and of the European Data Protection Supervisor, or their respective representatives.\n \n \n\n \n4.   Where in a Member State more than one supervisory authority is responsible for monitoring the application of th…",
+      "keywords": [
+        "board",
+        "data",
+        "protection",
+        "hereby",
+        "established",
+        "body",
+        "legal",
+        "personality",
+        "represented",
+        "chair"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "69",
+      "article_title": "Independence",
+      "text_snippet": "1.   The Board shall act independently when performing its tasks or exercising its powers pursuant to Articles 70 and 71.\n \n \n\n \n2.   Without prejudice to requests by the Commission referred to in point (b) of Article 70(1) and in Article 70(2), the Board shall, in the performance of its tasks or the exercise of its powers, neither seek nor take instructions from anybody.",
+      "keywords": [
+        "board",
+        "tasks",
+        "article",
+        "independence",
+        "independently",
+        "when",
+        "performing",
+        "exercising",
+        "powers",
+        "pursuant"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "70",
+      "article_title": "Tasks of the Board",
+      "text_snippet": "1.   The Board shall ensure the consistent application of this Regulation. To that end, the Board shall, on its own initiative or, where relevant, at the request of the Commission, in particular:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nmonitor and ensure the correct application of this Regulation in the cases provided for in Articles 64 and 65 without prejudice to the tasks of national supervisory authorities;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nadvise the Commission on any issue related to the protection…",
+      "keywords": [
+        "board",
+        "ensure",
+        "application",
+        "tasks",
+        "consistent",
+        "initiative",
+        "relevant",
+        "request",
+        "commission",
+        "particular"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "71",
+      "article_title": "Reports",
+      "text_snippet": "1.   The Board shall draw up an annual report regarding the protection of natural persons with regard to processing in the Union and, where relevant, in third countries and international organisations. The report shall be made public and be transmitted to the European Parliament, to the Council and to the Commission.\n \n \n\n \n2.   The annual report shall include a review of the practical application of the guidelines, recommendations and best practices referred to in point (l) of Article 70(1) as …",
+      "keywords": [
+        "report",
+        "reports",
+        "board",
+        "draw",
+        "annual",
+        "regarding",
+        "protection",
+        "natural",
+        "persons",
+        "regard"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "72",
+      "article_title": "Procedure",
+      "text_snippet": "1.   The Board shall take decisions by a simple majority of its members, unless otherwise provided for in this Regulation.\n \n \n\n \n2.   The Board shall adopt its own rules of procedure by a two-thirds majority of its members and organise its own operational arrangements.",
+      "keywords": [
+        "procedure",
+        "board",
+        "majority",
+        "members",
+        "take",
+        "decisions",
+        "simple",
+        "unless",
+        "otherwise",
+        "provided"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "73",
+      "article_title": "Chair",
+      "text_snippet": "1.   The Board shall elect a chair and two deputy chairs from amongst its members by simple majority.\n \n \n\n \n2.   The term of office of the Chair and of the deputy chairs shall be five years and be renewable once.",
+      "keywords": [
+        "chair",
+        "deputy",
+        "chairs",
+        "board",
+        "elect",
+        "amongst",
+        "members",
+        "simple",
+        "majority",
+        "term"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "74",
+      "article_title": "Tasks of the Chair",
+      "text_snippet": "1.   The Chair shall have the following tasks:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nto convene the meetings of the Board and prepare its agenda;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nto notify decisions adopted by the Board pursuant to Article 65 to the lead supervisory authority and the supervisory authorities concerned;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(c)\n \n \n\n \nto ensure the timely performance of the tasks of the Board, in particular in relation to the consistency mechanism referred to in Article 63.\n \n \n \n…",
+      "keywords": [
+        "tasks",
+        "chair",
+        "board",
+        "supervisory",
+        "following",
+        "convene",
+        "meetings",
+        "prepare",
+        "agenda",
+        "notify"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "75",
+      "article_title": "Secretariat",
+      "text_snippet": "1.   The Board shall have a secretariat, which shall be provided by the European Data Protection Supervisor.\n \n \n\n \n2.   The secretariat shall perform its tasks exclusively under the instructions of the Chair of the Board.\n \n \n\n \n3.   The staff of the European Data Protection Supervisor involved in carrying out the tasks conferred on the Board by this Regulation shall be subject to separate reporting lines from the staff involved in carrying out tasks conferred on the European Data Protection Su…",
+      "keywords": [
+        "secretariat",
+        "board",
+        "data",
+        "protection",
+        "supervisor",
+        "provided",
+        "perform",
+        "tasks",
+        "exclusively",
+        "instructions"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "76",
+      "article_title": "Confidentiality",
+      "text_snippet": "1.   The discussions of the Board shall be confidential where the Board deems it necessary, as provided for in its rules of procedure.\n \n \n\n \n2.   Access to documents submitted to members of the Board, experts and representatives of third parties shall be governed by Regulation (EC) No 1049/2001 of the European Parliament and of the Council (21).\n \n \n \n \n \n\n \n\n CHAPTER VIII\n \n \n\n \n\n \n Remedies, liability and penalties",
+      "keywords": [
+        "board",
+        "confidentiality",
+        "discussions",
+        "confidential",
+        "deems",
+        "necessary",
+        "provided",
+        "rules",
+        "procedure",
+        "access"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "77",
+      "article_title": "Right to lodge a complaint with a supervisory authority",
+      "text_snippet": "1.   Without prejudice to any other administrative or judicial remedy, every data subject shall have the right to lodge a complaint with a supervisory authority, in particular in the Member State of his or her habitual residence, place of work or place of the alleged infringement if the data subject considers that the processing of personal data relating to him or her infringes this Regulation.\n \n \n\n \n2.   The supervisory authority with which the complaint has been lodged shall inform the compla…",
+      "keywords": [
+        "right",
+        "lodge",
+        "complaint",
+        "supervisory",
+        "authority",
+        "data",
+        "subject",
+        "place",
+        "without",
+        "prejudice"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "78",
+      "article_title": "Right to an effective judicial remedy against a supervisory authority",
+      "text_snippet": "1.   Without prejudice to any other administrative or non-judicial remedy, each natural or legal person shall have the right to an effective judicial remedy against a legally binding decision of a supervisory authority concerning them.\n \n \n\n \n2.   Without prejudice to any other administrative or non-judicial remedy, each data subject shall have the right to a an effective judicial remedy where the supervisory authority which is competent pursuant to Articles 55 and 56 does not handle a complaint…",
+      "keywords": [
+        "judicial",
+        "remedy",
+        "right",
+        "effective",
+        "against",
+        "supervisory",
+        "authority",
+        "without",
+        "prejudice",
+        "administrative"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "79",
+      "article_title": "Right to an effective judicial remedy against a controller or processor",
+      "text_snippet": "1.   Without prejudice to any available administrative or non-judicial remedy, including the right to lodge a complaint with a supervisory authority pursuant to Article 77, each data subject shall have the right to an effective judicial remedy where he or she considers that his or her rights under this Regulation have been infringed as a result of the processing of his or her personal data in non-compliance with this Regulation.\n \n \n\n \n2.   Proceedings against a controller or a processor shall b…",
+      "keywords": [
+        "right",
+        "judicial",
+        "remedy",
+        "effective",
+        "against",
+        "controller",
+        "processor",
+        "without",
+        "prejudice",
+        "available"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "80",
+      "article_title": "Representation of data subjects",
+      "text_snippet": "1.   The data subject shall have the right to mandate a not-for-profit body, organisation or association which has been properly constituted in accordance with the law of a Member State, has statutory objectives which are in the public interest, and is active in the field of the protection of data subjects' rights and freedoms with regard to the protection of their personal data to lodge the complaint on his or her behalf, to exercise the rights referred to in Articles 77, 78 and 79 on his or he…",
+      "keywords": [
+        "data",
+        "representation",
+        "subjects",
+        "subject",
+        "right",
+        "mandate",
+        "profit",
+        "body",
+        "organisation",
+        "association"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "81",
+      "article_title": "Suspension of proceedings",
+      "text_snippet": "1.   Where a competent court of a Member State has information on proceedings, concerning the same subject matter as regards processing by the same controller or processor, that are pending in a court in another Member State, it shall contact that court in the other Member State to confirm the existence of such proceedings.\n \n \n\n \n2.   Where proceedings concerning the same subject matter as regards processing of the same controller or processor are pending in a court in another Member State, any…",
+      "keywords": [
+        "court",
+        "proceedings",
+        "same",
+        "suspension",
+        "competent",
+        "information",
+        "concerning",
+        "subject",
+        "matter",
+        "regards"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "82",
+      "article_title": "Right to compensation and liability",
+      "text_snippet": "1.   Any person who has suffered material or non-material damage as a result of an infringement of this Regulation shall have the right to receive compensation from the controller or processor for the damage suffered.\n \n \n\n \n2.   Any controller involved in processing shall be liable for the damage caused by processing which infringes this Regulation. A processor shall be liable for the damage caused by processing only where it has not complied with obligations of this Regulation specifically dir…",
+      "keywords": [
+        "damage",
+        "right",
+        "compensation",
+        "suffered",
+        "material",
+        "controller",
+        "liability",
+        "person",
+        "result",
+        "infringement"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "83",
+      "article_title": "General conditions for imposing administrative fines",
+      "text_snippet": "1.   Each supervisory authority shall ensure that the imposition of administrative fines pursuant to this Article in respect of infringements of this Regulation referred to in paragraphs 4, 5 and 6 shall in each individual case be effective, proportionate and dissuasive.\n \n \n\n \n2.   Administrative fines shall, depending on the circumstances of each individual case, be imposed in addition to, or instead of, measures referred to in points (a) to (h) and (j) of Article 58(2). When deciding whether …",
+      "keywords": [
+        "administrative",
+        "fines",
+        "general",
+        "conditions",
+        "imposing",
+        "supervisory",
+        "authority",
+        "ensure",
+        "imposition",
+        "pursuant"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "84",
+      "article_title": "Penalties",
+      "text_snippet": "1.   Member States shall lay down the rules on other penalties applicable to infringements of this Regulation in particular for infringements which are not subject to administrative fines pursuant to Article 83, and shall take all measures necessary to ensure that they are implemented. Such penalties shall be effective, proportionate and dissuasive.\n \n \n\n \n2.   Each Member State shall notify to the Commission the provisions of its law which it adopts pursuant to paragraph 1, by 25 May 2018 and, …",
+      "keywords": [
+        "penalties",
+        "infringements",
+        "down",
+        "rules",
+        "applicable",
+        "particular",
+        "subject",
+        "administrative",
+        "fines",
+        "pursuant"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "85",
+      "article_title": "Processing and freedom of expression and information",
+      "text_snippet": "1.   Member States shall by law reconcile the right to the protection of personal data pursuant to this Regulation with the right to freedom of expression and information, including processing for journalistic purposes and the purposes of academic, artistic or literary expression.\n \n \n\n \n2.   For processing carried out for journalistic purposes or the purpose of academic artistic or literary expression, Member States shall provide for exemptions or derogations from Chapter II (principles), Chapt…",
+      "keywords": [
+        "expression",
+        "processing",
+        "freedom",
+        "information",
+        "right",
+        "purposes",
+        "reconcile",
+        "protection",
+        "personal",
+        "data"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "86",
+      "article_title": "Processing and public access to official documents",
+      "text_snippet": "Personal data in official documents held by a public authority or a public body or a private body for the performance of a task carried out in the public interest may be disclosed by the authority or body in accordance with Union or Member State law to which the public authority or body is subject in order to reconcile public access to official documents with the right to the protection of personal data pursuant to this Regulation.",
+      "keywords": [
+        "public",
+        "body",
+        "authority",
+        "official",
+        "documents",
+        "processing",
+        "access",
+        "personal",
+        "data",
+        "held"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "87",
+      "article_title": "Processing of the national identification number",
+      "text_snippet": "Member States may further determine the specific conditions for the processing of a national identification number or any other identifier of general application. In that case the national identification number or any other identifier of general application shall be used only under appropriate safeguards for the rights and freedoms of the data subject pursuant to this Regulation.",
+      "keywords": [
+        "national",
+        "identification",
+        "number",
+        "processing",
+        "identifier",
+        "general",
+        "application",
+        "further",
+        "determine",
+        "specific"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "88",
+      "article_title": "Processing in the context of employment",
+      "text_snippet": "1.   Member States may, by law or by collective agreements, provide for more specific rules to ensure the protection of the rights and freedoms in respect of the processing of employees' personal data in the employment context, in particular for the purposes of the recruitment, the performance of the contract of employment, including discharge of obligations laid down by law or by collective agreements, management, planning and organisation of work, equality and diversity in the workplace, healt…",
+      "keywords": [
+        "processing",
+        "context",
+        "employment",
+        "collective",
+        "agreements",
+        "provide",
+        "more",
+        "specific",
+        "rules",
+        "ensure"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "89",
+      "article_title": "Safeguards and derogations relating to processing for archiving purposes in the public interest, scientific or historica",
+      "text_snippet": "l research purposes or statistical purposes\n \n \n\n \n1.   Processing for archiving purposes in the public interest, scientific or historical research purposes or statistical purposes, shall be subject to appropriate safeguards, in accordance with this Regulation, for the rights and freedoms of the data subject. Those safeguards shall ensure that technical and organisational measures are in place in particular in order to ensure respect for the principle of data minimisation. Those measures may inc…",
+      "keywords": [
+        "purposes",
+        "safeguards",
+        "processing",
+        "archiving",
+        "public",
+        "interest",
+        "scientific",
+        "research",
+        "statistical",
+        "derogations"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "90",
+      "article_title": "Obligations of secrecy",
+      "text_snippet": "1.   Member States may adopt specific rules to set out the powers of the supervisory authorities laid down in points (e) and (f) of Article 58(1) in relation to controllers or processors that are subject, under Union or Member State law or rules established by national competent bodies, to an obligation of professional secrecy or other equivalent obligations of secrecy where this is necessary and proportionate to reconcile the right of the protection of personal data with the obligation of secre…",
+      "keywords": [
+        "rules",
+        "obligations",
+        "secrecy",
+        "adopt",
+        "specific",
+        "powers",
+        "supervisory",
+        "authorities",
+        "laid",
+        "down"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "91",
+      "article_title": "Existing data protection rules of churches and religious associations",
+      "text_snippet": "1.   Where in a Member State, churches and religious associations or communities apply, at the time of entry into force of this Regulation, comprehensive rules relating to the protection of natural persons with regard to processing, such rules may continue to apply, provided that they are brought into line with this Regulation.\n \n \n\n \n2.   Churches and religious associations which apply comprehensive rules in accordance with paragraph 1 of this Article shall be subject to the supervision of an i…",
+      "keywords": [
+        "rules",
+        "protection",
+        "churches",
+        "religious",
+        "associations",
+        "apply",
+        "existing",
+        "data",
+        "communities",
+        "time"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "92",
+      "article_title": "Exercise of the delegation",
+      "text_snippet": "1.   The power to adopt delegated acts is conferred on the Commission subject to the conditions laid down in this Article.\n \n \n\n \n2.   The delegation of power referred to in Article 12(8) and Article 43(8) shall be conferred on the Commission for an indeterminate period of time from 24 May 2016.\n \n \n\n \n3.   The delegation of power referred to in Article 12(8) and Article 43(8) may be revoked at any time by the European Parliament or by the Council. A decision of revocation shall put an end to th…",
+      "keywords": [
+        "article",
+        "delegation",
+        "power",
+        "conferred",
+        "commission",
+        "exercise",
+        "adopt",
+        "delegated",
+        "acts",
+        "subject"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "93",
+      "article_title": "Committee procedure",
+      "text_snippet": "1.   The Commission shall be assisted by a committee. That committee shall be a committee within the meaning of Regulation (EU) No 182/2011.\n \n \n\n \n2.   Where reference is made to this paragraph, Article 5 of Regulation (EU) No 182/2011 shall apply.\n \n \n\n \n3.   Where reference is made to this paragraph, Article 8 of Regulation (EU) No 182/2011, in conjunction with Article 5 thereof, shall apply.\n \n \n \n \n\n \n\n CHAPTER XI\n \n \n\n \n\n \n Final provisions",
+      "keywords": [
+        "committee",
+        "reference",
+        "made",
+        "procedure",
+        "commission",
+        "assisted",
+        "meaning",
+        "paragraph",
+        "article",
+        "apply"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "94",
+      "article_title": "Repeal of Directive 95/46/EC",
+      "text_snippet": "1.   Directive 95/46/EC is repealed with effect from 25 May 2018.\n \n \n\n \n2.   References to the repealed Directive shall be construed as references to this Regulation. References to the Working Party on the Protection of Individuals with regard to the Processing of Personal Data established by Article 29 of Directive 95/46/EC shall be construed as references to the European Data Protection Board established by this Regulation.",
+      "keywords": [
+        "references",
+        "repealed",
+        "repeal",
+        "effect",
+        "construed",
+        "working",
+        "party",
+        "protection",
+        "individuals",
+        "regard"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "95",
+      "article_title": "Relationship with Directive 2002/58/EC",
+      "text_snippet": "This Regulation shall not impose additional obligations on natural or legal persons in relation to processing in connection with the provision of publicly available electronic communications services in public communication networks in the Union in relation to matters for which they are subject to specific obligations with the same objective set out in Directive 2002/58/EC.",
+      "keywords": [
+        "relation",
+        "relationship",
+        "impose",
+        "additional",
+        "obligations",
+        "natural",
+        "legal",
+        "persons",
+        "processing",
+        "connection"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "96",
+      "article_title": "Relationship with previously concluded Agreements",
+      "text_snippet": "International agreements involving the transfer of personal data to third countries or international organisations which were concluded by Member States prior to 24 May 2016, and which comply with Union law as applicable prior to that date, shall remain in force until amended, replaced or revoked.",
+      "keywords": [
+        "concluded",
+        "agreements",
+        "international",
+        "prior",
+        "relationship",
+        "previously",
+        "involving",
+        "transfer",
+        "personal",
+        "data"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "97",
+      "article_title": "Commission reports",
+      "text_snippet": "1.   By 25 May 2020 and every four years thereafter, the Commission shall submit a report on the evaluation and review of this Regulation to the European Parliament and to the Council. The reports shall be made public.\n \n \n\n \n2.   In the context of the evaluations and reviews referred to in paragraph 1, the Commission shall examine, in particular, the application and functioning of:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nChapter V on the transfer of personal data to third countries or international organi…",
+      "keywords": [
+        "commission",
+        "reports",
+        "every",
+        "four",
+        "years",
+        "thereafter",
+        "submit",
+        "report",
+        "evaluation",
+        "review"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "98",
+      "article_title": "Review of other Union legal acts on data protection",
+      "text_snippet": "The Commission shall, if appropriate, submit legislative proposals with a view to amending other Union legal acts on the protection of personal data, in order to ensure uniform and consistent protection of natural persons with regard to processing. This shall in particular concern the rules relating to the protection of natural persons with regard to processing by Union institutions, bodies, offices and agencies and on the free movement of such data.",
+      "keywords": [
+        "protection",
+        "legal",
+        "acts",
+        "data",
+        "review",
+        "commission",
+        "appropriate",
+        "submit",
+        "legislative",
+        "proposals"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "gdpr",
+      "article_number": "99",
+      "article_title": "Entry into force and application",
+      "text_snippet": "1.   This Regulation shall enter into force on the twentieth day following that of its publication in the Official Journal of the European Union.\n \n \n\n \n2.   It shall apply from 25 May 2018.\n \n \n \n \n \n\n \n\n \nThis Regulation shall be binding in its entirety and directly applicable in all Member States.\n \nDone at Brussels, 27 April 2016.\n \n\n \n\n For the European Parliament\n \n \n\n The President\n \n \nM. SCHULZ\n \n \n \n\n \n\n For the Council\n \n \n\n The President\n \n \nJ.A. HENNIS-PLASSCHAERT\n \n \n \n \n \n \n\n (1)  …",
+      "keywords": [
+        "into",
+        "force",
+        "entry",
+        "application",
+        "enter",
+        "twentieth",
+        "following",
+        "publication",
+        "official",
+        "journal"
+      ],
+      "nist_families": []
+    }
+  ]
 }

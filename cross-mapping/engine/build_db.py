@@ -1193,8 +1193,7 @@ def load_fips_cmvp_data(path: Path) -> list[dict]:
     return rows
 
 
-def load_eurlex_data(eurlex_dir: Path) -> list[dict]:
-    """Load EUR-Lex article JSON files from eurlex_dir."""
+def load_eurlex_data(eurlex_dir):
     if not eurlex_dir.exists():
         return []
     rows = []
@@ -1207,16 +1206,12 @@ def load_eurlex_data(eurlex_dir: Path) -> list[dict]:
         celex_id = doc.get("_celex_id") or doc.get("metadata", {}).get("celex_id", "")
         fetched_at = doc.get("metadata", {}).get("generated_at", "")
         for art in doc.get("articles", []):
-            rows.append({
-                "article_id":     art.get("article_id", ""),
-                "regulation_id":  reg_id,
-                "celex_id":       celex_id,
-                "article_number": art.get("article_number", ""),
-                "title":          art.get("title", ""),
-                "text":           art.get("text", ""),
-                "nist_families":  json.dumps(art.get("nist_families", [])),
-                "fetched_at":     fetched_at,
-            })
+            num = art.get("article_number", "")
+            rows.append({"article_id": art.get("article_id") or (f"art{num}" if num else ""),
+                         "regulation_id": reg_id, "celex_id": celex_id, "article_number": num,
+                         "title": art.get("title") or art.get("article_title", ""),
+                         "text": art.get("text") or art.get("text_snippet", ""),
+                         "nist_families": json.dumps(art.get("nist_families", [])), "fetched_at": fetched_at})
     return rows
 
 

@@ -3518,7 +3518,7 @@
       "draft_status": "amendment_proposed",
       "public_comment_deadline": null,
       "source_manifest_keys": [
-        "eu-gdpr"
+        "eurlex-gdpr-articles"
       ],
       "crawl_seeds": [
         "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng"
@@ -3530,7 +3530,7 @@
       ],
       "version_signal": "latest_item_guid",
       "cci_coverage_notes": "Not-Applicable: EU GDPR is EU law; no DISA CCI coverage. Art. 32 technical measures → SC/AC via HITRUST bridge (Implied-Bridge).",
-      "notes": "EC 'Digital Omnibus' proposal (Nov 2025) would amend GDPR; text unchanged until adopted — watch only. Phase 52 (2026-11-06): urls.rss set from this feed's own announcement entry on the issuer's host (rss_feed had no URL and errored every run).",
+      "notes": "EC 'Digital Omnibus' proposal (Nov 2025) would amend GDPR; text unchanged until adopted — watch only. Phase 52 (2026-11-06): urls.rss set from this feed's own announcement entry on the issuer's host (rss_feed had no URL and errored every run). Phase 52 (2026-11-06): source_manifest_keys repointed from the non-existent 'eu-gdpr' to eurlex-gdpr-articles.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
       "last_verified": "2026-07-02"

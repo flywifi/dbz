@@ -1296,6 +1296,50 @@
       "sha256_prefix": "2c059586a7ab61dd",
       "role": "attack_techniques",
       "notes": "Written by cross-mapping/engine/attack_stix_loader.py from MITRE's ATT&CK TAXII 2.1 server (attack-patterns + collection object, paged at 100) and the CTID NIST 800-53 rev5 mapping (https://ctid.mitre.org/mappings/data/nist_800_53/attack-16.1/nist_800_53-rev5/enterprise/nist_800_53-rev5_attack-16.1-enterprise_json.json). Direct 'mitigates' mappings only; a technique CTID does not map stays blank (no parent inheritance, no keyword guess). Loaded by build_db.load_attack_data into attack_techniques (parent_id from sub_technique_of)."
+    },
+    {
+      "id": "eurlex-gdpr-articles",
+      "file": "canonical-sources/eurlex/gdpr-articles.json",
+      "format": "json",
+      "version": "CELEX 32016R0679 (General Data Protection Regulation (EU) 2016/679); article split of the Cellar XHTML manifestation",
+      "retrieved": "2026-11-06",
+      "sha256": "3d6634c1d5782853686abfdcc61d09e7d83a4ef1a42464715e9687dd14e6cad6",
+      "role": "eu_regulation_articles",
+      "source_url": "https://publications.europa.eu/resource/celex/32016R0679",
+      "notes": "99 articles from the Publications Office Cellar (phase 52; the EUR-Lex HTML page answers automated clients with a bot challenge, so the 2026-07-02 files held 0 articles). Weekly Tuesday job; nist_families is blank by design (no issuer mapping)."
+    },
+    {
+      "id": "eurlex-nis2-articles",
+      "file": "canonical-sources/eurlex/nis2-articles.json",
+      "format": "json",
+      "version": "CELEX 32022L2555 (NIS2 Directive (EU) 2022/2555); article split of the Cellar XHTML manifestation",
+      "retrieved": "2026-11-06",
+      "sha256": "3b923711409cca19dfacf17c876465339b88444baf152e12f7b7df57ecaee79a",
+      "role": "eu_regulation_articles",
+      "source_url": "https://publications.europa.eu/resource/celex/32022L2555",
+      "notes": "46 articles from the Publications Office Cellar (phase 52; the EUR-Lex HTML page answers automated clients with a bot challenge, so the 2026-07-02 files held 0 articles). Weekly Tuesday job; nist_families is blank by design (no issuer mapping)."
+    },
+    {
+      "id": "eurlex-dora-articles",
+      "file": "canonical-sources/eurlex/dora-articles.json",
+      "format": "json",
+      "version": "CELEX 32022R2554 (Digital Operational Resilience Act (EU) 2022/2554); article split of the Cellar XHTML manifestation",
+      "retrieved": "2026-11-06",
+      "sha256": "9ed23c78be2f4b74efeb1bd3233d0491923cb01da2c43b6007d39c0336069a0c",
+      "role": "eu_regulation_articles",
+      "source_url": "https://publications.europa.eu/resource/celex/32022R2554",
+      "notes": "64 articles from the Publications Office Cellar (phase 52; the EUR-Lex HTML page answers automated clients with a bot challenge, so the 2026-07-02 files held 0 articles). Weekly Tuesday job; nist_families is blank by design (no issuer mapping)."
+    },
+    {
+      "id": "eurlex-eu-ai-act-articles",
+      "file": "canonical-sources/eurlex/eu-ai-act-articles.json",
+      "format": "json",
+      "version": "CELEX 32024R1689 (EU Artificial Intelligence Act (EU) 2024/1689); article split of the Cellar XHTML manifestation",
+      "retrieved": "2026-11-06",
+      "sha256": "9f3990700b305e590e517826afd44573a2933e6522cc29811e3a1e7d636fce34",
+      "role": "eu_regulation_articles",
+      "source_url": "https://publications.europa.eu/resource/celex/32024R1689",
+      "notes": "113 articles from the Publications Office Cellar (phase 52; the EUR-Lex HTML page answers automated clients with a bot challenge, so the 2026-07-02 files held 0 articles). Weekly Tuesday job; nist_families is blank by design (no issuer mapping)."
     }
   ],
   "staged_reference_sources": {

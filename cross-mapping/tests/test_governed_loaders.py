@@ -103,10 +103,16 @@ def test_contracts():
     case("fr 503 then 200", [503, R(b"[]")], lambda: fr_watcher._fetch_with_retry(U), b"[]")
     case("fr 404 -> None", [404], lambda: fr_watcher._fetch_with_retry(U), None)
     case("ecfr mislabelled gzip body decoded", [R(gzip.compress(b"<x/>"))], lambda: ecfr_loader._fetch_with_retry(U), b"<x/>")
-    case("eurlex charset=iso-8859-1 decoded",
-         [R("é".encode("latin-1"), headers={"Content-Type": "text/html; charset=iso-8859-1"})],
-         lambda: eurlex_loader._fetch_url(U, initial_delay=0), "é")
-    case("eurlex 404 -> HTTPError", [404], lambda: eurlex_loader._fetch_url(U), "raises HTTPError")
+    case("eurlex Cellar XHTML 200 -> text",
+         [R(b"<html><p>Article 1</p></html>", headers={"Content-Type": "application/xhtml+xml;charset=UTF-8"})],
+         lambda: eurlex_loader._fetch_cellar("32016R0679"), "<html><p>Article 1</p></html>")
+    case("eurlex 202 bot challenge -> FetchRejected (nothing written)",
+         [R(b"<html><script>awswaf challenge</script></html>", 202, {"Content-Type": "text/html; charset=UTF-8"})],
+         lambda: eurlex_loader._fetch_cellar("32016R0679"), "raises FetchRejected")
+    case("eurlex text/html body -> FetchRejected (not the XHTML manifestation)",
+         [R(b"<html/>", headers={"Content-Type": "text/html; charset=UTF-8"})],
+         lambda: eurlex_loader._fetch_cellar("32016R0679"), "raises FetchRejected")
+    case("eurlex 404 -> HTTPError", [404], lambda: eurlex_loader._fetch_cellar("32016R0679"), "raises HTTPError")
     case("fips 405 -> None", [405], lambda: fips_cmvp_loader._fetch(U, {"q": 1}), None)
     case("fips 200 JSON", [J([1, 2])], lambda: fips_cmvp_loader._fetch(U), [1, 2])
     case("olir 500 -> None (retries only 429/503)", [500], lambda: olir_crawler._fetch(U), None)

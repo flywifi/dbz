@@ -1,15 +1,877 @@
 {
   "_celex_id": "32022L2555",
-  "_eli_version": "32022/L2555",
-  "_consolidated_date": "2026-07-02",
   "metadata": {
     "regulation_id": "nis2",
     "celex_id": "32022L2555",
     "full_name": "NIS2 Directive (EU) 2022/2555",
-    "eli_uri": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022L2555",
-    "generated_at": "2026-07-02T14:12:49.128035+00:00",
-    "total_articles": 0,
+    "cellar_uri": "https://publications.europa.eu/resource/celex/32022L2555",
+    "superseded_source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022L2555 answers automated clients with HTTP 202 and an AWS WAF JavaScript challenge (2026-11-05); EUR-Lex documents the Cellar RESTful API as its machine reuse channel",
+    "generated_at": "2026-11-06T13:49:08.931631+00:00",
+    "total_articles": 46,
     "human_review_required": true
   },
-  "articles": []
+  "articles": [
+    {
+      "regulation_id": "nis2",
+      "article_number": "1",
+      "article_title": "Subject matter",
+      "text_snippet": "1.   This Directive lays down measures that aim to achieve a high common level of cybersecurity across the Union, with a view to improving the functioning of the internal market.\n \n \n\n \n2.   To that end, this Directive lays down:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nobligations that require Member States to adopt national cybersecurity strategies and to designate or establish competent authorities, cyber crisis management authorities, single points of contact on cybersecurity (single points of contact) …",
+      "keywords": [
+        "lays",
+        "down",
+        "subject",
+        "matter",
+        "measures",
+        "achieve",
+        "high",
+        "common",
+        "level",
+        "cybersecurity"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "2",
+      "article_title": "Scope",
+      "text_snippet": "1.   This Directive applies to public or private entities of a type referred to in Annex I or II which qualify as medium-sized enterprises under Article 2 of the Annex to Recommendation 2003/361/EC, or exceed the ceilings for medium-sized enterprises provided for in paragraph 1 of that Article, and which provide their services or carry out their activities within the Union.\n \nArticle 3(4) of the Annex to that Recommendation shall not apply for the purposes of this Directive.\n \n \n\n \n2.   Regardle…",
+      "keywords": [
+        "annex",
+        "medium",
+        "sized",
+        "enterprises",
+        "article",
+        "scope",
+        "applies",
+        "public",
+        "private",
+        "entities"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "3",
+      "article_title": "Essential and important entities",
+      "text_snippet": "1.   For the purposes of this Directive, the following entities shall be considered to be essential entities:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nentities of a type referred to in Annex I which exceed the ceilings for medium-sized enterprises provided for in Article 2(1) of the Annex to Recommendation 2003/361/EC;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nqualified trust service providers and top-level domain name registries as well as DNS service providers, regardless of their size;\n \n \n \n \n \n\n \n \n \n\n \n\n \n…",
+      "keywords": [
+        "entities",
+        "essential",
+        "annex",
+        "important",
+        "purposes",
+        "following",
+        "considered",
+        "type",
+        "referred",
+        "exceed"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "4",
+      "article_title": "Sector-specific Union legal acts",
+      "text_snippet": "1.   Where sector-specific Union legal acts require essential or important entities to adopt cybersecurity risk-management measures or to notify significant incidents and where those requirements are at least equivalent in effect to the obligations laid down in this Directive, the relevant provisions of this Directive, including the provisions on supervision and enforcement laid down in Chapter VII, shall not apply to such entities. Where sector-specific Union legal acts do not cover all entitie…",
+      "keywords": [
+        "sector",
+        "specific",
+        "legal",
+        "acts",
+        "require",
+        "essential",
+        "important",
+        "entities",
+        "adopt",
+        "cybersecurity"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "5",
+      "article_title": "Minimum harmonisation",
+      "text_snippet": "This Directive shall not preclude Member States from adopting or maintaining provisions ensuring a higher level of cybersecurity, provided that such provisions are consistent with Member States’ obligations laid down in Union law.",
+      "keywords": [
+        "provisions",
+        "minimum",
+        "harmonisation",
+        "preclude",
+        "adopting",
+        "maintaining",
+        "ensuring",
+        "higher",
+        "level",
+        "cybersecurity"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "6",
+      "article_title": "Definitions",
+      "text_snippet": "For the purposes of this Directive, the following definitions apply:\n \n\n \n \n \n\n \n\n \n\n \n(1)\n \n \n\n \n‘network and information system’ means:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nan electronic communications network as defined in Article 2, point (1), of Directive (EU) 2018/1972;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nany device or group of interconnected or related devices, one or more of which, pursuant to a programme, carry out automatic processing of digital data; or\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(c)\n \n \n\n \nd…",
+      "keywords": [
+        "definitions",
+        "network",
+        "purposes",
+        "following",
+        "apply",
+        "information",
+        "system",
+        "means",
+        "electronic",
+        "communications"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "7",
+      "article_title": "National cybersecurity strategy",
+      "text_snippet": "1.   Each Member State shall adopt a national cybersecurity strategy that provides for the strategic objectives, the resources required to achieve those objectives, and appropriate policy and regulatory measures, with a view to achieving and maintaining a high level of cybersecurity. The national cybersecurity strategy shall include:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nobjectives and priorities of the Member State’s cybersecurity strategy covering in particular the sectors referred to in Annexes I and …",
+      "keywords": [
+        "national",
+        "cybersecurity",
+        "strategy",
+        "objectives",
+        "adopt",
+        "provides",
+        "strategic",
+        "resources",
+        "required",
+        "achieve"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "8",
+      "article_title": "Competent authorities and single points of contact",
+      "text_snippet": "1.   Each Member State shall designate or establish one or more competent authorities responsible for cybersecurity and for the supervisory tasks referred to in Chapter VII (competent authorities).\n \n \n\n \n2.   The competent authorities referred to in paragraph 1 shall monitor the implementation of this Directive at national level.\n \n \n\n \n3.   Each Member State shall designate or establish a single point of contact. Where a Member State designates or establishes only one competent authority pursu…",
+      "keywords": [
+        "competent",
+        "authorities",
+        "referred",
+        "single",
+        "points",
+        "contact",
+        "designate",
+        "establish",
+        "more",
+        "responsible"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "9",
+      "article_title": "National cyber crisis management frameworks",
+      "text_snippet": "1.   Each Member State shall designate or establish one or more competent authorities responsible for the management of large-scale cybersecurity incidents and crises (cyber crisis management authorities). Member States shall ensure that those authorities have adequate resources to carry out, in an effective and efficient manner, the tasks assigned to them. Member States shall ensure coherence with the existing frameworks for general national crisis management.\n \n \n\n \n2.   Where a Member State d…",
+      "keywords": [
+        "management",
+        "authorities",
+        "cyber",
+        "crisis",
+        "national",
+        "frameworks",
+        "designate",
+        "establish",
+        "more",
+        "competent"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "10",
+      "article_title": "Computer security incident response teams (CSIRTs)",
+      "text_snippet": "1.   Each Member State shall designate or establish one or more CSIRTs. The CSIRTs may be designated or established within a competent authority. The CSIRTs shall comply with the requirements set out in Article 11(1), shall cover at least the sectors, subsectors and types of entity referred to in Annexes I and II, and shall be responsible for incident handling in accordance with a well-defined process.\n \n \n\n \n2.   Member States shall ensure that each CSIRT has adequate resources to carry out eff…",
+      "keywords": [
+        "csirts",
+        "computer",
+        "security",
+        "incident",
+        "response",
+        "teams",
+        "designate",
+        "establish",
+        "more",
+        "designated"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "11",
+      "article_title": "Requirements, technical capabilities and tasks of CSIRTs",
+      "text_snippet": "1.   The CSIRTs shall comply with the following requirements:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe CSIRTs shall ensure a high level of availability of their communication channels by avoiding single points of failure, and shall have several means for being contacted and for contacting others at all times; they shall clearly specify the communication channels and make them known to constituency and cooperative partners;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nthe CSIRTs’ premises and the supporting info…",
+      "keywords": [
+        "csirts",
+        "requirements",
+        "technical",
+        "capabilities",
+        "tasks",
+        "comply",
+        "following",
+        "ensure",
+        "high",
+        "level"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "12",
+      "article_title": "Coordinated vulnerability disclosure and a European vulnerability database",
+      "text_snippet": "1.   Each Member State shall designate one of its CSIRTs as a coordinator for the purposes of coordinated vulnerability disclosure. The CSIRT designated as coordinator shall act as a trusted intermediary, facilitating, where necessary, the interaction between the natural or legal person reporting a vulnerability and the manufacturer or provider of the potentially vulnerable ICT products or ICT services, upon the request of either party. The tasks of the CSIRT designated as coordinator shall incl…",
+      "keywords": [
+        "vulnerability",
+        "coordinated",
+        "disclosure",
+        "coordinator",
+        "database",
+        "designate",
+        "csirts",
+        "purposes",
+        "csirt",
+        "designated"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "13",
+      "article_title": "Cooperation at national level",
+      "text_snippet": "1.   Where they are separate, the competent authorities, the single point of contact and the CSIRTs of the same Member State shall cooperate with each other with regard to the fulfilment of the obligations laid down in this Directive.\n \n \n\n \n2.   Member States shall ensure that their CSIRTs or, where applicable, their competent authorities, receive notifications of significant incidents pursuant to Article 23, and incidents, cyber threats and near misses pursuant to Article 30.\n \n \n\n \n3.   Membe…",
+      "keywords": [
+        "csirts",
+        "cooperation",
+        "national",
+        "level",
+        "they",
+        "separate",
+        "competent",
+        "authorities",
+        "single",
+        "point"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "14",
+      "article_title": "Cooperation Group",
+      "text_snippet": "1.   In order to support and facilitate strategic cooperation and the exchange of information among Member States, as well as to strengthen trust and confidence, a Cooperation Group is established.\n \n \n\n \n2.   The Cooperation Group shall carry out its tasks on the basis of biennial work programmes referred to in paragraph 7.\n \n \n\n \n3.   The Cooperation Group shall be composed of representatives of Member States, the Commission and ENISA. The European External Action Service shall participate in …",
+      "keywords": [
+        "cooperation",
+        "group",
+        "order",
+        "support",
+        "facilitate",
+        "strategic",
+        "exchange",
+        "information",
+        "among",
+        "well"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "15",
+      "article_title": "CSIRTs network",
+      "text_snippet": "1.   In order to contribute to the development of confidence and trust and to promote swift and effective operational cooperation among Member States, a network of national CSIRTs is established.\n \n \n\n \n2.   The CSIRTs network shall be composed of representatives of the CSIRTs designated or established pursuant to Article 10 and the computer emergency response team for the Union’s institutions, bodies and agencies (CERT-EU). The Commission shall participate in the CSIRTs network as an observer. …",
+      "keywords": [
+        "csirts",
+        "network",
+        "order",
+        "contribute",
+        "development",
+        "confidence",
+        "trust",
+        "promote",
+        "swift",
+        "effective"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "16",
+      "article_title": "European cyber crisis liaison organisation network (EU-CyCLONe)",
+      "text_snippet": "1.   EU-CyCLONe is established to support the coordinated management of large-scale cybersecurity incidents and crises at operational level and to ensure the regular exchange of relevant information among Member States and Union institutions, bodies, offices and agencies.\n \n \n\n \n2.   EU-CyCLONe shall be composed of the representatives of Member States’ cyber crisis management authorities as well as, in cases where a potential or ongoing large-scale cybersecurity incident has or is likely to have…",
+      "keywords": [
+        "cyclone",
+        "cyber",
+        "crisis",
+        "liaison",
+        "organisation",
+        "network",
+        "established",
+        "support",
+        "coordinated",
+        "management"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "17",
+      "article_title": "International cooperation",
+      "text_snippet": "The Union may, where appropriate, conclude international agreements, in accordance with Article 218 TFEU, with third countries or international organisations, allowing and organising their participation in particular activities of the Cooperation Group, the CSIRTs network and EU-CyCLONe. Such agreements shall comply with Union data protection law.",
+      "keywords": [
+        "international",
+        "cooperation",
+        "appropriate",
+        "conclude",
+        "agreements",
+        "accordance",
+        "article",
+        "tfeu",
+        "third",
+        "countries"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "18",
+      "article_title": "Report on the state of cybersecurity in the Union",
+      "text_snippet": "1.   ENISA shall adopt, in cooperation with the Commission and the Cooperation Group, a biennial report on the state of cybersecurity in the Union and shall submit and present that report to the European Parliament. The report shall, inter alia, be made available in machine-readable data and include the following:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \na Union-level cybersecurity risk assessment, taking account of the cyber threat landscape;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nan assessment of the develo…",
+      "keywords": [
+        "report",
+        "cybersecurity",
+        "cooperation",
+        "enisa",
+        "adopt",
+        "commission",
+        "group",
+        "biennial",
+        "submit",
+        "present"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "19",
+      "article_title": "Peer reviews",
+      "text_snippet": "1.   The Cooperation Group shall, on 17 January 2025, establish, with the assistance of the Commission and ENISA, and, where relevant, the CSIRTs network, the methodology and organisational aspects of peer reviews with a view to learning from shared experiences, strengthening mutual trust, achieving a high common level of cybersecurity, as well as enhancing Member States’ cybersecurity capabilities and policies necessary to implement this Directive. Participation in peer reviews is voluntary. Th…",
+      "keywords": [
+        "peer",
+        "reviews",
+        "cooperation",
+        "group",
+        "january",
+        "establish",
+        "assistance",
+        "commission",
+        "enisa",
+        "relevant"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "20",
+      "article_title": "Governance",
+      "text_snippet": "1.   Member States shall ensure that the management bodies of essential and important entities approve the cybersecurity risk-management measures taken by those entities in order to comply with Article 21, oversee its implementation and can be held liable for infringements by the entities of that Article.\n \nThe application of this paragraph shall be without prejudice to national law as regards the liability rules applicable to public institutions, as well as the liability of public servants and …",
+      "keywords": [
+        "entities",
+        "management",
+        "governance",
+        "ensure",
+        "bodies",
+        "essential",
+        "important",
+        "approve",
+        "cybersecurity",
+        "risk"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "21",
+      "article_title": "Cybersecurity risk-management measures",
+      "text_snippet": "1.   Member States shall ensure that essential and important entities take appropriate and proportionate technical, operational and organisational measures to manage the risks posed to the security of network and information systems which those entities use for their operations or for the provision of their services, and to prevent or minimise the impact of incidents on recipients of their services and on other services.\n \nTaking into account the state-of-the-art and, where applicable, relevant …",
+      "keywords": [
+        "measures",
+        "entities",
+        "cybersecurity",
+        "risk",
+        "management",
+        "ensure",
+        "essential",
+        "important",
+        "take",
+        "appropriate"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "22",
+      "article_title": "Union level coordinated security risk assessments of critical supply chains",
+      "text_snippet": "1.   The Cooperation Group, in cooperation with the Commission and ENISA, may carry out coordinated security risk assessments of specific critical ICT services, ICT systems or ICT products supply chains, taking into account technical and, where relevant, non-technical risk factors.\n \n \n\n \n2.   The Commission, after consulting the Cooperation Group and ENISA, and, where necessary, relevant stakeholders, shall identify the specific critical ICT services, ICT systems or ICT products that may be sub…",
+      "keywords": [
+        "risk",
+        "coordinated",
+        "security",
+        "assessments",
+        "critical",
+        "supply",
+        "chains",
+        "cooperation",
+        "technical",
+        "level"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "23",
+      "article_title": "Reporting obligations",
+      "text_snippet": "1.   Each Member State shall ensure that essential and important entities notify, without undue delay, its CSIRT or, where applicable, its competent authority in accordance with paragraph 4 of any incident that has a significant impact on the provision of their services as referred to in paragraph 3 (significant incident). Where appropriate, entities concerned shall notify, without undue delay, the recipients of their services of significant incidents that are likely to adversely affect the prov…",
+      "keywords": [
+        "paragraph",
+        "reporting",
+        "obligations",
+        "ensure",
+        "essential",
+        "important",
+        "entities",
+        "notify",
+        "without",
+        "undue"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "24",
+      "article_title": "Use of European cybersecurity certification schemes",
+      "text_snippet": "1.   In order to demonstrate compliance with particular requirements of Article 21, Member States may require essential and important entities to use particular ICT products, ICT services and ICT processes, developed by the essential or important entity or procured from third parties, that are certified under European cybersecurity certification schemes adopted pursuant to Article 49 of Regulation (EU) 2019/881. Furthermore, Member States shall encourage essential and important entities to use q…",
+      "keywords": [
+        "particular",
+        "essential",
+        "important",
+        "cybersecurity",
+        "certification",
+        "schemes",
+        "order",
+        "demonstrate",
+        "compliance",
+        "requirements"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "25",
+      "article_title": "Standardisation",
+      "text_snippet": "1.   In order to promote the convergent implementation of Article 21(1) and (2), Member States shall, without imposing or discriminating in favour of the use of a particular type of technology, encourage the use of European and international standards and technical specifications relevant to the security of network and information systems.\n \n \n\n \n2.   ENISA, in cooperation with Member States, and, where appropriate, after consulting relevant stakeholders, shall draw up advice and guidelines rega…",
+      "keywords": [
+        "standardisation",
+        "order",
+        "promote",
+        "convergent",
+        "implementation",
+        "article",
+        "without",
+        "imposing",
+        "discriminating",
+        "favour"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "26",
+      "article_title": "Jurisdiction and territoriality",
+      "text_snippet": "1.   Entities falling within the scope of this Directive shall be considered to fall under the jurisdiction of the Member State in which they are established, except in the case of:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nproviders of public electronic communications networks or providers of publicly available electronic communications services, which shall be considered to fall under the jurisdiction of the Member State in which they provide their services;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nDNS service…",
+      "keywords": [
+        "jurisdiction",
+        "providers",
+        "territoriality",
+        "entities",
+        "falling",
+        "scope",
+        "considered",
+        "fall",
+        "they",
+        "established"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "27",
+      "article_title": "Registry of entities",
+      "text_snippet": "1.   ENISA shall create and maintain a registry of DNS service providers, TLD name registries, entities providing domain name registration services, cloud computing service providers, data centre service providers, content delivery network providers, managed service providers, managed security service providers, as well as providers of online marketplaces, of online search engines and of social networking services platforms, on the basis of the information received from the single points of cont…",
+      "keywords": [
+        "providers",
+        "service",
+        "registry",
+        "entities",
+        "name",
+        "managed",
+        "enisa",
+        "create",
+        "maintain",
+        "registries"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "28",
+      "article_title": "Database of domain name registration data",
+      "text_snippet": "1.   For the purpose of contributing to the security, stability and resilience of the DNS, Member States shall require TLD name registries and entities providing domain name registration services to collect and maintain accurate and complete domain name registration data in a dedicated database with due diligence in accordance with Union data protection law as regards data which are personal data.\n \n \n\n \n2.   For the purposes of paragraph 1, Member States shall require the database of domain nam…",
+      "keywords": [
+        "name",
+        "domain",
+        "registration",
+        "database",
+        "data",
+        "purpose",
+        "contributing",
+        "security",
+        "stability",
+        "resilience"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "29",
+      "article_title": "Cybersecurity information-sharing arrangements",
+      "text_snippet": "1.   Member States shall ensure that entities falling within the scope of this Directive and, where relevant, other entities not falling within the scope of this Directive are able to exchange on a voluntary basis relevant cybersecurity information among themselves, including information relating to cyber threats, near misses, vulnerabilities, techniques and procedures, indicators of compromise, adversarial tactics, threat-actor-specific information, cybersecurity alerts and recommendations rega…",
+      "keywords": [
+        "information",
+        "cybersecurity",
+        "entities",
+        "falling",
+        "scope",
+        "relevant",
+        "sharing",
+        "arrangements",
+        "ensure",
+        "able"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "30",
+      "article_title": "Voluntary notification of relevant information",
+      "text_snippet": "1.   Member States shall ensure that, in addition to the notification obligation provided for in Article 23, notifications can be submitted to the CSIRTs or, where applicable, the competent authorities, on a voluntary basis, by:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nessential and important entities with regard to incidents, cyber threats and near misses;\n \n \n \n \n \n\n \n \n \n\n \n\n \n\n \n(b)\n \n \n\n \nentities other than those referred to in point (a), regardless of whether they fall within the scope of this Direct…",
+      "keywords": [
+        "voluntary",
+        "notification",
+        "relevant",
+        "information",
+        "ensure",
+        "addition",
+        "obligation",
+        "provided",
+        "article",
+        "notifications"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "31",
+      "article_title": "General aspects concerning supervision and enforcement",
+      "text_snippet": "1.   Member States shall ensure that their competent authorities effectively supervise and take the measures necessary to ensure compliance with this Directive.\n \n \n\n \n2.   Member States may allow their competent authorities to prioritise supervisory tasks. Such prioritisation shall be based on a risk-based approach. To that end, when exercising their supervisory tasks provided for in Articles 32 and 33, the competent authorities may establish supervisory methodologies allowing for a prioritisat…",
+      "keywords": [
+        "ensure",
+        "competent",
+        "authorities",
+        "general",
+        "aspects",
+        "concerning",
+        "supervision",
+        "enforcement",
+        "effectively",
+        "supervise"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "32",
+      "article_title": "Supervisory and enforcement measures in relation to essential entities",
+      "text_snippet": "1.   Member States shall ensure that the supervisory or enforcement measures imposed on essential entities in respect of the obligations laid down in this Directive are effective, proportionate and dissuasive, taking into account the circumstances of each individual case.\n \n \n\n \n2.   Member States shall ensure that the competent authorities, when exercising their supervisory tasks in relation to essential entities, have the power to subject those entities at least to:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n…",
+      "keywords": [
+        "supervisory",
+        "enforcement",
+        "measures",
+        "essential",
+        "entities",
+        "relation",
+        "ensure",
+        "imposed",
+        "respect",
+        "obligations"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "33",
+      "article_title": "Supervisory and enforcement measures in relation to important entities",
+      "text_snippet": "1.   When provided with evidence, indication or information that an important entity allegedly does not comply with this Directive, in particular Articles 21 and 23 thereof, Member States shall ensure that the competent authorities take action, where necessary, through ex post supervisory measures. Member States shall ensure that those measures are effective, proportionate and dissuasive, taking into account the circumstances of each individual case.\n \n \n\n \n2.   Member States shall ensure that t…",
+      "keywords": [
+        "supervisory",
+        "measures",
+        "important",
+        "enforcement",
+        "relation",
+        "entities",
+        "when",
+        "provided",
+        "evidence",
+        "indication"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "34",
+      "article_title": "General conditions for imposing administrative fines on essential and important entities",
+      "text_snippet": "1.   Member States shall ensure that the administrative fines imposed on essential and important entities pursuant to this Article in respect of infringements of this Directive are effective, proportionate and dissuasive, taking into account the circumstances of each individual case.\n \n \n\n \n2.   Administrative fines shall be imposed in addition to any of the measures referred to in Article 32(4), points (a) to (h), Article 32(5) and Article 33(4), points (a) to (g).\n \n \n\n \n3.   When deciding whe…",
+      "keywords": [
+        "administrative",
+        "fines",
+        "essential",
+        "important",
+        "entities",
+        "general",
+        "conditions",
+        "imposing",
+        "ensure",
+        "imposed"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "35",
+      "article_title": "Infringements entailing a personal data breach",
+      "text_snippet": "1.   Where the competent authorities become aware in the course of supervision or enforcement that the infringement by an essential or important entity of the obligations laid down in Articles 21 and 23 of this Directive can entail a personal data breach, as defined in Article 4, point (12), of Regulation (EU) 2016/679 which is to be notified pursuant to Article 33 of that Regulation, they shall, without undue delay, inform the supervisory authorities as referred to in Article 55 or 56 of that R…",
+      "keywords": [
+        "personal",
+        "data",
+        "breach",
+        "infringements",
+        "entailing",
+        "competent",
+        "authorities",
+        "become",
+        "aware",
+        "course"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "36",
+      "article_title": "Penalties",
+      "text_snippet": "Member States shall lay down rules on penalties applicable to infringements of national measures adopted pursuant to this Directive and shall take all measures necessary to ensure that they are implemented. The penalties provided for shall be effective, proportionate and dissuasive. Member States shall, by 17 January 2025, notify the Commission of those rules and of those measures and shall notify it, without delay of any subsequent amendment affecting them.",
+      "keywords": [
+        "penalties",
+        "measures",
+        "down",
+        "rules",
+        "applicable",
+        "infringements",
+        "national",
+        "adopted",
+        "pursuant",
+        "take"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "37",
+      "article_title": "Mutual assistance",
+      "text_snippet": "1.   Where an entity provides services in more than one Member State, or provides services in one or more Member States and its network and information systems are located in one or more other Member States, the competent authorities of the Member States concerned shall cooperate with and assist each other as necessary. That cooperation shall entail, at least, that:\n \n\n \n \n \n\n \n\n \n\n \n(a)\n \n \n\n \nthe competent authorities applying supervisory or enforcement measures in a Member State shall, via th…",
+      "keywords": [
+        "more",
+        "provides",
+        "services",
+        "mutual",
+        "assistance",
+        "entity",
+        "than",
+        "network",
+        "information",
+        "systems"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "38",
+      "article_title": "Exercise of the delegation",
+      "text_snippet": "1.   The power to adopt delegated acts is conferred on the Commission subject to the conditions laid down in this Article.\n \n \n\n \n2.   The power to adopt delegated acts referred to in Article 24(2) shall be conferred on the Commission for a period of five years from 16 January 2023.\n \n \n\n \n3.   The delegation of power referred to in Article 24(2) may be revoked at any time by the European Parliament or by the Council. A decision to revoke shall put an end to the delegation of the power specified…",
+      "keywords": [
+        "power",
+        "adopt",
+        "delegated",
+        "acts",
+        "conferred",
+        "commission",
+        "article",
+        "exercise",
+        "delegation",
+        "subject"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "39",
+      "article_title": "Committee procedure",
+      "text_snippet": "1.   The Commission shall be assisted by a committee. That committee shall be a committee within the meaning of Regulation (EU) No 182/2011.\n \n \n\n \n2.   Where reference is made to this paragraph, Article 5 of Regulation (EU) No 182/2011 shall apply.\n \n \n\n \n3.   Where the opinion of the committee is to be obtained by written procedure, that procedure shall be terminated without result when, within the time-limit for delivery of the opinion, the chair of the committee so decides or a committee mem…",
+      "keywords": [
+        "committee",
+        "procedure",
+        "commission",
+        "assisted",
+        "meaning",
+        "reference",
+        "made",
+        "paragraph",
+        "article",
+        "apply"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "40",
+      "article_title": "Review",
+      "text_snippet": "By 17 October 2027 and every 36 months thereafter, the Commission shall review the functioning of this Directive, and report to the European Parliament and to the Council. The report shall in particular assess the relevance of the size of the entities concerned, and the sectors, subsectors and types of entity referred to in Annexes I and II for the functioning of the economy and society in relation to cybersecurity. To that end and with a view to further advancing the strategic and operational c…",
+      "keywords": [
+        "review",
+        "report",
+        "october",
+        "every",
+        "months",
+        "thereafter",
+        "commission",
+        "functioning",
+        "parliament",
+        "council"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "41",
+      "article_title": "Transposition",
+      "text_snippet": "1.   By 17 October 2024, Member States shall adopt and publish the measures necessary to comply with this Directive. They shall immediately inform the Commission thereof.\n \nThey shall apply those measures from 18 October 2024.\n \n \n\n \n2.   When Member States adopt the measures referred to in paragraph 1, they shall contain a reference to this Directive or shall be accompanied by such reference on the occasion of their official publication. The methods of making such reference shall be laid down b…",
+      "keywords": [
+        "measures",
+        "october",
+        "adopt",
+        "they",
+        "transposition",
+        "publish",
+        "necessary",
+        "comply",
+        "immediately",
+        "inform"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "42",
+      "article_title": "Amendment of Regulation (EU) No 910/2014",
+      "text_snippet": "In Regulation (EU) No 910/2014, Article 19 is deleted with effect from 18 October 2024.",
+      "keywords": [
+        "amendment",
+        "article",
+        "deleted",
+        "effect",
+        "october"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "43",
+      "article_title": "Amendment of Directive (EU) 2018/1972",
+      "text_snippet": "In Directive (EU) 2018/1972, Articles 40 and 41 are deleted with effect from 18 October 2024.",
+      "keywords": [
+        "amendment",
+        "articles",
+        "deleted",
+        "effect",
+        "october"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "44",
+      "article_title": "Repeal",
+      "text_snippet": "Directive (EU) 2016/1148 is repealed with effect from 18 October 2024.\n \nReferences to the repealed Directive shall be construed as references to this Directive and shall be read in accordance with the correlation table set out in Annex III.",
+      "keywords": [
+        "repealed",
+        "references",
+        "repeal",
+        "effect",
+        "october",
+        "construed",
+        "read",
+        "accordance",
+        "correlation",
+        "table"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "45",
+      "article_title": "Entry into force",
+      "text_snippet": "This Directive shall enter into force on the twentieth day following that of its publication in the Official Journal of the European Union.",
+      "keywords": [
+        "into",
+        "force",
+        "entry",
+        "enter",
+        "twentieth",
+        "following",
+        "publication",
+        "official",
+        "journal"
+      ],
+      "nist_families": []
+    },
+    {
+      "regulation_id": "nis2",
+      "article_number": "46",
+      "article_title": "Addressees",
+      "text_snippet": "This Directive is addressed to the Member States.\n \n \n \n \n\n \n\n \nDone at Strasbourg, 14 December 2022.\n \n\n \n\n For the European Parliament\n \n \n\n The President\n \n \nR. METSOLA\n \n \n \n\n \n\n For the Council\n \n \n\n The President\n \n \nM. BEK\n \n \n \n \n \n \n\n (1)  \n OJ C 233, 16.6.2022, p. 22.\n \n\n (2)  \n OJ C 286, 16.7.2021, p. 170.\n \n\n (3)  Position of the European Parliament of 10 November 2022 (not yet published in the Official Journal) and decision of the Council of 28 November 2022.\n \n\n (4)  Directive (EU)…",
+      "keywords": [
+        "president",
+        "addressees",
+        "addressed",
+        "done",
+        "strasbourg",
+        "december",
+        "parliament",
+        "metsola",
+        "council"
+      ],
+      "nist_families": []
+    }
+  ]
 }

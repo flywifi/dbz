@@ -394,7 +394,7 @@ authoritative over this table.** A row not in it runs by hand. Procedure: runboo
 | Weekly (Monday, inside the drift check) | `announcement_monitor.py --dry-run` | `standards-watch.yml` | All RSS/Atom feeds in feed_registry |
 | Weekly (Monday build step, governed since phase 51) | `oscal_diff.py --oscal-cache … --dry-run` | `standards-watch.yml` | usnistgov/oscal-content GitHub (`--check-remote` stays manual) |
 | Not scheduled (phase 51: `/api/olir/finalized` 404) | `olir_crawler.py --auto-download` | manual | NIST CPRT OLIR catalog |
-| Not scheduled (phase 51: 0 articles extracted) | `eurlex_loader.py --all` | manual | EUR-Lex ELI endpoints |
+| Weekly (Tuesday, PR; phase 52) | `eurlex_loader.py` | `weekly-refresh.yml` | Publications Office Cellar (XHTML by CELEX; EUR-Lex HTML answers automated clients with a bot challenge) |
 | Weekly (Tuesday, PR: 45 CFR 164 subpart C, 32 CFR 170) | `ecfr_loader.py --title … --part …` | `weekly-refresh.yml` | eCFR versioner API |
 | Weekly (Thursday, phase 51) | `attack_stix_loader.py` when `remote_attack_version()` differs | `weekly-refresh.yml` | MITRE ATT&CK TAXII 2.1 |
 | Not scheduled (phase 51: `/api/catalog/pubs/page` 404) | `cprt_traverser.py` | Manual | NIST CPRT publications API |

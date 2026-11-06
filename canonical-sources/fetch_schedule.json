@@ -26,7 +26,8 @@
       "jobs": [
         "fr-watcher",
         "ecfr-45-164",
-        "ecfr-32-170"
+        "ecfr-32-170",
+        "eurlex"
       ],
       "builds": "when_changed"
     },
@@ -317,10 +318,22 @@
         "www.war.gov": 1
       },
       "measured": "2026-11-05 plan T-3 [6]: one GET per due record with a detection URL (49 URLs, 39 hosts)"
+    },
+    "eurlex": {
+      "mode": "pr",
+      "argv": [
+        "cross-mapping/engine/eurlex_loader.py"
+      ],
+      "outputs": [
+        "canonical-sources/eurlex/*-articles.json"
+      ],
+      "requests_measured": {
+        "publications.europa.eu": 4
+      },
+      "measured": "2026-11-05/06 plan T-7 (one Cellar XHTML GET per regulation; GDPR, NIS2, DORA, AI Act)"
     }
   },
   "not_scheduled": {
-    "eurlex": "eurlex_loader extracts 0 articles from all 4 regulations, live and in the committed files (2026-07-02); repair needs the Publications Office machine channel (Cellar), unverified in phase 51",
     "fips": "the CMVP search API the loader calls is unavailable (0 modules, 2026-11-05) and NIST publishes no machine-readable CMVP listing (HTML search only)",
     "olir": "https://csrc.nist.gov/api/olir/finalized answers 404 (2026-11-05)",
     "cprt": "https://csrc.nist.gov/api/catalog/pubs/page answers 404 (2026-11-05); the nudp REST retirement is recorded in docs/source-audit-phase25.md:76",

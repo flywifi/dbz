@@ -53,6 +53,7 @@ STEPS = [
     ("fetch-layer unit tests", "python3 cross-mapping/tests/test_fetchkit.py"),
     ("governed-loader tests", "python3 cross-mapping/tests/test_governed_loaders.py"),
     ("attack loader tests", "python3 cross-mapping/tests/test_attack_loader.py"),
+    ("eurlex loader tests", "python3 cross-mapping/tests/test_eurlex.py"),
     ("weekly-rotation tests", "python3 cross-mapping/tests/test_rotation.py"),
     ("weekly-workflow tests", "python3 cross-mapping/tests/test_weekly_workflows.py"),
     ("schedule-delay tests", "python3 cross-mapping/tests/test_schedule_delay.py"),

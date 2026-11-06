@@ -193,6 +193,17 @@
           }
         ]
       }
+    },
+    "publications.europa.eu": {
+      "published_rule": "none published: the op.europa.eu Cellar pages and the EUR-Lex reuse pages describe the RESTful API and SPARQL endpoint and state no rate (searched 2026-11-06)",
+      "source_url": "https://op.europa.eu/en/web/cellar/cellar-data",
+      "verified": "2026-11-06",
+      "probe": "Firecrawl search of op.europa.eu / eur-lex.europa.eu for usage or rate terms; plan T-7 live dry run (4 requests)",
+      "robots": "fetched by the governor (plan T-7)",
+      "enforced": {
+        "min_interval_s": 3.0,
+        "run_cap": 25
+      }
     }
   }
 }
