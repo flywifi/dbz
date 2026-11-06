@@ -22,10 +22,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-import time
 from pathlib import Path
-from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
 
 import fetchkit  # governed fetch: host_policies.json caps, pacing, breaker, ledger (phase 51)
 

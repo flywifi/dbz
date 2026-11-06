@@ -7,12 +7,14 @@ Enumerates all NIST publications and OLIRs (Online Informative References)
 via the CPRT API and compares against feed_registry.json to identify gaps
 in framework monitoring coverage.
 
-CPRT API endpoints:
-  Publications list : https://csrc.nist.gov/api/catalog/pubs/page/{N}
-  OLIR list         : https://csrc.nist.gov/projects/cprt/catalog#olirs (HTML) +
-                      https://csrc.nist.gov/api/olir/finalized (unofficial JSON)
+CPRT API endpoints — none answers a machine client today (governed probes 2026-11-05, phase 52),
+so this traverser is report-only and unscheduled (fetch_schedule.json not_scheduled.cprt) until
+NIST publishes a machine-readable source:
+  Publications list : https://csrc.nist.gov/api/catalog/pubs/page/{N}            -> HTTP 404
+  OLIR list         : https://csrc.nist.gov/api/olir/finalized                    -> HTTP 404
+                      (the HTML catalog at /projects/cprt/catalog#olirs is not machine-readable)
   Framework detail  : https://csrc.nist.gov/extensions/nudp/services/json/nudp/
-                        framework/version/{pub_id}/element/ALL/structure/default
+                        framework/version/{pub_id}/element/ALL/structure/default  -> retired (empty)
 
 Output:
   canonical-sources/cprt_gap_report.json
@@ -21,7 +23,6 @@ Output:
 Usage:
     python3 cprt_traverser.py --dry-run
     python3 cprt_traverser.py --report-only
-    python3 cprt_traverser.py --auto-download  # used by olir_crawler
 """
 
 from __future__ import annotations
@@ -29,10 +30,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-import time
 from pathlib import Path
-from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
 
 import fetchkit  # governed fetch: host_policies.json caps, pacing, breaker, ledger (phase 51)
 

@@ -102,5 +102,6 @@ Describe the change and reference the affected component (ingestion loader, over
   window is not evidence of failure.
 - **Start every session with the weekly digest.** Read the open issue labelled `weekly-digest` and
   any open `auto-refresh` pull requests (GitHub MCP), and present the digest's "Suggested to
-  commit" lines before other work. Report-only datasets (NVD, FIPS, OLIR) are never committed by the
-  schedule; a commit of one is the user's decision, taken from that list (phase 51).
+  commit" lines before other work. NVD is report-only and never committed by the schedule; a commit of it is the user's
+  decision, taken from that list (phase 51). FIPS, OLIR and CPRT cannot be scheduled at all: NIST
+  publishes no machine source for them (phase 52).

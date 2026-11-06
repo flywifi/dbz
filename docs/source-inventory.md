@@ -376,7 +376,7 @@ no ingestion loader required.
 | Publication | Format | Proposed Loader | DB Table | Notes |
 |---|---|---|---|---|
 | SP 800-63B (CPRT JSON) | NIST CPRT API | `generate_controls_800_63b.py` | `nist_800_63b_requirements` | AAL-level requirements; `cci_provenance` field per row |
-| FIPS 140-3 CMVP list | CSV (NIST CMVP) | `fips_cmvp_loader.py` | `fips_140_validations` | Module-level: vendor, level, algorithms; queryable via `dbz_query.py sc13 --fips-level 3` |
+| FIPS 140-3 CMVP list | CSV (NIST CMVP) | `fips_cmvp_loader.py` | `fips_140_validations` | Module-level: vendor, level, algorithms; queryable via `dbz_query.py fips --level 3` |
 | NIAP Product List | HTML (niap-ccevs.org) | `niap_loader.py` | `niap_validated_products` | PP/EAL claims; cross-reference to SA-17 CCIs |
 
 ---

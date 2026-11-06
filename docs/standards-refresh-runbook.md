@@ -213,8 +213,9 @@ NVD's window from 5 to 50 requests per 30 s.
 
 **The weekly digest.** One open issue labelled `weekly-digest`, edited in place: each slot
 replaces only its own section (job table, failed-battery or failed-PR notes, and "Suggested to
-commit at your next session"). Report-only datasets (NVD, FIPS, OLIR) are never committed by the
-schedule. `CLAUDE.md` tells every new session to read the digest and the open `auto-refresh` PRs
+commit at your next session"). NVD is report-only and never committed by the schedule; FIPS, OLIR
+and CPRT are not scheduled at all, because NIST publishes no machine source for them (phase 52;
+`fetch_schedule.json` `not_scheduled` records each probe). `CLAUDE.md` tells every new session to read the digest and the open `auto-refresh` PRs
 first. The NVD suggestion is computed from the run: on 2026-11-05 a 7-day window was 9,676 CVEs,
 7.3 MB as one file, so the suggestion was "not as weekly snapshots" (about 382 MB a year of
 history; commit one rolling file or keep it local, since `build_db` loads it when present).

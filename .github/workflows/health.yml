@@ -10,7 +10,7 @@ jobs:
   health:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0   # secret-scan backstop needs history back to the policy boundary
       - uses: actions/setup-python@v5
