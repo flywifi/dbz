@@ -578,6 +578,14 @@
       "date": "2026-11-05",
       "known_good": true,
       "note": "CI green on 866b74b at 2026-11-05T02:56:28Z (tools/ci_status.py); 81a0055 (0.16.0) was red (run 41958122419, pandas import in a health test), fixed in 866b74b. Slot crons are provisional: the C8 pin (2026-11-19 or later) may move this anchor."
+    },
+    {
+      "phase": "52-pre",
+      "name": "Pre-phase-52 baseline (phase-51 close anchor) for the remediation of existing system problems",
+      "sha": "8856c87",
+      "date": "2026-11-06",
+      "known_good": true,
+      "note": "CI green on 8856c87 (tools/ci_status.py: health 2026-11-05T02:57:27Z; scheduled runs green through 2026-11-06T09:49:10Z)."
     }
   ]
 }
