@@ -40,16 +40,13 @@ jobs:
           DBZ_FF_GITHUB_AUTHENTICATED: '1'
         run: python3 tools/standards_refresh.py --check
 
-      # The runner is a fresh checkout: the generated catalog and the OSCAL cache are
-      # build products, not committed. Without the catalog the build dies
-      # (FileNotFoundError on NIST_800_53_FULL_ALL_FAMILIES.json); without the cache it
-      # SILENTLY degrades (oscal_structural controls=None, 0 objectives) and the benchmark
-      # then measures a different database than the one this repo ships.
-      - name: Build prerequisites (generated catalog + OSCAL cache)
-        run: |
-          python3 cross-mapping/nist-catalog/ingestion/generate_controls.py
-          python3 cross-mapping/engine/oscal_diff.py \
-            --oscal-cache cross-mapping/output/oscal_v5.2.0_cache.json --dry-run
+      # The runner is a fresh checkout: the generated catalog is a build product, not
+      # committed. Without it the build dies (FileNotFoundError on
+      # NIST_800_53_FULL_ALL_FAMILIES.json). The OSCAL catalog the build reads is committed
+      # (canonical-sources/source_data/nist-800-53, phase 52), so no warm-up fetch remains and
+      # a fresh build reads the same input as the committed derived data.
+      - name: Build prerequisite (generated catalog; the OSCAL catalog is committed, phase 52)
+        run: python3 cross-mapping/nist-catalog/ingestion/generate_controls.py
 
       - name: Oracle accuracy benchmark (build db, then regression check)
         run: |

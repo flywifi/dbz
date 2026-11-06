@@ -1729,7 +1729,11 @@ def load_cmmc171_projection(
 
 # ── OSCAL structural: ODP -> sub-part links + assessment objectives (Phase 11) ──
 
-OSCAL_CACHE_PATH = REPO_ROOT / "cross-mapping" / "output" / "oscal_v5.2.0_cache.json"
+OSCAL_CANONICAL_PATH = REPO_ROOT / "canonical-sources" / "source_data" / "nist-800-53" / "NIST_SP-800-53_rev5_catalog.json"
+# The committed raw catalog is the build input (phase 52: a fresh build reads the same input as the
+# committed derived data); the gitignored cache stays only as the fallback for a tree that predates it.
+OSCAL_CACHE_PATH = (OSCAL_CANONICAL_PATH if OSCAL_CANONICAL_PATH.exists()
+                    else REPO_ROOT / "cross-mapping" / "output" / "oscal_v5.2.0_cache.json")
 
 
 def _iter_oscal_controls(doc: dict):

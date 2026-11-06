@@ -72,13 +72,11 @@ STEPS = [
 
 # Mirrors .github/workflows/standards-watch.yml (--standards-watch). That workflow is
 # monthly and BUILDS on the runner, so its fresh-checkout failure mode is different from
-# health.yml's: it needs the generated catalog and the OSCAL cache produced first. The
-# 2026-08-03 run went red exactly here. Slow (~build + a ~5MB OSCAL fetch) — opt-in.
+# health.yml's: it needs the generated catalog produced first (the OSCAL catalog is committed
+# since phase 52). The 2026-08-03 run went red exactly here. Slow (a full build) — opt-in.
 WATCH_STEPS = [
     ("standards drift check", "python3 tools/standards_refresh.py --check"),
     ("generate catalog", "python3 cross-mapping/nist-catalog/ingestion/generate_controls.py"),
-    ("warm OSCAL cache", "python3 cross-mapping/engine/oscal_diff.py "
-                         "--oscal-cache cross-mapping/output/oscal_v5.2.0_cache.json --dry-run"),
     ("build grc.db", "python3 cross-mapping/engine/build_db.py"),
     ("oracle benchmark", "python3 cross-mapping/tests/benchmark_oracles.py --check"),
     ("scenario battery", "python3 cross-mapping/tests/run_scenarios.py"),

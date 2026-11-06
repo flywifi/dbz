@@ -1340,6 +1340,17 @@
       "role": "eu_regulation_articles",
       "source_url": "https://publications.europa.eu/resource/celex/32024R1689",
       "notes": "113 articles from the Publications Office Cellar (phase 52; the EUR-Lex HTML page answers automated clients with a bot challenge, so the 2026-07-02 files held 0 articles). Weekly Tuesday job; nist_families is blank by design (no issuer mapping)."
+    },
+    {
+      "id": "nist-800-53-r5.2.0-oscal-catalog",
+      "file": "canonical-sources/source_data/nist-800-53/NIST_SP-800-53_rev5_catalog.json",
+      "format": "json",
+      "version": "NIST SP 800-53 Release 5.2.0 (OSCAL 1.2.2; catalog metadata last-modified 2026-05-11)",
+      "retrieved": "2026-10-19",
+      "sha256": "a281d6da3ce0083ae1e8c14a0753bca4d37523564084ab1000dedcf2489cddff",
+      "role": "nist_catalog_oscal",
+      "source_url": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+      "notes": "The build's hermetic OSCAL input (phase 52): a byte-identical copy of the warm cache the committed derived data was built from (5,136,923 B). Upstream main is unpinned, so an upgrade arrives through standards_refresh --fetch as a reviewed diff of this file. A fresh build from this file reproduces canonical-sources/uncertainty_ledger.jsonl exactly (0/247 lines differ, plan T-8)."
     }
   ],
   "staged_reference_sources": {

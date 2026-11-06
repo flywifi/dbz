@@ -56,7 +56,6 @@ jobs:
         run: |
           set -o pipefail
           { python3 cross-mapping/nist-catalog/ingestion/generate_controls.py \
-            && python3 cross-mapping/engine/oscal_diff.py --oscal-cache cross-mapping/output/oscal_v5.2.0_cache.json --dry-run \
             && python3 cross-mapping/engine/build_db.py \
             && python3 cross-mapping/tests/benchmark_oracles.py --check \
             && python3 cross-mapping/tests/run_scenarios.py ; } 2>&1 | tail -60 | tee .fetch-cache/rotation/battery.txt

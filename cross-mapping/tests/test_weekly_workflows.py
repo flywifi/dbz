@@ -5,7 +5,8 @@ scripts are extracted from weekly-refresh.yml and run under node against a fake 
 update, one dispatch of health.yml on the refresh branch, one digest section replaced in place, the
 failed-PR / failed-battery notes); rotation_commit.sh commits trailer-free under GitHub's noreply bot
 identity to auto/refresh-<slot> only, in a throwaway repository with a throwaway bare remote; the
-build step's OSCAL warm-up is counted on the days that build; the Monday check measures inactivity.
+build step makes no network request (the OSCAL catalog is committed, phase 52), so a building day carries no
+build load; the Monday check measures inactivity.
 The repository is never written."""
 
 import copy
@@ -215,10 +216,10 @@ def test_commit_script():
 def test_build_census_and_inactivity():
     pol = fetchkit.load_policies()
     days, bad = fr.census_slots(SCHED, pol)
-    raw = SCHED["build_requests_measured"]["raw.githubusercontent.com"]
-    ok(not bad and days["1"]["raw.githubusercontent.com"]["requests"] == 3 + raw
-       and days["2"]["raw.githubusercontent.com"]["requests"] == raw,
-       f"the build's OSCAL warm-up ({raw} requests) is counted on every building day, inside the cap")
+    ok(SCHED["build_requests_measured"] == {}, "the build makes no network request: the OSCAL catalog is committed (phase 52)")
+    ok(not bad and days["1"]["raw.githubusercontent.com"]["requests"] == 3
+       and days["2"].get("raw.githubusercontent.com", {}).get("requests", 0) == 0,
+       "a building day carries only its jobs' own raw-GitHub reads (Monday 3, Tuesday 0), inside the cap")
     nob = copy.deepcopy(SCHED)
     for s in nob["slots"].values():
         s.pop("builds", None)

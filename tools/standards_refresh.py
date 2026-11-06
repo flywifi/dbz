@@ -68,7 +68,7 @@ FETCHERS = {
                    "dest": "canonical-sources/source_data/U_CCI_List.zip",
                    "note": "unzip U_CCI_List.xml into source_data/ after download"},
     "nist-800-53": {"url": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
-                    "dest": "cross-mapping/output/oscal_v5.2.0_cache.json"},
+                    "dest": "canonical-sources/source_data/nist-800-53/NIST_SP-800-53_rev5_catalog.json"},
     "scf":        {"note": "SCF releases are versioned FILE SETS, not just the controls xlsx — fetch "
                            "the FULL repo file set. Since 2026.2 the repo uses kebab-case names: "
                            "'secure-controls-framework-scf-<ver-with-dashes>.xlsx' and a plain "

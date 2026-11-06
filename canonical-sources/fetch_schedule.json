@@ -337,10 +337,8 @@
     "fips": "the CMVP search API the loader calls is unavailable (0 modules, 2026-11-05) and NIST publishes no machine-readable CMVP listing (HTML search only)",
     "olir": "https://csrc.nist.gov/api/olir/finalized answers 404 (2026-11-05)",
     "cprt": "https://csrc.nist.gov/api/catalog/pubs/page answers 404 (2026-11-05); the nudp REST retirement is recorded in docs/source-audit-phase25.md:76",
-    "oscal": "not a separate job: the Monday standards-check build step fetches the OSCAL catalog (governed since C1), and oscal-format / nist-800-53 currency is in the Monday check"
+    "oscal": "not a job: the build reads the committed OSCAL catalog (phase 52); nist-800-53 / oscal-format currency is in the Monday check, and an upstream refresh arrives through standards_refresh --fetch as a reviewed diff of the committed file"
   },
-  "build_requests_measured": {
-    "raw.githubusercontent.com": 11
-  },
-  "build_measured": "computed 2026-11-05 (plan R2): the build's OSCAL warm-up (oscal_diff --oscal-cache … --dry-run) reads the 5,136,923 B catalog as 1 Range probe + 10 windows of 512 KiB, governed since phase 51 C1. Counted on every slot whose workflow builds: Monday always (standards-watch), a weekly-refresh slot only when a pr job changed a file (upper bound)"
+  "build_requests_measured": {},
+  "build_measured": "phase 52 (2026-11-06): the build makes no network request; the OSCAL catalog it reads is committed at canonical-sources/source_data/nist-800-53/NIST_SP-800-53_rev5_catalog.json (sha256 pinned in source_manifest). Until then the warm-up (oscal_diff --oscal-cache … --dry-run) read the 5,136,923 B upstream catalog as 1 Range probe + 10 windows of 512 KiB: 11 requests to raw.githubusercontent.com on every building day (measured 2026-11-05, plan R2)"
 }

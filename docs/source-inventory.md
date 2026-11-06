@@ -710,7 +710,9 @@ published; 3.0 s, the loader's old delay) and now holds 13 hosts. Measured live 
 **Correction of record.** 0.15.x said every monthly fetch went through the governor. The
 workflow's OSCAL warm-up (`oscal_diff --oscal-cache … --dry-run`: 1 Range probe + 10 windows of
 512 KiB for the 5,136,923 B catalog) did not, and the census, which replayed only `--check`, could
-not see it. It is governed now, and the census counts it on every building day.
+not see it. It is governed now, and the census counts it on every building day. Phase 52 then
+removed the warm-up: the OSCAL catalog is committed under `canonical-sources/source_data/nist-800-53/`
+and the build makes no network request (`build_requests_measured` is empty).
 
 **ATT&CK v20.0, with issuer mappings.**
 - **Source.** MITRE's TAXII 2.1 server, Enterprise collection, paged at 100: 11 requests (1 version

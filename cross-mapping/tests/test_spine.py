@@ -59,7 +59,7 @@ check(SN.parse_objective("") == [], "obj empty -> empty")
 check(SN.oscal_control_id("ac-2") == "AC-2", "oscal id ac-2 -> AC-2")
 check(SN.oscal_control_id("ac-2.1") == "AC-2(1)", "oscal id ac-2.1 -> AC-2(1)")
 check(SN.oscal_control_id("garbage") is None, "oscal id garbage -> None")
-_OSCAL_CACHE = ROOT / "cross-mapping" / "output" / "oscal_v5.2.0_cache.json"
+_OSCAL_CACHE = ROOT / "canonical-sources" / "source_data" / "nist-800-53" / "NIST_SP-800-53_rev5_catalog.json"
 if _OSCAL_CACHE.exists():
     _doc = json.loads(_OSCAL_CACHE.read_text())
     _ac2 = _doc["catalog"]["groups"][0]["controls"][1]
@@ -179,7 +179,7 @@ check(any(e["framework"] == "SOC 2" and e["r5_control"] == "AC-2" and e["r5_subp
       "SOC 2 projects to an AC-2 sub-part via the hub")
 
 # ── 2b. OSCAL structural + CCI XML loaders (Phase 11) ─────────────────────────
-if _CACHE_OK := (ROOT / "cross-mapping" / "output" / "oscal_v5.2.0_cache.json").exists():
+if _CACHE_OK := _OSCAL_CACHE.exists():
     oscal_links, objective_rows, oscal_stats = SL.load_oscal_structural(catalog_ids)
     check(oscal_stats["odp_links"] >= 1000, f"oscal: >=1000 odp links (got {oscal_stats['odp_links']})")
     check(oscal_stats["objectives"] >= 3000, f"oscal: >=3000 objectives (got {oscal_stats['objectives']})")

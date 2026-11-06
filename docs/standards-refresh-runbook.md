@@ -146,6 +146,12 @@ windows (1 probe + 10 windows = 11 requests to raw.githubusercontent.com) throug
 ungoverned loop. The census replayed only `--check`, so the step was invisible to it. Since
 phase 51 the windows are governed (`fetchkit.fetch`, one counted request each), and the census
 counts them as `build_requests_measured` on every day whose workflow builds.
+**Phase 52 removed the warm-up altogether:** the OSCAL catalog the build reads is committed at
+`canonical-sources/source_data/nist-800-53/NIST_SP-800-53_rev5_catalog.json` (sha256 pinned in
+`source_manifest.json`), so the build makes no network request, `build_requests_measured` is
+empty, and a fresh checkout builds from the same input as the committed derived data. An
+upstream OSCAL refresh arrives through `standards_refresh --fetch`, which now writes that
+committed path, as a reviewed diff.
 
 To add a host:
 1. Quote its rule from its own page into `host_policies.json` via `registry_io`, with `verified`
@@ -190,8 +196,8 @@ How a slot runs (`tools/fetch_rotation.py`):
   only in `_as_of_date`).
 - **A `report` job never leaves a change.** Its output is kept as a workflow artifact and
   summarised in the digest.
-- **When a `pr` job changed a file,** the battery runs on the refreshed tree (generate, OSCAL
-  warm-up, build, oracle benchmark, scenarios). If it passes, `tools/rotation_commit.sh` commits
+- **When a `pr` job changed a file,** the battery runs on the refreshed tree (generate, build,
+  oracle benchmark, scenarios; the OSCAL warm-up went with phase 52). If it passes, `tools/rotation_commit.sh` commits
   the changed files to `auto/refresh-<slot>` under GitHub's noreply bot identity, with a plain
   trailer-free message, and force-pushes that branch only. The default branch is never pushed by
   the bot. The workflow then opens or updates one PR per slot (label `auto-refresh`) and

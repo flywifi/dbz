@@ -44,6 +44,10 @@ SECRET_PATTERNS = [
 ]
 # paths that may legitimately contain pattern LITERALS (scanners/tests), with reasons
 ALLOW_PATHS = {
+    "canonical-sources/source_data/nist-800-53/NIST_SP-800-53_rev5_catalog.json":
+        "verbatim NIST OSCAL SP 800-53 catalog, the build's hermetic input (phase 52), sha-pinned in "
+        "source_manifest.json; its metadata carries NIST's own organizational contact address, and "
+        "upstream text is never edited (the phase-51 KEV rule)",
     "tools/secret_scan.py": "this scanner's own pattern literals",
     "tools/health_audit.py": "leak-pattern definitions",
     "tools/output_validate.py": "imports leak patterns",
