@@ -629,6 +629,29 @@
         "support": "WELL_SUPPORTED",
         "terminal_state": "ORIGIN"
       }
+    },
+    {
+      "entry_id": "chg-mitre-attack-v20.0-to-v20.1",
+      "framework_id": "mitre-attack",
+      "change_type": "minor_revision",
+      "old_version": "v20.0 (October 13, 2026)",
+      "new_version": "v20.1 (October 13, 2026)",
+      "changed_at": null,
+      "source_url": "https://attack.mitre.org/resources/versions/",
+      "summary": "Point release v20.1 listed as current by the issuer (the versions page read v20.0 on 2026-11-05); the committed Enterprise artifact is v20.0 and the weekly Thursday job proposes the ingest.",
+      "controls_added": [],
+      "controls_removed": [],
+      "controls_modified": [],
+      "human_confirmed": false,
+      "confirmation_source": null,
+      "announcement_ref": null,
+      "provenance": {
+        "primary_source_url": "https://attack.mitre.org/resources/versions/",
+        "retrieved_at": "2026-11-06",
+        "verbatim": "ATT&CK v20.1 / October 13, 2026 - current",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     }
   ]
 }

@@ -2243,7 +2243,7 @@
       "label": "MITRE ATT&CK Enterprise Framework",
       "authority": "primary",
       "framework_id": "mitre-attack",
-      "current_version": "v20.0 (October 13, 2026)",
+      "current_version": "v20.1 (October 13, 2026)",
       "urls": {
         "stix_github": "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json",
         "taxii": "https://attack-taxii.mitre.org/api/v21/",
@@ -2254,7 +2254,7 @@
       },
       "check_strategy": "github_release",
       "last_checked": "2026-11-05",
-      "last_changed": "2026-04-22",
+      "last_changed": "2026-10-13",
       "announcement_feeds": [
         {
           "url": "https://github.com/mitre-attack/attack-stix-data/releases.atom",
@@ -2283,11 +2283,11 @@
       "github_repo": "mitre-attack/attack-stix-data",
       "version_signal": "github_release_tag",
       "cci_coverage_notes": "Implied-Bridge: ATT&CK -> 800-53 via MITRE CTID Mappings Explorer (NIST 800-53 rev5 <-> ATT&CK 16.1 enterprise, last_update 2025-04-16): 454 of 706 v20 techniques carry direct 'mitigates' controls (109 distinct); 252 left blank (no CTID mapping). Phase 51; the former NIST SP800-53_ATT&CK_v13_v1.xlsx source returns 404.",
-      "notes": "v19: Defense Evasion split into Stealth + Defense Impairment; ICS sub-techniques; Mobile detection strategies. v18 (Oct 2025) replaced Detections with Detection Strategies/Analytics. Enterprise STIX v19.1 ingested 2026-07-02 (697 techniques + 475 sub-techniques via attack_stix_loader). STIX source moved from the deprecated mitre/cti repo to mitre-attack/attack-stix-data. Phase 50 (2026-11-04): 'v19.1 (Apr 2026)' -> 'v20.0 (October 13, 2026)'; live release tag 'v20.0' (2026-11-03 scheduled run) and verified at the issuer — attack.mitre.org/resources/versions: 'ATT&CK v20.0 / October 13, 2026 - current'; the ATT&CK v20.0 ingest is owed (own loader phase) — the database carries v19.1 until then. Phase 51 (2026-11-05): v20.0 ingested from MITRE's TAXII 2.1 server (Enterprise collection; 706 live techniques = 227 + 479 sub-techniques, matching attack.mitre.org's stated counts) with CTID issuer mappings replacing the keyword heuristic that every v19.1 record carried (the NIST v13 spreadsheet returns 404). 10 mapped techniques renamed since 16.1 carry nist_mapping_note for review. CORRECTION of an earlier note: '697 techniques + 475 sub-techniques' was wrong — v19.1 had 697 records in all, 475 of them sub-techniques. source_manifest_keys repointed from the non-existent 'mitre-attack-stix' to 'mitre-attack-enterprise'.",
+      "notes": "v19: Defense Evasion split into Stealth + Defense Impairment; ICS sub-techniques; Mobile detection strategies. v18 (Oct 2025) replaced Detections with Detection Strategies/Analytics. Enterprise STIX v19.1 ingested 2026-07-02 (697 techniques + 475 sub-techniques via attack_stix_loader). STIX source moved from the deprecated mitre/cti repo to mitre-attack/attack-stix-data. Phase 50 (2026-11-04): 'v19.1 (Apr 2026)' -> 'v20.0 (October 13, 2026)'; live release tag 'v20.0' (2026-11-03 scheduled run) and verified at the issuer — attack.mitre.org/resources/versions: 'ATT&CK v20.0 / October 13, 2026 - current'; the ATT&CK v20.0 ingest is owed (own loader phase) — the database carries v19.1 until then. Phase 51 (2026-11-05): v20.0 ingested from MITRE's TAXII 2.1 server (Enterprise collection; 706 live techniques = 227 + 479 sub-techniques, matching attack.mitre.org's stated counts) with CTID issuer mappings replacing the keyword heuristic that every v19.1 record carried (the NIST v13 spreadsheet returns 404). 10 mapped techniques renamed since 16.1 carry nist_mapping_note for review. CORRECTION of an earlier note: '697 techniques + 475 sub-techniques' was wrong — v19.1 had 697 records in all, 475 of them sub-techniques. source_manifest_keys repointed from the non-existent 'mitre-attack-stix' to 'mitre-attack-enterprise'. Phase 52 (2026-11-06): 'v20.0 (October 13, 2026)' -> 'v20.1 (October 13, 2026)': live release tag v20.1 (standards-watch dispatch run 42227394107 (2026-11-06, api_note 'latest release')); verified at the issuer, attack.mitre.org/resources/versions: 'ATT&CK v20.1 / October 13, 2026 - current' (the same page read v20.0 on 2026-11-05, so the point release appeared in the first week of November). The committed artifact is v20.0 (_attack_version), hence artifact_stale; the Thursday attack job compares the TAXII version with the committed file and proposes the v20.1 ingest as a pull request.",
       "auto_fetch": true,
-      "artifact_status": "current",
-      "last_verified": "2026-11-05",
-      "github_tag_pin": "v20.0"
+      "artifact_status": "artifact_stale",
+      "last_verified": "2026-11-06",
+      "github_tag_pin": "v20.1"
     },
     "mitre-d3fend": {
       "label": "MITRE D3FEND Defensive Countermeasures",
@@ -4975,7 +4975,7 @@
       "label": "OpenAI API — Platform Changelog, Model Cards, API Specification",
       "authority": "OpenAI",
       "framework_id": "openai-api",
-      "current_version": "GPT-4o, o3 series (2025); API v1",
+      "current_version": "2.0.0",
       "next_expected_version": "Continuous model and API updates; track platform.openai.com/docs/changelog",
       "check_strategy": "github_release",
       "github_repo": "openai/openai-openapi",
@@ -5033,10 +5033,11 @@
       "version_signal": "github_release_tag",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Not-Applicable: OpenAI API is a commercial AI service. Compliance relevance: API deprecation notices → CM-3/SA-22; usage policy changes → PL-4; safety evaluations → PM-28 / NIST AI RMF. System cards for GPT-4/o3 series contain capability evaluations relevant to AI risk assessments.",
-      "notes": "Track openai/openai-openapi GitHub for machine-readable API spec changes. Monitor platform.openai.com/docs/changelog for deprecation notices. Key compliance items: (1) model deprecation schedules (SA-22, system lifecycle); (2) rate limit and data retention policy changes (SC-28, AU-11); (3) GDPR/CCPA data processing policy updates; (4) Function calling and tool use specification changes (for MCP-like integrations). Preferred check: GitHub release tag on openai-openapi spec.",
+      "notes": "Track openai/openai-openapi GitHub for machine-readable API spec changes. Monitor platform.openai.com/docs/changelog for deprecation notices. Key compliance items: (1) model deprecation schedules (SA-22, system lifecycle); (2) rate limit and data retention policy changes (SC-28, AU-11); (3) GDPR/CCPA data processing policy updates; (4) Function calling and tool use specification changes (for MCP-like integrations). Preferred check: GitHub release tag on openai-openapi spec. Phase 52 (2026-11-06): 'GPT-4o, o3 series (2025); API v1' -> '2.0.0': the issuer's own GitHub release 2.0.0 on openai/openai-openapi (standards-watch dispatch run 42227394107 (2026-11-06, api_note 'latest release')), the feed's declared 'preferred check'. The former value described model families, not a release of record; current_version now tracks the OpenAPI spec release. The release date is not in the API note, so last_changed is left as it was.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-11-06",
+      "github_tag_pin": "2.0.0"
     },
     "google-gemini-api": {
       "label": "Google Gemini API — Developer Platform, Model Cards, Release Notes",
@@ -5157,7 +5158,7 @@
       "label": "MITRE ATLAS — Adversarial Threat Landscape for AI Systems",
       "authority": "MITRE Corporation",
       "framework_id": "mitre-atlas",
-      "current_version": "v4.8.0 (2025)",
+      "current_version": "v2026.10 (October 2026)",
       "next_expected_version": "Quarterly cadence (v5.0 anticipated)",
       "check_strategy": "github_release",
       "github_repo": "mitre-atlas/atlas-data",
@@ -5195,16 +5196,17 @@
         "stix": "https://github.com/mitre-atlas/atlas-data/tree/main/dist"
       },
       "draft_status": "none",
-      "last_changed": "2025-01-01",
+      "last_changed": "2026-10-28",
       "last_checked": null,
       "public_comment_deadline": null,
       "version_signal": "github_release_tag",
       "source_manifest_keys": [],
       "cci_coverage_notes": "Implied-Bridge: MITRE ATLAS tactics map to ML-specific attack patterns not covered in ATT&CK. ATLAS technique AML.T0043 (Craft Adversarial Data) → SI-10 (CCI-002620). AML.T0019 (Publish Poisoned Datasets) → SA-12 (CCI-002937). AML.T0040 (ML Model Inference API Access) → SC-8 (CCI-002469), AC-3 (CCI-000015). All Implied-Bridge via AI-specific attack surface extending existing NIST 800-53 controls.",
-      "notes": "Structured knowledge base of adversarial ML threats targeting AI/ML systems. Sister framework to MITRE ATT&CK focused on ML attack surface: reconnaissance of ML APIs, model evasion, model poisoning, model extraction, and system prompt injection. STIX 2.1 format available in atlas-data repo. Crosswalk to MITRE ATT&CK: some ATLAS techniques are extensions of ATT&CK techniques. Critical for AI red-teaming and threat modeling assessments.",
+      "notes": "Structured knowledge base of adversarial ML threats targeting AI/ML systems. Sister framework to MITRE ATT&CK focused on ML attack surface: reconnaissance of ML APIs, model evasion, model poisoning, model extraction, and system prompt injection. STIX 2.1 format available in atlas-data repo. Crosswalk to MITRE ATT&CK: some ATLAS techniques are extensions of ATT&CK techniques. Critical for AI red-teaming and threat modeling assessments. Phase 52 (2026-11-06): 'v4.8.0 (2025)' -> 'v2026.10 (October 2026)': the issuer's own GitHub release v2026.10 on mitre-atlas/atlas-data (standards-watch dispatch run 42227394107 (2026-11-06, api_note 'latest release')), confirmed at atlas.mitre.org/resources/updates/2026-10: 'Updated ATLAS data to version 2026.10' (read 2026-11-06); the repository lists the release commit 'Release v6.1.0 / v2026.10' dated Oct 28, 2026. ATLAS moved from v4.x framework numbering to dated data releases; the pin follows the data release.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-11-06",
+      "github_tag_pin": "v2026.10"
     },
     "uk-aisi": {
       "label": "AI Security Institute (formerly UK AI Safety Institute) / DSIT AI Safety Publications",
