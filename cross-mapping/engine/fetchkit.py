@@ -79,8 +79,35 @@ def _host(url: str) -> str:
     return url.split("//", 1)[-1].split("/", 1)[0].lower()
 
 
-def _default_open(req: urllib.request.Request, timeout: float):
-    return urllib.request.urlopen(req, timeout=timeout)
+_TLS_CTX: dict = {}
+
+
+def _tls_context(host: str, policies: dict):
+    """Default trust store plus a host's pinned intermediate(s) (host_policies.json
+    enforced.tls_intermediates: [{file, sha256, ...}]). The file must match its recorded sha256 and
+    partial chains stay disabled, so an added intermediate can only complete a chain to a public root,
+    never act as one. None when the host pins nothing (phase 52, R11)."""
+    pins = ((policies.get("hosts", {}).get(host) or {}).get("enforced") or {}).get("tls_intermediates")
+    if not pins:
+        return None
+    if host not in _TLS_CTX:
+        ctx = ssl.create_default_context()
+        ctx.verify_flags &= ~getattr(ssl, "VERIFY_X509_PARTIAL_CHAIN", 0)
+        for pin in pins:
+            pem = (ROOT / pin["file"]).read_bytes()
+            got = hashlib.sha256(pem).hexdigest()
+            if got != pin["sha256"]:
+                raise PolicyRefused(f"{host}: pinned intermediate {pin['file']} sha256 {got[:12]} != recorded {pin['sha256'][:12]}")
+            ctx.load_verify_locations(cadata=pem.decode("ascii"))
+        _TLS_CTX[host] = ctx
+    return _TLS_CTX[host]
+
+
+def _default_open(req, timeout, policies=None):
+    ctx = _tls_context(_host(req.full_url), policies if policies is not None else load_policies())
+    if ctx is None:
+        return urllib.request.urlopen(req, timeout=timeout)
+    return urllib.request.urlopen(req, timeout=timeout, context=ctx)
 
 
 def _read_body(resp) -> bytes:
@@ -218,6 +245,8 @@ class RateGovernor:
         self.state_path = STATE_DIR / "host_limits.json" if state_path is _STATE_FILE else state_path
         self.min_interval = min_interval
         self.budget_remaining = budget
+        if opener is _default_open:   # the real opener reads this governor's policies (pinned intermediates)
+            opener = lambda req, t, _s=self: _default_open(req, t, _s.policies)
         self._opener = opener
         self._clock = clock
         self._sleep = sleeper

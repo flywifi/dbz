@@ -51,6 +51,8 @@ def _detect(detector: str, path: Path) -> list:
         return HA.registry_script_findings(json.loads(path.read_text()), ROOT, rel=path.name)
     if detector == "workflow":
         return HA.workflow_findings(json.loads(path.read_text()), _valid_targets(), "golden", path.name)
+    if detector == "data_at_rest":
+        return HA.data_at_rest_findings(path, "golden/" + path.name)
     raise ValueError(f"unknown detector {detector}")
 
 

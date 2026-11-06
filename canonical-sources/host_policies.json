@@ -171,6 +171,28 @@
         "min_interval_s": 3.0,
         "run_cap": 25
       }
+    },
+    "www.ilga.gov": {
+      "published_rule": "not checked before phase 52; the implementation records the www.ilga.gov usage-rule search with its date",
+      "source_url": "https://www.ilga.gov/",
+      "verified": "2026-11-06",
+      "probe": "openssl s_client -showcerts via the proxy (leaf only; Sectigo Public Server Authentication CA OV R40 not sent); plan T-3 live verification with the pin",
+      "robots": "fetched by the governor once TLS verifies (200, plan T-3)",
+      "tls_note": "The server omits its intermediate. Browsers fetch it through the leaf's AIA URL; Python does not. The pinned file is that AIA certificate, verified to chain to a public root with partial chains disabled.",
+      "enforced": {
+        "min_interval_s": 1.5,
+        "run_cap": 25,
+        "tls_intermediates": [
+          {
+            "file": "canonical-sources/tls/www.ilga.gov.pem",
+            "sha256": "7c743a513d4b43a4b671dc17d2778d1fdb9b5fc64ad8ec0465b52b2720024b12",
+            "subject": "CN=Sectigo Public Server Authentication CA OV R40, O=Sectigo Limited, C=GB",
+            "not_after": "2040-05-13",
+            "retrieved": "2026-11-05",
+            "source_url": "http://crt.sectigo.com/SectigoPublicServerAuthenticationCAOVR40.crt"
+          }
+        ]
+      }
     }
   }
 }

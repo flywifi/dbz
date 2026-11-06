@@ -463,6 +463,33 @@ def test_robots_transient_retry():
     ok(case([404]) == ("admitted", 1, []), "robots 404: allow all, one attempt")
 
 
+def test_pinned_intermediates():
+    """Phase 52: a host may pin the intermediate certificate its server omits (host_policies.json
+    enforced.tls_intermediates). The pinned file must match its recorded sha256 (a tampered file is refused
+    before any connection), partial chains stay disabled (an intermediate never acts as a root), a host without
+    a pin keeps the default trust store, and the real governor binds the policy-aware opener."""
+    import ssl as _ssl
+    pol = fetchkit.load_policies()
+    pins = pol["hosts"]["www.ilga.gov"]["enforced"]["tls_intermediates"]
+    ok(len(pins) == 1 and (fetchkit.ROOT / pins[0]["file"]).exists(), "www.ilga.gov pins one committed intermediate file")
+    fetchkit._TLS_CTX.clear()
+    ctx = fetchkit._tls_context("www.ilga.gov", pol)
+    ok(isinstance(ctx, _ssl.SSLContext) and not (ctx.verify_flags & getattr(_ssl, "VERIFY_X509_PARTIAL_CHAIN", 0)),
+       "a pinned host gets a context with partial chains disabled (the pin can only complete a chain to a public root)")
+    ok(fetchkit._tls_context("www.ilga.gov", pol) is ctx, "the context is built once per host per process")
+    ok(fetchkit._tls_context("www.cisa.gov", pol) is None, "a host without a pin keeps the default trust store")
+    bad = json.loads(json.dumps(pol)); bad["hosts"]["www.ilga.gov"]["enforced"]["tls_intermediates"][0]["sha256"] = "0" * 64
+    fetchkit._TLS_CTX.clear()
+    try:
+        fetchkit._tls_context("www.ilga.gov", bad)
+        ok(False, "tampered pin refused")
+    except fetchkit.PolicyRefused as e:
+        ok("sha256" in str(e), "a pinned file whose sha256 differs from the record is refused before any connection")
+    fetchkit._TLS_CTX.clear()
+    g = fetchkit.RateGovernor(state_path=None)
+    ok(g._opener is not fetchkit._default_open and callable(g._opener), "the real governor binds the opener to its own policies")
+
+
 if __name__ == "__main__":
     for fn in [test_breaker_trips_and_cools, test_retry_after_honored, test_budget_exhausts,
                test_cache_304_and_sha, test_governor_state_roundtrip,
@@ -472,6 +499,6 @@ if __name__ == "__main__":
                test_stdlib_blank_line_grouping_is_neutralised, test_longest_match_wins,
                test_group_boundaries_and_wildcards, test_state_path_none_is_stateless,
                test_required_header_and_no_wayback_after_refusal, test_save_ledger_roundtrip,
-               test_robots_transient_retry]:
+               test_robots_transient_retry, test_pinned_intermediates]:
         fn()
     print(f"\nfetchkit tests: {PASS} assertions PASS")

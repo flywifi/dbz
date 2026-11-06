@@ -153,16 +153,6 @@
             "CMMC"
           ],
           "notes": "Federal Register DoD RSS (replaces acq.osd.mil/cmmc/rss.xml which has SSL issues)"
-        },
-        {
-          "url": "https://www.acq.osd.mil/cmmc/rss.xml",
-          "type": "rss",
-          "filter_keywords": [
-            "800-171",
-            "Rev 3",
-            "CMMC"
-          ],
-          "notes": "OUSD(A&S) CMMC news — catches DFARS/CMMC→800-171 Rev 3 alignment news [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
       "draft_landing_url": "https://csrc.nist.gov/pubs/sp/800/171/r3/final",
@@ -189,7 +179,17 @@
       "next_expected_version": "Rev 4 (not yet announced; monitor csrc.nist.gov post-2027)",
       "auto_fetch": false,
       "artifact_status": "current",
-      "last_verified": "2026-07-03"
+      "last_verified": "2026-07-03",
+      "superseded_urls": [
+        {
+          "url": "https://www.acq.osd.mil/cmmc/rss.xml",
+          "field": "announcement_feeds",
+          "status": "HTTP 404",
+          "checked": "2026-11-05",
+          "reason": "no CMMC RSS exists at DoD CIO; the Federal Register DoD feed already carries CMMC rules",
+          "replaced_by": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=defense-department"
+        }
+      ]
     },
     "nist-800-172": {
       "label": "NIST SP 800-172 Enhanced Security Req for CUI",
@@ -247,8 +247,8 @@
       "framework_id": "cmmc",
       "current_version": "CMMC 2.0 (Level 1/2/3) — Final Rule Dec 2024",
       "urls": {
-        "landing": "https://www.acq.osd.mil/cmmc/",
-        "model_overview": "https://www.acq.osd.mil/cmmc/docs/CMMC_Model_Main_20220202.pdf",
+        "landing": "https://dodcio.defense.gov/CMMC/Model/",
+        "model_overview": "https://dodcio.defense.gov/Portals/0/Documents/CMMC/ModelOverview.pdf",
         "federal_register": "https://www.federalregister.gov/documents/2024/10/15/2024-23960/cybersecurity-maturity-model-certification-cmmc-program",
         "download_page": "https://dodcio.defense.gov/CMMC/Documentation/",
         "suspension_release": "https://www.war.gov/News/Releases/Release/Article/4542329/forging-the-arsenal-of-freedom-department-of-war-suspends-cmmc-phase-ii-require/",
@@ -271,16 +271,6 @@
           "notes": "Federal Register DoD RSS (replaces acq.osd.mil/cmmc/rss.xml which has SSL issues)"
         },
         {
-          "url": "https://www.acq.osd.mil/cmmc/rss.xml",
-          "type": "rss",
-          "filter_keywords": [
-            "CMMC",
-            "DFARS",
-            "certification"
-          ],
-          "notes": "OUSD(A&S) CMMC program news [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
-        },
-        {
           "url": "https://www.dcsa.mil/rss/news/",
           "type": "rss",
           "filter_keywords": [
@@ -291,7 +281,7 @@
           "notes": "DCSA announcements affecting CMMC assessment process [canonical URL — may be blocked by bot-detection or VPN IPs; verified valid for normal browser/residential access]"
         }
       ],
-      "draft_landing_url": "https://www.acq.osd.mil/cmmc/",
+      "draft_landing_url": "https://dodcio.defense.gov/CMMC/Model/",
       "draft_status": "under_review",
       "public_comment_deadline": null,
       "source_manifest_keys": [
@@ -312,7 +302,43 @@
       "cci_coverage_notes": "Implied-Bridge: CMMC Level 2 → 800-171 Rev 2 → 800-53 Rev 4/5 → CCI (two hops). Level 3 → 800-172. IA.L3-3.5.3 (MFA): Confirmed-Subject via IA-2 CCIs (CCI-000765–768, 'multifactor authentication'). FIPS 201 PIV not required for DIB contractors; PIV CCIs are Implied-Bridge only.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-08-08"
+      "last_verified": "2026-08-08",
+      "superseded_urls": [
+        {
+          "url": "https://www.acq.osd.mil/cmmc/",
+          "field": "urls.landing",
+          "status": "HTTP 404",
+          "checked": "2026-11-05",
+          "reason": "the CMMC program moved to DoD CIO; www.acq.osd.mil also omits its IdenTrust TrustID Server CA O1 intermediate (not pinned: no live URL remains there)",
+          "replaced_by": "https://dodcio.defense.gov/CMMC/Model/"
+        },
+        {
+          "url": "https://www.acq.osd.mil/cmmc/",
+          "field": "draft_landing_url",
+          "status": "HTTP 404",
+          "checked": "2026-11-05",
+          "reason": "the CMMC program moved to DoD CIO; www.acq.osd.mil also omits its IdenTrust TrustID Server CA O1 intermediate (not pinned: no live URL remains there)",
+          "replaced_by": "https://dodcio.defense.gov/CMMC/Model/"
+        },
+        {
+          "url": "https://www.acq.osd.mil/cmmc/docs/CMMC_Model_Main_20220202.pdf",
+          "field": "urls.model_overview",
+          "status": "HTTP 404",
+          "checked": "2026-11-05",
+          "reason": "the CMMC program moved to DoD CIO; www.acq.osd.mil also omits its IdenTrust TrustID Server CA O1 intermediate (not pinned: no live URL remains there)",
+          "replaced_by": "https://dodcio.defense.gov/Portals/0/Documents/CMMC/ModelOverview.pdf"
+        },
+        {
+          "url": "https://www.acq.osd.mil/cmmc/rss.xml",
+          "field": "announcement_feeds",
+          "status": "HTTP 404",
+          "checked": "2026-11-05",
+          "reason": "no CMMC RSS exists at DoD CIO; the Federal Register DoD feed already carries CMMC rules",
+          "replaced_by": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=defense-department"
+        }
+      ],
+      "poll_exempt": true,
+      "poll_exempt_reason": "every DoD CIO host answers automated clients HTTP 403 (dodcio.defense.gov, the dowcio.war.gov mirror, www.war.gov; governed GETs 2026-11-06; source_manifest already records 'dodcio.defense.gov returned Access Denied'). The URLs above are the program's confirmed location; CMMC rulemaking reaches the registry through the Federal Register DoD feed"
     },
     "fedramp": {
       "label": "FedRAMP Program",
@@ -3303,7 +3329,7 @@
       "framework_id": "illinois-bipa",
       "current_version": "Amended 2024",
       "urls": {
-        "landing": "https://www.ilga.gov/legislation/ilcs/ilcs3.asp?ActID=3004&ChapterID=57"
+        "landing": "https://www.ilga.gov/Legislation/ILCS/Articles?ActID=3004&ChapterID=57"
       },
       "check_strategy": "poll_landing",
       "last_checked": null,
@@ -3313,7 +3339,7 @@
       "public_comment_deadline": null,
       "source_manifest_keys": [],
       "crawl_seeds": [
-        "https://www.ilga.gov/legislation/ilcs/ilcs3.asp?ActID=3004&ChapterID=57"
+        "https://www.ilga.gov/Legislation/ILCS/Articles?ActID=3004&ChapterID=57"
       ],
       "doc_patterns": [
         ".pdf",
@@ -3323,7 +3349,17 @@
       "cci_coverage_notes": "Not-Applicable: Illinois BIPA (740 ILCS 14) is biometric privacy law; no DISA CCI coverage. MP/SC/AC families via Implied-Heuristic.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "superseded_urls": [
+        {
+          "url": "https://www.ilga.gov/legislation/ilcs/ilcs3.asp?ActID=3004&ChapterID=57",
+          "field": "urls.landing, crawl_seeds",
+          "status": "HTTP 404",
+          "checked": "2026-11-05",
+          "reason": "ilga.gov restructured its statute pages; the host also omits its Sectigo OV R40 intermediate (pinned in host_policies.json)",
+          "replaced_by": "https://www.ilga.gov/Legislation/ILCS/Articles?ActID=3004&ChapterID=57"
+        }
+      ]
     },
     "washington-mhmd": {
       "label": "Washington My Health My Data Act",
@@ -3640,7 +3676,9 @@
       "cci_coverage_notes": "Implied-Bridge: ASD Essential Eight → 800-53 via informal mapping. Strategy 3 (MFA) → IA-2 CCIs (Confirmed-Subject: 'multifactor authentication'). Strategy 1 (App control) → CM CCIs. ASD strategy names not in CCI text.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "www.cyber.gov.au times out from GitHub's runners and from other US cloud egress (2026-11-05)"
     },
     "asd-ism": {
       "label": "Australian Signals Directorate Information Security Manual (ISM)",
@@ -3674,7 +3712,9 @@
       "cci_coverage_notes": "Implied-Bridge: ASD ISM → 800-53 via ASD-published crosswalk XLSX. CCIs apply at the 800-53 end. ASD ISM control numbers not in DISA CCI text.",
       "auto_fetch": false,
       "artifact_status": "metadata_only",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "www.cyber.gov.au times out from GitHub's runners and from other US cloud egress (2026-11-05); ISM is also tracked by acsc-ism"
     },
     "canada-pipeda": {
       "label": "Canada PIPEDA / Bill C-27 (CPPA)",
@@ -5481,7 +5521,9 @@
       "draft_status": "none",
       "auto_fetch": false,
       "artifact_status": "current",
-      "last_verified": "2026-07-02"
+      "last_verified": "2026-07-02",
+      "poll_exempt": true,
+      "poll_exempt_reason": "www.cnss.gov chains to DoD Root CA 6, which is not in the public trust store (openssl s_client, 2026-11-05)"
     },
     "dfars-cyber": {
       "label": "DFARS/FAR cyber clauses (252.204-7012, -7021, -7025; FAR 52.204-21) + RFO class-deviation clauses",
@@ -6853,7 +6895,8 @@
     },
     "recency_window_days": 730,
     "never_auto_apply": "Source files are NEVER auto-downloaded into canonical-sources/. A human verifies the change on the primary source, then re-pins source_manifest.json and rebuilds the catalog.",
-    "robots_policy": "Respect robots.txt. One honest User-Agent. Honor Retry-After/RateLimit-Reset. Back off, never bypass. No CAPTCHA bypass, no JS-evasion."
+    "robots_policy": "Respect robots.txt. One honest User-Agent. Honor Retry-After/RateLimit-Reset. Back off, never bypass. No CAPTCHA bypass, no JS-evasion.",
+    "superseded_urls": "superseded_urls: every URL a feed no longer uses, with the HTTP status or failure seen, the date checked, why it fails and the URL that replaced it — so a later tool that meets the old URL knows why it fails and where to go (phase 52)."
   },
   "bridged_via_hitrust": {
     "_note": "These international/legal frameworks are crosswalked to NIST 800-53 transitively through the HITRUST CSF v11.4 hub (relationship_type=transitive_via_hitrust). They appear in unified_mappings without a standalone source file.",

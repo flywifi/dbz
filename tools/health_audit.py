@@ -581,6 +581,43 @@ _TABULAR_EXTS = (".csv", ".xlsx", ".xlsm", ".xls")
 _FORBIDDEN_EXTS = (".pem", ".key", ".env")
 
 
+_CERT_BLOCK = re.compile(r"-----BEGIN CERTIFICATE-----[A-Za-z0-9+/=\s]+-----END CERTIFICATE-----")
+
+
+def _public_certificate_pem(p: Path) -> bool:
+    """A PEM holding only X.509 CERTIFICATE blocks is a public certificate (a pinned intermediate from
+    host_policies.json tls_intermediates, phase 52), not key material. Anything else under a key-like
+    extension (a private key, an empty file, unknown text) stays blocking."""
+    try:
+        text = p.read_text(encoding="ascii")
+    except (UnicodeDecodeError, OSError):
+        return False
+    if not text.strip() or "PRIVATE" in text:
+        return False
+    return _CERT_BLOCK.sub("", text).strip() == ""
+
+
+def data_at_rest_findings(p: Path, rel: str) -> List[Dict[str, Any]]:
+    """Placement findings for ONE file (the golden self-test drives this directly)."""
+    findings: List[Dict[str, Any]] = []
+    low = rel.lower()
+    if low.endswith(_FORBIDDEN_EXTS) or p.name == ".env":
+        if low.endswith(".pem") and _public_certificate_pem(p):
+            return findings
+        findings.append(_f("blocking", "data_at_rest",
+                           f"key material / env file tracked in repo: {rel}",
+                           "remove it; secrets never live in the repository",
+                           False, rel))
+    elif low.endswith(_TABULAR_EXTS) and not any(
+            rel.startswith(d) for d in _DATA_AT_REST_DIRS):
+        findings.append(_f("blocking", "data_at_rest",
+                           f"tabular data file outside the canonical data dirs: {rel}",
+                           "move it under canonical-sources/, cross-mapping/core-audit/, "
+                           "or overlap-data/ (see CLAUDE.md publication hygiene)",
+                           False, rel))
+    return findings
+
+
 def check_data_at_rest() -> List[Dict[str, Any]]:
     """Fail-closed placement rules for data files (CLAUDE.md publication hygiene:
     canonical data stays confined to its mapping directories)."""
@@ -589,19 +626,7 @@ def check_data_at_rest() -> List[Dict[str, Any]]:
         if ".git" in p.parts or not p.is_file() or _excluded(p):
             continue
         rel = str(p.relative_to(ROOT)).replace("\\", "/")
-        low = rel.lower()
-        if low.endswith(_FORBIDDEN_EXTS) or p.name == ".env":
-            findings.append(_f("blocking", "data_at_rest",
-                               f"key material / env file tracked in repo: {rel}",
-                               "remove it; secrets never live in the repository",
-                               False, rel))
-        elif low.endswith(_TABULAR_EXTS) and not any(
-                rel.startswith(d) for d in _DATA_AT_REST_DIRS):
-            findings.append(_f("blocking", "data_at_rest",
-                               f"tabular data file outside the canonical data dirs: {rel}",
-                               "move it under canonical-sources/, cross-mapping/core-audit/, "
-                               "or overlap-data/ (see CLAUDE.md publication hygiene)",
-                               False, rel))
+        findings += data_at_rest_findings(p, rel)
     return findings
 
 
