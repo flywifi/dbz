@@ -586,6 +586,14 @@
       "date": "2026-11-06",
       "known_good": true,
       "note": "CI green on 8856c87 (tools/ci_status.py: health 2026-11-05T02:57:27Z; scheduled runs green through 2026-11-06T09:49:10Z)."
+    },
+    {
+      "phase": "52-close",
+      "name": "Phase-52 close anchor (remediation of existing system problems, 0.17.0)",
+      "sha": "31eeace",
+      "date": "2026-11-06",
+      "known_good": true,
+      "note": "CI green on 31eeace (tools/ci_status.py: health 2026-11-06T22:08:04Z; every pushed head of the phase green, C1 b7f8525 through C9 0ee289c). Dispatch 42227394107 on 889fde2: 233 requests, 94 hosts, 0 refusals."
     }
   ]
 }
