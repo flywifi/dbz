@@ -46,6 +46,8 @@ from __future__ import annotations
 
 import json
 import sys
+import subprocess
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -61,6 +63,59 @@ VALID_MODES = {"read-fanout", "mutate", "external"}
 HEALTH_DIR = ROOT / "skills" / "health-auditor"
 HEALTH_TOOLS = [ROOT / "tools" / "health_audit.py", ROOT / "tools" / "health_repair.py"]
 VOCAB_PATH = ROOT / "canonical-sources" / "framework_vocab.json"
+
+
+_NET_CALL = re.compile(r"\burlopen\(|\brequests\.(?:get|post|head|Session)\b|\bhttp\.client\b|\bsocket\.create_connection\(")
+_NET_ALLOW = {   # files that may call the network directly, each with its reason (phase 52, invariant 17)
+    "cross-mapping/engine/fetchkit.py": "the governor itself",
+    "tools/ci_status.py": "reads CI state with the session token; exempt so a status poll never consumes the api.github.com cap",
+    "tools/sync_check.py": "this gate's own pattern literals",
+}
+
+
+def _tracked_py(root):
+    """Every tracked .py (git ls-files); falls back to a directory walk without git."""
+    try:
+        out = subprocess.run(["git", "-C", str(root), "ls-files", "*.py"], capture_output=True, text=True, check=True).stdout.split()
+    except Exception:  # noqa: BLE001
+        out = [str(p.relative_to(root)).replace("\\", "/") for p in root.rglob("*.py") if ".harvest-venv" not in p.parts]
+    return sorted(out)
+
+
+def network_callers(root, overrides=None):
+    """Invariant 17: {rel: [lines]} of direct network calls outside fetchkit and the allowlist.
+    Every loader goes through fetchkit.fetch / polite_urlopen so host_policies.json governs it
+    (0.16.0 claimed that while five callers still used urlopen / requests directly)."""
+    hits = {}
+    for rel in _tracked_py(root):
+        if rel in _NET_ALLOW:
+            continue
+        text = (overrides or {}).get(rel)
+        if text is None:
+            text = (root / rel).read_text(encoding="utf-8", errors="replace")
+        lines = [i + 1 for i, l in enumerate(text.splitlines()) if _NET_CALL.search(l) and not l.lstrip().startswith("#")]
+        if lines:
+            hits[rel] = lines
+    return hits
+
+
+def const_path_writers(root, reg_names, allow, overrides=None):
+    """Invariant 14, widened: a NAME bound to a canonical registry path and later written with
+    NAME.write_text(...) or open(NAME, "w") (olir_crawler's manifest write sat 50 lines from the
+    filename, outside the 2-line window)."""
+    hits = {}
+    for rel in _tracked_py(root):
+        if rel in allow or not (rel.startswith("tools/") or rel.startswith("cross-mapping/engine/")):
+            continue
+        text = (overrides or {}).get(rel)
+        if text is None:
+            text = (root / rel).read_text(encoding="utf-8", errors="replace")
+        names = {m.group(1) for m in re.finditer(r"^\s*([A-Z_][A-Z0-9_]*)\s*=.*(?:%s)" % "|".join(map(re.escape, reg_names)), text, re.M)}
+        for n in names:
+            for i, l in enumerate(text.splitlines()):
+                if re.search(rf"\b{n}\.write_text\(|\bopen\(\s*{n}\s*,\s*['\"]w", l):
+                    hits.setdefault(rel, []).append(i + 1)
+    return hits
 
 
 def main() -> int:
@@ -278,6 +333,10 @@ def main() -> int:
                                     "tools/registry_io.py or allowlist with a reason)")
                     break
 
+    for rel, where in sorted(const_path_writers(ROOT, _REG_NAMES, _WRITER_ALLOW).items()):
+        failures.append(f"  \u2717 Invariant 14 \u2014 canonical registry written through a path constant: "
+                        f"{rel}:{where[0]} (route writes through tools/registry_io.py or allowlist with a reason)")
+
     # Invariant 15: skill-asset copies of overlap-data files must hash-match the
     # canonical copy (overlap-data/ is canonical per CLAUDE.md). A silently
     # diverged copy skews the analyzer skill against the engine.
@@ -307,6 +366,11 @@ def main() -> int:
             failures.append("  ✗ Invariant 16 — tools/hooks/pre-push no longer invokes "
                             "ci_rehearsal (edited into a no-op)")
 
+    # Invariant 17: every network caller is governed or named exempt (phase 52).
+    for rel, where in sorted(network_callers(ROOT).items()):
+        failures.append(f"  \u2717 Invariant 17 \u2014 direct network call outside fetchkit: {rel}:{where} "
+                        "(use fetchkit.fetch / polite_urlopen, or allowlist in _NET_ALLOW with a reason)")
+
     print(f"GRC drift check — {len(atom_dirs)} atom(s) + orchestration bucket + health auditor\n")
     if failures:
         print("DRIFT DETECTED:\n")
@@ -314,7 +378,7 @@ def main() -> int:
         print(f"\n{len(failures)} invariant(s) failed.")
         return 1
 
-    print(f"OK — all 16 invariants pass across {len(atom_dirs)} atom(s) + the orchestration "
+    print(f"OK — all 17 invariants pass across {len(atom_dirs)} atom(s) + the orchestration "
           f"bucket + the health auditor + the platform export.")
     return 0
 

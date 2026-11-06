@@ -9,47 +9,28 @@ Output: canonical-sources/disa-cci-trackr.json
 """
 
 import json
-import os
 import sys
-import time
 from pathlib import Path
 from typing import Optional
 
 _HERE = Path(__file__).resolve().parent
 _REPO_ROOT = _HERE.parent.parent.parent
+sys.path.insert(0, str(_REPO_ROOT / "cross-mapping" / "engine"))
+import fetchkit  # noqa: E402 — governed fetch (host_policies.json caps, pacing, breaker, ledger), phase 52
 
 CCI_TRACKR_BASE = "https://cyber.trackr.live/cci"
 OUTPUT_PATH = _REPO_ROOT / "canonical-sources" / "disa-cci-trackr.json"
 
 
 def _get_session():
-    try:
-        import requests
-        s = requests.Session()
-        proxy = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
-        if proxy:
-            s.proxies = {"https": proxy, "http": proxy}
-        s.headers["User-Agent"] = "dbz-grc-engine/1.0 (cci-trackr-loader; compliance research)"
-        return s
-    except ImportError:
-        raise RuntimeError("requests library required: pip install requests")
+    """Request headers; the governor supplies pacing, caps and the proxy (phase 52)."""
+    return {"User-Agent": "dbz-grc-engine/1.0 (cci-trackr-loader; compliance research)"}
 
 
 def _fetch_with_retry(session, url: str, retries: int = 3, backoff: float = 2.0):
-    """Fetch URL with retry on network error."""
-    last_exc = None
-    for attempt in range(retries):
-        try:
-            resp = session.get(url, timeout=30)
-            resp.raise_for_status()
-            return resp.json()
-        except Exception as exc:
-            last_exc = exc
-            if attempt < retries - 1:
-                delay = backoff * (2 ** attempt)
-                print(f"  Retry {attempt+1}/{retries} after {delay:.0f}s ({exc})", file=sys.stderr)
-                time.sleep(delay)
-    raise RuntimeError(f"Failed after {retries} attempts: {last_exc}")
+    """One governed GET with fetchkit's bounded retries (transient statuses only), phase 52."""
+    return json.loads(fetchkit.fetch(url, headers=session, timeout=30, retries=retries, backoff=backoff).body)
+
 
 
 def fetch_all_ccis(session) -> list:

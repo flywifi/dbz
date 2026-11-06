@@ -9,7 +9,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 - **DB schema:** 3.19 (adds `scf_composed_edges` + the SCF fan-out witness; 3.17 added baseline/OLIR witnesses) (`grc.db`, deterministic build, double-build digest check)
 - **Gate battery:** rebuild ×2 identical digests · `test_spine.py` · `validate_spine.py` ·
   `health_audit.py --scan/--full` 100/100 (including the artifacts-hidden CI condition) ·
-  `sync_check.py` (16 invariants, incl. the pre-push hook guard) · golden self-test · `benchmark_oracles.py --check` ·
+  `sync_check.py` (17 invariants, incl. the pre-push hook guard) · golden self-test · `benchmark_oracles.py --check` ·
   `validate_spine` checks 20-21 (verdicts re-derive from their witness columns; every emitted framework label is vocabulary-declared) ·
   twelve-scenario battery (`run_scenarios.py`) · alias contract (`test_alias_contract.py`) ·
   pre-commit selftests (output validator, scorer, secret scan) — all green as of 2026-08-14 (incl. the phase-40 SCF fan-out witness; rehearse CI pre-push with tools/ci_rehearsal.py). Authority list: `protocol-layer/quality-gates.md`.

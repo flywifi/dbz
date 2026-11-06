@@ -313,7 +313,7 @@ https://www.federalreserve.gov/feeds/press_all.xml
 
 | Script | Path | Source(s) | Output |
 |---|---|---|---|
-| `kev_loader.py` | `nist-catalog/ingestion/` | CISA KEV JSON | `canonical-sources/known_exploited_vulnerabilities.json` |
+| `kev_loader.py` | `engine/` | CISA KEV JSON | `canonical-sources/known_exploited_vulnerabilities.json` |
 | `cci_trackr_loader.py` | `nist-catalog/ingestion/` | CCI Trackr API | `canonical-sources/disa-cci-trackr.json` |
 | `ecfr_loader.py` | `engine/` | eCFR REST API | `canonical-sources/cfr/{title}-cfr-{part}.json` |
 | `fr_watcher.py` | `engine/` | Federal Register API | `canonical-sources/announcements_feed.json` |

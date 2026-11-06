@@ -16,9 +16,12 @@ Output: canonical-sources/edgar-8k-cyber.json
 import json
 import os
 import sys
-import time
+import urllib.parse
 from pathlib import Path
 from typing import Optional
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import fetchkit  # noqa: E402 — governed fetch, phase 52
 
 _HERE = Path(__file__).resolve().parent
 _REPO_ROOT = _HERE.parent.parent
@@ -67,33 +70,20 @@ def _build_edgar_url(accession: str, file_num: str = "") -> str:
 
 
 def _get_session():
-    try:
-        import requests
-        s = requests.Session()
-        proxy = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
-        if proxy:
-            s.proxies = {"https": proxy, "http": proxy}
-        s.headers.update({
-            "User-Agent": "dbz-grc-engine/1.0 (edgar-loader; compliance research matthew@example.com)",
-            "Accept": "application/json",
-        })
-        return s
-    except ImportError:
-        raise RuntimeError("requests library required: pip install requests")
+    """Headers for SEC EDGAR. The contact SEC asks for comes from the environment, never from the
+    repository (phase 52: a name-bearing placeholder address was embedded before)."""
+    contact = os.environ.get("DBZ_SEC_CONTACT", "").strip()
+    if "@" not in contact:
+        raise RuntimeError("set DBZ_SEC_CONTACT to the contact to declare in the User-Agent for SEC EDGAR "
+                           "(no contact is stored in the repository)")
+    return {"User-Agent": f"dbz-grc-engine/1.0 (edgar-loader; {contact})", "Accept": "application/json"}
 
 
 def _fetch_json(session, url: str, params: dict = None, retries: int = 3) -> dict:
-    last_exc = None
-    for attempt in range(retries):
-        try:
-            resp = session.get(url, params=params, timeout=30)
-            resp.raise_for_status()
-            return resp.json()
-        except Exception as exc:
-            last_exc = exc
-            if attempt < retries - 1:
-                time.sleep(4 * (attempt + 1))
-    raise RuntimeError(f"Request failed after {retries} attempts: {last_exc}")
+    """One governed GET through fetchkit (host_policies.json caps, pacing, breaker, ledger), phase 52."""
+    full = url + ("?" + urllib.parse.urlencode(params) if params else "")
+    return json.loads(fetchkit.fetch(full, headers=session, timeout=30, retries=retries, backoff=4.0).body)
+
 
 
 def search_8k_item105(session, start_date: str, end_date: str = "", max_results: int = 200) -> list:
@@ -114,7 +104,6 @@ def search_8k_item105(session, start_date: str, end_date: str = "", max_results:
 
     print(f"  Searching EDGAR for 8-K Item 1.05 filings since {start_date}...")
     data = _fetch_json(session, EDGAR_SEARCH_URL, params=params)
-    time.sleep(2)
 
     hits = data.get("hits", {}).get("hits", [])
     total = data.get("hits", {}).get("total", {}).get("value", 0)

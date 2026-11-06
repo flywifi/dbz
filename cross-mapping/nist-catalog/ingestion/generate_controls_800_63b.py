@@ -17,13 +17,13 @@ Run:
 import argparse
 import json
 import sys
-import time
-import urllib.request
 import urllib.error
 from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
+sys.path.insert(0, str(REPO_ROOT / "cross-mapping" / "engine"))
+import fetchkit  # noqa: E402 — governed fetch (host_policies.json caps, pacing, breaker, ledger), phase 52
 OUTPUT_PATH = REPO_ROOT / "canonical-sources" / "nist-800-63b-requirements.json"
 CPRT_URL = (
     "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/"
@@ -33,25 +33,17 @@ CPRT_URL = (
 
 
 def _fetch(url: str, retries: int = 3) -> dict | None:
-    for attempt in range(retries):
-        try:
-            req = urllib.request.Request(url, headers={"Accept": "application/json",
-                                                        "User-Agent": "dbz-grc-loader/1.0"})
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                return json.loads(resp.read().decode())
-        except urllib.error.HTTPError as exc:
-            if exc.code == 404:
-                return None
-            if attempt < retries - 1:
-                time.sleep(2 ** attempt)
-                continue
-            raise
-        except Exception:
-            if attempt < retries - 1:
-                time.sleep(2 ** attempt)
-                continue
-            raise
-    return None
+    """One governed GET; a 404 means the endpoint is gone (None), other failures raise after
+    fetchkit's bounded retries (phase 52: the loader used its own urlopen loop before)."""
+    try:
+        r = fetchkit.fetch(url, headers={"Accept": "application/json", "User-Agent": "dbz-grc-loader/1.0"},
+                           timeout=30, retries=retries, backoff=1.0)
+    except urllib.error.HTTPError as exc:
+        if exc.code == 404:
+            return None
+        raise
+    return json.loads(r.body.decode())
+
 
 
 def _derive_aal(section: str, text: str) -> str:

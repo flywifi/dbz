@@ -36,7 +36,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import random
 import re
 import sys
 import time
@@ -157,48 +156,31 @@ class Fetcher:
         return v.can_fetch(_fk.ROBOTS_AGENT, url)
 
     def _load_robots(self, base: str):
-        """RFC 9309 via fetchkit.robots_verdict. Was: 401/403 -> disallow (would have blocked
-        cisa-kev, whose robots.txt 403s while its data answers 200), unreachable -> allow
-        (contradicts RFC 9309 §2.3.1.4), and stdlib blank-line grouping (drops real Disallows)."""
-        req = urllib.request.Request(base + "/robots.txt", headers={"User-Agent": self.ua})
-        status, body = 0, ""
-        try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
-                status = getattr(resp, "status", 200) or 200
-                body = resp.read(_fk.ROBOTS_MAX_BYTES).decode("utf-8", "ignore")
-        except urllib.error.HTTPError as e:
-            status = e.code
-        except Exception:
-            status = 0
-        return _fk.robots_verdict(status, body)
+        """The governor's own verdict: one robots.txt per host per run (RFC 9309), shared with every
+        loader and paced like every other request (phase 52; the crawler read robots.txt itself before)."""
+        return _fk.governor()._robots_for(_fk._host(base))
 
     def get(self, url: str) -> Tuple[int, bytes, str, dict]:
-        """Return (status, body, content_type, headers). status 0 on transport error."""
-        headers = {
-            "User-Agent": self.ua,
-            "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.5",
-        }
-        req = urllib.request.Request(url, headers=headers)
+        """Return (status, body, content_type, headers). status 0 on transport error, including a
+        policy refusal or host cooldown (recorded as an error, never routed around)."""
         try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
-                return (resp.status, resp.read(),
-                        resp.headers.get("Content-Type", ""), dict(resp.headers))
+            r = _fk.fetch(url, headers={"User-Agent": self.ua, "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
+                                        "Accept-Language": "en-US,en;q=0.5"}, timeout=self.timeout, retries=1)
+            return r.status, r.body, r.headers.get("content-type", ""), r.headers
         except urllib.error.HTTPError as e:
             return e.code, b"", "", dict(getattr(e, "headers", {}) or {})
-        except Exception:
+        except Exception:  # noqa: BLE001 — includes PolicyRefused / HostCooldown
             return 0, b"", "", {}
 
     def head(self, url: str) -> Tuple[int, dict]:
-        """HEAD request for cheap metadata (size, Last-Modified, ETag)."""
-        req = urllib.request.Request(
-            url, method="HEAD", headers={"User-Agent": self.ua})
+        """HEAD request for cheap metadata (size, Last-Modified, ETag), through the governor."""
+        req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": self.ua})
         try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+            with _fk.polite_urlopen(req, timeout=self.timeout) as resp:
                 return resp.status, dict(resp.headers)
         except urllib.error.HTTPError as e:
             return e.code, dict(getattr(e, "headers", {}) or {})
-        except Exception:
+        except Exception:  # noqa: BLE001
             return 0, {}
 
 
@@ -272,7 +254,7 @@ def crawl_seed(
             continue
 
         report["visited"] += 1
-        time.sleep(random.uniform(min_delay, max_delay))  # polite jitter
+        # pacing comes from the governor's per-host rule (host_policies.json), phase 52
 
         if "html" not in ctype.lower():
             continue

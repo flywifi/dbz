@@ -79,10 +79,11 @@ def _load_source_manifest() -> dict:
 
 
 def _save_source_manifest(manifest: dict) -> None:
-    SOURCE_MANIFEST_PATH.write_text(
-        json.dumps(manifest, indent=2, ensure_ascii=False),
-        encoding="utf-8",
-    )
+    """The one canonical writer (tools/registry_io.py), never a direct write_text (phase 52)."""
+    sys.path.insert(0, str(_REPO_ROOT / "tools"))
+    import registry_io
+    registry_io.save("source_manifest", manifest)
+
 
 
 def _manifest_entries(manifest: dict) -> list[dict]:

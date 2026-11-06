@@ -27,6 +27,11 @@ import kev_loader  # noqa: E402
 import nvd_api_loader  # noqa: E402
 import olir_crawler  # noqa: E402
 import oscal_diff  # noqa: E402
+import edgar_loader  # noqa: E402
+import framework_crawler  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "nist-catalog" / "ingestion"))
+import cci_trackr_loader  # noqa: E402
+import generate_controls_800_63b  # noqa: E402
 
 PASS = 0
 SLEPT = []
@@ -150,13 +155,53 @@ def test_run_cli_saves_ledger():
        "run_cli returns main's value and writes the loader's ledger")
 
 
+def test_phase52_conversions():
+    """The five callers that still used urlopen / requests directly in 0.16.0 (framework_crawler,
+    the SP 800-63B generator, edgar_loader, cci_trackr_loader; the duplicate ingestion kev_loader
+    is deleted) now go through the governor: same return contracts, nothing sent on a refusal."""
+    import os
+    fc = framework_crawler.Fetcher.__new__(framework_crawler.Fetcher)
+    fc.ua, fc.timeout = "dbz-test", 5
+    case("crawler get 200 -> (status, body, ctype, headers)", [R(b"<html>", headers={"Content-Type": "text/html"})],
+         lambda: fc.get(U)[:3], (200, b"<html>", "text/html"))
+    case("crawler get 404 -> (404, b'', '', {...})", [404], lambda: fc.get(U)[:2], (404, b""))
+    case("crawler get refused -> status 0, nothing sent", [], lambda: fc.get(U)[0], 0, cap=0)
+    case("crawler head 200 -> (200, headers)", [R(b"", headers={"ETag": "x"})], lambda: fc.head(U)[0], 200)
+    case("crawler robots: the governor's verdict (404 -> not disallow_all)", [], lambda: fc._load_robots("https://h.example") != "disallow_all", True)
+    case("800-63B _fetch 200 -> dict", [J({"ok": True})], lambda: generate_controls_800_63b._fetch(U), {"ok": True})
+    case("800-63B _fetch 404 -> None (endpoint retired)", [404], lambda: generate_controls_800_63b._fetch(U), None)
+    case("800-63B _fetch refused -> raises, nothing sent", [], lambda: generate_controls_800_63b._fetch(U), "raises PolicyRefused", cap=0)
+    os.environ.pop("DBZ_SEC_CONTACT", None)
+    case("edgar without DBZ_SEC_CONTACT refuses to build a session", [], lambda: edgar_loader._get_session(), "raises RuntimeError")
+    os.environ["DBZ_SEC_CONTACT"] = "1+dbz-sec-contact@users.noreply.github.com"
+    sess = edgar_loader._get_session()
+    ok("1+dbz-sec-contact@users.noreply.github.com" in sess["User-Agent"] and "matthew" not in sess["User-Agent"].lower(),
+       "edgar User-Agent carries the environment contact, no placeholder name")
+    case("edgar _fetch_json encodes params and parses JSON", [J({"hits": 1})],
+         lambda: (edgar_loader._fetch_json(sess, U, {"q": "x y"}), SENT[-1].full_url)[::-1], (U + "?q=x+y", {"hits": 1}))
+    os.environ.pop("DBZ_SEC_CONTACT", None)
+    case("cci_trackr _fetch_with_retry 200 -> dict", [J([1, 2])], lambda: cci_trackr_loader._fetch_with_retry(cci_trackr_loader._get_session(), U), [1, 2])
+    case("cci_trackr refused -> raises, nothing sent", [], lambda: cci_trackr_loader._fetch_with_retry({}, U), "raises PolicyRefused", cap=0)
+    cap_ = []
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
+    import registry_io
+    saved = registry_io.save
+    registry_io.save = lambda name, data: cap_.append(name)
+    try:
+        olir_crawler._save_source_manifest({"sources": []})
+    finally:
+        registry_io.save = saved
+    ok(cap_ == ["source_manifest"], "olir manifest write goes through registry_io.save")
+
+
 if __name__ == "__main__":
     time.sleep = lambda s: SLEPT.append(s)
     urllib.request.urlopen = _raw
-    for m in (kev_loader, fr_watcher, ecfr_loader, olir_crawler, cprt_traverser):
+    for m in (kev_loader, fr_watcher, ecfr_loader, olir_crawler, cprt_traverser, framework_crawler, edgar_loader,
+              cci_trackr_loader, generate_controls_800_63b):
         if hasattr(m, "urlopen"):
             m.urlopen = _raw
-    for fn in (test_contracts, test_oscal_windows, test_run_cli_saves_ledger):
+    for fn in (test_contracts, test_oscal_windows, test_run_cli_saves_ledger, test_phase52_conversions):
         fn()
     ok(SLEPT == [2.0, 6.0, 12.0, 2.0], f"backoff only on transient failures: {SLEPT}")
     print(f"\ngoverned-loader tests: {PASS} assertions PASS")
