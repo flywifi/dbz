@@ -7,6 +7,8 @@ collision or a cap breach; commit messages are trailer-free; suggestions come fr
 --auto-library downloads only on a newer DISA quarter."""
 
 import argparse
+import contextlib
+import io
 import copy
 import json
 import re
@@ -140,8 +142,55 @@ def test_auto_library():
         sh.library_signal, sh.ROOT = saved
 
 
+def test_writers_no_churn():
+    """Phase 52: a Tuesday run with nothing new leaves announcements_feed.json byte-identical (no false PR);
+    a run with something new changes entries and generated_at only, and every other top-level key (a
+    human's _note_hipaa_prune, the other writer's _usage/_purpose) survives; a repeat of the same document
+    is deduplicated and writes nothing."""
+    import fr_watcher as fw
+    import announcement_monitor as am
+    src = ROOT / "canonical-sources" / "announcements_feed.json"
+    new = {"feed_id": "fr-2026-24001", "entry_id": "fr-2026-24001", "title": "t", "published_at": "2026-11-09",
+           "url": "https://www.federalregister.gov/d/2026-24001", "human_reviewed": False}
+
+    def fw_write(entries, path):
+        fw._write_output(*fw._merge_entries(entries, fw._load_existing(path)), 7, path)
+
+    def am_write(entries, path):
+        merged, added = am.merge_with_existing(entries, path)
+        am._write_feed_doc(merged, added, 45, path)
+    for label, write in (("fr_watcher", fw_write), ("announcement_monitor", am_write)):
+        tmp = Path(tempfile.mkdtemp()) / "announcements_feed.json"
+        shutil.copy(src, tmp)
+        before = tmp.read_bytes()
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            write([], tmp)
+            zero = tmp.read_bytes()
+            write([dict(new)], tmp)
+            one = tmp.read_bytes()
+            write([dict(new)], tmp)
+            again = tmp.read_bytes()
+        b, o = json.loads(before), json.loads(one)
+        changed = sorted(k for k in set(o) | set(b) if o.get(k) != b.get(k))
+        ok(zero == before, f"{label}: zero new documents -> file byte-identical (no PR)")
+        ok(changed == ["entries", "generated_at"] and set(b) <= set(o) and "_note_hipaa_prune" in o,
+           f"{label}: one new document -> only entries + generated_at change; no top-level key dropped")
+        ok(again == one, f"{label}: the same document next week -> deduplicated, file unchanged")
+
+
+def test_digest_rules():
+    """Phase 52: only report jobs with a suggestion rule (nvd-7d) produce a 'suggest' line; horizon-check
+    printed 'suggest: no. no suggestion rule for this dataset' on the first Thursday run."""
+    rep = {"slot": "thu-dod-mitre", "jobs": [
+        {"job": "attack", "mode": "pr", "status": "skipped", "changed": [], "why": "check failed"},
+        {"job": "horizon-check", "mode": "report", "status": "ok", "changed": [], "why": "always"}]}
+    ok(fr.slot_suggestions(rep, SCHED) == [], "Thursday digest: no suggestion line for horizon-check")
+    ok("nvd-7d" in fr.SUGGEST_RULES, "Wednesday digest still suggests the NVD dataset")
+
+
 if __name__ == "__main__":
     for fn in (test_slot_resolution, test_volatile_and_report_reverts, test_census,
-               test_commit_message_and_suggestions, test_auto_library):
+               test_commit_message_and_suggestions, test_auto_library,
+               test_writers_no_churn, test_digest_rules):
         fn()
     print(f"\nrotation tests: {PASS} assertions PASS")

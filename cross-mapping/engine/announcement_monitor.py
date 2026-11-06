@@ -373,7 +373,26 @@ def merge_with_existing(new_entries: list[dict], output_path: Path) -> tuple[lis
     return merged, len(truly_new)
 
 
+def _write_feed_doc(merged, added, days, output_path):
+    if added == 0 and output_path.exists():
+        print(f"No new entries; {output_path} left unchanged")
+        return
+    try:
+        doc = json.loads(output_path.read_text(encoding="utf-8")) if output_path.exists() else {}
+    except ValueError:
+        doc = {}
+    doc.setdefault("schema_version", "1.0.0")
+    doc.setdefault("_purpose", "Structured announcements from standards-body RSS/Atom feeds and the Federal "
+                               "Register API. Populated by announcement_monitor.py and fr_watcher.py.")
+    doc.setdefault("window_days", days)
+    doc["generated_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    doc["entries"] = sorted(merged, key=lambda e: e.get("published_at") or "", reverse=True)
+    output_path.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"Wrote {len(merged)} total entries ({added} new) -> {output_path}")
+
+
 def run(args: argparse.Namespace) -> int:
+
     registry_path = Path(args.registry)
     output_path = Path(args.output)
 
@@ -436,15 +455,8 @@ def run(args: argparse.Namespace) -> int:
         return 0
 
     merged, added = merge_with_existing(all_new, output_path)
-    doc = {
-        "schema_version": "1.0.0",
-        "_purpose": "Structured announcements from standards-body RSS/Atom feeds. Populated by announcement_monitor.py.",
-        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "window_days": args.days,
-        "entries": sorted(merged, key=lambda e: e.get("published_at") or "", reverse=True),
-    }
-    output_path.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    msg = f"Wrote {len(merged)} total entries ({added} new) → {output_path}"
+    _write_feed_doc(merged, added, args.days, output_path)   # phase 52: nothing new -> the file is untouched
+    msg = f"{len(merged)} total entries ({added} new) -> {output_path}" + ("" if added else " (unchanged)")
     print(msg)
     _log.info(msg)
     return 0

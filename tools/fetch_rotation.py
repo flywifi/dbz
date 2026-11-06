@@ -183,6 +183,7 @@ def commit_message(report: dict, today: str) -> str:
             f"Proposed for human review; the build, oracle benchmark and scenarios ran on this tree.")
 
 SUGGEST_MAX_MB = 1.0   # a committed weekly snapshot above this grows history by > 52 MB/year
+SUGGEST_RULES = ("nvd-7d",)
 
 
 def suggest(job_id: str, out_text: str | None, sched: dict) -> dict:
@@ -226,7 +227,7 @@ REPAIR_SLOT = "wed-vulnerability"   # the report-only day carries the "repair fi
 def slot_suggestions(report: dict, sched: dict) -> list:
     out = []
     for j in report["jobs"]:
-        if j["mode"] == "report" and j.get("status") == "ok" and j["job"] != "standards-check":
+        if j["mode"] == "report" and j.get("status") == "ok" and j["job"] in SUGGEST_RULES:
             f = OUT_DIR / f"{j['job']}.out"
             out.append(suggest(j["job"], f.read_text(encoding="utf-8") if f.exists() else None, sched))
     if report["slot"] == REPAIR_SLOT:

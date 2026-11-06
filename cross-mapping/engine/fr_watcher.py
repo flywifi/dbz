@@ -467,31 +467,24 @@ def _print_summary(entries: list[dict], days: int) -> None:
         print(f"    … and {len(entries) - 20} more")
 
 
-def _write_output(
-    merged: list[dict],
-    added: int,
-    days: int,
-    output_path: Path,
-) -> None:
-    doc = {
-        "schema_version": "1.0.0",
-        "_purpose": (
-            "Structured announcements from Federal Register API and standards-body feeds. "
-            "Populated by announcement_monitor.py and fr_watcher.py."
-        ),
-        "_usage": (
-            "Entries with human_reviewed=false are automated signals; "
-            "set to true after a human verifies on the primary source."
-        ),
-        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "window_days": days,
-        "entries": merged,
-    }
-    output_path.write_text(
-        json.dumps(doc, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
-    print(f"\nWrote {len(merged)} total entries ({added} new) → {output_path}")
+def _write_output(merged, added, days, output_path):
+    """Nothing new -> the file is untouched. Otherwise only entries and generated_at change; every other
+    top-level key (a human's note, the other writer's _purpose) survives (phase 52, R1)."""
+    if added == 0 and output_path.exists():
+        print(f"\nNo new entries; {output_path} left unchanged")
+        return
+    try:
+        doc = json.loads(output_path.read_text(encoding="utf-8")) if output_path.exists() else {}
+    except ValueError:
+        doc = {}
+    doc.setdefault("schema_version", "1.0.0")
+    doc.setdefault("_purpose", "Structured announcements from Federal Register API and standards-body feeds. "
+                               "Populated by announcement_monitor.py and fr_watcher.py.")
+    doc.setdefault("window_days", days)
+    doc["generated_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    doc["entries"] = merged
+    output_path.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"\nWrote {len(merged)} total entries ({added} new) -> {output_path}")
 
 
 # ---------------------------------------------------------------------------

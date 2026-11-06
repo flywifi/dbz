@@ -39,6 +39,7 @@ import json
 import os
 import random
 import re
+import ssl
 import time
 import urllib.error
 import urllib.parse
@@ -52,6 +53,8 @@ DEFAULT_MIN_INTERVAL = 1.5   # seconds between requests to one host (plus jitter
 DEFAULT_BUDGET = 600           # runaway ceiling per run (1.8x the 328 measured by the phase-50 census); per-host caps are the guard
 DEFAULT_RUN_CAP = 25           # per host per run when a host publishes nothing (busiest such host measured: 19)
 ROBOTS_MAX_BYTES = 512 * 1024  # RFC 9309 §2.5: parse at least 500 KiB
+ROBOTS_ATTEMPTS = 3
+ROBOTS_BACKOFF_S = 5.0
 ROBOTS_AGENT = "dbz-standards-monitor"   # product token that robots.txt groups are matched against
 POLICY_PATH = ROOT / "canonical-sources" / "host_policies.json"
 BREAKER_FAILS = 4            # consecutive 403/429/503 before the breaker trips
@@ -246,23 +249,33 @@ class RateGovernor:
         return p
 
     def _robots_for(self, host: str):
-        """Fetch robots.txt once per host per run; learn Crawl-delay; keep the verdict."""
+        """Fetch robots.txt once per host per run; learn Crawl-delay; keep the verdict. A 5xx or a
+        timeout/reset is retried (ROBOTS_ATTEMPTS, backoff 5 s, 10 s) before RFC 9309 §2.3.1.4's complete
+        disallow applies: one MITRE gateway 502 refused the first scheduled ATT&CK check (2026-11-05).
+        TLS verification failures are not retried; they never change within a run."""
         if host in self._robots:
             return self._robots[host]
         status, body = 0, ""
-        try:
-            req = urllib.request.Request(f"https://{host}/robots.txt",
-                                         headers={"User-Agent": USER_AGENT})
-            with self._opener(req, 10) as resp:
-                status = getattr(resp, "status", 200) or 200
-                body = _read_body(resp)[:ROBOTS_MAX_BYTES].decode("utf-8", errors="replace")
-        except urllib.error.HTTPError as e:
-            status = e.code
-        except Exception as e:  # transport failure: name it in the refusal (TLS, timeout, reset)
-            status = 0
-            self._robots_why[host] = f"{type(e).__name__}: {str(getattr(e, 'reason', e))[:80]}"
-        if 500 <= status <= 599:
-            self._robots_why[host] = f"HTTP {status}"
+        for attempt in range(1, ROBOTS_ATTEMPTS + 1):
+            status, body, transient = 0, "", False
+            self._robots_why.pop(host, None)
+            try:
+                req = urllib.request.Request(f"https://{host}/robots.txt", headers={"User-Agent": USER_AGENT})
+                with self._opener(req, 10) as resp:
+                    status = getattr(resp, "status", 200) or 200
+                    body = _read_body(resp)[:ROBOTS_MAX_BYTES].decode("utf-8", errors="replace")
+            except urllib.error.HTTPError as e:
+                status = e.code
+            except Exception as e:  # transport failure: name it in the refusal (TLS, timeout, reset)
+                reason = getattr(e, "reason", e)
+                self._robots_why[host] = f"{type(e).__name__}: {str(reason)[:80]}"
+                transient = not isinstance(reason, ssl.SSLError)
+            if 500 <= status <= 599:
+                self._robots_why[host] = f"HTTP {status}"
+                transient = True
+            if not transient or attempt == ROBOTS_ATTEMPTS:
+                break
+            self._sleep(ROBOTS_BACKOFF_S * attempt)
         verdict = robots_verdict(status, body)
         if not isinstance(verdict, str):
             m = re.search(r"(?im)^\s*crawl-delay:\s*(\d+(?:\.\d+)?)", body)

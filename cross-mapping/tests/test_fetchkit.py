@@ -427,6 +427,42 @@ def test_save_ledger_roundtrip():
        "save_ledger writes this process's ledger for the drift report")
 
 
+def test_robots_transient_retry():
+    """Phase 52: a 5xx or a timeout/reset on robots.txt is retried (3 attempts, 5 s / 10 s backoff) before
+    RFC 9309 §2.3.1.4's complete disallow; a TLS verification failure, a 4xx or a 2xx takes one attempt.
+    One MITRE gateway 502 refused the first scheduled ATT&CK check (2026-11-05)."""
+    import ssl as _ssl
+
+    def case(script):
+        calls, slept = [], []
+
+        def opener(req, t):
+            calls.append(req.full_url)
+            item = script.pop(0)
+            if isinstance(item, Exception):
+                raise item
+            if isinstance(item, int):
+                raise urllib.error.HTTPError(req.full_url, item, "x", {}, io.BytesIO(b""))
+            return item
+        g = fetchkit.RateGovernor(state_path=None, opener=opener, sleeper=slept.append,
+                                  policies={"_default": {"enforced": {"min_interval_s": 0, "run_cap": 9}}, "hosts": {}})
+        try:
+            g.wait("h.example", "https://h.example/x")
+            out = "admitted"
+        except fetchkit.PolicyRefused:
+            out = "refused"
+        return out, len(calls), [s for s in slept if s]
+
+    def allow():
+        return FakeResp(body=b"User-agent: *\nAllow: /\n")
+    ok(case([502, allow()]) == ("admitted", 2, [5.0]), "robots 502 then 200: admitted on the retry (2 attempts, 5 s backoff)")
+    ok(case([502, 502, 502]) == ("refused", 3, [5.0, 10.0]), "robots 502 x3: RFC 9309 complete disallow after 3 attempts")
+    ok(case([urllib.error.URLError(TimeoutError("timed out")), allow()]) == ("admitted", 2, [5.0]), "robots timeout then 200: admitted")
+    ok(case([urllib.error.URLError(_ssl.SSLCertVerificationError(1, "certificate verify failed"))]) == ("refused", 1, []),
+       "robots TLS verification failure: one attempt, no retry (it never changes within a run)")
+    ok(case([404]) == ("admitted", 1, []), "robots 404: allow all, one attempt")
+
+
 if __name__ == "__main__":
     for fn in [test_breaker_trips_and_cools, test_retry_after_honored, test_budget_exhausts,
                test_cache_304_and_sha, test_governor_state_roundtrip,
@@ -435,6 +471,7 @@ if __name__ == "__main__":
                test_ncp_meta_first_and_run_cap, test_nvd_rolling_window, test_robots_rfc9309,
                test_stdlib_blank_line_grouping_is_neutralised, test_longest_match_wins,
                test_group_boundaries_and_wildcards, test_state_path_none_is_stateless,
-               test_required_header_and_no_wayback_after_refusal, test_save_ledger_roundtrip]:
+               test_required_header_and_no_wayback_after_refusal, test_save_ledger_roundtrip,
+               test_robots_transient_retry]:
         fn()
     print(f"\nfetchkit tests: {PASS} assertions PASS")
