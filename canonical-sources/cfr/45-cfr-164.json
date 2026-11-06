@@ -36,10 +36,7 @@
         "password",
         "integrity"
       ],
-      "nist_families": [
-        "IA",
-        "SI"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "164.306",
@@ -60,9 +57,7 @@
       "keywords": [
         "integrity"
       ],
-      "nist_families": [
-        "SI"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "164.308",
@@ -88,13 +83,7 @@
         "vulnerabilities",
         "integrity"
       ],
-      "nist_families": [
-        "AC",
-        "AU",
-        "IR",
-        "RA",
-        "SI"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "164.310",
@@ -118,10 +107,7 @@
         "recovery",
         "disaster"
       ],
-      "nist_families": [
-        "AC",
-        "CP"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "164.312",
@@ -148,13 +134,7 @@
         "encrypt",
         "integrity"
       ],
-      "nist_families": [
-        "AC",
-        "AU",
-        "IA",
-        "SC",
-        "SI"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "164.314",
@@ -175,9 +155,7 @@
       "keywords": [
         "incident"
       ],
-      "nist_families": [
-        "IR"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "164.316",
@@ -196,9 +174,7 @@
       "keywords": [
         "record"
       ],
-      "nist_families": [
-        "AU"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "164.318",
@@ -237,10 +213,7 @@
         "password",
         "integrity"
       ],
-      "nist_families": [
-        "IA",
-        "SI"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "164.306",
@@ -261,9 +234,7 @@
       "keywords": [
         "integrity"
       ],
-      "nist_families": [
-        "SI"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "164.308",
@@ -289,13 +260,7 @@
         "vulnerabilities",
         "integrity"
       ],
-      "nist_families": [
-        "AC",
-        "AU",
-        "IR",
-        "RA",
-        "SI"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "164.310",
@@ -319,10 +284,7 @@
         "recovery",
         "disaster"
       ],
-      "nist_families": [
-        "AC",
-        "CP"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "164.312",
@@ -349,13 +311,7 @@
         "encrypt",
         "integrity"
       ],
-      "nist_families": [
-        "AC",
-        "AU",
-        "IA",
-        "SC",
-        "SI"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "164.314",
@@ -376,9 +332,7 @@
       "keywords": [
         "incident"
       ],
-      "nist_families": [
-        "IR"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "164.316",
@@ -397,9 +351,7 @@
       "keywords": [
         "record"
       ],
-      "nist_families": [
-        "AU"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "164.318",

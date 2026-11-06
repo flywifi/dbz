@@ -12,7 +12,7 @@
       "expected_output": {
         "part": "45-CFR-164",
         "sections": [{"section_id": "164.308"}],
-        "nist_families_contains": ["IA", "AC"]
+        "nist_families_empty": true
       },
       "expect_pass": true
     },

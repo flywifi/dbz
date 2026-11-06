@@ -50,107 +50,12 @@ _RESULTS_PER_PAGE = 2000   # NVD API 2.0 maximum
 # Based on CWE taxonomy / NIST 800-53 Rev. 5 control categories.
 # Multiple families can match a single CWE.
 
-_CWE_NIST_MAP: Dict[str, List[str]] = {
-    # Authentication & Identity
-    "CWE-287": ["IA-2", "IA-5"],    # Improper Authentication
-    "CWE-306": ["IA-2"],            # Missing Authentication for Critical Function
-    "CWE-307": ["IA-2", "AC-7"],    # Improper Restriction of Excessive Authentication Attempts
-    "CWE-308": ["IA-2"],            # Use of Single-factor Authentication
-    "CWE-521": ["IA-5"],            # Weak Password Requirements
-    "CWE-522": ["IA-5"],            # Insufficiently Protected Credentials
-    "CWE-640": ["IA-5"],            # Weak Password Recovery Mechanism
-
-    # Access Control
-    "CWE-284": ["AC-3", "AC-6"],    # Improper Access Control
-    "CWE-285": ["AC-3"],            # Improper Authorization
-    "CWE-269": ["AC-6"],            # Improper Privilege Management
-    "CWE-732": ["AC-3"],            # Incorrect Permission Assignment for Critical Resource
-    "CWE-276": ["AC-3"],            # Incorrect Default Permissions
-
-    # Cryptography
-    "CWE-311": ["SC-8", "SC-28"],   # Missing Encryption of Sensitive Data
-    "CWE-312": ["SC-28"],           # Cleartext Storage of Sensitive Information
-    "CWE-319": ["SC-8"],            # Cleartext Transmission of Sensitive Information
-    "CWE-326": ["SC-12", "SC-13"],  # Inadequate Encryption Strength
-    "CWE-327": ["SC-12", "SC-13"],  # Use of a Broken or Risky Cryptographic Algorithm
-    "CWE-328": ["SC-13"],           # Use of Weak Hash
-    "CWE-916": ["IA-5", "SC-13"],   # Use of Password Hash With Insufficient Computational Effort
-
-    # Audit / Logging
-    "CWE-117": ["AU-3", "AU-9"],    # Improper Output Neutralization for Logs
-    "CWE-778": ["AU-12"],           # Insufficient Logging
-    "CWE-693": ["AU-9", "SI-4"],    # Protection Mechanism Failure
-
-    # System & Information Integrity / Memory Safety
-    "CWE-119": ["SI-16", "SI-3"],   # Improper Restriction of Operations within Buffer Bounds
-    "CWE-120": ["SI-16"],           # Buffer Copy without Checking Size of Input
-    "CWE-121": ["SI-16"],           # Stack-based Buffer Overflow
-    "CWE-122": ["SI-16"],           # Heap-based Buffer Overflow
-    "CWE-125": ["SI-16"],           # Out-of-bounds Read
-    "CWE-787": ["SI-16", "SI-3"],   # Out-of-bounds Write
-    "CWE-416": ["SI-16"],           # Use After Free
-    "CWE-476": ["SI-3"],            # NULL Pointer Dereference
-    "CWE-190": ["SI-16"],           # Integer Overflow or Wraparound
-
-    # Injection
-    "CWE-77":  ["SI-10", "SC-7"],   # Improper Neutralization of Special Elements in Command
-    "CWE-78":  ["SI-10"],           # OS Command Injection
-    "CWE-79":  ["SI-10", "SC-18"],  # Cross-site Scripting (XSS)
-    "CWE-89":  ["SI-10"],           # SQL Injection
-    "CWE-94":  ["SI-3", "CM-7"],    # Code Injection
-    "CWE-611": ["SC-7", "SI-3"],    # XML External Entity (XXE)
-
-    # Race Conditions
-    "CWE-362": ["SI-16", "SC-5"],   # Race Condition
-    "CWE-367": ["SI-16"],           # Time-of-check Time-of-use (TOCTOU) Race Condition
-
-    # Information Disclosure
-    "CWE-200": ["SC-28", "AC-3"],   # Exposure of Sensitive Information
-    "CWE-201": ["SC-8", "AC-3"],    # Exposure of Sensitive Information Through Sent Data
-    "CWE-209": ["SI-11"],           # Information Exposure Through an Error Message
-
-    # Supply Chain / Dependency
-    "CWE-829": ["SA-12", "SR-3"],   # Inclusion of Functionality from Untrusted Control Sphere
-    "CWE-494": ["SI-7", "SA-12"],   # Download of Code Without Integrity Check
-    "CWE-1188": ["CM-6", "SA-4"],   # Insecure Default Initialization of Resource
-
-    # Availability / DoS
-    "CWE-400": ["SC-5"],            # Uncontrolled Resource Consumption
-    "CWE-770": ["SC-5", "CP-10"],   # Allocation of Resources Without Limits or Throttling
-    "CWE-674": ["SC-5"],            # Uncontrolled Recursion
-
-    # Configuration
-    "CWE-16":  ["CM-6", "CM-7"],    # Configuration
-    "CWE-1286": ["CM-6"],           # Improper Validation of Syntactic Correctness of Input
-}
-
-_DEFAULT_NIST_FAMILIES = ["SI-3"]  # General weakness default
 
 
-def _map_cwe_to_nist(cwe_id: str) -> List[str]:
-    """
-    Map a single CWE ID string (e.g. 'CWE-287') to NIST 800-53 control codes.
 
-    Returns a non-empty list; defaults to ['SI-3'] for unknown CWEs.
-    """
-    normalized = cwe_id.strip().upper()
-    if not normalized.startswith("CWE-"):
-        # Accept bare numeric IDs
-        if normalized.isdigit():
-            normalized = f"CWE-{normalized}"
-    return _CWE_NIST_MAP.get(normalized, _DEFAULT_NIST_FAMILIES)
-
-
-def _nist_families_for_cwes(cwe_ids: List[str]) -> List[str]:
-    """Return deduplicated NIST family codes for a list of CWE IDs."""
-    seen: Set[str] = set()
-    families: List[str] = []
-    for cwe in cwe_ids:
-        for code in _map_cwe_to_nist(cwe):
-            if code not in seen:
-                seen.add(code)
-                families.append(code)
-    return families if families else list(_DEFAULT_NIST_FAMILIES)
+def _nist_families_for_cwes(cwe_ids):
+    """Always []: no issuer maps CWE to NIST 800-53 controls; the hand table (default SI-3) was a guess."""
+    return []
 
 
 # ── network utilities ─────────────────────────────────────────────────────────
@@ -271,11 +176,8 @@ class NVDLoader:
         self._api_key  = api_key or os.environ.get("NVD_API_KEY")
 
     def map_cwe_to_nist(self, cwe_id: str) -> List[str]:
-        """
-        Public wrapper: map a CWE ID to NIST 800-53 family codes.
-        Accepts 'CWE-287' or bare '287'.
-        """
-        return _map_cwe_to_nist(cwe_id)
+        """Always []: no issuer maps CWE ids to NIST 800-53 controls (phase 52; the hand table was a guess)."""
+        return []
 
     def fetch_page(
         self,

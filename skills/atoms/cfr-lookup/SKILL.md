@@ -32,7 +32,7 @@ Wraps `dbz_query.py cfr`.
       "section_id": "string — e.g. '164.308'",
       "title": "string",
       "text": "string — section text",
-      "nist_families": "array — NIST 800-53 family codes (e.g. ['IA', 'AC', 'SC'])"
+      "nist_families": "array — empty: no issuer maps these CFR sections to NIST 800-53 families (never guessed)"
     }
   ],
   "count": "integer"

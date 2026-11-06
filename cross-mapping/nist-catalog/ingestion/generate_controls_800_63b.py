@@ -30,56 +30,6 @@ CPRT_URL = (
     "sp_800_63b_3/element/ALL/structure/default"
 )
 
-# NIST 800-53 Rev 5 controls most directly relevant to 800-63B by section topic.
-# Source: NIST SP 800-63B Sec 4 (AAL requirements) and Appendix A (strength).
-SECTION_CONTROL_MAP = {
-    "4":    ["IA-2", "IA-5"],           # AAL overview
-    "4.1":  ["IA-2", "IA-2(1)", "IA-5"],  # AAL1
-    "4.2":  ["IA-2", "IA-2(1)", "IA-2(2)", "IA-5"],  # AAL2 (MFA required)
-    "4.3":  ["IA-2", "IA-2(1)", "IA-2(2)", "IA-5", "SC-8"],  # AAL3 (hardware authenticator)
-    "5":    ["IA-5"],                   # Authenticator types
-    "5.1":  ["IA-5", "IA-5(1)"],        # Memorized secrets
-    "5.1.1": ["IA-5", "IA-5(1)"],       # Memorized secret authenticators
-    "5.1.2": ["IA-5"],                  # Look-up secrets
-    "5.1.3": ["IA-5", "SC-28"],         # OOB authenticators
-    "5.1.4": ["IA-5", "SC-28"],         # Single-factor OTP
-    "5.1.5": ["IA-5", "SC-28"],         # Multi-factor OTP
-    "5.1.6": ["IA-5", "SC-8"],          # Single-factor crypto software
-    "5.1.7": ["IA-5", "SC-12", "SC-8"], # Single-factor crypto device
-    "5.1.8": ["IA-5", "SC-12", "SC-8"], # Multi-factor crypto software
-    "5.1.9": ["IA-5", "SC-12", "SC-8"], # Multi-factor crypto device
-    "6":    ["IA-5", "IA-11"],          # Authenticator lifecycle
-    "6.1":  ["IA-5"],                   # Binding at enrollment
-    "6.2":  ["IA-5", "SC-28"],          # Lost/stolen authenticators
-    "6.3":  ["IA-5"],                   # Authenticator expiration
-    "7":    ["IA-2", "IA-11"],          # Session management
-    "7.1":  ["IA-11"],                  # Session bindings
-    "8":    ["SC-8", "SC-13"],          # Threat resistance
-    "8.2":  ["SC-8"],                   # Verifier impersonation resistance
-    "8.3":  ["SC-13"],                  # Verifier compromise resistance
-    "9":    ["SC-8", "SC-28"],          # Privacy requirements
-    "10":   ["IA-5", "SC-28"],          # Usability considerations
-}
-
-# CCI provenance per control — see plan Part 7 Section 7.10 for sourcing.
-CCI_PROVENANCE_MAP = {
-    "IA-2":     "Confirmed-Subject",
-    "IA-2(1)":  "Confirmed-Subject",
-    "IA-2(2)":  "Confirmed-Subject",
-    "IA-2(6)":  "Confirmed-Subject",
-    "IA-2(12)": "Confirmed-Direct",
-    "IA-5":     "Confirmed-Subject",
-    "IA-5(1)":  "Confirmed-Subject",
-    "IA-8":     "Confirmed-Direct",
-    "IA-8(1)":  "Confirmed-Direct",
-    "IA-9":     "Implied-Bridge",
-    "IA-11":    "Implied-Bridge",
-    "MA-4(6)":  "Implied-Bridge",
-    "SC-8":     "Implied-Bridge",
-    "SC-12":    "Implied-Bridge",
-    "SC-13":    "Confirmed-Subject",
-    "SC-28":    "Implied-Bridge",
-}
 
 
 def _fetch(url: str, retries: int = 3) -> dict | None:
@@ -116,24 +66,6 @@ def _derive_aal(section: str, text: str) -> str:
     return "all"
 
 
-def _controls_for_section(section: str) -> list[str]:
-    """Return mapped 800-53 controls for this section, checking most-specific prefix first."""
-    for prefix_len in range(len(section), 0, -1):
-        prefix = section[:prefix_len]
-        if prefix in SECTION_CONTROL_MAP:
-            return SECTION_CONTROL_MAP[prefix]
-    return ["IA-2", "IA-5"]  # default: authentication / authenticator management
-
-
-def _provenance_for_controls(controls: list[str]) -> str:
-    """Return highest-confidence CCI provenance tier across the mapped controls."""
-    tier_order = ["Confirmed-Direct", "Confirmed-Subject", "Implied-Bridge", "Implied-Heuristic"]
-    best = "Implied-Heuristic"
-    for ctrl in controls:
-        prov = CCI_PROVENANCE_MAP.get(ctrl, "Implied-Heuristic")
-        if tier_order.index(prov) < tier_order.index(best):
-            best = prov
-    return best
 
 
 def _walk_elements(elements: list, section_prefix: str = "") -> list[dict]:
@@ -145,15 +77,13 @@ def _walk_elements(elements: list, section_prefix: str = "") -> list[dict]:
         text = elem.get("description", "") or elem.get("text", "") or title
 
         if text and section:
-            controls = _controls_for_section(section)
             requirements.append({
                 "requirement_id": f"800-63b-{section.replace('.', '-')}",
                 "section": section,
                 "title": title,
                 "aal_level": _derive_aal(section, text),
                 "text": text,
-                "nist_800_53_controls": controls,
-                "cci_provenance": _provenance_for_controls(controls),
+                "nist_800_53_controls": [],   # phase 52: no issuer mapping; never guessed
             })
 
         children = elem.get("elements", []) or elem.get("children", [])
@@ -187,8 +117,27 @@ def fetch_requirements(dry_run: bool = False) -> list[dict]:
     return reqs
 
 
+_FALLBACK_USED = False
+
+
+def build_output(reqs):
+    out = {"_source": "NIST SP 800-63B Rev 3 — Digital Identity Guidelines: Authentication and Lifecycle Management"}
+    if _FALLBACK_USED:
+        out["_source_note"] = ("Built-in Rev 3 section map: the CPRT endpoint answered nothing (retired), so these rows "
+                               "are section titles, not fetched text; no control links. SP 800-63B-4 supersedes Rev 3 "
+                               "(regeneration is its own phase).")
+    else:
+        out["_cprt_url"] = CPRT_URL
+        out["_fetched_at"] = datetime.now(timezone.utc).isoformat()
+    out.update({"_requirement_count": len(reqs), "_nist_800_53_version": "Rev 5", "requirements": reqs})
+    return out
+
+
 def _fallback_requirements() -> list[dict]:
-    """Produce minimal requirements from SECTION_CONTROL_MAP when API is unavailable."""
+    """Produce minimal requirements from the built-in section map when the API is unavailable. Phase 52:
+    these rows carry NO control links (the old hand-assigned list was a guess, not NIST's mapping)."""
+    global _FALLBACK_USED
+    _FALLBACK_USED = True
     reqs = []
     section_titles = {
         "4":    "Authenticator Assurance Levels — Overview",
@@ -219,15 +168,13 @@ def _fallback_requirements() -> list[dict]:
         "10":   "Usability Considerations",
     }
     for section, title in section_titles.items():
-        controls = _controls_for_section(section)
         reqs.append({
             "requirement_id": f"800-63b-{section.replace('.', '-')}",
             "section": section,
             "title": title,
             "aal_level": _derive_aal(section, title),
             "text": title,
-            "nist_800_53_controls": controls,
-            "cci_provenance": _provenance_for_controls(controls),
+            "nist_800_53_controls": [],
         })
     print(f"  {len(reqs)} requirements from fallback section map")
     return reqs
@@ -236,20 +183,12 @@ def _fallback_requirements() -> list[dict]:
 def run(dry_run: bool = False) -> None:
     reqs = fetch_requirements(dry_run)
 
-    output = {
-        "_source": "NIST SP 800-63B Rev 3 — Digital Identity Guidelines: Authentication and Lifecycle Management",
-        "_cprt_url": CPRT_URL,
-        "_fetched_at": datetime.now(timezone.utc).isoformat(),
-        "_requirement_count": len(reqs),
-        "_nist_800_53_version": "Rev 5",
-        "requirements": reqs,
-    }
+    output = build_output(reqs)
 
     if dry_run:
         print(f"\n[dry-run] Would write {len(reqs)} requirements to {OUTPUT_PATH.name}")
         print(f"  Sample: {reqs[0]['requirement_id']} — {reqs[0]['title']}")
         print(f"  Controls: {reqs[0]['nist_800_53_controls']}")
-        print(f"  CCI provenance: {reqs[0]['cci_provenance']}")
         return
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)

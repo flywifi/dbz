@@ -28,6 +28,8 @@ EDGAR_SUBMISSIONS_BASE = "https://data.sec.gov/submissions"
 OUTPUT_PATH = _REPO_ROOT / "canonical-sources" / "edgar-8k-cyber.json"
 
 # Map incident keywords (from 8-K text) → NIST 800-53 families
+# Phase 52: only the KEYS are read (incident-type keywords); the family values are no longer written
+# anywhere — no issuer maps 8-K incident types to NIST 800-53 families (CLAUDE.md: never fabricate).
 _INCIDENT_NIST_MAP = {
     "ransomware": ["IR", "SC", "CP"],
     "ransom": ["IR", "SC", "CP"],
@@ -121,35 +123,12 @@ def search_8k_item105(session, start_date: str, end_date: str = "", max_results:
 
 
 def classify_incident(source_text: str) -> dict:
-    """
-    Classify incident type from 8-K text excerpt.
-    Returns {incident_type, nist_families, confidence}.
-    """
     text_lower = source_text.lower()
-    matched = {}
-    for keyword, families in _INCIDENT_NIST_MAP.items():
-        if keyword in text_lower:
-            matched[keyword] = families
-
+    matched = [k for k in _INCIDENT_NIST_MAP if k in text_lower]
     if not matched:
-        return {
-            "incident_type": "cybersecurity_incident",
-            "nist_families": ["IR"],
-            "confidence": "low",
-        }
-
-    # Most specific match wins (longest keyword)
-    best_keyword = max(matched.keys(), key=len)
-    all_families = set()
-    for fams in matched.values():
-        all_families.update(fams)
-
-    incident_type = best_keyword.replace(" ", "_")
-    return {
-        "incident_type": incident_type,
-        "nist_families": sorted(all_families),
-        "confidence": "medium" if len(matched) > 1 else "low",
-    }
+        return {"incident_type": "cybersecurity_incident", "nist_families": [], "confidence": "low"}
+    return {"incident_type": max(matched, key=len).replace(" ", "_"), "nist_families": [],
+            "confidence": "medium" if len(matched) > 1 else "low"}
 
 
 def normalize_hit(hit: dict) -> dict:

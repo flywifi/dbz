@@ -975,8 +975,18 @@ def cmd_announcements(args, conn: sqlite3.Connection) -> int:
     return 0
 
 
+def _family_note(conn, table: str, args) -> None:
+    """A --family filter on a table whose families are blank by design says so instead of silently matching nothing."""
+    if getattr(args, "family", None):
+        n = conn.execute(f"SELECT COUNT(*) FROM {table} WHERE nist_families NOT IN ('', '[]')").fetchone()[0]
+        if n == 0:
+            print(f"[note] {table}.nist_families is blank by design: no issuer maps these records to NIST 800-53 "
+                  "families (CLAUDE.md: never fabricate a mapping). --family has nothing to match.", file=sys.stderr)
+
+
 def cmd_kev(args, conn: sqlite3.Connection) -> int:
     """Look up a CVE or list recent KEV entries with NIST family mappings."""
+    _family_note(conn, "cisa_kev", args)
     conditions = []
     params: list = []
 
@@ -1005,6 +1015,7 @@ def cmd_kev(args, conn: sqlite3.Connection) -> int:
 
 def cmd_cfr(args, conn: sqlite3.Connection) -> int:
     """Look up CFR requirements by part, section, or keyword."""
+    _family_note(conn, "cfr_requirements", args)
     conditions = []
     params: list = []
 
@@ -1071,6 +1082,7 @@ def cmd_attack(args, conn: sqlite3.Connection) -> int:
 
 def cmd_edgar(args, conn: sqlite3.Connection) -> int:
     """Query SEC EDGAR 8-K Item 1.05 cyber incident disclosures."""
+    _family_note(conn, "edgar_cyber_incidents", args)
     conditions = []
     params: list = []
 
@@ -1157,6 +1169,7 @@ def cmd_manifest(args, conn: sqlite3.Connection) -> int:
 
 def cmd_nvd(args, conn: sqlite3.Connection) -> int:
     """Query NVD CVE data by ID, severity, or NIST family."""
+    _family_note(conn, "nvd_cves", args)
     conditions = []
     params: list = []
 
@@ -1669,6 +1682,7 @@ def cmd_fips(args, conn: sqlite3.Connection) -> int:
 
 def cmd_eurlex(args, conn: sqlite3.Connection) -> int:
     """Query EUR-Lex regulatory articles by regulation, article number, or NIST family."""
+    _family_note(conn, "eurlex_articles", args)
     conditions = []
     params: list = []
 

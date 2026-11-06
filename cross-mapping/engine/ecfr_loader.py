@@ -74,64 +74,53 @@ USER_AGENT = (
     "dbz-ecfr-loader/1.0 (GRC cross-mapping research; polite client)"
 )
 
-# ---------------------------------------------------------------------------
-# NIST family keyword heuristics
-# ---------------------------------------------------------------------------
-# Each tuple: (keyword_regex_pattern, NIST_family_code)
-# Patterns are tested case-insensitively against the full section text.
-KEYWORD_FAMILY_MAP: list[tuple[str, str]] = [
-    # IA — Identification and Authentication
-    (r"\bauthentication\b", "IA"),
-    (r"\bpassword\b", "IA"),
-    (r"\bmulti.factor\b", "IA"),
-    (r"\bidentity\b", "IA"),
-    # AC — Access Control
-    (r"\baccess control\b", "AC"),
-    (r"\bauthorization\b", "AC"),
-    (r"\bleast privilege\b", "AC"),
-    (r"\brole\b", "AC"),
-    # AU — Audit and Accountability
-    (r"\baudit\b", "AU"),
-    (r"\blog\b", "AU"),
-    (r"\brecord\b", "AU"),
-    (r"\bmonitor\b", "AU"),
-    # SC — System and Communications Protection
-    (r"\bencrypt\b", "SC"),
-    (r"\bcryptograph\b", "SC"),
-    (r"\btls\b", "SC"),
-    (r"\bssl\b", "SC"),
-    (r"\bcipher\b", "SC"),
-    # IR — Incident Response
-    (r"\bincident\b", "IR"),
-    (r"\bbreach\b", "IR"),
-    (r"\brespond\b", "IR"),
-    (r"\bnotif(y|ication)\b", "IR"),
-    # CM — Configuration Management
-    (r"\bconfiguration\b", "CM"),
-    (r"\bchange management\b", "CM"),
-    (r"\bpatch\b", "CM"),
-    (r"\bbaseline\b", "CM"),
-    # RA — Risk Assessment
-    (r"\brisk assessment\b", "RA"),
-    (r"\brisk analysis\b", "RA"),
-    (r"\bvulnerabilit(y|ies)\b", "RA"),
-    # CP — Contingency Planning
-    (r"\bcontinuity\b", "CP"),
-    (r"\bbackup\b", "CP"),
-    (r"\brecovery\b", "CP"),
-    (r"\bdisaster\b", "CP"),
-    # SI — System and Information Integrity
-    (r"\bintegrity\b", "SI"),
-    (r"\bmalicious code\b", "SI"),
-    (r"\bantivirus\b", "SI"),
-    # SA — System and Services Acquisition
-    (r"\bacquisition\b", "SA"),
-    (r"\bvendor\b", "SA"),
-    (r"\bsupply chain\b", "SA"),
-    (r"\bthird.party\b", "SA"),
-]
 
 # All recognised NIST family codes (used for ordering output)
+# Keyword phrases worth surfacing on a section for manual review (the 'keywords' field). Phase 52: these
+# no longer carry NIST family codes — no issuer maps these CFR sections to 800-53 families, and the old
+# (pattern, family) pairs were a guess (CLAUDE.md: never fabricate a mapping).
+REQUIREMENT_KEYWORD_PATTERNS: list[str] = [
+    r"\bauthentication\b",
+    r"\bpassword\b",
+    r"\bmulti.factor\b",
+    r"\bidentity\b",
+    r"\baccess control\b",
+    r"\bauthorization\b",
+    r"\bleast privilege\b",
+    r"\brole\b",
+    r"\baudit\b",
+    r"\blog\b",
+    r"\brecord\b",
+    r"\bmonitor\b",
+    r"\bencrypt\b",
+    r"\bcryptograph\b",
+    r"\btls\b",
+    r"\bssl\b",
+    r"\bcipher\b",
+    r"\bincident\b",
+    r"\bbreach\b",
+    r"\brespond\b",
+    r"\bnotif(y|ication)\b",
+    r"\bconfiguration\b",
+    r"\bchange management\b",
+    r"\bpatch\b",
+    r"\bbaseline\b",
+    r"\brisk assessment\b",
+    r"\brisk analysis\b",
+    r"\bvulnerabilit(y|ies)\b",
+    r"\bcontinuity\b",
+    r"\bbackup\b",
+    r"\brecovery\b",
+    r"\bdisaster\b",
+    r"\bintegrity\b",
+    r"\bmalicious code\b",
+    r"\bantivirus\b",
+    r"\bacquisition\b",
+    r"\bvendor\b",
+    r"\bsupply chain\b",
+    r"\bthird.party\b",
+]
+
 ALL_NIST_FAMILIES: list[str] = ["AC", "AU", "CA", "CM", "CP", "IA", "IR", "MA",
                                  "MP", "PE", "PL", "PM", "PS", "PT", "RA", "SA",
                                  "SC", "SI", "SR"]
@@ -413,7 +402,7 @@ class eCFRLoader:
 
             # Collect matched keyword phrases
             keywords: list[str] = []
-            for pattern, _family in KEYWORD_FAMILY_MAP:
+            for pattern in REQUIREMENT_KEYWORD_PATTERNS:
                 m = re.search(pattern, combined, re.IGNORECASE)
                 if m and m.group(0) not in keywords:
                     keywords.append(m.group(0).strip())
@@ -426,26 +415,10 @@ class eCFRLoader:
 
         return requirements
 
-    def map_to_nist_families(self, requirement: dict) -> list[str]:
-        """
-        Apply keyword heuristics to *requirement* and return the list of
-        NIST 800-53 family codes (e.g. ["AC", "IA"]) that the text maps to.
-
-        Never fabricates mappings — returns [] if nothing matches.
-        """
-        text = (
-            requirement.get("title", "")
-            + " "
-            + requirement.get("text", "")
-            + " "
-            + " ".join(requirement.get("keywords", []))
-        )
-        families: set[str] = set()
-        for pattern, family in KEYWORD_FAMILY_MAP:
-            if re.search(pattern, text, re.IGNORECASE):
-                families.add(family)
-        # Return in canonical order
-        return [f for f in ALL_NIST_FAMILIES if f in families]
+    def map_to_nist_families(self, requirement: dict) -> list:
+        """Always []: no issuer maps these CFR sections to NIST 800-53 families here; the keyword table that
+        did was a guess (CLAUDE.md; phase 52). The section's matched 'keywords' stay as a search aid."""
+        return []
 
     def load_cfr_part(
         self,

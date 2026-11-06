@@ -29,7 +29,7 @@ Queries the EDGAR cyber incident dataset in grc.db (table: `edgar_cyber_incident
       "incident_date": "string",
       "disclosure_date": "string",
       "incident_type": "string",
-      "nist_families": ["IR", "SC"],
+      "nist_families": [],
       "filing_url": "string"
     }
   ],

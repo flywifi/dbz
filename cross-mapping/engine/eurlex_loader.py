@@ -73,54 +73,6 @@ ELI_BASE = "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:{cele
 
 # ── NIST family keyword heuristic ────────────────────────────────────────────
 
-# Each tuple: (list_of_keyword_substrings_lower, nist_family_codes)
-# Checked in order; all matching families are collected (not first-match only).
-_NIST_KEYWORD_MAP: List[Tuple[List[str], str]] = [
-    (["access control", "authoris", "authoriz", "access right", "access restriction",
-      "right of access", "data subject access"],                                          "AC"),
-    (["logging", "audit", "records", "log file", "audit trail", "audit log",
-      "record keeping", "documentation of processing"],                                   "AU"),
-    (["encryption", "pseudonymis", "pseudonymiz", "cryptograph", "cipher",
-      "key management", "anonymis", "anonymiz"],                                          "SC"),
-    (["incident", "breach notification", "personal data breach", "reporting obligation",
-      "notify", "notification", "major incident"],                                        "IR"),
-    (["risk assessment", "risk management", "data protection impact", "dpia",
-      "risk analysis", "risk evaluation", "threat assessment"],                           "RA"),
-    (["authentication", "identity", "identification", "digital identity",
-      "credential", "multi-factor"],                                                      "IA"),
-    (["integrity", "accuracy", "correctness", "data quality", "minimis",
-      "minimiz", "completeness"],                                                          "SI"),
-    (["processor", "controller", "data processor", "data controller",
-      "supply chain", "third party", "subprocessor", "vendor", "provider"],               "SA"),
-    (["continuity", "availability", "backup", "resilience", "recovery",
-      "business continuity", "disaster recovery", "redundanc"],                           "CP"),
-    (["configuration", "patch", "update", "vulnerability", "hardening",
-      "software update", "security update"],                                               "CM"),
-    (["monitoring", "surveillance", "detection", "intrusion", "anomaly",
-      "security operation", "siem"],                                                       "SI"),
-    (["training", "awareness", "personnel", "staff", "human", "education",
-      "competence"],                                                                       "AT"),
-    (["physical", "premises", "facility", "hardware", "device", "equipment"],             "PE"),
-    (["consent", "lawful basis", "legitimate interest", "purpose limitation",
-      "data minimisation", "data minimization"],                                           "AC"),
-]
-
-
-def _map_article_to_nist(text: str) -> List[str]:
-    """
-    Return a deduplicated list of NIST 800-53 family codes for the article text.
-    Uses the keyword heuristic above.
-    """
-    needle = text.lower()
-    families: List[str] = []
-    seen: set = set()
-    for keywords, family in _NIST_KEYWORD_MAP:
-        if family in seen:
-            continue
-        if any(kw in needle for kw in keywords):
-            families.append(family)
-            seen.add(family)
-    return families if families else ["SI"]   # default: System and Information Integrity
 
 
 # ── HTML stripping ─────────────────────────────────────────────────────────────
@@ -329,19 +281,9 @@ class EURLexLoader:
         print(f"  Parsed {len(articles)} articles from {reg_id.upper()}")
         return articles
 
-    def map_articles_to_nist(self, articles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """
-        Add 'nist_families' field to each article dict.
-
-        Modifies articles in place and returns them.
-        """
+    def map_articles_to_nist(self, articles):
         for art in articles:
-            combined = " ".join([
-                art.get("article_title", ""),
-                art.get("text_snippet", ""),
-                " ".join(art.get("keywords", [])),
-            ])
-            art["nist_families"] = _map_article_to_nist(combined)
+            art["nist_families"] = []   # no issuer mapping; the keyword table (default 'SI') was a guess
         return articles
 
     def run(self, reg_ids: List[str], dry_run: bool = False) -> Dict[str, Any]:

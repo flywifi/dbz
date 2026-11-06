@@ -32,7 +32,7 @@ Wraps `dbz_query.py kev`.
   "affected_product": "string? — vendor and product name",
   "required_action": "string? — CISA-required remediation action",
   "due_date": "string? — CISA compliance deadline",
-  "nist_families": "array — NIST 800-53 control family codes relevant to this CVE type"
+  "nist_families": "array — empty: no issuer maps KEV entries to NIST 800-53 families (never guessed)"
 }
 ```
 

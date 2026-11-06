@@ -55,78 +55,6 @@ MAX_RETRIES = 3
 BACKOFF_BASE = 2.0
 USER_AGENT = "dbz-kev-loader/1.0 (GRC cross-mapping; polite client)"
 
-# ---------------------------------------------------------------------------
-# NIST 800-53 family keyword heuristics
-# Maps control family → keywords that suggest a CVE falls in that family.
-# Applied to: vulnerabilityName + shortDescription (lowercased).
-# ---------------------------------------------------------------------------
-_FAMILY_KEYWORDS: dict[str, list[str]] = {
-    "AC": [
-        "access control", "privilege", "unauthorized access", "admin access",
-        "remote access", "authentication bypass", "authorization", "account takeover",
-        "path traversal", "directory traversal", "insecure direct object",
-    ],
-    "AU": [
-        "log", "audit", "logging", "event log", "syslog",
-    ],
-    "CA": [
-        "assessment", "configuration audit",
-    ],
-    "CM": [
-        "configuration", "default credentials", "default password", "hardcoded",
-        "misconfiguration", "firmware", "supply chain",
-    ],
-    "IA": [
-        "authentication", "credential", "password", "brute force", "session",
-        "token", "multifactor", "mfa", "identity", "ldap injection",
-        "kerberos", "ntlm", "credential stuffing",
-    ],
-    "IR": [
-        "incident", "ransomware", "malware", "exfiltration", "persistence",
-        "lateral movement", "command and control", "c2", "backdoor", "rootkit",
-        "loader", "dropper",
-    ],
-    "RA": [
-        "vulnerability", "cve", "exploit", "zero-day", "zero day",
-    ],
-    "SA": [
-        "software", "library", "dependency", "supply chain", "open source",
-        "third-party", "vendor",
-    ],
-    "SC": [
-        "encryption", "tls", "ssl", "cryptography", "cipher", "certificate",
-        "network", "protocol", "injection", "sql injection", "command injection",
-        "xxe", "ssrf", "deserialization", "memory corruption", "buffer overflow",
-        "heap", "stack overflow", "use-after-free", "type confusion",
-    ],
-    "SI": [
-        "code execution", "remote code execution", "rce", "arbitrary code",
-        "overflow", "heap spray", "integer overflow", "format string",
-        "xss", "cross-site scripting", "csrf", "cross-site request forgery",
-        "file upload", "webshell", "web shell", "unrestricted upload",
-        "server-side", "out-of-bounds",
-    ],
-}
-
-
-def _map_to_nist_families(vuln: dict) -> list[str]:
-    """Return sorted list of NIST 800-53 family codes suggested by this CVE."""
-    text = " ".join([
-        (vuln.get("vulnerabilityName") or ""),
-        (vuln.get("shortDescription") or ""),
-        (vuln.get("requiredAction") or ""),
-    ]).lower()
-
-    matched: set[str] = set()
-    for family, kws in _FAMILY_KEYWORDS.items():
-        for kw in kws:
-            if kw in text:
-                matched.add(family)
-                break
-
-    # RA always applies — every exploited vulnerability represents a residual risk
-    matched.add("RA")
-    return sorted(matched)
 
 
 # ---------------------------------------------------------------------------
@@ -161,29 +89,19 @@ def fetch_kev_catalog() -> dict:
 
 
 def enrich_kev_catalog(raw_catalog: dict, max_results: int | None = None) -> dict:
-    """Enrich each KEV entry with NIST 800-53 family mappings."""
+    """KEV entries as CISA publishes them. nist_families stays empty: no issuer maps KEV entries to
+    NIST 800-53 families, and a keyword guess is a fabricated mapping (CLAUDE.md; phase 52)."""
     vulns = raw_catalog.get("vulnerabilities", [])
     if max_results is not None:
         vulns = vulns[:max_results]
-
-    enriched: list[dict] = []
+    enriched = []
     for v in vulns:
         entry = dict(v)
-        entry["nist_families"] = _map_to_nist_families(v)
+        entry["nist_families"] = []
         enriched.append(entry)
-
-    catalog_version = raw_catalog.get("catalogVersion", "")
-    date_released = raw_catalog.get("dateReleased", "")
-
-    result = {
-        "catalogVersion": catalog_version,
-        "dateReleased": date_released,
-        "_loader": "kev_loader.py",
-        "_fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "_vulnerability_count": len(enriched),
-        "vulnerabilities": enriched,
-    }
-    return result
+    return {"catalogVersion": raw_catalog.get("catalogVersion", ""), "dateReleased": raw_catalog.get("dateReleased", ""),
+            "_loader": "kev_loader.py", "_fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "_vulnerability_count": len(enriched), "vulnerabilities": enriched}
 
 
 def _print_dry_run_summary(catalog: dict) -> None:

@@ -11,7 +11,7 @@
       "expected_output": {
         "cve_id": "CVE-2021-44228",
         "in_kev": true,
-        "nist_families_contains": ["SI", "RA"]
+        "nist_families_empty": true
       },
       "expect_pass": true
     },

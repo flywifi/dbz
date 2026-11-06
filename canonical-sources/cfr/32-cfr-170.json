@@ -55,9 +55,7 @@
       "keywords": [
         "identity"
       ],
-      "nist_families": [
-        "IA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.3",
@@ -78,9 +76,7 @@
       "keywords": [
         "acquisition"
       ],
-      "nist_families": [
-        "SA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.4",
@@ -107,13 +103,7 @@
         "acquisition",
         "third-party"
       ],
-      "nist_families": [
-        "AC",
-        "CM",
-        "IA",
-        "IR",
-        "SA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.5",
@@ -134,9 +124,7 @@
       "keywords": [
         "acquisition"
       ],
-      "nist_families": [
-        "SA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.6",
@@ -153,9 +141,7 @@
       "keywords": [
         "risk assessment"
       ],
-      "nist_families": [
-        "RA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.7",
@@ -196,10 +182,7 @@
         "authorization",
         "third-party"
       ],
-      "nist_families": [
-        "AC",
-        "SA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.9",
@@ -221,10 +204,7 @@
         "authorization",
         "third-party"
       ],
-      "nist_families": [
-        "AC",
-        "SA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.10",
@@ -264,9 +244,7 @@
       "keywords": [
         "audit"
       ],
-      "nist_families": [
-        "AU"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.12",
@@ -452,11 +430,7 @@
         "risk assessment",
         "supply chain"
       ],
-      "nist_families": [
-        "IR",
-        "RA",
-        "SA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.22",
@@ -492,9 +466,7 @@
       "keywords": [
         "supply chain"
       ],
-      "nist_families": [
-        "SA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.24",
@@ -517,10 +489,7 @@
         "multi-factor",
         "vulnerabilities"
       ],
-      "nist_families": [
-        "IA",
-        "RA"
-      ]
+      "nist_families": []
     }
   ],
   "requirements": [
@@ -565,9 +534,7 @@
       "keywords": [
         "identity"
       ],
-      "nist_families": [
-        "IA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.3",
@@ -588,9 +555,7 @@
       "keywords": [
         "acquisition"
       ],
-      "nist_families": [
-        "SA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.4",
@@ -617,13 +582,7 @@
         "acquisition",
         "third-party"
       ],
-      "nist_families": [
-        "AC",
-        "CM",
-        "IA",
-        "IR",
-        "SA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.5",
@@ -644,9 +603,7 @@
       "keywords": [
         "acquisition"
       ],
-      "nist_families": [
-        "SA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.6",
@@ -663,9 +620,7 @@
       "keywords": [
         "risk assessment"
       ],
-      "nist_families": [
-        "RA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.7",
@@ -706,10 +661,7 @@
         "authorization",
         "third-party"
       ],
-      "nist_families": [
-        "AC",
-        "SA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.9",
@@ -731,10 +683,7 @@
         "authorization",
         "third-party"
       ],
-      "nist_families": [
-        "AC",
-        "SA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.10",
@@ -774,9 +723,7 @@
       "keywords": [
         "audit"
       ],
-      "nist_families": [
-        "AU"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.12",
@@ -962,11 +909,7 @@
         "risk assessment",
         "supply chain"
       ],
-      "nist_families": [
-        "IR",
-        "RA",
-        "SA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.22",
@@ -1002,9 +945,7 @@
       "keywords": [
         "supply chain"
       ],
-      "nist_families": [
-        "SA"
-      ]
+      "nist_families": []
     },
     {
       "section_id": "170.24",
@@ -1027,10 +968,7 @@
         "multi-factor",
         "vulnerabilities"
       ],
-      "nist_families": [
-        "IA",
-        "RA"
-      ]
+      "nist_families": []
     }
   ]
 }
