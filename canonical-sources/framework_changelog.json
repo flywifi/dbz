@@ -583,6 +583,52 @@
         "support": "WELL_SUPPORTED",
         "terminal_state": "ORIGIN"
       }
+    },
+    {
+      "entry_id": "chg-scf-2026.2-to-2026.3",
+      "framework_id": "scf",
+      "change_type": "major_revision",
+      "old_version": "SCF 2026.2 (2026-07-08)",
+      "new_version": "SCF 2026.3 (2026-09-21)",
+      "changed_at": null,
+      "source_url": "https://securecontrolsframework.com/scf-releases/scf-2026-3",
+      "summary": "SCF 2026.3 Sep 21, 2026 Major … 1,457 controls renumbered and 99 moved to a different domain",
+      "controls_added": [],
+      "controls_removed": [],
+      "controls_modified": [],
+      "human_confirmed": false,
+      "confirmation_source": null,
+      "announcement_ref": null,
+      "provenance": {
+        "primary_source_url": "https://securecontrolsframework.com/scf-releases/scf-2026-3",
+        "retrieved_at": "2026-11-05",
+        "verbatim": "SCF 2026.3 Sep 21, 2026 Major … 1,457 controls renumbered and 99 moved to a different domain",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
+    },
+    {
+      "entry_id": "chg-owasp-llm-top10-2025-to-2026",
+      "framework_id": "owasp-llm-top10",
+      "change_type": "major_revision",
+      "old_version": "v2.0 (2025)",
+      "new_version": "OWASP Top 10 for LLM Applications 2026 (2026-08-03)",
+      "changed_at": null,
+      "source_url": "https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/",
+      "summary": "OWASP GenAI LLM Top 10 2026 August 3, 2026 OWASP Top 10 for LLM Applications 2026 is the latest community-driven guide",
+      "controls_added": [],
+      "controls_removed": [],
+      "controls_modified": [],
+      "human_confirmed": false,
+      "confirmation_source": null,
+      "announcement_ref": null,
+      "provenance": {
+        "primary_source_url": "https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/",
+        "retrieved_at": "2026-11-06",
+        "verbatim": "OWASP GenAI LLM Top 10 2026 August 3, 2026 OWASP Top 10 for LLM Applications 2026 is the latest community-driven guide",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     }
   ]
 }

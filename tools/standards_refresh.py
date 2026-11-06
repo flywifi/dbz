@@ -302,7 +302,30 @@ def selftest_release_check() -> int:
         bad += (tag, cls) != want
         print(f"  [{'ok' if (tag, cls) == want else 'FAIL'}] {label}: tag={tag!r} ({note}) -> {cls}")
     fetchkit._GOV = saved
-    total = len(cases) + 2
+    # Phase 52: the report row itself. A poll_exempt release feed makes no lookup; a pinned release check
+    # that confirms the registry's version keeps artifact_stale (SCF 2026.3, ingest owed); the API note
+    # (release vs tags fallback) rides along for triage.
+    mod = sys.modules[__name__]          # _release_row resolves the lookup at call time
+    real = mod._latest_release_tag
+    calls = []
+    mod._latest_release_tag = lambda repo: (calls.append(repo), ("2026.3", None))[1]
+    try:
+        r1 = _release_row("csa-star-ccm5", {"check_strategy": "github_release", "github_repo": "o/r", "poll_exempt": True,
+                                            "artifact_status": "metadata_only"}, 0)
+        lookups_after_exempt = len(calls)
+        r2 = _release_row("scf", {"check_strategy": "github_release", "github_repo": "o/scf", "github_tag_pin": "2026.3",
+                                  "current_version": "SCF 2026.3 (2026-09-21)", "artifact_status": "artifact_stale"}, 0)
+        mod._latest_release_tag = lambda repo: ("latest", "no releases; first entry of the tags API")
+        r3 = _release_row("x", {"check_strategy": "github_release", "github_repo": "o/x", "current_version": "v5.0.0"}, 0)
+    finally:
+        mod._latest_release_tag = real
+    rows = [(r1["signal"] == "poll_exempt" and lookups_after_exempt == 0, "poll_exempt release feed: no API lookup, stored status only"),
+            (r2["classification"] == "artifact_stale" and "confirmed" in (r2["reason"] or ""), "pinned release confirms the version: artifact_stale is kept"),
+            (r3["api_note"] == "no releases; first entry of the tags API" and r3["classification"] == "registry_stale", "the API note (tags fallback) rides on the row")]
+    for okay, label in rows:
+        bad += not okay
+        print(f"  [{'ok' if okay else 'FAIL'}] {label}")
+    total = len(cases) + 2 + len(rows)
     print(f"[selftest] release-check: {total - bad}/{total} passed")
     return 1 if bad else 0
 
@@ -360,6 +383,28 @@ def days_since_last_commit(_runner=None) -> int | None:
         return None
 
 
+def _release_row(fid: str, e: dict, monitor_rc: int) -> dict:
+    """One drift-report row. Honours poll_exempt (csa-star-ccm5 was looked up every run), keeps the API
+    note (a release vs 'first entry of the tags API'), and keeps artifact_stale when a pinned release
+    check only confirms that the registry knows the issuer's version (phase 52, R12)."""
+    status = e.get("artifact_status", "metadata_only")
+    cls, reason, signal, note = status, None, "stored_status_only", None
+    if e.get("poll_exempt"):
+        signal = "poll_exempt"
+    elif e.get("check_strategy") == "github_release" and e.get("github_repo"):
+        signal = "github_release_api"
+        tag, note = _latest_release_tag(e["github_repo"])
+        cls, reason = _classify_release_feed(e.get("current_version", ""), tag, note, e.get("github_tag_pin"))
+        if cls == "current" and status == "artifact_stale":
+            cls, reason = "artifact_stale", f"issuer version {tag} confirmed; the committed artifact lags"
+    elif status == "current" and e.get("auto_fetch") and monitor_rc != 0:
+        cls = "check_failed"
+    return {"framework_id": fid, "current_version": e.get("current_version"), "artifact_status": status,
+            "auto_fetch": bool(e.get("auto_fetch")), "last_changed": e.get("last_changed"),
+            "last_verified": e.get("last_verified"), "classification": cls, "signal": signal, "reason": reason,
+            "api_note": note if signal == "github_release_api" else None}
+
+
 def stage_check() -> dict:
     """Run the monitors, then classify every registry feed. github_release feeds get a LIVE
     comparison (against github_tag_pin when set); every other row is labeled stored_status_only.
@@ -379,18 +424,7 @@ def stage_check() -> dict:
     for fid, e in sorted(reg["feeds"].items()):
         if not isinstance(e, dict):
             continue
-        status = e.get("artifact_status", "metadata_only")
-        cls, reason, signal = status, None, "stored_status_only"
-        if e.get("check_strategy") == "github_release" and e.get("github_repo"):
-            signal = "github_release_api"
-            tag, note = _latest_release_tag(e["github_repo"])
-            cls, reason = _classify_release_feed(e.get("current_version", ""), tag, note, e.get("github_tag_pin"))
-        elif status == "current" and e.get("auto_fetch") and monitor_rc != 0:
-            cls = "check_failed"
-        rows.append({"framework_id": fid, "current_version": e.get("current_version"),
-                     "artifact_status": status, "auto_fetch": bool(e.get("auto_fetch")),
-                     "last_changed": e.get("last_changed"), "last_verified": e.get("last_verified"),
-                     "classification": cls, "signal": signal, "reason": reason})
+        rows.append(_release_row(fid, e, monitor_rc))
     sys.path.insert(0, str(ENGINE))
     import fetchkit
     LEDGER_DIR.mkdir(parents=True, exist_ok=True)
