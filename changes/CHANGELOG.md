@@ -3,6 +3,80 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.17.0] — 2026-11-06 (phase 52 — remediation of existing system problems)
+
+MINOR: a data-semantics change (every keyword-guessed NIST family/control link is blank), two
+registry conventions (`superseded_urls`, `announcement_feeds[].enabled`), a hermetic build input
+(the OSCAL catalog is committed) and two new drift-guard invariants. No new feature. Audit:
+`docs/audits/phase-52-adversarial-audit.md`. Record: `docs/source-inventory.md` (Phase 52).
+
+- **Fixed — the weekly rotation does nothing spurious.** `fr_watcher` and `announcement_monitor`
+  write nothing when nothing is new and otherwise change only `entries` and `generated_at`; the
+  shipped writer rewrote the file every Tuesday (dropping a human's `_note_hipaa_prune`), which
+  would have opened a PR a week. The digest suggests only datasets with a rule (the "horizon-check —
+  no suggestion rule" line is gone). `robots.txt` is retried on a 5xx or timeout (5 s, 10 s)
+  before RFC 9309's complete disallow; one MITRE gateway 502 had cancelled the first scheduled
+  ATT&CK check.
+- **Fixed — hosts.** `www.ilga.gov` verifies through a sha-pinned Sectigo intermediate
+  (`canonical-sources/tls/`, `host_policies.json` `enforced.tls_intermediates`; a tampered pin
+  refuses before connecting, partial chains stay disabled). BIPA points at the page that answers
+  200. CMMC's URLs are its DoD CIO location and the feed is `poll_exempt`: every DoD CIO host
+  answers automated clients 403. cnssi-1253 and the two ASD feeds are `poll_exempt` with their
+  measured reasons. Every superseded URL stays on record (`superseded_urls`: url, field, status,
+  date, why it fails, where to go).
+- **Changed — the 18 `releases.atom` announcement entries are gated, default off** (user decision):
+  github.com's robots.txt disallows `/*.atom$`, and the same repositories are already read through
+  the API. 16 refusals per run → 0, every other request unchanged.
+- **Fixed — the drift issue shows real drift only.** Release rows honour `poll_exempt`, carry the
+  API note that tells a release from the tags fallback, and keep `artifact_stale` when a pinned
+  release only confirms the registry's version. The 15 rows that failed every run are settled from
+  issuer statements: SCF 2026.3 (Major, 1,457 controls renumbered; `artifact_stale` + stub), the
+  OWASP LLM Top 10 2026 (stub), ScubaGear v2.0.0, ATLAS v2026.10 and the OpenAPI spec 2.0.0 pinned,
+  no-release and 404 repositories moved to landing polling, `rss_feed` rows given their issuer's
+  own feed, nvd-cve `on_demand`. The dispatch surfaced one real drift the plan had not listed:
+  **ATT&CK v20.1** (attack.mitre.org lists it as current; the committed artifact is v20.0, so the
+  row reads `artifact_stale` until the Thursday slot proposes the ingest). GitHub API lookups per
+  run 19 → 8.
+- **Changed — no committed field claims a control mapping no issuer made** (user decision). The KEV,
+  eCFR, EDGAR, NVD and EUR-Lex loaders write `nist_families: []` and their keyword/CWE tables are
+  deleted; the SP 800-63B generator writes no control links, no `cci_provenance`, and no longer
+  claims a fetch it never made (the committed file is the built-in Rev 3 section map). The
+  committed KEV (1,768), CFR (34), EDGAR (85) and 800-63B (26) rows are rewritten with only those
+  fields changed. `dbz_query --family` on these tables says why it matches nothing; the three
+  skills and two evals describe the blank field.
+- **Fixed — EUR-Lex.** The loader reads the Publications Office Cellar (EUR-Lex's documented reuse
+  channel); the EUR-Lex HTML page answers automated clients with an AWS WAF challenge, which the
+  old loader accepted as 0 articles and wrote. It fails closed (non-200, challenge page, non-XHTML,
+  or fewer articles than the measured floor) and `build_db` reads its field names. GDPR 99, NIS2
+  46, DORA 64, AI Act 113 articles committed and manifest-pinned; Tuesday job, 4 requests.
+- **Changed — the build is hermetic.** The OSCAL 5.2.0 catalog the committed data was built from is
+  committed (`canonical-sources/source_data/nist-800-53/NIST_SP-800-53_rev5_catalog.json`,
+  sha-pinned). A fresh build reproduces `uncertainty_ledger.jsonl` exactly; the workflows and the
+  rehearsal drop the warm-up fetch (build load 11 → 0); `standards_refresh --fetch` writes the
+  committed path, so an upstream refresh is a reviewed diff.
+- **Fixed — every network caller is governed or named exempt, and gated.** framework_crawler, the
+  800-63B generator, edgar_loader (contact from `DBZ_SEC_CONTACT`; the name-bearing placeholder is
+  gone) and cci_trackr_loader go through `fetchkit`; olir_crawler writes the manifest through
+  `registry_io`; the duplicate `ingestion/kev_loader.py` is deleted. `sync_check` invariant 17
+  (direct network calls outside fetchkit) and a widened invariant 14 (registry writes through a
+  path constant), both proven red on the previous tree.
+- **Fixed — honesty of the dead loaders and the docs.** CPRT's docstring records what each endpoint
+  answers; dead imports removed; `fips --level`; NVD is report-only while FIPS, OLIR and CPRT
+  cannot be scheduled; `actions/checkout@v6` in all four workflows (the other three actions keep
+  their majors until a GitHub-owned page names a Node 24 one).
+- **Corrected (records louder than the claims):** 0.16.0's "every hand-run loader is governed" was
+  false (four callers and a duplicate loader); the guessed families were presented as "relevant"
+  in three skills; the 800-63B file claimed a CPRT fetch it never made; phase 50's fresh/warm gap
+  is attributed (an unpinned upstream input); STATE credited schema 3.19 with 3.18's content and
+  still planned the "18 bridge gaps" phase 44 retracted; BENCHMARK's per-framework list carried
+  figures the phase-46/50 refreshes had moved; the runbook said STIGs were excluded, counted a
+  build load that no longer exists and listed EUR-Lex as 0 articles.
+- **Measured at close:** dispatch 42227394107 — 233 requests to 94 hosts, 0 refusals; census
+  230/10/6/65; `eurlex_articles` 322; `sync_check` 17 invariants; governed-loader tests 41.
+- **Not done (each with its unblocking event):** SCF 2026.3 ingest, SP 800-63B-4 regeneration,
+  ATT&CK v20.1 ingest (Thursday PR), issuer mappings for the blanked fields, the slot-time pin
+  (2026-11-19+), the owner's PR setting, CMMC polling (DoD CIO 403).
+
 ## [0.16.1] — 2026-11-05 (phase 51 close-out — defect found by the first CI run)
 
 PATCH. The first `health` run on 0.16.0 (run 41958122419) went red. Audit:
@@ -52,7 +126,8 @@ source. Audit: `docs/audits/phase-51-adversarial-audit.md`. Record: `docs/source
   - `schedule-probe.yml` (temporary) samples six candidate times a day.
   - `tools/schedule_delay.py` ranks them by median, then p90 queue delay, never :00 or :30.
   - The slots are pinned after 14 days (2026-11-19 or later) and the probe is deleted.
-- **Every hand-run loader is governed.**
+- **Every hand-run loader is governed.** *(Corrected in 0.17.0: four callers and a duplicate
+  loader were not — see 0.17.0, "Corrected".)*
   - **Loaders:** eleven of them (kev, nvd, fr_watcher, ecfr, eurlex, fips_cmvp, olir, cprt,
     oscal_diff, attack_stix, horizon_monitor `--check`). Each replaces its own retry and sleep
     loop with `fetchkit.fetch()`, which retries 429/5xx only, never retries a refusal, and

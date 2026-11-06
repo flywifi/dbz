@@ -173,11 +173,11 @@
       }
     },
     "www.ilga.gov": {
-      "published_rule": "not checked before phase 52; the implementation records the www.ilga.gov usage-rule search with its date",
+      "published_rule": "none found: a search of ilga.gov for a terms-of-use, acceptable-use or automated-access statement (2026-11-06) returned only statute and bill pages; robots.txt (fetched by the governor, 200) sets Crawl-delay 10, which the governor honours above the 1.5 s floor",
       "source_url": "https://www.ilga.gov/",
       "verified": "2026-11-06",
       "probe": "openssl s_client -showcerts via the proxy (leaf only; Sectigo Public Server Authentication CA OV R40 not sent); plan T-3 live verification with the pin",
-      "robots": "fetched by the governor once TLS verifies (200, plan T-3)",
+      "robots": "200; Crawl-delay 10 learned by the governor (2026-11-06); the BIPA landing page is allowed",
       "tls_note": "The server omits its intermediate. Browsers fetch it through the leaf's AIA URL; Python does not. The pinned file is that AIA certificate, verified to chain to a public root with partial chains disabled.",
       "enforced": {
         "min_interval_s": 1.5,

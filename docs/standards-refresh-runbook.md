@@ -37,7 +37,7 @@ a human does the confirming.
    each reasoned in `build_db.py`: SQLite internals, FTS5 shadow tables, `db_metadata`).
    The full local battery (authority list: `protocol-layer/quality-gates.md`) adds, on a built
    grc.db: the oracle accuracy benchmark (`cross-mapping/tests/benchmark_oracles.py --check`;
-   policy in `docs/BENCHMARK.md`), the ten-scenario end-to-end battery
+   policy in `docs/BENCHMARK.md`), the twelve-scenario end-to-end battery
    (`cross-mapping/tests/run_scenarios.py`), and the scoreboard drift check
    (`tools/metrics.py --check`, also sync_check invariant 13). Build-independent gates run in
    pre-commit: `tools/output_validate.py --selftest`, `score_output.py --selftest`, and the
@@ -133,8 +133,11 @@ The CI gate is `python3 tools/fetch_census.py --check`. It replays one Monday `-
 offline and fails if any request bypasses the governor or any host's planned count exceeds its
 cap. Since phase 51 it also sums each weekday's slot load from `fetch_schedule.json` against the
 same caps and checks that every slot's cron is in its workflow file (see **Weekly rotation**). It is an upper bound: every landing page costs HEAD+GET, and every GitHub repo answers "no
-releases", so each release feed also costs its tags call. It plans **327 requests to 96 hosts,
-with api.github.com the busiest at 38 of 50**; the first CI dispatch made 272. (The 0.15.0
+releases", so each release feed also costs its tags call. In 0.15.1 it planned **327 requests to 96 hosts,
+with api.github.com the busiest at 38 of 50**, and the first CI dispatch made 272; after phase 52
+(release rows moved to landing polling, the atom entries gated, cmmc exempt, the build's OSCAL fetch
+gone) the Monday plan is 230 requests with api.github.com at 8 of 50, and the 2026-11-06 dispatch
+made 233 requests to 94 hosts with 0 refusals. (The 0.15.0
 census answered GitHub with a release and counted 37, while the live run made 54. The monitor
 and `standards_refresh` both looked up every release feed. Since 0.15.1 the monitor skips them
 there with `--skip-strategy github_release`, and the census models the tags fallback.)
@@ -221,14 +224,17 @@ first. The NVD suggestion is computed from the run: on 2026-11-05 a 7-day window
 history; commit one rolling file or keep it local, since `build_db` loads it when present).
 
 **Not scheduled** (`fetch_schedule.json` `not_scheduled`, each with its measured reason):
-EUR-Lex (the loader extracts 0 articles, live and committed), FIPS (the CMVP API is unavailable and
-NIST publishes no machine listing), OLIR (`/api/olir/finalized` 404) and CPRT
-(`/api/catalog/pubs/page` 404). Scheduling them would automate emptiness; each repair is its own
-phase. OSCAL is not a separate job: the Monday build fetches it.
+FIPS (the CMVP API is unavailable and NIST publishes no machine listing), OLIR
+(`/api/olir/finalized` 404) and CPRT (`/api/catalog/pubs/page` 404). Scheduling them would automate
+emptiness. EUR-Lex was on this list until phase 52: its HTML page answers automated clients with a
+bot challenge (0 articles), and the loader now reads the Publications Office Cellar, EUR-Lex's
+documented reuse channel (322 articles; Tuesday slot). OSCAL is not a job at all: since phase 52 the
+catalog is committed and the build reads it.
 
-**Load.** `fetch_census.py --check` (CI) sums each weekday's `requests_measured` per host, plus
-the build's 11 OSCAL requests on a building day, and fails on a cap breach or on one host in two
-slots of one day. Today: Monday 241, Tuesday 17, Wednesday 17, Thursday 76 requests (upper bound).
+**Load.** `fetch_census.py --check` (CI) sums each weekday's `requests_measured` per host (the
+build makes no request since phase 52) and fails on a cap breach or on one host in two slots of one
+day. Today (2026-11-06): Monday 230, Tuesday 10, Wednesday 6, Thursday 65 requests (upper bound;
+241/17/17/76 before phase 52).
 
 **Slot times: least GitHub traffic, measured.** GitHub publishes no quiet hour, only that the top
 of every hour is busy and that queued scheduled jobs may be dropped under load. So the times above
@@ -304,8 +310,11 @@ watcher: `cross-mapping/engine/horizon_monitor.py`; full model + per-authority s
   a HITRUST advisory, a transition-timeline date, or a PCI "best practice until `<date>`" clause — add
   a record to `anticipated_updates.json` (never fabricate a date: use `no_fixed_date`). This is how
   the CCM v4.1 mappings became `au-csa-ccm`.
-- **DISA scope:** the horizon tracks the **CCI List** quarterly cadence only (new CCI definitions).
-  **STIGs are excluded** — no STIG anticipation, no STIG data/DB update (reference-only per Phases 21/23).
+- **DISA scope:** the horizon tracks the **CCI List** quarterly cadence (new CCI definitions). STIG
+  currency is not a horizon record: since phase 50 the three-signal STIG check runs inside the Monday
+  drift check, and since phase 51 the Thursday slot proposes a library refresh when DISA publishes a
+  newer one (`stig_harvest --auto-library`). (Until phase 52 this bullet still said "STIGs are
+  excluded — reference-only per Phases 21/23", which phases 50–51 had superseded.)
 
 ## Currency-run findings (2026-07-06)
 
@@ -382,7 +391,8 @@ The health auditor treats unconfirmed entries as advisory, never authoritative.
 ## Alarms
 
 - `health_audit.py --scan` warns when any `auto_fetch` feed's `last_checked` is older than
-  90 days — the dead-cron detector.
+  90 days — the dead-cron detector for feeds; for the schedules themselves the Monday check warns
+  from 45 days without a commit, because GitHub disables scheduled workflows at 60 (phase 51).
 - `validate_spine.py` holds the CPRT 5.2.0 completeness oracle + sub-part inventory checks,
   so a botched refresh fails the gate rather than shipping.
 - `validate_spine.py` also holds the **consensus provenance gate** (Phase 18): the flag-gated
@@ -437,9 +447,10 @@ r5.2.0 catalog. The CCM↔SCF divergence analysis (194 controls compared) lives 
 `cross-mapping/output/ccm_discrepancy_report.json` — under this model those divergences are
 scope-relative acceptance differences, not errors.
 
-## Known open follow-ups (as of 2026-07-03)
+## Known open follow-ups (as of 2026-11-06)
 
-- `nist-800-63b-requirements.json` still derives from 63B **r3**; regenerate from 63B-4.
+- `nist-800-63b-requirements.json` still derives from 63B **r3**, and since phase 52 it says so: the
+  built-in section map, no fetched text, no control links. Regenerating from 63B-4 is its own phase.
 - CMMC → 800-171 r3 transition: **no transition date is citable** — CMMC Phase 2 was
   suspended 2026-07-13 pending a Reform Task Force review (report due ~Sep 2026), and
   trade-press r3-timing figures failed the citation-loop escape. DoD's 2025-04-10 Rev-3
@@ -462,8 +473,9 @@ scope-relative acceptance differences, not errors.
   only) — would add NIST-ancestry voters, so it needs a re-measured Phase 18 gate first.
 - CSF 2.0 OLIR graph artifacts also carry CCM / SCF / CIS 8.1 / NICE / CRI reference sets —
   raw material for the deferred SCF+CCM spine-projection phase.
-- `olir_crawler.py` endpoint (`csrc.nist.gov/api/olir/finalized`) 404s — re-point to the
-  CPRT OLIR catalog.
+- `olir_crawler.py` endpoint (`csrc.nist.gov/api/olir/finalized`) 404s, and the CPRT catalog
+  endpoint 404s too (phase 52 probes): there is no machine source to re-point to, so OLIR and CPRT
+  stay report-only and unscheduled until NIST publishes one.
 - ~~SCF + CCM OSCAL loaded as pinned artifacts only — spine projection is a future phase~~
   **CLOSED (Phase 20)**: both are spine frameworks now — `SCF 2026.2` (scf_direct 0.80,
   SCF/CAP scope) and `CSA CCM v4` (ccm_oscal 0.85 source-stated, CSA STAR scope) — under
@@ -473,9 +485,10 @@ scope-relative acceptance differences, not errors.
 - SCF errata note: the 2026.1 release REMOVED NIST SP 800-63B, OWASP 2021, FedRAMP R4 and
   others from SCF's authoritative sources and added 13 (OWASP 2025, CJIS v6.0, IEC 62443
   set, GovRAMP…) — relevant when SCF projection lands.
-- **fetch_blocked** (endpoint fixes needed): NVD (set `NVD_API_KEY`, run
-  `nvd_api_loader.py --days 90`), EUR-Lex (rework loader against the Cellar/ELI API),
-  FIPS-CMVP (re-point the loader). EDGAR is fetched and stored (85 disclosures).
+- **Formerly fetch_blocked (as of 2026-11-06):** NVD works through the governor and is `on_demand`
+  (weekly report-only; the digest suggests whether to commit); EUR-Lex is repaired (Cellar, phase
+  52); FIPS-CMVP has no machine source. EDGAR is fetched and stored (85 disclosures); since phase 52
+  its loader needs `DBZ_SEC_CONTACT` in the environment for the SEC User-Agent contact.
 
 ## Crawl-seed link-graph (Phase 25)
 

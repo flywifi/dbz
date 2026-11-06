@@ -170,5 +170,12 @@ transcripts are summarised in `docs/source-inventory.md` (Phase 50).
   - The committed file matches the warm build, and the oracle benchmark passes both ways.
   - Not attributed: some gitignored artifact under `cross-mapping/output/` that the fresh path
     does not regenerate. Phase 50 does not change these rows.
+  - **Correction of record (phase 52, 2026-11-06): attributed.** The fresh path downloaded the
+    upstream OSCAL catalog from an unpinned `main` URL, while the committed derived data had been
+    built from the 2026-10-19 copy; the committed `oscal_v5.2.0_full_extract.json` could not stand
+    in (no part trees). Given the same catalog, a fresh build reproduces `uncertainty_ledger.jsonl`
+    exactly (0 of 247 lines differ). Phase 52 committed that catalog as the build input
+    (`canonical-sources/source_data/nist-800-53/`), so a fresh checkout builds from the same input
+    as the committed data.
 - **Manual-only loaders are not yet behind the governor** (fr_watcher, nvd_api_loader,
   kev_loader and others). The census covers only the monthly path, and says so.

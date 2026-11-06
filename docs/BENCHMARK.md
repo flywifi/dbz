@@ -176,13 +176,15 @@ publisher or a STIG rule — neither of which derives from the DISA list. The vo
 previously said the witnesses were "independent by construction", which oversold the
 prerequisite; no count changed when the wording was corrected.
 
-Measured 2026-08-14 after phases 39–40, over **180,413** pairs:
+Measured 2026-08-14 after phases 39–40 and re-measured 2026-11-06 on the phase-52 build, over
+**180,413** pairs (`confirmed` and `weak` unchanged since 2026-08-14; `corroborated` and `reachable`
+moved with the phase-46 SCF 2026.2 and phase-50 STIG refreshes, which nothing restated here):
 
 | Verdict | Pairs | Meaning |
 |---|---|---|
 | `confirmed` | **23,540** | CCI anchor multi-witness confirmed + ≥2 agreement witnesses, ≥1 CCI-level (same-anchor second publisher or STIG exercise) |
-| `corroborated` | 102,497 | anchor confirmed + ≥1 agreement witness, but not the ≥2-with-a-CCI-level-witness combination `confirmed` requires (18,338 of these carry two or more agreements — "exactly one" was never the implemented rule; corrected in phase 43) |
-| `reachable` | 25,533 | transitive join only — **not a mapping** |
+| `corroborated` | 102,966 | anchor confirmed + ≥1 agreement witness, but not the ≥2-with-a-CCI-level-witness combination `confirmed` requires (18,338 of these, counted 2026-08-14, carry two or more agreements — "exactly one" was never the implemented rule; corrected in phase 43) |
+| `reachable` | 25,009 | transitive join only — **not a mapping** |
 | `weak` | 28,898 | the CCI's own anchor is `disa_only`/`candidate` |
 
 **CORRECTION of the phase-38 headline.** Phase 38 reported 53,046 confirmed. That number was
@@ -192,10 +194,13 @@ actually named. The phase-39 per-anchor rule corrects it; **the corrected figure
 (The same phase also *added* witnesses — FedRAMP baseline flags, the OLIR-composed path, coarse-
 key publisher matching — so the two figures are not directly comparable; the correction dominates.)
 
-Per framework (`confirmed`): ISO 27001/2 (2022) 8,264 · HIPAA Security 7,043 ·
-NIST SP 800-171 r2 4,390 · CIS CSC v8.0 1,400 · PCI DSS v4.0 1,136 · NIST CSF 2.0 341 ·
-CSA CCM v4 318 · FedRAMP r5 302 · NIST SP 800-171 r3 99 · SOC 2 69 · SCF 2026.1 63 ·
-CMMC 2.0 55 · NIST SP 800-172 r3 5 · GDPR 0. (Re-measured 2026-08-16: CIS was stated as 1,399
+Per framework (`confirmed`, re-measured 2026-11-06 on the phase-52 build): ISO 27001/2 (2022) 8,264 ·
+HIPAA Security 7,041 · NIST SP 800-171 r2 4,383 · CIS CSC v8.0 1,415 · PCI DSS v4.0 1,136 ·
+NIST CSF 2.0 339 · CSA CCM v4 318 · FedRAMP r5 302 · NIST SP 800-171 r3 99 · SOC 2 69 ·
+SCF 2026.2 63 · NIST SP 800-172 r3 56 · CMMC 2.0 55 · GDPR 0. (Phase 52 correction: from
+2026-08-16 this list read HIPAA 7,043, 800-171 r2 4,390, CIS 1,400, CSF 2.0 341, 800-172 r3 5 and
+the label "SCF 2026.1"; the phase-46 SCF 2026.2 and phase-50 STIG refreshes moved them and nothing
+caught it, because the list is not a registered claim. Re-measured 2026-08-16: CIS was stated as 1,399
 and CSA CCM as 247 — both predated the phase-40 SCF fan-out and neither is a registered claim,
 so nothing caught the drift. Only the two headline figures are machine-checked; this per-
 framework list is not.)
