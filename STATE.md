@@ -112,8 +112,10 @@ bridge, consensus detection, publication hygiene, health auditor); their commits
   now says it is the built-in section map); ATT&CK v20.1 ingest (the Thursday slot proposes it as a
   PR when TAXII reports 20.1 ≠ committed 20.0); issuer mappings that could refill the blanked
   family fields (SP 800-66r2, CTID KEV→ATT&CK→800-53) — each a source decision; the slot-time pin
-  (2026-11-19 or later); the owner setting "Allow GitHub Actions to create and approve pull
-  requests"; the Node 24 majors of `setup-python`, `github-script`, `upload-artifact` when a
+  (2026-11-19 or later); two owner settings — switch the default branch to `main` (created
+  2026-11-07 at `4a6da1d`, identical to the working branch) and protect it, after which the crons and
+  the bot's PR base follow `default_branch` on their own, and "Allow GitHub Actions to create and
+  approve pull requests"; the Node 24 majors of `setup-python`, `github-script`, `upload-artifact` when a
   GitHub-owned page names them; CMMC polling when a DoD CIO page answers automated clients.
 
 ## Recovery package (fresh clone → working state)
