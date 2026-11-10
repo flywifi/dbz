@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "_purpose": "Structured announcements from standards-body RSS/Atom feeds. Populated by announcement_monitor.py.",
-  "generated_at": "2026-08-08T18:51:07Z",
+  "generated_at": "2026-11-10T20:59:16Z",
   "window_days": 180,
   "entries": [
     {
@@ -28,6 +28,18 @@
       "source_feed": "disa-stig-library",
       "summary": "383 STIG benchmarks / 19,667 rules distilled for CCI application evidence (539 distinct CCIs; 97.6% resolve in cci_bridge). Delta-tracked against the cyber.trackr.live catalog; on-demand product overlap via the stig: resolver.",
       "human_confirmed": true
+    },
+    {
+      "feed_id": "047abbb970e23622",
+      "title": "Privacy Act of 1974; System of Records",
+      "published_at": "2025-12-31T00:00:00Z",
+      "url": "https://www.federalregister.gov/documents/2025/12/31/2025-24030/privacy-act-of-1974-system-of-records",
+      "change_type": "informational",
+      "doc_type": "NOTICE",
+      "agency": "DHS",
+      "docket_number": "Docket No. 2025-1108",
+      "human_reviewed": false,
+      "human_review_required": true
     },
     {
       "entry_id": "ann-sox-itgc-pcaob-as2201-2026",
