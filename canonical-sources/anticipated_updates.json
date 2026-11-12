@@ -2759,7 +2759,7 @@
       "feed_id": "scf",
       "authority": "Secure Controls Framework Council",
       "artifact": "SCF meta-framework quarterly release",
-      "current_version": "SCF 2026.2 (2026-07-08) — ingested 2026-09-19",
+      "current_version": "SCF 2026.3 (2026-09-21) — ingested 2026-11-12",
       "expected_type": "revision",
       "lifecycle_stage": "final",
       "expected_window": "no_fixed_date",
@@ -2778,13 +2778,13 @@
       "dependent_of": null,
       "status": "watching",
       "escalate_after_days": 45,
-      "last_checked": "2026-09-19",
-      "last_change_detected": "2026-09-19",
-      "notes": "Created 2026-09-19 after SCF 2026.2 went unnoticed for 10 weeks (phase-45 finding; classifier fixed same phase). 2026.2 INGESTED phase 46: projection identical (1,117 edges), fan-out witness 8,609 -> 8,983, label 'SCF 2026.2'. Upstream renamed its file set at 2026.2 (kebab-case xlsx, plain errata.txt, Archived Versions/ folder) — fetch recipes must use the new names. This record guarantees the release signal; releases.atom 403s scripted fetch, the HTML releases page is the pollable surface.",
+      "last_checked": "2026-11-12",
+      "last_change_detected": "2026-11-05",
+      "notes": "Created 2026-09-19 after SCF 2026.2 went unnoticed for 10 weeks (phase-45 finding; classifier fixed same phase). 2026.2 INGESTED phase 46: projection identical (1,117 edges), fan-out witness 8,609 -> 8,983, label 'SCF 2026.2'. Upstream renamed its file set at 2026.2 (kebab-case xlsx, plain errata.txt, Archived Versions/ folder) — fetch recipes must use the new names. This record guarantees the release signal; releases.atom 403s scripted fetch, the HTML releases page is the pollable surface. 2026.3 (Major) detected by the weekly drift check 2026-11-05 and INGESTED phase 53: the release renumbered 1,457 controls and reused ids, so the ingest carries the issuer's legacy-id map (scf_id_history). Since 2026.3 the workbook is a release asset, not a repo file.",
       "provenance": {
-        "primary_source_url": "https://github.com/securecontrolsframework/securecontrolsframework/releases",
-        "retrieved_at": "2026-09-19",
-        "verbatim": "2026.2 … 08 Jul — With the 2026.2 release, numerous controls now include a list of compensating controls. (securecontrolsframework.com)",
+        "primary_source_url": "https://github.com/securecontrolsframework/securecontrolsframework/releases/tag/2026.3",
+        "retrieved_at": "2026-11-07",
+        "verbatim": "2026.3 … released this Sep 21 … most of the SCF's controls have been renumbered in this release.",
         "support": "WELL_SUPPORTED",
         "terminal_state": "ORIGIN"
       }

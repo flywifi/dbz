@@ -46,8 +46,8 @@ A regenerable one-screen summary of what dbz contains and how honest its evidenc
 
 ## Feed status breakdown
 
-- `artifact_stale`: 2
-- `current`: 41
+- `artifact_stale`: 1
+- `current`: 42
 - `licensed_pinned`: 2
 - `metadata_only`: 113
 - `on_demand`: 2

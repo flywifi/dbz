@@ -2,7 +2,7 @@
 
 > **Phase 14 refresh (same day):** live data feeds populated (CISA KEV 2026.07.01 — 1,631 CVEs;
 > MITRE ATT&CK v19.1 — 697 techniques; eCFR 45 CFR 164 subpart C — 9 sections), new artifacts
-> fetched and sha-pinned (NIST SP 800-172 Rev 3 OSCAL, SCF 2026.2, Microsoft SSPA DPR v12,
+> fetched and sha-pinned (NIST SP 800-172 Rev 3 OSCAL, SCF 2026.3, Microsoft SSPA DPR v12,
 > CSA STAR bundle incl. CCM v4.0.13 + CCM OSCAL dataset + AICM v1.1), and the keep-current
 > pipeline stood up: `tools/standards_refresh.py` (check/fetch/gate stages),
 > `.github/workflows/standards-watch.yml` (monthly cron + drift issue), registry hygiene
@@ -60,8 +60,8 @@
 >
 > **Phase 20 (2026-07-03):** the meta-frameworks join the spine under a new `owner_stated`
 > master-surface tier (owner-of-source mapping to a foreign target, scope-relative per the
-> acceptance-authority model): **SCF 2026.2** via its own 800-53 R5 column (1,117 edges /
-> 777 controls, scf_direct 0.80 co-citation) and **CSA CCM v4** via CSA's OSCAL
+> acceptance-authority model): **SCF 2026.3** via its own 800-53 R5.2 column (1,161 edges /
+> 776 controls, scf_direct 0.80 co-citation; 1,117 / 777 on 2026.2 until phase 53) and **CSA CCM v4** via CSA's OSCAL
 > mapping-collection (1,683 edges / 195 controls, ccm_oscal 0.85 with source-stated
 > equivalent-to/superset-of). Bonus master pairs: CCM↔CIS 8.1 (162, CSA-stated) and
 > CCM↔CSF2 (657) + SCF↔CSF2 (451) from the pinned CSF 2.0 OLIR graphs. Matrix 91→120
