@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import glob
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -186,6 +187,22 @@ SUGGEST_MAX_MB = 1.0   # a committed weekly snapshot above this grows history by
 SUGGEST_RULES = ("nvd-7d",)
 
 
+def _report_json(out_text: str | None) -> tuple:
+    """(document, its text) from a report job's captured output. That output is stdout + stderr
+    (_run), and a loader prints progress lines before its --format json document, so the whole
+    text is never one JSON value: the first real Wednesday run (2026-11-11) said "no parseable
+    result" for a run that had fetched its window. The document starts at the first line that
+    opens with "{"; raw_decode stops at its end, so stderr after it is ignored. Raises ValueError."""
+    text = out_text or ""
+    m = re.search(r"^\{", text, re.M)
+    if not m:
+        raise ValueError("no JSON document in the output")
+    doc, end = json.JSONDecoder().raw_decode(text, m.start())
+    if not isinstance(doc, dict):
+        raise ValueError("the JSON value in the output is not an object")
+    return doc, text[m.start():end]
+
+
 def suggest(job_id: str, out_text: str | None, sched: dict) -> dict:
     """A commit suggestion for one report-only dataset, from what this run measured."""
     ns = sched.get("not_scheduled", {})
@@ -193,12 +210,12 @@ def suggest(job_id: str, out_text: str | None, sched: dict) -> dict:
         return {"dataset": job_id, "suggest": "repair first", "why": ns[job_id]}
     if job_id == "nvd-7d":
         try:
-            d = json.loads(out_text or "")
+            d, raw = _report_json(out_text)
         except ValueError:
             return {"dataset": job_id, "suggest": "no", "why": "the run produced no parseable result"}
         md = d.get("metadata", {})
         n, crit = md.get("total_cves", 0), md.get("critical_count", 0)
-        mb = len((out_text or "").encode()) / 1e6
+        mb = len(raw.encode()) / 1e6
         if not n:
             return {"dataset": job_id, "suggest": "no", "why": "0 CVEs in the window"}
         base = (f"{n:,} CVEs in the last {md.get('days_covered')} days ({crit:,} critical), {mb:.1f} MB as one file; "

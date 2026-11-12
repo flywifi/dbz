@@ -231,9 +231,9 @@
       ],
       "outputs": [],
       "requests_measured": {
-        "services.nvd.nist.gov": 5
+        "services.nvd.nist.gov": 8
       },
-      "measured": "2026-11-05 plan T-2"
+      "measured": "2026-11-11 phase-53 dry run: 14,172 CVEs in the 7-day window, 8 pages of 2,000 (5 pages on 2026-11-05, 9,676 CVEs); the count follows the week's CVE volume (host run cap 400)"
     },
     "attack": {
       "mode": "pr",

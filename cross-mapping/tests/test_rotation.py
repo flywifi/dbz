@@ -117,6 +117,20 @@ def test_commit_message_and_suggestions():
     ok(s["suggest"] == "not as weekly snapshots" and "9,676 CVEs" in s["why"], "NVD over 1 MB: suggest a rolling file, with measured numbers")
     s = fr.suggest("nvd-7d", json.dumps({"metadata": {"total_cves": 3, "critical_count": 0, "days_covered": 7}}), SCHED)
     ok(s["suggest"] == "yes", "a small NVD window: suggest commit")
+    # phase 53: a job's captured output is progress lines, then the document, then stderr — never one JSON value
+    real = ("=== NVD CVE API 2.0 Loader ===\n  No API key — NVD window from host_policies.json (5 per 30 s; 50 with NVD_API_KEY)\n"
+            "  Date range: 2026-11-04 → 2026-11-11 (7 days)\n  Fetched 2000/9676 CVEs…\n\n  Summary: 9676 CVEs loaded, CVSS >= 7.0: 3100, CRITICAL: 820\n"
+            "  [dry-run] Skipping file write.\n" + json.dumps(json.loads(nvd), indent=2) + "\n[fetchkit] ledger saved\n")
+    try:
+        json.loads(real)
+        whole = True
+    except ValueError:
+        whole = False
+    s = fr.suggest("nvd-7d", real, SCHED)
+    ok(not whole and s["suggest"] == "not as weekly snapshots" and "9,676 CVEs" in s["why"],
+       "the real output shape (progress lines, the document, stderr) is parsed although the whole text is not JSON")
+    ok(fr.suggest("nvd-7d", "=== NVD CVE API 2.0 Loader ===\n  [error] HTTP 503\n", SCHED)["why"] == "the run produced no parseable result",
+       "an output with no document still says so")
     ok(fr.suggest("fips", None, SCHED)["suggest"] == "repair first", "an unschedulable source: repair first, with its reason")
     sec = fr.digest_section({"slot": "wed-vulnerability", "jobs": [{"job": "kev", "mode": "pr", "status": "ok", "changed": [], "why": "always"}]},
                             SCHED, [fr.suggest("olir", None, SCHED)])
