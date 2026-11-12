@@ -602,6 +602,14 @@
       "date": "2026-11-12",
       "known_good": true,
       "note": "CI green on 18cb027 (tools/ci_status.py: health 2026-11-11T23:39:22Z). The two failed runs on this head (2026-11-10T20:58:52Z, 2026-11-11T21:33:30Z) are weekly-refresh runs whose pull-request step fails until the owner switches on the Actions pull-request permission; their refresh branches were pushed."
+    },
+    {
+      "phase": "53-close",
+      "name": "Phase 53 closed at 0.18.0: SCF 2026.3 ingested with the issuer's legacy-id map",
+      "sha": "ac8c3b7",
+      "date": "2026-11-12",
+      "known_good": true,
+      "note": "CI green on ac8c3b7 (tools/ci_status.py: health 2026-11-12T01:11:28Z). Every commit of the phase (909b4f9 through ac8c3b7) passed the package-free CI rehearsal at commit time."
     }
   ]
 }
