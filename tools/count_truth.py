@@ -116,14 +116,18 @@ def _context_findings(cid: str, spec: dict, value, rel: str, text: str) -> list:
     the cited file must equal the current value. Lifts the phase-43 'states it somewhere' limit
     for the claims that opt in via "context_patterns"."""
     out = []
-    if not isinstance(value, int):
+    if not isinstance(value, (int, str)):
         return out
     for pat in spec.get("context_patterns") or []:
         rx = re.compile(pat)
         for ln, line in enumerate(text.splitlines(), 1):
             for m in rx.finditer(line):
-                got = m.group(1).replace(",", "")
-                if got.isdigit() and int(got) != value:
+                if isinstance(value, int):
+                    got = m.group(1).replace(",", "")
+                    stale = got.isdigit() and int(got) != value
+                else:  # a version string (schema_version, phase 53): exact equality
+                    stale = m.group(1) != value
+                if stale:
                     out.append((rel, cid, f"line {ln} states {m.group(1)} (current {value}): {line.strip()[:90]}"))
     return out
 
@@ -212,11 +216,16 @@ def selftest_context() -> int:
     clean = stale.replace("**161 official", "**162 official").replace("of 76 ", "of 77 ")
     cases = [("feeds_count", 162, stale, 1), ("horizon_count", 77, stale, 1),
              ("feeds_count", 162, clean, 0), ("horizon_count", 77, clean, 0)]
+    # phase 53: a version string in every-occurrence mode. A stale current-version statement fails;
+    # a historical mention beside a correct statement does not (the patterns are the registered ones).
+    hist = "| 50 | STIG retention | 20 DISA-dropped STIGs kept, flagged — schema 3.19 |\n"
+    cases += [("schema_version", "3.20", "- **DB schema:** 3.19 (stale)\n" + hist, 1),
+              ("schema_version", "3.20", "- **DB schema:** 3.20 (phase 53)\n" + hist, 0)]
     bad = 0
     for cid, value, text, want in cases:
         got = len(_context_findings(cid, claims[cid], value, "README.md", text))
         bad += got != want
-        print(f"  [{'ok' if got == want else 'FAIL'}] {cid} on {'stale' if text is stale else 'clean'} text: "
+        print(f"  [{'ok' if got == want else 'FAIL'}] {cid} on {'stale' if want else 'clean'} text: "
               f"{got} finding(s) (want {want})")
     print(f"[selftest] every-occurrence claims: {len(cases) - bad}/{len(cases)} passed")
     return 1 if bad else 0

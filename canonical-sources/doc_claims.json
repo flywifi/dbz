@@ -31,7 +31,14 @@
         "docs/cross-mapping-architecture.md",
         "docs/fedramp-modernization.md",
         "STATE.md"
-      ]
+      ],
+      "context_patterns": [
+        "tables, schema (\\d+\\.\\d+)\\)",
+        "schema (\\d+\\.\\d+), indexed",
+        "current schema (\\d+\\.\\d+)",
+        "\\*\\*DB schema:\\*\\* (\\d+\\.\\d+)"
+      ],
+      "_purpose": "The schema version restated in each cited doc. context_patterns (phase 53) name the CURRENT-version statement of each doc: bump_schema rewrites only those spans and count_truth holds every match equal to the current version. Any other mention is history (a phase row recording the schema that phase shipped) and is never rewritten — the 3.18 -> 3.19 bump rewrote STATE's phase-40 row because the old rule replaced every occurrence."
     },
     "controls_count": {
       "value_from": "manifest:controls",

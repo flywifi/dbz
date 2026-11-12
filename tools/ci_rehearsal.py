@@ -50,6 +50,7 @@ STEPS = [
     ("drift guard (sync_check)", "python3 tools/sync_check.py"),
     ("ci-status selftest", "python3 tools/ci_status.py --selftest"),
     ("count-claim selftest", "python3 tools/count_truth.py --selftest"),
+    ("bump-schema selftest", "python3 tools/bump_schema.py --selftest"),
     ("fetch-layer unit tests", "python3 cross-mapping/tests/test_fetchkit.py"),
     ("governed-loader tests", "python3 cross-mapping/tests/test_governed_loaders.py"),
     ("attack loader tests", "python3 cross-mapping/tests/test_attack_loader.py"),
