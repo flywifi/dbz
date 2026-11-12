@@ -427,17 +427,51 @@ if _DB.exists():
     # ── Phase 19: master mapping surface ────────────────────────────────────────
     _fws = {r[0] for r in _c2.execute("SELECT DISTINCT framework FROM framework_projection")}
     check({"PCI DSS v4.0", "NIST CSF 2.0", "NIST SP 800-171 r3", "NIST SP 800-172 r3",
-           "SCF 2026.2", "CSA CCM v4"} <= _fws
+           "SCF 2026.3", "CSA CCM v4"} <= _fws
           and len(_fws) == 14, f"projection has the 14 frameworks (12 Phase 19 + SCF/CCM Phase 20, got {len(_fws)})")
     # ── Phase 20: SCF + CCM owner-stated projections ────────────────────────────
     _scf = _c2.execute("""SELECT COUNT(*), COUNT(DISTINCT native_id), MAX(confidence)
-        FROM framework_projection WHERE framework='SCF 2026.2'""").fetchone()
+        FROM framework_projection WHERE framework='SCF 2026.3'""").fetchone()
     check(_scf[0] >= 1000 and _scf[1] >= 700 and _scf[2] == 0.80,
           f"SCF projection: >=1000 edges over >=700 controls at 0.80 (got {_scf})")
     _bad_scf = [r[0] for r in _c2.execute(
-        "SELECT DISTINCT native_id FROM framework_projection WHERE framework='SCF 2026.2'")
+        "SELECT DISTINCT native_id FROM framework_projection WHERE framework='SCF 2026.3'")
         if not re.match(r"^[A-Z]{2,4}-\d{2}(\.\d{1,2})?$", r[0])]
     check(not _bad_scf, f"all SCF natives canonical (bad: {_bad_scf[:3]})")
+    # ── Phase 53: SCF 2026.3 renumbered the controls and reused ids for different controls ──
+    _hist = _c2.execute("SELECT scf_id, legacy_id FROM scf_id_history").fetchall()
+    _cur_ids = {r[0] for r in _hist}
+    _legacy_rows = [r for r in _hist if r[1]]
+    _wb_ids = {SL._canon_scf_id(str(x)) for x in SL.pd.read_excel(
+        SL.source_path("scf-controls"), sheet_name=SL.sheet_name("scf-controls"))["SCF #"]} - {None}
+    check(_cur_ids == _wb_ids and len(_cur_ids) >= 1500,
+          f"scf_id_history covers exactly the pinned workbook's control ids (history {len(_cur_ids)}, workbook {len(_wb_ids)})")
+    check(len({r[1] for r in _legacy_rows}) == len(_legacy_rows) and len(_legacy_rows) >= 1500,
+          f"every legacy SCF id maps to exactly one current id ({len(_legacy_rows)} legacy ids)")
+    _reused = {r[1] for r in _legacy_rows if r[1] in _cur_ids and r[0] != r[1]}
+    check(len(_reused) >= 600,
+          f"the trap is real: {len(_reused)} ids name a different control than in the previous release — id equality is never a join")
+    _olir_scf = {r[0] for r in _c2.execute(
+        "SELECT native_a FROM master_mappings WHERE provenance='olir_csf2_pair' AND fw_a LIKE 'SCF 20%' "
+        "UNION SELECT native_b FROM master_mappings WHERE provenance='olir_csf2_pair' AND fw_b LIKE 'SCF 20%'")}
+    check(bool(_olir_scf) and _olir_scf <= _cur_ids,
+          f"NIST's OLIR CSF 2.0 -> SCF pairs carry current SCF ids only ({len(_olir_scf)} ids; strays {sorted(_olir_scf - _cur_ids)[:3]})")
+    _op_stats = SL.collect_csf2_olir_pairs()[1]
+    check(_op_stats["scf_legacy_translated"] >= 400 and _op_stats["dropped"]["scf_legacy_unmapped"] == 0,
+          f"every OLIR SCF id is translated through the issuer's legacy map, none dropped (translated "
+          f"{_op_stats['scf_legacy_translated']}, unmapped {_op_stats['dropped']['scf_legacy_unmapped']})")
+    _l2c = SL.scf_legacy_to_current()
+    check(SL.scf_legacy_to_current("SCF 2026.2") == _l2c and SL.scf_legacy_to_current("SCF 2026.1") == {},
+          "the legacy map serves only the id space it starts from: ids of any other SCF release are refused, not translated")
+    check(_l2c.get("GOV-01") == "GOV-02" and _l2c.get("TDA-11.2") == "AST-22",
+          "legacy map: 2026.2 GOV-01 is 2026.3 GOV-02; the deprecated TDA-11.2 merged into AST-22 (issuer's READ THIS tab)")
+    import subprocess as _sp
+    _q = _sp.run([sys.executable, str(ROOT / "cross-mapping" / "engine" / "dbz_query.py"), "scf-legacy", "GOV-01",
+                  "--format", "json", "--db", str(_DB)], capture_output=True, text=True)
+    _qr = json.loads(_q.stdout) if _q.returncode == 0 else []
+    check({(r["matched_as"], r["scf_id"], r["legacy_id"]) for r in _qr} ==
+          {("legacy id -> current", "GOV-02", "GOV-01"), ("new control", "GOV-01", "")},
+          f"dbz_query scf-legacy GOV-01: the 2026.2 control is now GOV-02 and GOV-01 names a new control (got {_qr})")
     _ccm = _c2.execute("""SELECT COUNT(*), COUNT(DISTINCT native_id), MAX(confidence),
         MAX(needs_confirmation) FROM framework_projection WHERE framework='CSA CCM v4'""").fetchone()
     check(_ccm[0] >= 1600 and _ccm[1] >= 190 and _ccm[2] == 0.85 and _ccm[3] == 0,
@@ -478,7 +512,7 @@ if _DB.exists():
     n_mx = _c2.execute("SELECT COUNT(*) FROM overlap_matrix").fetchone()[0]
     check(n_mx == 120, f"overlap_matrix covers all 120 canonical framework pairs (got {n_mx})")
     # SCF and CCM pairs compute on a spine basis
-    for _pa, _pb in (("SCF 2026.2", "SOC 2"), ("CSA CCM v4", "ISO 27001/2 (2022)")):
+    for _pa, _pb in (("SCF 2026.3", "SOC 2"), ("CSA CCM v4", "ISO 27001/2 (2022)")):
         _row = _c2.execute("""SELECT basis, jaccard_pct FROM overlap_matrix
             WHERE (framework_a=? AND framework_b=?) OR (framework_a=? AND framework_b=?)""",
             (_pa, _pb, _pb, _pa)).fetchone()

@@ -633,27 +633,27 @@
     },
     {
       "id": "scf-controls",
-      "file": "canonical-sources/source_data/secure-controls-framework-scf-2026-2.xlsx",
+      "file": "canonical-sources/source_data/secure-controls-framework-scf-2026-3.xlsx",
       "format": "xlsx",
-      "sheet": "SCF 2026.2",
-      "version": "SCF 2026.2 (2026-07-08)",
-      "retrieved": "2026-09-19",
-      "source_url": "https://github.com/securecontrolsframework/securecontrolsframework",
-      "sha256_prefix": "9e0a4df4993726c9",
+      "sheet": "SCF 2026.3",
+      "version": "SCF 2026.3 (2026-09-21)",
+      "retrieved": "2026-11-07",
+      "source_url": "https://github.com/securecontrolsframework/securecontrolsframework/releases/download/2026.3/secure-controls-framework-scf-2026-3.xlsx",
+      "sha256_prefix": "5a89bf2d3c106a9a",
       "role": "scf_meta_framework",
       "notes": "Creative-Commons meta-framework: controls + Focal Documents crosswalk index (replaces the Authoritative Sources sheet in 2026.2) + Compensating Controls + Assessment Objectives + Evidence Request List sheets. VERSION ANCHOR for the SCF column in crosswalk_80053_master.json. Errata pinned (scf-errata). 2026.2 (2026-07-08) adds the Quantum Security (QTS) domain (+66 controls, rows 1,468 -> 1,534), per-control compensating-controls lists, and an STRM refresh; upstream renamed the workbook to kebab-case (secure-controls-framework-scf-2026-2.xlsx) and ~75 crosswalk column headers gained year/revision suffixes. Measured at ingest (phase 46): the NIST 800-53 R5 projection is IDENTICAL to 2026.1.1 (1,117 edges / 777 SCF controls, +0/-0 — including the errata's SAT-03.2/SAT-03.6 'updated mapping' rows, which normalize to the same edges); the fan-out witness grows 8,609 -> 8,983 (800-172 R3 +303, 800-171 r3 +62, CIS +9). ACCEPTANCE-AUTHORITY: SCF's mappings are SCF's acceptance rules — 'SCF #1 maps to control X' means SCF accepts X as satisfying SCF #1 for SCF/CAP purposes. Never a claim about other frameworks' acceptance; never modifies their data. SCF is a spine framework ('SCF 2026.2', scf_direct 0.80, SCF/CAP-scope acceptance) from the xlsx's NIST 800-53 R5 column — a refreshed xlsx flows through standards_refresh.py --gate and regenerates the projection (build artifact, never hand-patched). SCF's per-framework STRM files are the relationship-upgrade path (2026.2: STRM published for all ~252 focal documents).",
       "authority_scope": "scf_only",
-      "errata_file": "canonical-sources/source_data/scf/Errata - SCF 2026.2.txt",
       "column_roles": {
         "SCF #": "scf_id",
-        "NIST 800-53 R5": "nist_53r5_id (newline/semicolon-separated; loader load_scf_projection — scf_direct 0.80, SCF/CAP-scope acceptance)"
+        "NIST 800-53 R5.2": "nist_53r5_id (newline/semicolon-separated; loader load_scf_projection — scf_direct 0.80, SCF/CAP-scope acceptance)",
+        "Legacy SCF #": "legacy_scf_id (the id(s) this control carried in 2026.2; NONE for a new control — the source of scf-id-legacy-map)"
       },
       "structure": {
-        "fanout_sheet": "SCF 2026.2",
+        "fanout_sheet": "SCF 2026.3",
         "fanout_id_column": "SCF #",
         "fanout_columns": {
           "AICPA\nTSC 2017:2022 (used for SOC 2)": "SOC 2",
-          "US\nHIPAA\nSecurity Rule / NIST SP 800-66 R2": "HIPAA Security",
+          "USA\nFederal\nHIPAA Security Rule\nNIST SP 800-66 R2": "HIPAA Security",
           "ISO\n27001\n2022": "ISO 27001/2 (2022)",
           "ISO\n27002\n2022": "ISO 27001/2 (2022)",
           "PCI DSS\n4.0.1": "PCI DSS v4.0",
@@ -665,9 +665,16 @@
           "EMEA\nEU\nGDPR\n2016": "GDPR",
           "NIST\n800-172 R3": "NIST SP 800-172 r3"
         },
-        "fanout_r5_column": "NIST\n800-53\nR5",
+        "fanout_r5_column": "NIST\n800-53\nR5.2",
         "fanout_note": "Phase 40: SCF->X columns composed with SCF->800-53 give a supports-only witness (w_scf_composed) — the X->800-53 composition is ours, not SCF's, so it never carries a confirmation alone. Every token is gated by a normalizer; unparseable tokens are dropped and counted. The 800-172 column is the 2021-edition numbering joined onto the r3 label via id normalization — a version-caveated witness join, acceptable at witness (not identifier) semantics."
-      }
+      },
+      "sha256": "5a89bf2d3c106a9a87d4b6e3d62dd3e147d0e960d4c07473045a10aa8a7df697",
+      "errata_sheets": [
+        "READ THIS",
+        "Change Overview",
+        "STRM Errata"
+      ],
+      "legacy_map": "canonical-sources/scf/scf-id-legacy-map-2026.3.json"
     },
     {
       "id": "microsoft-sspa-dpr-v12",
@@ -988,7 +995,8 @@
         },
         "unloaded_olir_sets": "CCM/SCF/NICE/OWASP/CRI/etc. remain in the artifact for future phases (SCF+CCM spine projection is deferred)"
       },
-      "notes": "Per-category CPRT element graphs across all 34 category ids (incl. withdrawn 1.1-era categories, which return near-empty graphs). Loaders: load_csf2_projection + master-surface pair extraction."
+      "notes": "Per-category CPRT element graphs across all 34 category ids (incl. withdrawn 1.1-era categories, which return near-empty graphs). Loaders: load_csf2_projection + master-surface pair extraction. Phase 53: the 'NIST CSF 2.0 To Secure Controls Framework (SCF)' set names SCF controls in the pre-2026.3 id space (scf_id_space: all 186 of its SCF ids are SCF 2026.2 ids; by id alone 51 are not 2026.3 controls, 130 name a different control in 2026.3 and 5 are unchanged). The set states no SCF version and was fetched 2026-07-03, before 2026.2 was released, so the value records the id space, not the release NIST mapped against. collect_csf2_olir_pairs translates the ids through scf-id-legacy-map and refuses a map that does not start from this id space. Update scf_id_space when NIST republishes the set on a newer SCF release.",
+      "scf_id_space": "SCF 2026.2"
     },
     {
       "id": "nist-ai-rmf-crosswalks",
@@ -1351,6 +1359,17 @@
       "role": "nist_catalog_oscal",
       "source_url": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
       "notes": "The build's hermetic OSCAL input (phase 52): a byte-identical copy of the warm cache the committed derived data was built from (5,136,923 B). Upstream main is unpinned, so an upgrade arrives through standards_refresh --fetch as a reviewed diff of this file. A fresh build from this file reproduces canonical-sources/uncertainty_ledger.jsonl exactly (0/247 lines differ, plan T-8)."
+    },
+    {
+      "id": "scf-id-legacy-map",
+      "file": "canonical-sources/scf/scf-id-legacy-map-2026.3.json",
+      "format": "json",
+      "version": "SCF 2026.2 -> 2026.3 control-id crosswalk",
+      "retrieved": "2026-11-07",
+      "sha256": "1525dcda31347a0f4dc3569b9a581fa5518f7843879a12dbe1269771448000c1",
+      "role": "scf_id_history",
+      "authority_scope": "scf_only",
+      "notes": "The issuer's own 'Legacy SCF #' column of the pinned 2026.3 workbook (cross-checked against its Change Overview and READ THIS tabs: 0 contradictions), with the Change Overview tags. Loaded as scf_id_history (dbz_query scf-legacy). SCF ids of two releases are never joined by equality: 2026.3 reused ids for different controls."
     }
   ],
   "staged_reference_sources": {

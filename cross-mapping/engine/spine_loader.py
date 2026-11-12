@@ -28,7 +28,7 @@ for _p in (str(_INGEST), str(_HERE)):
         sys.path.insert(0, _p)
 
 import pandas as pd  # provided via requirements.txt
-from config import source_path, sheet_name, header_row, col  # type: ignore
+from config import source_path, sheet_name, header_row, col, get_source  # type: ignore
 from spine_normalize import (  # type: ignore
     normalize_171_objective_id,
     normalize_control_id,
@@ -51,7 +51,7 @@ OSCAL_PATH = REPO_ROOT / "canonical-sources" / "oscal_v5.2.0_full_extract.json"
 # workbook version in source_manifest.json ('scf-controls'); "SCF 2026.1" remains a
 # query alias in framework_vocab.json. The sheet name is never hardcoded — it comes
 # from the manifest via sheet_name("scf-controls") (it is renamed every SCF release).
-SCF_FRAMEWORK_LABEL = "SCF 2026.2"
+SCF_FRAMEWORK_LABEL = "SCF 2026.3"
 SCF_LEGACY_MAP_SRC = "scf-id-legacy-map"   # source_manifest id of the issuer's control-id crosswalk (phase 53)
 
 
@@ -678,7 +678,15 @@ def collect_csf2_olir_pairs() -> Tuple[List[dict], dict]:
         return [], {"skipped": "artifact not on disk"}
     rows: List[dict] = []
     seen: Set[Tuple[str, str, str]] = set()
-    dropped = {"pci": 0, "iso": 0, "171r3": 0, "ccm": 0, "scf": 0, "csf_host": 0}
+    dropped = {"pci": 0, "iso": 0, "171r3": 0, "ccm": 0, "scf": 0, "csf_host": 0, "scf_legacy_unmapped": 0}
+    # phase 53: this artifact names SCF controls in the id space of an older SCF release (manifest
+    # scf_id_space). SCF 2026.3 renumbered most controls and reused 700 ids for different
+    # controls, so those ids are translated through the issuer's legacy-id map and never joined
+    # by equality; an id the map does not know is dropped and counted, never passed through.
+    _scf_space = get_source(src).get("scf_id_space")
+    scf_translate = bool(_scf_space and _scf_space != SCF_FRAMEWORK_LABEL)
+    scf_legacy = scf_legacy_to_current(_scf_space) if scf_translate else {}
+    scf_translated = 0
     _category_level = (_OLIR_ISO_CSF2, _OLIR_SCF_CSF2)
     for host, ext in _iter_graph_external_rels(_load_graph_artifact(src)):
         name = ext.get("olirName")
@@ -719,6 +727,12 @@ def collect_csf2_olir_pairs() -> Tuple[List[dict], dict]:
             if not scf:
                 dropped["scf"] += 1
                 continue
+            if scf_translate:
+                if scf not in scf_legacy:
+                    dropped["scf_legacy_unmapped"] += 1
+                    continue
+                scf = scf_legacy[scf]
+                scf_translated += 1
             targets = [(SCF_FRAMEWORK_LABEL, scf)]
         else:  # ISO: compound dest like 'Annex A Controls: 5.26' / 'Mandatory Clause: None'
             m = _ISO_ANNEX_DEST_RE.search(dest)
@@ -741,7 +755,7 @@ def collect_csf2_olir_pairs() -> Tuple[List[dict], dict]:
             seen.add(key)
             rows.append({"fw": fw, "native": nat, "csf2_id": csf_id, "olir_name": name})
     rows.sort(key=lambda r: (r["olir_name"], r["fw"], r["native"], r["csf2_id"]))
-    return rows, {"pairs": len(rows), "dropped": dropped,
+    return rows, {"pairs": len(rows), "dropped": dropped, "scf_legacy_translated": scf_translated,
                   "by_set": {n: sum(1 for r in rows if r["olir_name"] == n)
                              for n in sorted({r["olir_name"] for r in rows})}}
 

@@ -353,8 +353,20 @@ def main() -> int:
                 note(f"CCM id oracle: {cov:.1%} of {len(proj_ccm)} projected natives resolve in the v4.0.13 xlsx")
         except Exception as e:
             note(f"CCM id oracle skipped ({e})")
+    # phase 53: SCF 2026.3 renumbered most controls and reused 700 ids for different controls, so
+    # SCF ids are compared across releases only through the issuer's own legacy-id map
+    # (source_manifest 'scf-id-legacy-map', the workbook's 'Legacy SCF #' column).
+    _legacy_all = {}
+    try:
+        _sm = json.loads((ROOT / "canonical-sources" / "source_manifest.json").read_text(encoding="utf-8"))
+        _lm = next((ROOT / e["file"] for e in _sm["sources"] if e.get("id") == "scf-id-legacy-map"), None)
+        if _lm is not None and _lm.exists():
+            _legacy_all = {c["scf_id"]: set(c["legacy_ids"])
+                           for c in json.loads(_lm.read_text(encoding="utf-8"))["controls"]}
+    except Exception as e:
+        fail(f"SCF legacy-id map unreadable ({e})")
     proj_scf = {r[0] for r in conn.execute(
-        "SELECT DISTINCT native_id FROM framework_projection WHERE framework='SCF 2026.2'")}
+        "SELECT DISTINCT native_id FROM framework_projection WHERE framework='SCF 2026.3'")}
     if proj_scf:
         master_path = ROOT / "canonical-sources" / "crosswalk_80053_master.json"
         if master_path.exists():
@@ -362,11 +374,38 @@ def main() -> int:
                 _mj = json.load(f)
             master_scf = {str(t).strip().upper() for cols in _mj["map"].values()
                           for t in (cols.get("SCF") or [])}
-            agree = len(proj_scf & master_scf) / len(proj_scf)
-            if agree < 0.90:
-                fail(f"SCF cross-source agreement: only {agree:.1%} of projected SCF ids in the master crosswalk column (need >=90%)")
+            # The master crosswalk's SCF column is 2026.2-era bundled data and is never edited.
+            # Raw-id agreement would be meaningless (a reused id matches a different control), so
+            # each projected control is compared through its legacy id(s); controls new in this
+            # release are outside the column's reach and are not counted.
+            if _legacy_all:
+                _known = [s for s in proj_scf if _legacy_all.get(s)]
+                agree = (sum(1 for s in _known if _legacy_all[s] & master_scf) / len(_known)) if _known else 0.0
+                _scope = (f"{len(_known)} projected ids that have a legacy id ({len(proj_scf) - len(_known)} "
+                          f"newer controls not counted), through the issuer's legacy-id map")
             else:
-                note(f"SCF cross-source agreement: {agree:.1%} of {len(proj_scf)} projected ids confirmed by the master crosswalk")
+                agree = len(proj_scf & master_scf) / len(proj_scf)
+                _scope = f"{len(proj_scf)} projected ids"
+            if agree < 0.90:
+                fail(f"SCF cross-source agreement: only {agree:.1%} of {_scope} in the master crosswalk column (need >=90%)")
+            else:
+                note(f"SCF cross-source agreement: {agree:.1%} of {_scope} confirmed by the master crosswalk")
+
+    # 8j. SCF id integrity (phase 53). An artifact that names SCF controls by another release's
+    # ids (NIST's OLIR 'CSF 2.0 to SCF' reference does) would join a different control, or none,
+    # if matched by id. Every id carried under the SCF label must be a control of the pinned
+    # workbook: the id set of the legacy map, which test_spine holds equal to the 'SCF #' column.
+    if _legacy_all:
+        _scf_natives = {r[0] for r in conn.execute(
+            "SELECT native_id FROM framework_projection WHERE framework LIKE 'SCF 20%' "
+            "UNION SELECT native_a FROM master_mappings WHERE fw_a LIKE 'SCF 20%' "
+            "UNION SELECT native_b FROM master_mappings WHERE fw_b LIKE 'SCF 20%'")}
+        _strays = sorted(_scf_natives - set(_legacy_all))
+        if _strays:
+            fail(f"SCF id integrity: {len(_strays)} id(s) under the SCF label are not controls of the pinned "
+                 f"workbook (e.g. {_strays[:5]}) — an artifact keyed on another SCF release was joined by id")
+        else:
+            note(f"SCF id integrity: all {len(_scf_natives)} ids under the SCF label are controls of the pinned workbook")
 
     # 9. STIG application layer (Phase 21) — CCI application evidence.
     #   The STIG layer's purpose is CCI usage evidence, not a complete STIG
