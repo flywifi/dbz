@@ -6,7 +6,7 @@ queried through one unified surface. Full picture: [README.md](README.md) and
 [docs/cross-mapping-architecture.md](docs/cross-mapping-architecture.md).
 
 ## Live status
-- **DB schema:** 3.19 (phase 50: `stig_catalog.lifecycle` + `last_library`; 3.18 added `scf_composed_edges` + the SCF fan-out witness; 3.17 the baseline/OLIR witnesses — phase 52 corrected this line, which had credited 3.19 with 3.18's content) (`grc.db`, deterministic build, double-build digest check)
+- **DB schema:** 3.20 (phase 53: `scf_id_history`, the SCF control-id crosswalk; 3.19 was phase 50: `stig_catalog.lifecycle` + `last_library`; 3.18 added `scf_composed_edges` + the SCF fan-out witness; 3.17 the baseline/OLIR witnesses — phase 52 corrected this line, which had credited 3.19 with 3.18's content) (`grc.db`, deterministic build, double-build digest check)
 - **Gate battery:** rebuild ×2 identical digests · `test_spine.py` · `validate_spine.py` ·
   `health_audit.py --scan/--full` 100/100 (including the artifacts-hidden CI condition) ·
   `sync_check.py` (17 invariants, incl. the pre-push hook guard) · golden self-test · `benchmark_oracles.py --check` ·

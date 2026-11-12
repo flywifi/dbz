@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.19"  # v3.19: stig_catalog.lifecycle + last_library: STIGs absent from the current DISA library are kept, flagged; v3.18: scf_composed_edges (SCF fan-out witness); v3.17: w_baseline_authoritative + w_olir_composed witnesses on framework_cci_confirmation; v3.16: framework_cci_confirmation (witnessed framework->CCI verdicts); v3.15: edge_semantic on master_mappings (what an edge CLAIMS); v3.14: regulatory-provenance columns on anticipated_updates (enum-enforced); v3.13: evidence_state ladder on master_mappings; v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
+SCHEMA_VERSION = "3.20"  # v3.20: scf_id_history: the issuer's SCF control-id crosswalk across the 2026.3 renumbering (dbz_query scf-legacy); v3.19: stig_catalog.lifecycle + last_library: STIGs absent from the current DISA library are kept, flagged; v3.18: scf_composed_edges (SCF fan-out witness); v3.17: w_baseline_authoritative + w_olir_composed witnesses on framework_cci_confirmation; v3.16: framework_cci_confirmation (witnessed framework->CCI verdicts); v3.15: edge_semantic on master_mappings (what an edge CLAIMS); v3.14: regulatory-provenance columns on anticipated_updates (enum-enforced); v3.13: evidence_state ladder on master_mappings; v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
 
 CHUNK = 500  # executemany batch size
 
@@ -358,6 +358,17 @@ CREATE TABLE IF NOT EXISTS eurlex_articles (
     PRIMARY KEY (regulation_id, article_id)
 );
 CREATE INDEX IF NOT EXISTS idx_eurlex_regulation ON eurlex_articles(regulation_id);
+
+CREATE TABLE IF NOT EXISTS scf_id_history (
+    scf_id         TEXT,   -- current control id (the pinned workbook's 'SCF #')
+    legacy_id      TEXT,   -- the id this control carried in the previous release ('' = new control)
+    scf_version    TEXT,
+    legacy_version TEXT,
+    changes        TEXT,   -- JSON array: the issuer's Change Overview tags for the control
+    source_file    TEXT,
+    PRIMARY KEY (scf_id, legacy_id)
+);
+CREATE INDEX IF NOT EXISTS idx_scf_history_legacy ON scf_id_history(legacy_id);
 
 CREATE TABLE IF NOT EXISTS nist_800_63b_requirements (
     requirement_id       TEXT PRIMARY KEY,
@@ -1793,6 +1804,18 @@ def build_db(
         """, eurlex_rows, "eurlex_articles")
     else:
         print(f"  eurlex_articles: 0 rows (run eurlex_loader.py to populate)")
+    conn.commit()
+
+    # 13b. SCF control-id history (phase 53): the issuer's own legacy-id crosswalk
+    scf_hist_rows, scf_hist_stats = spine_loader.load_scf_id_history()
+    if scf_hist_rows:
+        _executemany_chunked(conn, """
+            INSERT OR REPLACE INTO scf_id_history
+                (scf_id, legacy_id, scf_version, legacy_version, changes, source_file)
+            VALUES (:scf_id, :legacy_id, :scf_version, :legacy_version, :changes, :source_file)
+        """, scf_hist_rows, "scf_id_history")
+    else:
+        print(f"  scf_id_history: 0 rows ({scf_hist_stats.get('skipped', 'empty')})")
     conn.commit()
 
     # 14. NIST SP 800-63B digital identity requirements

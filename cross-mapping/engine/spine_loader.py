@@ -52,6 +52,46 @@ OSCAL_PATH = REPO_ROOT / "canonical-sources" / "oscal_v5.2.0_full_extract.json"
 # query alias in framework_vocab.json. The sheet name is never hardcoded — it comes
 # from the manifest via sheet_name("scf-controls") (it is renamed every SCF release).
 SCF_FRAMEWORK_LABEL = "SCF 2026.2"
+SCF_LEGACY_MAP_SRC = "scf-id-legacy-map"   # source_manifest id of the issuer's control-id crosswalk (phase 53)
+
+
+def load_scf_id_history() -> Tuple[List[dict], dict]:
+    """Rows for scf_id_history from the SCF control-id crosswalk (source_manifest
+    'scf-id-legacy-map'): the issuer's own 'Legacy SCF #' column, one row per (current id, legacy
+    id); a control new in the release gets one row with legacy_id ''. Issuer-stated, never
+    inferred. An SCF release may renumber controls and REUSE ids for different controls (2026.3
+    reused 700), so ids of two releases are never joined by equality — only through this map."""
+    try:
+        path = source_path(SCF_LEGACY_MAP_SRC)
+    except Exception:
+        return [], {"skipped": "not registered"}
+    if not path.exists():
+        return [], {"skipped": "artifact not on disk"}
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    rows = []
+    for c in doc["controls"]:
+        for legacy in (c["legacy_ids"] or [""]):
+            rows.append({"scf_id": c["scf_id"], "legacy_id": legacy, "scf_version": doc["new_version"],
+                         "legacy_version": doc["old_version"], "changes": json.dumps(c["changes"]),
+                         "source_file": path.name})
+    rows.sort(key=lambda r: (r["scf_id"], r["legacy_id"]))
+    return rows, {"rows": len(rows), "controls": len(doc["controls"]),
+                  "legacy_ids": len({r["legacy_id"] for r in rows if r["legacy_id"]}),
+                  "new_controls": sum(1 for c in doc["controls"] if not c["legacy_ids"])}
+
+
+def scf_legacy_to_current(id_space: Optional[str] = None) -> Dict[str, str]:
+    """{legacy SCF id -> current SCF id}; empty when no crosswalk is registered. With id_space (the
+    release whose ids an artifact uses), the crosswalk is used only when it runs from exactly that
+    release to the pinned one. Otherwise the result is empty, so the caller drops and counts every
+    id instead of translating it through the wrong map: the next renumbering needs its own
+    crosswalk, and this refuses to guess until it has one."""
+    rows, _ = load_scf_id_history()
+    if id_space is not None:
+        rel = lambda v: v.split(" (")[0]   # 'SCF 2026.2 (2026-07-08)' -> 'SCF 2026.2'
+        rows = [r for r in rows if rel(r["legacy_version"]) == id_space and rel(r["scf_version"]) == SCF_FRAMEWORK_LABEL]
+    return {r["legacy_id"]: r["scf_id"] for r in rows if r["legacy_id"]}
+
 
 _INSERT_RE = re.compile(r"insert:\s*param,\s*([a-z0-9_.\-]+)")
 

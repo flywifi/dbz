@@ -25,6 +25,7 @@ Usage:
     python3 dbz_query.py edgar --company "Acme" --days 180
     python3 dbz_query.py 800-63b --aal AAL2 [--section 4.2] [--control IA-2]
     python3 dbz_query.py fips --level 3 [--vendor "Microsoft"] [--status active]
+    python3 dbz_query.py scf-legacy GOV-01        # an SCF id across the 2026.3 renumbering
 
 DB discovery: walks up from CWD looking for cross-mapping/output/grc.db; or --db PATH.
 """
@@ -1680,6 +1681,31 @@ def cmd_fips(args, conn: sqlite3.Connection) -> int:
     return 0
 
 
+def cmd_scf_legacy(args, conn: sqlite3.Connection) -> int:
+    """Translate an SCF control id across a renumbering, from the issuer's own legacy-id column
+    (scf_id_history). SCF 2026.3 reused 700 ids for different controls, so one id can be both a
+    current id and the legacy id of another control: every row says which way it matched.
+    Ids are matched exactly; nothing is inferred."""
+    ident = args.scf_id.strip().upper()
+    try:
+        rows = conn.execute(
+            """SELECT CASE WHEN scf_id = :i AND legacy_id = :i THEN 'unchanged'
+                           WHEN legacy_id = :i THEN 'legacy id -> current'
+                           WHEN legacy_id = '' THEN 'new control'
+                           ELSE 'current id <- legacy' END AS matched_as,
+                      scf_id, legacy_id, scf_version, legacy_version, changes
+               FROM scf_id_history WHERE scf_id = :i OR legacy_id = :i
+               ORDER BY matched_as, scf_id, legacy_id""", {"i": ident}).fetchall()
+    except sqlite3.OperationalError:
+        print("[note] this grc.db has no scf_id_history table (schema < 3.20): rebuild with build_db.py.", file=sys.stderr)
+        return 1
+    if not rows:
+        print(f"[note] {ident} is not an SCF control id in scf_id_history (neither current nor legacy).", file=sys.stderr)
+        return 1
+    _output(rows, args.format, ["matched_as", "scf_id", "legacy_id", "scf_version", "legacy_version", "changes"])
+    return 0
+
+
 def cmd_eurlex(args, conn: sqlite3.Connection) -> int:
     """Query EUR-Lex regulatory articles by regulation, article number, or NIST family."""
     _family_note(conn, "eurlex_articles", args)
@@ -1962,6 +1988,10 @@ def build_parser() -> argparse.ArgumentParser:
     eur.add_argument("--keyword", metavar="KW", help="Keyword in article title or text")
     _add_format(eur); _add_db(eur)
 
+    scl = subs.add_parser("scf-legacy", help="Translate an SCF control id across the 2026.3 renumbering (issuer's legacy-id map)")
+    scl.add_argument("scf_id", metavar="ID", help="A current or legacy SCF control id, e.g. GOV-01")
+    _add_format(scl); _add_db(scl)
+
     return ap
 
 
@@ -2001,6 +2031,7 @@ def main(argv=None) -> int:
         "olir-hub": cmd_olir_hub,
         "fedramp": cmd_fedramp,
         "eurlex": cmd_eurlex,
+        "scf-legacy": cmd_scf_legacy,
         "800-63b": cmd_800_63b,
         "fips": cmd_fips,
     }
