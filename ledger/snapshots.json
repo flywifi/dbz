@@ -594,6 +594,14 @@
       "date": "2026-11-06",
       "known_good": true,
       "note": "CI green on 31eeace (tools/ci_status.py: health 2026-11-06T22:08:04Z; every pushed head of the phase green, C1 b7f8525 through C9 0ee289c). Dispatch 42227394107 on 889fde2: 233 requests, 94 hosts, 0 refusals."
+    },
+    {
+      "phase": "53-pre",
+      "name": "Pre-phase-53 baseline for the SCF 2026.3 ingest",
+      "sha": "18cb027",
+      "date": "2026-11-12",
+      "known_good": true,
+      "note": "CI green on 18cb027 (tools/ci_status.py: health 2026-11-11T23:39:22Z). The two failed runs on this head (2026-11-10T20:58:52Z, 2026-11-11T21:33:30Z) are weekly-refresh runs whose pull-request step fails until the owner switches on the Actions pull-request permission; their refresh branches were pushed."
     }
   ]
 }
