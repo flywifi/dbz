@@ -843,3 +843,49 @@ the ATT&CK v20.1 ingest (the Thursday slot proposes it as a PR); issuer mappings
 the blanked fields; the slot-time pin (2026-11-19 or later); the owner's PR setting; the Node 24
 majors for three actions (no GitHub-owned page names them yet); FIPS / OLIR / CPRT (no NIST machine
 source); CMMC polling (every DoD CIO host answers 403).
+
+## SCF 2026.3 ingest (Phase 53, 2026-11-12)
+
+**Why:** SCF's current release is 2026.3 (2026-09-21, "Major"); the committed artifact was 2026.2
+and the weekly drift issue said so. The user asked for the ingest. Decisions taken by the user:
+the issuer's legacy-id map becomes a queryable table with a command; the master crosswalk file is
+left as it is and the oracle compares through the map. Audit:
+`docs/audits/phase-53-adversarial-audit.md`.
+
+**What the release is.** A renumbering that reuses ids. 1,591 controls: 80 new (37 on fresh ids,
+43 on an id another control held). Of the 1,534 ids of 2026.2: 33 unchanged, 700 now name a
+different control, 801 gone. 23 deprecated controls merged into 22. The workbook is a GitHub
+release asset (the repository tree at the tag still holds the 2026.2 file and its errata text);
+the 2026.3 errata is inside the workbook. Headers re-pinned: `NIST 800-53 R5` → `R5.2`, and the
+HIPAA fan-out column.
+
+**The trap, and how it is held.** NIST's OLIR "CSF 2.0 to SCF" set (451 pairs, 186 SCF ids) uses
+2026.2 ids. Joined by id against 2026.3, 51 ids are not controls and 130 name a different control.
+The untranslated build was run on purpose: SCF's confirmed rows fell 63 → 16. The loader now
+translates through the issuer's map, refuses a map that does not start from the artifact's id
+space (`scf_id_space` in the manifest), and drops and counts what it cannot translate.
+`validate_spine` check 8j and eight `test_spine` assertions were each proven red first.
+
+**Measured.** Projection 1,117 → 1,161 edges / 776 controls (re-keyed to old ids: 1,112 carried
+over, 88 new mappings, 5 gone, 14 on new controls); fan-out witness 8,983 → 9,195; voter pairs
+15,906 → 16,020; `master_mappings` 97,648 → 97,704; pairs 180,413 → 180,739; `confirmed` 23,540 →
+23,551. Outside SCF 73 rows change verdict, all upward.
+
+**Commits.**
+- **C0** `909b4f9` the `53-pre` anchor.
+- **C1** `27d37f0` the digest's NVD suggestion parses real output; `nvd-7d` measured requests 5 → 8.
+- **C2** `3de6eb8` `bump_schema.py` rewrites only the current-version statement; selftest in CI.
+- **C3** `c29c75c` schema 3.20: `scf_id_history`, `dbz_query scf-legacy` (data-neutral).
+- **C4** `3d7bd57` the ingest.
+- **C5** `4908877` registries and doc label lines.
+- **C6** this record, the audit, the corrections of record, 0.18.0.
+
+**How it was planned.** One applier script held every edit, each asserting its anchor; it ran end
+to end twice in a throwaway clone with a real local commit per planned commit, the CI rehearsal
+after each and six builds, including a rollback rehearsal (0 table digests differing). The
+implementation ran the same stages; its measurements have 0 lines differing from the rehearsal's.
+
+**Not done, each with its unblocking event:** NIST's reference vintage (when NIST republishes the
+set); SCF's STRM files and Risk and Threat catalogs (a source decision); the other SCF documents on
+disk (when the issuer publishes them as release assets); re-measuring the phase-43 voter
+sensitivity table; fast-forwarding `main` (the owner's call).

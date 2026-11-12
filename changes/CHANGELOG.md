@@ -3,6 +3,67 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.18.0] — 2026-11-12 (phase 53 — SCF 2026.3 ingest)
+
+MINOR: schema 3.19 → 3.20 (`scf_id_history`), a new query command (`dbz_query scf-legacy`) and a
+data refresh that changes what SCF control ids mean. Audit:
+`docs/audits/phase-53-adversarial-audit.md`. Record: `docs/source-inventory.md` (Phase 53).
+
+- **Changed — SCF 2026.3 (2026-09-21, issuer label "Major") is the pinned workbook.** The release
+  renumbered 1,457 controls and reused ids: of the 1,534 ids of 2026.2, **700 now name a different
+  control**, 801 no longer exist and 33 are unchanged. The canonical label is `SCF 2026.3`;
+  `SCF 2026.2` and `SCF 2026.1` stay aliases of the framework *name* and are not id spaces.
+- **Added — the issuer's own old-id to new-id map** (`canonical-sources/scf/scf-id-legacy-map-2026.3.json`,
+  from the workbook's `Legacy SCF #` column; its three statements in the workbook agree, 0
+  contradictions), loaded as `scf_id_history` (1,614 rows: 1,591 controls, 1,534 legacy ids, 80 new)
+  and queryable: `dbz_query scf-legacy GOV-01` answers that the 2026.2 control is now `GOV-02` and
+  that `GOV-01` names a new control.
+- **Fixed before it shipped — NIST's OLIR "CSF 2.0 to SCF" pairs are translated, never joined by
+  id.** That set names SCF controls in the 2026.2 id space (186 ids: by id alone 51 are not 2026.3
+  controls and 130 name a different control). A re-pin without translation was built to prove it:
+  SCF's confirmed rows fell 63 → 16. `collect_csf2_olir_pairs` now translates through the legacy map
+  (451 of 451 pairs, 0 dropped), refuses a map that does not start from the artifact's id space,
+  and drops and counts anything it cannot translate.
+- **Added — `validate_spine` check 8j (SCF id integrity):** every id under the SCF label must be a
+  control of the pinned workbook. Red on the untranslated build (51 stray ids), green after. The
+  SCF cross-source oracle compares through the legacy map (98.2 % of 765; raw ids would read
+  47.0 %); `crosswalk_80053_master.json` is not edited (user decision).
+- **Measured effect** (pre-ingest build → this build): 800-53 projection 1,117 → 1,161 edges over
+  776 controls; fan-out witness 8,983 → 9,195; consensus-voter pairs 15,906 → 16,020; pairs
+  180,413 → 180,739 (+326, all SCF's own rows); `confirmed` 23,540 → **23,551**, `corroborated`
+  102,966 → 103,043, `reachable` 25,009 → 25,218, `weak` 28,898 → 28,927. Outside SCF, 73 of
+  172,651 rows change verdict, all upward (CIS 40, SOC 2 17, CSA CCM 12, 800-172 r3 4).
+- **Fixed — `tools/bump_schema.py` rewrites only a doc's current-version statement**
+  (`doc_claims.json` `schema_version.context_patterns`), with a selftest in the health workflow;
+  `count_truth` holds the version statement in every-occurrence mode.
+- **Fixed — the weekly digest's NVD suggestion parses the loader's real output.**
+- **Registries:** `feed_registry` scf `current`; `framework_changelog`
+  `chg-scf-2026.2-to-2026.3` confirmed from the release notes (80 controls added, 23 merged away);
+  `anticipated_updates` `au-scf`; `source_manifest` `scf-controls` re-pinned (release asset, full
+  sha256), new `scf-id-legacy-map`, `cprt-csf2-olir-graphs` `scf_id_space`.
+
+**Corrections of record.**
+- **0.16.0 said the digest's NVD suggestion was "computed from the run".** It never was on a real
+  run: `suggest` parsed stdout + stderr as one JSON value, the loader prints progress lines before
+  its document, and the shipped test fed it a bare document. The first real Wednesday run
+  (2026-11-11) printed "the run produced no parseable result". The test now uses the real shape.
+- **0.17.0 corrected STATE's schema line by hand without finding the cause.** The cause was this
+  tool: `bump_schema.py` replaced every occurrence of the old version, so the 3.18 → 3.19 bump
+  (commit `e4a1d3f`) rewrote the phase-40 row's "Schema 3.18". After that correction the tool
+  could no longer run at all (it aborted on STATE's four mentions).
+- **`nvd-7d` `requests_measured` was 5** (a 9,676-CVE week); the 2026-11-11 week needed 8.
+- **The phase-53 research figure "657 reused ids" was wrong** (it missed 43 ids taken by brand-new
+  controls); the dry-run measured 700 before anything was written.
+
+**Rollback** (rehearsed: the tree equals `c29c75c` and the rebuilt database has 0 table digests
+differing from that commit's build):
+```
+git diff --no-renames --name-status c29c75c 4908877 | while IFS=$'\t' read -r st path; do
+  case "$st" in A) git rm -q "$path";; *) git checkout -q c29c75c -- "$path";; esac; done
+python3 cross-mapping/engine/build_db.py      # then the gate battery
+```
+It keeps schema 3.20 with an empty `scf_id_history` and both tool fixes.
+
 ## [0.17.0] — 2026-11-06 (phase 52 — remediation of existing system problems)
 
 MINOR: a data-semantics change (every keyword-guessed NIST family/control link is blank), two
@@ -67,7 +128,8 @@ registry conventions (`superseded_urls`, `announcement_feeds[].enabled`), a herm
 - **Corrected (records louder than the claims):** 0.16.0's "every hand-run loader is governed" was
   false (four callers and a duplicate loader); the guessed families were presented as "relevant"
   in three skills; the 800-63B file claimed a CPRT fetch it never made; phase 50's fresh/warm gap
-  is attributed (an unpinned upstream input); STATE credited schema 3.19 with 3.18's content and
+  is attributed (an unpinned upstream input); STATE credited schema 3.19 with 3.18's content (**mechanism found in 0.18.0:**
+  `bump_schema.py`'s replace-all rule, commit `e4a1d3f`) and
   still planned the "18 bridge gaps" phase 44 retracted; BENCHMARK's per-framework list carried
   figures the phase-46/50 refreshes had moved; the runbook said STIGs were excluded, counted a
   build load that no longer exists and listed EUR-Lex as 0 articles.
@@ -117,7 +179,9 @@ source. Audit: `docs/audits/phase-51-adversarial-audit.md`. Record: `docs/source
   - **Owner action:** enable *Allow GitHub Actions to create and approve pull requests*.
 - **Report-only results wait for the next session.** One `weekly-digest` issue is edited in place,
   one section per slot. It carries "Suggested to commit at your next session", computed from the
-  run. For NVD: 9,676 CVEs / 7.3 MB a week, so the suggestion is "not as weekly snapshots". It
+  run. For NVD: 9,676 CVEs / 7.3 MB a week, so the suggestion is "not as weekly snapshots"
+  (**corrected in 0.18.0:** that line was computed in a test, never on a real run; the parser
+  could not read the loader's real output until phase 53). It
   also names a failed battery or PR step. `CLAUDE.md` tells every new session to read it first.
 - **Not scheduled, with the measured reason:** EUR-Lex (0 articles extracted), FIPS (the CMVP API
   is unavailable and NIST has no machine listing), OLIR and CPRT (both endpoints 404).
