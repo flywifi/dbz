@@ -14,10 +14,15 @@ host rules apply) and compared with the committed file itself — there is no se
 
     "upstream_check": {"method": "sha256", "expect": "json"}            # the body's bytes == the committed file's
     "upstream_check": {"method": "json_equal", "path": "rows"}          # parsed body == committed document[path]
+    "upstream_check": {"method": "json_unordered", "path": "rows"}      # the same, ignoring the order of every list
     optional: "url" (default: the entry's source_url), "file" (default: the entry's file)
 
 `expect` ("json" | "pdf") names what the body must be before it is compared: a bot-challenge or
 error page served with HTTP 200 is a failed check, never a reported change.
+
+Use `json_unordered` wherever the issuer does not guarantee an order or the committed copy is sorted:
+phase 54 registered the CCI mapping (committed sorted) as `json_equal` and NIST's CPRT exports as
+`sha256`, and reported three changes that were the same records in another order.
 
 Rows are `same`, `changed` or `check_failed`. The run's status is `drift` when any row changed,
 `check_failed` when none changed but one could not be checked, else `current`. Report-only: this
@@ -32,11 +37,13 @@ import argparse
 import hashlib
 import json
 import sys
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "canonical-sources" / "source_manifest.json"
-METHODS = ("sha256", "json_equal")
+METHODS = ("sha256", "json_equal", "json_unordered")
+RUN_BUDGET_S = 600.0
 
 
 def _sha(b: bytes) -> str:
@@ -52,6 +59,15 @@ def _is(expect: str | None, body: bytes) -> bool:
     elif expect == "pdf":
         return body[:5] == b"%PDF-"
     return True
+
+
+def _canon(x):
+    """Order-insensitive form: an issuer that serves the same records in another order has not changed them."""
+    if isinstance(x, dict):
+        return {k: _canon(v) for k, v in x.items()}
+    if isinstance(x, list):
+        return sorted((_canon(v) for v in x), key=lambda v: json.dumps(v, sort_keys=True))
+    return x
 
 
 def compare(spec: dict, upstream: bytes, committed: bytes) -> tuple:
@@ -75,6 +91,8 @@ def compare(spec: dict, upstream: bytes, committed: bytes) -> tuple:
     for key in (spec.get("path") or "").split("."):
         if key:
             doc = doc[key]
+    if method == "json_unordered":
+        up, doc = _canon(up), _canon(doc)
     if up == doc:
         return "same", None
     n = (f"{len(up):,} vs {len(doc):,} entries" if isinstance(up, (list, dict)) and isinstance(doc, (list, dict))
@@ -91,11 +109,11 @@ def _fetch(url: str) -> bytes:
     return r.body
 
 
-def run(fetch=None, manifest: dict | None = None, root: Path = ROOT) -> dict:
+def run(fetch=None, manifest: dict | None = None, root: Path = ROOT, budget_s: float = RUN_BUDGET_S, clock=time.monotonic) -> dict:
     """Check every manifest source that declares an upstream_check. `fetch(url) -> bytes`."""
     fetch = fetch or _fetch
     manifest = manifest if manifest is not None else json.loads(MANIFEST.read_text(encoding="utf-8"))
-    rows = []
+    rows, start = [], clock()
     for e in manifest.get("sources", []):
         spec = e.get("upstream_check")
         if not isinstance(spec, dict):
@@ -106,6 +124,9 @@ def run(fetch=None, manifest: dict | None = None, root: Path = ROOT) -> dict:
         path = root / rel if rel else None
         if not url or path is None or not path.is_file():
             row.update(status="check_failed", detail="no upstream URL or no committed file to compare")
+        elif clock() - start > budget_s:
+            row.update(status="check_failed", detail=f"not reached: the run's {budget_s:.0f} s budget was spent "
+                                                     "(an issuer asked the client to slow down); checked again next run")
         else:
             try:
                 body = fetch(url)
@@ -134,13 +155,16 @@ def selftest() -> int:
         {"id": "host-down", "file": "a.json", "source_url": "u://down", "upstream_check": {"method": "sha256", "expect": "json"}},
         {"id": "wrapped-same", "file": "w.json", "source_url": "u://rows", "upstream_check": {"method": "json_equal", "path": "rows"}},
         {"id": "wrapped-changed", "file": "w.json", "source_url": "u://rows2", "upstream_check": {"method": "json_equal", "path": "rows"}},
+        {"id": "reordered", "file": "w.json", "source_url": "u://rows-reordered", "upstream_check": {"method": "json_unordered", "path": "rows"}},
+        {"id": "reordered-strict", "file": "w.json", "source_url": "u://rows-reordered", "upstream_check": {"method": "json_equal", "path": "rows"}},
+        {"id": "reordered-and-changed", "file": "w.json", "source_url": "u://rows2-reordered", "upstream_check": {"method": "json_unordered", "path": "rows"}},
         {"id": "pdf-same", "file": "p.pdf", "source_url": "u://pdf", "upstream_check": {"method": "sha256", "expect": "pdf"}},
         {"id": "pdf-html", "file": "p.pdf", "source_url": "u://pdfhtml", "upstream_check": {"method": "sha256", "expect": "pdf"}},
         {"id": "file-gone", "file": "missing.json", "source_url": "u://same", "upstream_check": {"method": "sha256"}},
         {"id": "not-checked", "file": "a.json", "source_url": "u://never"},
     ]}
     served = {"u://same": b'{"v": 1}\n', "u://edited": b'{"v": 2}\n', "u://challenge": b"<html>checking your browser</html>",
-              "u://rows": b"[1, 2, 3]", "u://rows2": b"[1, 2, 3, 4]", "u://pdf": b"%PDF-1.7 body", "u://pdfhtml": b"<html>404</html>"}
+              "u://rows": b"[1, 2, 3]", "u://rows2": b"[1, 2, 3, 4]", "u://rows-reordered": b"[3, 1, 2]", "u://rows2-reordered": b"[3, 1, 4]", "u://pdf": b"%PDF-1.7 body", "u://pdfhtml": b"<html>404</html>"}
     asked = []
 
     def fetch(url):
@@ -152,15 +176,22 @@ def selftest() -> int:
     got = {r["id"]: r["status"] for r in rep["upstream_signals"]}
     want = {"same-bytes": "same", "edited-in-place": "changed", "challenge-page": "check_failed", "host-down": "check_failed",
             "wrapped-same": "same", "wrapped-changed": "changed", "pdf-same": "same", "pdf-html": "check_failed",
-            "file-gone": "check_failed"}
+            "file-gone": "check_failed",
+            "reordered": "same", "reordered-strict": "changed", "reordered-and-changed": "changed"}
     quiet = run(lambda u: served["u://same"], {"sources": man["sources"][:1]}, d)
     failed_only = run(fetch, {"sources": [man["sources"][0], man["sources"][3]]}, d)
+    ticks, late_asked = iter([0, 0] + [700] * 9), []
+    late = run(lambda u: (late_asked.append(u), served[u])[1], {"sources": man["sources"][:2]}, d, 600, lambda: next(ticks))
     cases = [
         ("each outcome is classified", got == want),
+        ("past the run budget a source is not fetched and reads check_failed, never same",
+         [r["status"] for r in late["upstream_signals"]] == ["same", "check_failed"] and late_asked == ["u://same"]),
         ("a challenge or error page is a failed check, never a reported change",
          got["challenge-page"] == got["pdf-html"] == "check_failed"),
         ("a source without upstream_check is not fetched", "u://never" not in asked and "not-checked" not in got),
-        ("any change makes the run drift", rep["upstream_status"] == "drift" and rep["upstream_counts"]["changed"] == 2),
+        ("the same records in another order are not a change (the phase-54 false alarms); the strict method says changed",
+         got["reordered"] == "same" and got["reordered-strict"] == "changed" and got["reordered-and-changed"] == "changed"),
+        ("any change makes the run drift", rep["upstream_status"] == "drift" and rep["upstream_counts"]["changed"] == 4),
         ("no change and no failure is current", quiet["upstream_status"] == "current"),
         ("a failure without a change is check_failed, not current", failed_only["upstream_status"] == "check_failed"),
     ]

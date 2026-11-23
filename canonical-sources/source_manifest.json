@@ -886,7 +886,7 @@
       },
       "notes": "Official NIST CPRT export (user-provided). The external_reference relationships are NIST's own 171r3 -> 800-53r5 mapping — loader load_171r3_projection. Dest ids are r5.1.1 identifiers; ids are stable into the r5.2.0 catalog (normalize_control_id de-pads 'AC-01' -> 'AC-1').",
       "upstream_check": {
-        "method": "sha256",
+        "method": "json_unordered",
         "expect": "json",
         "url": "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/SP_800_171_3_0_0/export/json?element=all"
       }
@@ -914,7 +914,7 @@
       },
       "notes": "Official NIST CPRT export (user-provided). The 107 external_reference rows to SP 800-53 r5.2.0 are NIST's own 172r3 -> 800-53 mapping — loader load_172r3_projection. Supersedes-in-currency the 2021 xlsx pin (nist-800-172) for mapping purposes; the r3 OSCAL catalog pin remains.",
       "upstream_check": {
-        "method": "sha256",
+        "method": "json_unordered",
         "expect": "json",
         "url": "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/SP_800_172_3_0_0/export/json?element=all"
       }
@@ -959,7 +959,7 @@
       "role": "hipaa_66r2_structure",
       "notes": "SP 800-66r2 element inventory: 5 Security Rule sections, 22 standards, 53 implementation specifications, key activities + descriptions + sample questions, and per-standard relevant-publication crosswalk. Element inventory validates the citation namespace for the OLIR graph loader; guidance content is reference-only. NIST publication — public domain.",
       "upstream_check": {
-        "method": "sha256",
+        "method": "json_unordered",
         "expect": "json",
         "url": "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/SP800_66_2_0_0/export/json?element=all"
       }
@@ -995,7 +995,7 @@
       "role": "csf2_structure",
       "notes": "CSF 2.0 element inventory (functions/categories/subcategories incl. withdrawn 1.1-era ids) — validates the subcategory namespace for the OLIR graph loader.",
       "upstream_check": {
-        "method": "sha256",
+        "method": "json_unordered",
         "expect": "json",
         "url": "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/CSF_2_0_0/export/json?element=all"
       }
@@ -1075,7 +1075,7 @@
       "role": "cci_mapping_corroboration",
       "notes": "Derived, revision-split control↔CCI republication of the DISA CCI list ({Index, Control, CCI Number, Description}). Enrichment/corroboration ONLY — never a primary authority. Distilled by tools/cci_harvest.py --acasehs.",
       "upstream_check": {
-        "method": "json_equal",
+        "method": "json_unordered",
         "path": "rows",
         "expect": "json"
       }
@@ -1091,7 +1091,7 @@
       "role": "cci_mapping_corroboration",
       "notes": "Derived, revision-split control↔CCI republication of the DISA CCI list ({Index, Control, CCI Number, Description}). Enrichment/corroboration ONLY — never a primary authority. Distilled by tools/cci_harvest.py --acasehs.",
       "upstream_check": {
-        "method": "json_equal",
+        "method": "json_unordered",
         "path": "rows",
         "expect": "json"
       }
