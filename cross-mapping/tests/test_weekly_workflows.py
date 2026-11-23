@@ -217,9 +217,9 @@ def test_build_census_and_inactivity():
     pol = fetchkit.load_policies()
     days, bad = fr.census_slots(SCHED, pol)
     ok(SCHED["build_requests_measured"] == {}, "the build makes no network request: the OSCAL catalog is committed (phase 52)")
-    ok(not bad and days["1"]["raw.githubusercontent.com"]["requests"] == 3
+    ok(not bad and days["1"]["raw.githubusercontent.com"]["requests"] == 9
        and days["2"].get("raw.githubusercontent.com", {}).get("requests", 0) == 0,
-       "a building day carries only its jobs' own raw-GitHub reads (Monday 3, Tuesday 0), inside the cap")
+       "a building day carries only its jobs' own raw-GitHub reads (Monday 9 = 3 + the six upstream-fingerprint reads of phase 54, Tuesday 0), inside the cap")
     nob = copy.deepcopy(SCHED)
     for s in nob["slots"].values():
         s.pop("builds", None)

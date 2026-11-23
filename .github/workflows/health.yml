@@ -34,6 +34,9 @@ jobs:
       - name: Bump-schema selftest (only the current-version statement moves; history stays)
         run: python3 tools/bump_schema.py --selftest
 
+      - name: Upstream-fingerprint selftest (an edited file is a change; an error page is a failed check)
+        run: python3 tools/upstream_fingerprint.py --selftest
+
       - name: Fetch-layer unit tests (offline; host usage rules, RFC 9309 robots)
         run: python3 cross-mapping/tests/test_fetchkit.py
 

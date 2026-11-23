@@ -420,6 +420,9 @@ def stage_check() -> dict:
     ann_rc, ann_out = _run([sys.executable, str(ENGINE / "announcement_monitor.py"), "--dry-run"])
     stig_signal = stage_stig_check()
     cci_signal = stage_cci_check()
+    # phase 54: sources the issuer edits in place move no release tag; compare them with the committed files
+    import upstream_fingerprint
+    upstream_signal = upstream_fingerprint.run()
     horizon_signal = stage_horizon()
     reg = json.loads(REGISTRY.read_text(encoding="utf-8"))
     rows = []
@@ -435,6 +438,8 @@ def stage_check() -> dict:
     report = {"generated_at": _now(), "monitor_exit": monitor_rc, "announcements_exit": ann_rc,
               "stig_status": stig_signal.get("stig_status"), "stig_signals": stig_signal.get("stig_signals"),
               "cci_status": cci_signal.get("cci_status"), "horizon_overdue": horizon_signal.get("horizon_overdue"),
+              "upstream_status": upstream_signal["upstream_status"], "upstream_counts": upstream_signal["upstream_counts"],
+              "upstream_signals": upstream_signal["upstream_signals"],
               "fetch_ledger": ledger, "policy_refusals": sum(v["refused"] for v in ledger.values()),
               "feeds": rows, "summary": {}}
     idle = days_since_last_commit()
@@ -446,6 +451,10 @@ def stage_check() -> dict:
     REPORT.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(f"[check] monitor rc={monitor_rc} announcements rc={ann_rc}")
     print(f"[check] {len(rows)} feeds -> {report['summary']}")
+    print(f"[check] upstream fingerprint: {report['upstream_status']} {report['upstream_counts']}")
+    for s in report["upstream_signals"]:
+        if s["status"] != "same":
+            print(f"[check] UPSTREAM {s['status'].upper()} {s['id']}: {s['detail']}")
     print(f"[check] fetch: {sum(v['requests'] for v in ledger.values())} requests to {len(ledger)} hosts, "
           f"{report['policy_refusals']} refused by host rules")
     for r in rows:

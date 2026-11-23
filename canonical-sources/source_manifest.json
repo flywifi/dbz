@@ -685,7 +685,11 @@
       "source_url": "https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/accex/documents/presentations/FY26-Microsoft-Supplier-Data-Protection-Requirements-v12_en-US.pdf",
       "sha256_prefix": "2070afca18465d27",
       "role": "vendor_supplier_requirements",
-      "notes": "CURRENT DPR: 63 requirements (was 67 in v11), AI Publisher/Deployer split, Red Status sanctions. Supersedes the v11 seed PDFs (kept for delta reference: MICROSOFT_SSPA_OVERVIEW_v11_APRIL_2025.pdf, Microsoft_SSPA_DPR_v11_FY25.pdf)."
+      "notes": "CURRENT DPR: 63 requirements (was 67 in v11), AI Publisher/Deployer split, Red Status sanctions. Supersedes the v11 seed PDFs (kept for delta reference: MICROSOFT_SSPA_OVERVIEW_v11_APRIL_2025.pdf, Microsoft_SSPA_DPR_v11_FY25.pdf).",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "pdf"
+      }
     },
     {
       "id": "microsoft-sspa-dpr-v11-seed",
@@ -880,7 +884,12 @@
         ],
         "mapping_relationships": "source_doc SP_800_171_3_0_0 -> dest_doc SP_800_53_5_1_1, relationship_identifier external_reference (157 rows; requirement id '03.15.01' -> control id 'AC-01')"
       },
-      "notes": "Official NIST CPRT export (user-provided). The external_reference relationships are NIST's own 171r3 -> 800-53r5 mapping — loader load_171r3_projection. Dest ids are r5.1.1 identifiers; ids are stable into the r5.2.0 catalog (normalize_control_id de-pads 'AC-01' -> 'AC-1')."
+      "notes": "Official NIST CPRT export (user-provided). The external_reference relationships are NIST's own 171r3 -> 800-53r5 mapping — loader load_171r3_projection. Dest ids are r5.1.1 identifiers; ids are stable into the r5.2.0 catalog (normalize_control_id de-pads 'AC-01' -> 'AC-1').",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json",
+        "url": "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/SP_800_171_3_0_0/export/json?element=all"
+      }
     },
     {
       "id": "cprt-sp800-171a-r3",
@@ -903,7 +912,12 @@
       "structure": {
         "mapping_relationships": "source_doc SP_800_172_3_0_0 -> dest_doc SP_800_53_5_2_0 external_reference (107 rows) + -> SP_800_171_3_0_0 (25 rows)"
       },
-      "notes": "Official NIST CPRT export (user-provided). The 107 external_reference rows to SP 800-53 r5.2.0 are NIST's own 172r3 -> 800-53 mapping — loader load_172r3_projection. Supersedes-in-currency the 2021 xlsx pin (nist-800-172) for mapping purposes; the r3 OSCAL catalog pin remains."
+      "notes": "Official NIST CPRT export (user-provided). The 107 external_reference rows to SP 800-53 r5.2.0 are NIST's own 172r3 -> 800-53 mapping — loader load_172r3_projection. Supersedes-in-currency the 2021 xlsx pin (nist-800-172) for mapping purposes; the r3 OSCAL catalog pin remains.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json",
+        "url": "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/SP_800_172_3_0_0/export/json?element=all"
+      }
     },
     {
       "id": "cprt-sp800-172a-r3",
@@ -943,7 +957,12 @@
       "retrieved": "2026-07-03",
       "sha256": "ff09781b88d75428a319a56f542a44306ffc2d80360b351f52b49cf5be379cef",
       "role": "hipaa_66r2_structure",
-      "notes": "SP 800-66r2 element inventory: 5 Security Rule sections, 22 standards, 53 implementation specifications, key activities + descriptions + sample questions, and per-standard relevant-publication crosswalk. Element inventory validates the citation namespace for the OLIR graph loader; guidance content is reference-only. NIST publication — public domain."
+      "notes": "SP 800-66r2 element inventory: 5 Security Rule sections, 22 standards, 53 implementation specifications, key activities + descriptions + sample questions, and per-standard relevant-publication crosswalk. Element inventory validates the citation namespace for the OLIR graph loader; guidance content is reference-only. NIST publication — public domain.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json",
+        "url": "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/SP800_66_2_0_0/export/json?element=all"
+      }
     },
     {
       "id": "cprt-sp800-66r2-olir-graphs",
@@ -974,7 +993,12 @@
       "retrieved": "2026-07-03",
       "sha256": "28ba53c5ea2f57fd7fcb56d7f512ab8b28c19516af411dffac6c782debc6c7e1",
       "role": "csf2_structure",
-      "notes": "CSF 2.0 element inventory (functions/categories/subcategories incl. withdrawn 1.1-era ids) — validates the subcategory namespace for the OLIR graph loader."
+      "notes": "CSF 2.0 element inventory (functions/categories/subcategories incl. withdrawn 1.1-era ids) — validates the subcategory namespace for the OLIR graph loader.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json",
+        "url": "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/CSF_2_0_0/export/json?element=all"
+      }
     },
     {
       "id": "cprt-csf2-olir-graphs",
@@ -1049,7 +1073,12 @@
       "source_url": "https://raw.githubusercontent.com/acasehs/STIG-Control-CCI/main/rev4cci.json",
       "sha256_prefix": "5418f786382d780d",
       "role": "cci_mapping_corroboration",
-      "notes": "Derived, revision-split control↔CCI republication of the DISA CCI list ({Index, Control, CCI Number, Description}). Enrichment/corroboration ONLY — never a primary authority. Distilled by tools/cci_harvest.py --acasehs."
+      "notes": "Derived, revision-split control↔CCI republication of the DISA CCI list ({Index, Control, CCI Number, Description}). Enrichment/corroboration ONLY — never a primary authority. Distilled by tools/cci_harvest.py --acasehs.",
+      "upstream_check": {
+        "method": "json_equal",
+        "path": "rows",
+        "expect": "json"
+      }
     },
     {
       "id": "acasehs-cci-rev5",
@@ -1060,7 +1089,12 @@
       "source_url": "https://raw.githubusercontent.com/acasehs/STIG-Control-CCI/main/rev5cci.json",
       "sha256_prefix": "b4f79f5e83365402",
       "role": "cci_mapping_corroboration",
-      "notes": "Derived, revision-split control↔CCI republication of the DISA CCI list ({Index, Control, CCI Number, Description}). Enrichment/corroboration ONLY — never a primary authority. Distilled by tools/cci_harvest.py --acasehs."
+      "notes": "Derived, revision-split control↔CCI republication of the DISA CCI list ({Index, Control, CCI Number, Description}). Enrichment/corroboration ONLY — never a primary authority. Distilled by tools/cci_harvest.py --acasehs.",
+      "upstream_check": {
+        "method": "json_equal",
+        "path": "rows",
+        "expect": "json"
+      }
     },
     {
       "id": "trackr-cci",
@@ -1082,7 +1116,11 @@
       "source_url": "https://raw.githubusercontent.com/FedRAMP/rules/main/fedramp-consolidated-rules.json",
       "sha256_prefix": "135707003f0aaa5c",
       "role": "fedramp_rules_canonical",
-      "notes": "Complete verbatim canonical dataset (FedRAMP/rules). FedRAMP's stated machine-readable source of truth for the Consolidated Rules for 2026. KSI indicators carry official 800-53 r5 control arrays (the KSI->800-53 crosswalk). Poll info.version/info.last_updated for currency. Re-harvested 2026-09-19 at version 2026.09.13.02: entity sets identical (+0/-0 across KSI/FRR/CTL/FRD; CTL byte-equal); delta is metadata/guidance — 159 rules' defined-terms cross-references, timeframe_num/timeframe_type encodings of durations already stated in prose (CCM-OCR-AVL, MKT-CAS-RFR, MKT-IIP-DLA), one statement clarification (CCM-OCR-AVL adds '(if applicable):'). Two loader-invisible policy shifts documented for readers: FRR/CPO info .rev5.effective.date.grace.default moved 2027-01-01 -> 2027-07-01, and Class A was dropped from the CSF (FRR/CPO .rev5.subsets) and CCL (FRR/FRC .subsets) applicability classes."
+      "notes": "Complete verbatim canonical dataset (FedRAMP/rules). FedRAMP's stated machine-readable source of truth for the Consolidated Rules for 2026. KSI indicators carry official 800-53 r5 control arrays (the KSI->800-53 crosswalk). Poll info.version/info.last_updated for currency. Re-harvested 2026-09-19 at version 2026.09.13.02: entity sets identical (+0/-0 across KSI/FRR/CTL/FRD; CTL byte-equal); delta is metadata/guidance — 159 rules' defined-terms cross-references, timeframe_num/timeframe_type encodings of durations already stated in prose (CCM-OCR-AVL, MKT-CAS-RFR, MKT-IIP-DLA), one statement clarification (CCM-OCR-AVL adds '(if applicable):'). Two loader-invisible policy shifts documented for readers: FRR/CPO info .rev5.effective.date.grace.default moved 2027-01-01 -> 2027-07-01, and Class A was dropped from the CSF (FRR/CPO .rev5.subsets) and CCL (FRR/FRC .subsets) applicability classes.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json"
+      }
     },
     {
       "id": "fedramp-consolidated-rules-schema",
@@ -1093,7 +1131,11 @@
       "source_url": "https://raw.githubusercontent.com/FedRAMP/rules/main/schemas/fedramp-consolidated-rules.schema.json",
       "sha256_prefix": "d2262a7bc5932170",
       "role": "fedramp_rules_canonical",
-      "notes": "Complete JSON Schema for the consolidated-rules dataset."
+      "notes": "Complete JSON Schema for the consolidated-rules dataset.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json"
+      }
     },
     {
       "id": "fedramp-schema-accepted-vulnerability-info",
@@ -1104,7 +1146,11 @@
       "source_url": "https://www.fedramp.gov/schemas/fedramp-accepted-vulnerability-info-schema-2026-06-24.json",
       "sha256_prefix": "f3dcb0211ddb1d19",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json"
+      }
     },
     {
       "id": "fedramp-schema-advisor-information",
@@ -1115,7 +1161,11 @@
       "source_url": "https://www.fedramp.gov/schemas/fedramp-advisor-information-schema-2026-06-24.json",
       "sha256_prefix": "014ad6fed67d5371",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json"
+      }
     },
     {
       "id": "fedramp-schema-assessor-information",
@@ -1126,7 +1176,11 @@
       "source_url": "https://www.fedramp.gov/schemas/fedramp-assessor-information-schema-2026-06-24.json",
       "sha256_prefix": "00adeff8fd76f235",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json"
+      }
     },
     {
       "id": "fedramp-schema-certification-package-overview",
@@ -1137,7 +1191,11 @@
       "source_url": "https://www.fedramp.gov/schemas/fedramp-certification-package-overview-schema-2026-06-24.json",
       "sha256_prefix": "14a7afcec4c9d638",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json"
+      }
     },
     {
       "id": "fedramp-schema-common-definitions",
@@ -1148,7 +1206,11 @@
       "source_url": "https://www.fedramp.gov/schemas/fedramp-common-definitions-schema-2026-06-24.json",
       "sha256_prefix": "07d70d4dabf8010d",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json"
+      }
     },
     {
       "id": "fedramp-schema-historical-ver-activity",
@@ -1159,7 +1221,11 @@
       "source_url": "https://www.fedramp.gov/schemas/fedramp-historical-ver-activity-schema-2026-06-24.json",
       "sha256_prefix": "497e2358cf72ccd8",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json"
+      }
     },
     {
       "id": "fedramp-schema-incident-report",
@@ -1170,7 +1236,11 @@
       "source_url": "https://www.fedramp.gov/schemas/fedramp-incident-report-schema-2026-06-24.json",
       "sha256_prefix": "cad5b306179142d3",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json"
+      }
     },
     {
       "id": "fedramp-schema-ongoing-certification-report",
@@ -1181,7 +1251,11 @@
       "source_url": "https://www.fedramp.gov/schemas/fedramp-ongoing-certification-report-schema-2026-06-24.json",
       "sha256_prefix": "67fc27322930ccd7",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json"
+      }
     },
     {
       "id": "fedramp-schema-security-decision-record",
@@ -1192,7 +1266,11 @@
       "source_url": "https://www.fedramp.gov/schemas/fedramp-security-decision-record-schema-2026-06-24.json",
       "sha256_prefix": "361f3322a4da2fd8",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json"
+      }
     },
     {
       "id": "fedramp-schema-significant-change-notifications",
@@ -1203,7 +1281,11 @@
       "source_url": "https://www.fedramp.gov/schemas/fedramp-significant-change-notifications-schema-2026-06-24.json",
       "sha256_prefix": "af492199332d608a",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json"
+      }
     },
     {
       "id": "fedramp-schema-vulnerability-detail-report",
@@ -1214,7 +1296,11 @@
       "source_url": "https://www.fedramp.gov/schemas/fedramp-vulnerability-detail-report-schema-2026-06-24.json",
       "sha256_prefix": "70d53c3c8a2d63cc",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version."
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json"
+      }
     },
     {
       "id": "fedramp-2026-markdown-corpus",
@@ -1225,7 +1311,13 @@
       "source_url": "https://github.com/FedRAMP/2026-markdown",
       "sha256_prefix": "035f9c0b0a27b4f3",
       "role": "fedramp_rules_narrative",
-      "notes": "Complete 291-file narrative corpus (per-audience rule text + guidance), mirrored whole — FedRAMP publishes it specifically for machine consumption. Drift signal: _sources.json (sha256 pinned here)."
+      "notes": "Complete 291-file narrative corpus (per-audience rule text + guidance), mirrored whole — FedRAMP publishes it specifically for machine consumption. Drift signal: _sources.json (sha256 pinned here).",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json",
+        "url": "https://raw.githubusercontent.com/FedRAMP/2026-markdown/main/_sources.json",
+        "file": "canonical-sources/source_data/fedramp/2026-markdown/_sources.json"
+      }
     },
     {
       "id": "dod-cmmc-suspension-memo",
@@ -1358,7 +1450,11 @@
       "sha256": "a281d6da3ce0083ae1e8c14a0753bca4d37523564084ab1000dedcf2489cddff",
       "role": "nist_catalog_oscal",
       "source_url": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
-      "notes": "The build's hermetic OSCAL input (phase 52): a byte-identical copy of the warm cache the committed derived data was built from (5,136,923 B). Upstream main is unpinned, so an upgrade arrives through standards_refresh --fetch as a reviewed diff of this file. A fresh build from this file reproduces canonical-sources/uncertainty_ledger.jsonl exactly (0/247 lines differ, plan T-8)."
+      "notes": "The build's hermetic OSCAL input (phase 52): a byte-identical copy of the warm cache the committed derived data was built from (5,136,923 B). Upstream main is unpinned, so an upgrade arrives through standards_refresh --fetch as a reviewed diff of this file. A fresh build from this file reproduces canonical-sources/uncertainty_ledger.jsonl exactly (0/247 lines differ, plan T-8).",
+      "upstream_check": {
+        "method": "sha256",
+        "expect": "json"
+      }
     },
     {
       "id": "scf-id-legacy-map",

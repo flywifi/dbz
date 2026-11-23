@@ -177,6 +177,31 @@ runners (the three TLS hosts fail certificate verification with "unable to get l
 certificate"; cyber.gov.au timed out). It also found the two defects fixed in 0.15.1 (robots
 precedence; duplicate GitHub lookups).
 
+## Upstream fingerprint — sources edited in place (Phase 54)
+
+A release tag only moves when the issuer cuts a release. Several issuers instead edit a file in
+place: phase 54 found seven such changes that no check had reported (the FedRAMP consolidated rules
+and their schema, eleven FedRAMP schemas under an unchanged dated filename, the FedRAMP 2026
+documentation corpus, NIST's SP 800-53 OSCAL catalog at an unchanged release 5.2.0, NIST's CSF 2.0
+CPRT export, and the community CCI mapping).
+
+`tools/upstream_fingerprint.py` runs inside the Monday drift check. For every `source_manifest.json`
+entry with an `upstream_check` it fetches the issuer's file once (through fetchkit) and compares it
+with the committed file itself, so there is no second pin to go stale. Rows are `same`, `changed`
+or `check_failed`; an error or challenge page is a failed check, never a change. The drift issue
+lists every row that is not `same` as `upstream/<manifest id>`.
+
+- **It is report-only.** A `changed` row means "review and ingest", as its own change.
+- **To add a source:** give its manifest entry an `upstream_check` (through `registry_io`), confirm
+  with `python3 tools/upstream_fingerprint.py --check` that it reads `same` or a change you can
+  explain, and add its host to the Monday job's `requests_measured` in `fetch_schedule.json`.
+- **Only a URL the issuer can change in place is worth a check.** A tag-pinned or dated-document URL
+  never changes; a release asset is covered by the release comparison.
+- **Not covered, with the reason:** the SP 800-171A and 800-172A CPRT exports (they matched on
+  2026-11-23; adding them would put csrc.nist.gov at its per-run cap); EUR-Lex (re-derived every
+  Tuesday); KEV, ATT&CK and the STIG library (their own weekly jobs); DoD CIO documents (the host
+  answers automated clients 403); sources whose issuer publishes only a web page.
+
 ## Weekly rotation (Phase 51)
 
 Everything that can be automated runs once a week, spread over four weekdays so no host is hit by

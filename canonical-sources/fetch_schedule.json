@@ -71,7 +71,7 @@
         "cloudsecurityalliance.org": 3,
         "coag.gov": 2,
         "cppa.ca.gov": 1,
-        "csrc.nist.gov": 18,
+        "csrc.nist.gov": 22,
         "cwe.mitre.org": 2,
         "cyber.trackr.live": 3,
         "d3fend.mitre.org": 1,
@@ -97,7 +97,7 @@
         "pages.nist.gov": 1,
         "pcaobus.org": 1,
         "public.cyber.mil": 5,
-        "raw.githubusercontent.com": 3,
+        "raw.githubusercontent.com": 9,
         "security.cms.gov": 2,
         "standards.ieee.org": 2,
         "statutes.capitol.texas.gov": 1,
@@ -123,7 +123,7 @@
         "www.fdic.gov": 3,
         "www.federalregister.gov": 14,
         "www.federalreserve.gov": 2,
-        "www.fedramp.gov": 4,
+        "www.fedramp.gov": 15,
         "www.ffiec.gov": 1,
         "www.fincen.gov": 3,
         "www.finra.org": 3,
@@ -149,9 +149,10 @@
         "www.priv.gc.ca": 1,
         "www.rfc-editor.org": 1,
         "www.sec.gov": 3,
-        "www.whitehouse.gov": 3
+        "www.whitehouse.gov": 3,
+        "cdn-dynmedia-1.microsoft.com": 1
       },
-      "measured": "2026-11-05 dispatch run 41940244303 fetch_ledger (230 requests to 90 hosts, after the 0.15.1 de-duplication)"
+      "measured": "2026-11-05 dispatch run 41940244303 fetch_ledger (230 requests to 90 hosts, after the 0.15.1 de-duplication); phase 54 adds the upstream fingerprint: 22 requests (cdn-dynmedia-1.microsoft.com 1, csrc.nist.gov 4, raw.githubusercontent.com 6, www.fedramp.gov 11), measured 2026-11-23"
     },
     "fr-watcher": {
       "mode": "pr",

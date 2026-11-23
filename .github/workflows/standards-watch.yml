@@ -76,7 +76,7 @@ jobs:
             const report = JSON.parse(fs.readFileSync(path, 'utf8'));
             const summary = report.summary || {};
             const bad = (s) => s === 'drift' || s === 'check_failed';
-            const dedicated = [['stig', report.stig_status], ['cci', report.cci_status]];
+            const dedicated = [['stig', report.stig_status], ['cci', report.cci_status], ['upstream', report.upstream_status]];
             const refusals = report.policy_refusals || 0;
             const idle = report.inactivity_warning ? report.days_since_last_commit : 0;
             const drifted = (summary.registry_stale || 0) + (summary.artifact_stale || 0) + (summary.check_failed || 0)
@@ -88,6 +88,9 @@ jobs:
             for (const [name, s] of Object.entries(report.stig_signals || {})) {
               const detail = [s.library, s.reason, s.n_newer ? `${s.n_newer} newer` : ''].filter(Boolean).join(' — ');
               sig.push(`| stig/${name} | ${s.status} | ${detail} |`);
+            }
+            for (const s of (report.upstream_signals || [])) {
+              if (s.status !== 'same') sig.push(`| upstream/${s.id} | ${s.status} | ${s.detail || ''} |`);
             }
             if (refusals) sig.push(`| fetch policy | ${refusals} refused | per-host reasons in fetch_ledger (artifact) |`);
             if (idle) sig.push(`| inactivity | ${idle} days since the last commit | GitHub disables scheduled workflows at 60 days; merge a refresh PR or commit |`);
