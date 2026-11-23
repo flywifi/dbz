@@ -618,6 +618,14 @@
       "date": "2026-11-23",
       "known_good": true,
       "note": "CI green on f85dc9c (tools/ci_status.py: health runs green through 2026-11-21T16:58:14Z)."
+    },
+    {
+      "phase": "54-close",
+      "name": "Phase 54 closed at 0.19.0: upstream fingerprint in the Monday drift check",
+      "sha": "f0da8be",
+      "date": "2026-11-23",
+      "known_good": true,
+      "note": "CI green on f0da8be (tools/ci_status.py: health 2026-11-23T14:42:50Z). Dispatch 45197160117 on f0da8be: the drift issue lists upstream drift with 18 changed rows and no host-rule refusal."
     }
   ]
 }
