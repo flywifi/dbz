@@ -1445,12 +1445,12 @@
       "id": "nist-800-53-r5.2.0-oscal-catalog",
       "file": "canonical-sources/source_data/nist-800-53/NIST_SP-800-53_rev5_catalog.json",
       "format": "json",
-      "version": "NIST SP 800-53 Release 5.2.0 (OSCAL 1.2.2; catalog metadata last-modified 2026-05-11)",
-      "retrieved": "2026-10-19",
-      "sha256": "a281d6da3ce0083ae1e8c14a0753bca4d37523564084ab1000dedcf2489cddff",
+      "version": "NIST SP 800-53 Release 5.2.0 (OSCAL 1.2.3; catalog metadata last-modified 2026-10-22)",
+      "retrieved": "2026-11-23",
+      "sha256": "64ca6b4161de51ab6af098a7d101d326f14c95e1abf721396cd8a049e8115eeb",
       "role": "nist_catalog_oscal",
       "source_url": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
-      "notes": "The build's hermetic OSCAL input (phase 52): a byte-identical copy of the warm cache the committed derived data was built from (5,136,923 B). Upstream main is unpinned, so an upgrade arrives through standards_refresh --fetch as a reviewed diff of this file. A fresh build from this file reproduces canonical-sources/uncertainty_ledger.jsonl exactly (0/247 lines differ, plan T-8).",
+      "notes": "The build's hermetic OSCAL input: the issuer's file verbatim (10,448,237 B; phase 55), so its sha256 is the issuer's. The copy committed in phase 52 was a compact re-serialisation of the 2026-05-11 file (5,136,923 B). NIST's 2026-10-22 file is the same release 5.2.0 with errata: SA-15(13)'s statement (the earlier file repeated SA-15(12)'s text), SA-24's assessment objectives (b-6 to b-10 added, links corrected) and SI-2(7)'s objective labels.",
       "upstream_check": {
         "method": "sha256",
         "expect": "json"

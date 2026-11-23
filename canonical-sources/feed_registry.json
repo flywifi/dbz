@@ -67,7 +67,7 @@
       "notes": "Release 5.2.0 (EO 14306): new/updated software-update and patch-integrity controls (incl. SA-24 Design for Cyber Resiliency); OSCAL content bundles 800-53A r5.2.0 assessment procedures. Catalog data in this repo verified 5.2.0-complete 2026-07-02. Upstream current = Release 5.2.0 (oscal-content v1.5.0, 2026-05); the 7 controls added in 5.2.0 (IA-13, IA-13(1)-(3), SA-15(13), SA-24, SI-2(7)) are ingested via the committed 5.2.0 OSCAL supplement + CPRT oracle. Primary spreadsheet base remains 5.1.1 with 5.2.0 layered on. CPRT nudp JSON REST endpoint retired upstream (the sp_800_53_5_1_1 path now 404s); version oracle is the committed OSCAL catalog + CPRT project page. Phase 50 (2026-11-04): verified at the issuer — csrc.nist.gov SP 800-53 Rev. 5 planning note (08/27/2025): 'NIST issued a minor release of SP 800-53 (Release 5.2.0)'; no later release stated.",
       "auto_fetch": true,
       "artifact_status": "current",
-      "last_verified": "2026-11-04"
+      "last_verified": "2026-11-23"
     },
     "nist-800-53b": {
       "label": "NIST SP 800-53B Control Baselines",

@@ -780,6 +780,33 @@
         "support": "WELL_SUPPORTED",
         "terminal_state": "ORIGIN"
       }
+    },
+    {
+      "entry_id": "chg-nist-800-53-5.2.0-oscal-2026-10-22",
+      "framework_id": "nist-800-53",
+      "change_type": "verification_corrections",
+      "old_version": "Release 5.2.0 (OSCAL file last-modified 2026-05-11)",
+      "new_version": "Release 5.2.0 (OSCAL file last-modified 2026-10-22)",
+      "changed_at": "2026-10-22",
+      "source_url": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+      "summary": "NIST republished the Release 5.2.0 OSCAL catalog (OSCAL 1.2.2 -> 1.2.3) without a new release number. Same 1,196 control ids. Content differences against the committed copy: SA-15(13) statement corrected (the earlier file repeated SA-15(12)'s text) and its Examine label; SA-24 assessment objectives b-6 to b-10 added and objective links corrected; SI-2(7) objective labels added. Measured at ingest (phase 55): assessment_objectives 3,715 -> 3,720; no mapping verdict changes.",
+      "controls_added": [],
+      "controls_removed": [],
+      "controls_modified": [
+        "SA-15(13)",
+        "SA-24",
+        "SI-2(7)"
+      ],
+      "human_confirmed": true,
+      "confirmation_source": "primary_document",
+      "announcement_ref": "catalog metadata (last-modified, oscal-version, revisions)",
+      "provenance": {
+        "primary_source_url": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+        "retrieved_at": "2026-11-23",
+        "verbatim": "\"last-modified\": \"2026-10-22T11:30:00.00000-00:00\"",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     }
   ]
 }
