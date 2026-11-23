@@ -634,6 +634,14 @@
       "date": "2026-11-23",
       "known_good": true,
       "note": "CI green on fc89b64 (tools/ci_status.py: health 2026-11-23T18:16:05Z)."
+    },
+    {
+      "phase": "55-close",
+      "name": "Phase 55 closed at 0.20.0: FedRAMP rules, the 800-53 OSCAL catalog and the FedRAMP schemas ingested",
+      "sha": "911829f",
+      "date": "2026-11-23",
+      "known_good": true,
+      "note": "CI green on 911829f (tools/ci_status.py: health 2026-11-23T21:31:26Z). Dispatch 45270541150 on 911829f: the drift issue lists one upstream row (the FedRAMP documentation corpus) and mitre-attack, with no host-rule refusal."
     }
   ]
 }
