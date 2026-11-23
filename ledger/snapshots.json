@@ -626,6 +626,14 @@
       "date": "2026-11-23",
       "known_good": true,
       "note": "CI green on f0da8be (tools/ci_status.py: health 2026-11-23T14:42:50Z). Dispatch 45197160117 on f0da8be: the drift issue lists upstream drift with 18 changed rows and no host-rule refusal."
+    },
+    {
+      "phase": "55-pre",
+      "name": "Pre-phase-55 baseline for the upstream ingests",
+      "sha": "fc89b64",
+      "date": "2026-11-23",
+      "known_good": true,
+      "note": "CI green on fc89b64 (tools/ci_status.py: health 2026-11-23T18:16:05Z)."
     }
   ]
 }
