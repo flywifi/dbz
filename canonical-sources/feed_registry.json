@@ -124,9 +124,8 @@
       "framework_id": "nist-800-171",
       "current_version": "Rev 3 (May 2024)",
       "urls": {
-        "landing": "https://csrc.nist.gov/publications/detail/sp/800-171/rev-3/final",
-        "cprt_api": "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/sp_800_171_3_0_0/element/ALL/structure/default",
-        "excel": "https://csrc.nist.gov/CSRC/media/Publications/sp/800-171/rev-3/final/documents/sp800-171r3-security-requirements.xlsx",
+        "landing": "https://csrc.nist.gov/pubs/sp/800/171/r3/final",
+        "cprt_api": "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/SP_800_171_3_0_0/export/json?element=all",
         "download_page": "https://csrc.nist.gov/pubs/sp/800/171/r3/final"
       },
       "check_strategy": "poll_landing",
@@ -188,6 +187,30 @@
           "checked": "2026-11-05",
           "reason": "no CMMC RSS exists at DoD CIO; the Federal Register DoD feed already carries CMMC rules",
           "replaced_by": "https://www.federalregister.gov/api/v1/documents.rss?agencies[]=defense-department"
+        },
+        {
+          "url": "https://csrc.nist.gov/publications/detail/sp/800-171/rev-3/final",
+          "field": "urls.landing",
+          "status": "HTTP 404",
+          "checked": "2026-11-23",
+          "reason": "CSRC moved publication pages from /publications/detail/ to /pubs/",
+          "replaced_by": "https://csrc.nist.gov/pubs/sp/800/171/r3/final"
+        },
+        {
+          "url": "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/sp_800_171_3_0_0/element/ALL/structure/default",
+          "field": "urls.cprt_api",
+          "status": "HTTP 404",
+          "checked": "2026-11-23",
+          "reason": "the CPRT element/structure service is retired; the export service answers 200 with the committed file's bytes",
+          "replaced_by": "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/SP_800_171_3_0_0/export/json?element=all"
+        },
+        {
+          "url": "https://csrc.nist.gov/CSRC/media/Publications/sp/800-171/rev-3/final/documents/sp800-171r3-security-requirements.xlsx",
+          "field": "urls.excel",
+          "status": "HTTP 404",
+          "checked": "2026-11-23",
+          "reason": "the workbook left this path with the page move; no direct replacement URL was confirmed, the publication page lists the current supplemental files",
+          "replaced_by": "https://csrc.nist.gov/pubs/sp/800/171/r3/final"
         }
       ]
     },
@@ -2248,7 +2271,6 @@
         "stix_github": "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json",
         "taxii": "https://attack-taxii.mitre.org/api/v21/",
         "landing": "https://attack.mitre.org",
-        "nist_mapping": "https://www.nist.gov/system/files/documents/2023/09/12/SP800-53_ATT%26CK_v13_v1.xlsx",
         "taxii_enterprise": "https://attack-taxii.mitre.org/api/v21/collections/x-mitre-collection--1f5f1533-f617-4ca8-9ab4-6a02367fa019/objects/",
         "ctid_nist_mapping": "https://ctid.mitre.org/mappings/data/nist_800_53/attack-16.1/nist_800_53-rev5/enterprise/nist_800_53-rev5_attack-16.1-enterprise_json.json"
       },
@@ -2287,7 +2309,17 @@
       "auto_fetch": true,
       "artifact_status": "artifact_stale",
       "last_verified": "2026-11-06",
-      "github_tag_pin": "v20.1"
+      "github_tag_pin": "v20.1",
+      "superseded_urls": [
+        {
+          "url": "https://www.nist.gov/system/files/documents/2023/09/12/SP800-53_ATT%26CK_v13_v1.xlsx",
+          "field": "urls.nist_mapping",
+          "status": "HTTP 404",
+          "checked": "2026-11-23",
+          "reason": "the 2023 NIST-hosted ATT&CK v13 mapping workbook is gone; the mapping in use is CTID's (urls.ctid_nist_mapping, 200)",
+          "replaced_by": "https://ctid.mitre.org/mappings/data/nist_800_53/attack-16.1/nist_800_53-rev5/enterprise/nist_800_53-rev5_attack-16.1-enterprise_json.json"
+        }
+      ]
     },
     "mitre-d3fend": {
       "label": "MITRE D3FEND Defensive Countermeasures",
@@ -3852,7 +3884,7 @@
       "urls": {
         "landing": "https://www.nist.gov/cyberframework",
         "cprt_json": "https://csrc.nist.gov/extensions/nudp/services/json/csf/download?olirids=all",
-        "publication": "https://csrc.nist.gov/publications/detail/sp/csf/2-0/final",
+        "publication": "https://csrc.nist.gov/pubs/cswp/29/the-nist-cybersecurity-framework-csf-20/final",
         "download_page": "https://www.nist.gov/cyberframework/framework"
       },
       "check_strategy": "poll_landing",
@@ -3917,7 +3949,17 @@
       ],
       "auto_fetch": false,
       "artifact_status": "current",
-      "last_verified": "2026-07-03"
+      "last_verified": "2026-07-03",
+      "superseded_urls": [
+        {
+          "url": "https://csrc.nist.gov/publications/detail/sp/csf/2-0/final",
+          "field": "urls.publication",
+          "status": "HTTP 404",
+          "checked": "2026-11-23",
+          "reason": "CSF 2.0 is published as CSWP 29 under /pubs/",
+          "replaced_by": "https://csrc.nist.gov/pubs/cswp/29/the-nist-cybersecurity-framework-csf-20/final"
+        }
+      ]
     },
     "nsm-8": {
       "label": "NSM-8 — Improving Cybersecurity for Critical Infrastructure [RESCINDED]",
@@ -5876,8 +5918,7 @@
       "urls": {
         "landing": "https://csrc.nist.gov/pubs/sp/800/66/r2/final",
         "cprt_export": "https://csrc.nist.gov/extensions/nudp/services/json/nudp/framework/version/SP800_66_2_0_0/export/json?element=all",
-        "cprt_ui": "https://csrc.nist.gov/projects/cprt/catalog#/cprt/framework/version/SP800_66_2_0_0/home",
-        "pdf": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-66r2.pdf"
+        "cprt_ui": "https://csrc.nist.gov/projects/cprt/catalog#/cprt/framework/version/SP800_66_2_0_0/home"
       },
       "check_strategy": "poll_landing",
       "auto_fetch": false,
@@ -5908,6 +5949,16 @@
             "HIPAA"
           ],
           "notes": "NIST Information Technology topic news feed, added 2026-10-19 beside the Insights blog: the official Cybersecurity topic feed (/news-events/cybersecurity/rss.xml) is live but empty, and SP/CSF announcements land here (NIST feed directory). Same filter_keywords."
+        }
+      ],
+      "superseded_urls": [
+        {
+          "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-66r2.pdf",
+          "field": "urls.pdf",
+          "status": "HTTP 404",
+          "checked": "2026-11-23",
+          "reason": "nvlpubs answers 404 for this path to an automated client; the publication page (urls.landing, 200) links the current PDF",
+          "replaced_by": "https://csrc.nist.gov/pubs/sp/800/66/r2/final"
         }
       ]
     },
