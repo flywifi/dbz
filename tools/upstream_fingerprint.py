@@ -3,7 +3,7 @@
 upstream_fingerprint.py — does the issuer still serve what this repository committed?
 
 A source that the issuer edits in place (same URL, same version label) never moves a release tag,
-so the release comparison in standards_refresh cannot see it. Phase 54 measured seven such changes
+so the release comparison in standards_refresh cannot see it. Phase 54 reported seven such changes (five were real; see below)
 that no check reported: the FedRAMP consolidated rules (2026.09.13.02 -> 2026.11.02.01) and their
 schema, all eleven FedRAMP schemas (edited under an unchanged dated filename), the FedRAMP 2026
 documentation corpus, NIST's SP 800-53 OSCAL catalog (same release 5.2.0, new file), NIST's CSF 2.0

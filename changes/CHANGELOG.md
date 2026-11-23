@@ -3,6 +3,45 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.20.0] — 2026-11-23 (phase 55 — the upstream changes ingested; the fingerprint's false alarms fixed)
+
+MINOR: two data refreshes that feed the build (FedRAMP rules, the SP 800-53 OSCAL catalog), one
+re-pinned gate, and a third comparison method in the upstream fingerprint. Audit:
+`docs/audits/phase-55-adversarial-audit.md`. Record: `docs/source-inventory.md` (Phase 55).
+
+- **Fixed — the upstream fingerprint no longer reports a reordering as a change** (`json_unordered`),
+  and a 600 s run budget stops a slow issuer from stalling the Monday check: a source not reached
+  reads `check_failed`, never `same`. The two community CCI files and the four NIST CPRT exports use
+  the new method.
+- **Changed — FedRAMP consolidated rules 2026.09.13.02 → 2026.11.02.01** (and their schema).
+  KSI→800-53 edges 373 → 558 (+191/−6) over 209 → 302 controls; 46 indicators; leaf rules 246 → 245
+  (`FRC-CSX-MOT` removed, five changed). Only the three FedRAMP tables move.
+- **Changed — the KSI carry-over gate.** The rules now cite High-baseline controls, so the
+  Moderate-flagged share fell from 95.2% to 72.2% and the "≥90% Moderate" pin no longer described
+  the dataset. The gate now holds what is stable: ≥95% of KSI-cited controls sit in a FedRAMP Rev 5
+  baseline (measured 98.6% before, 99.0% after). The Moderate share is still reported.
+- **Changed — NIST SP 800-53 OSCAL catalog: the issuer's file of 2026-10-22,** same release 5.2.0,
+  committed verbatim (10,448,237 B; its sha256 is now the issuer's). NIST's errata: SA-15(13)'s
+  statement (the earlier file repeated SA-15(12)'s text), SA-24's assessment objectives (b-6 to
+  b-10 added), SI-2(7)'s objective labels. `assessment_objectives` 3,715 → 3,720; 13 overlap rows
+  involving NIST CSF 2.0 move by at most 0.2 points; all four mapping verdict counts unchanged.
+- **Changed — the eleven FedRAMP reporting schemas,** all edited in place by the issuer under
+  their 2026-06-24 filenames. Not read by the build.
+- **Fixed — the manifest checksum for the FedRAMP rules file,** which was not the committed file's.
+
+**Corrections of record.**
+- **0.19.0 said the fingerprint's first run found 18 changed sources, seven distinct changes.** Three
+  rows were false alarms: the CSF 2.0 export and the two community CCI files held the same records
+  in another order. True figure: 15 rows, five changes. Mechanism: the CCI files were registered
+  for an ordered comparison although the committed copy is sorted, the NIST exports for a byte
+  checksum although NIST keeps no stable order, and those rows were listed without being diffed.
+- **Phase 50 saw five CSF 2.0 overlap values 0.1 lower on a fresh build and phase 52 attributed
+  them to the unpinned upstream catalog.** They are the SA-24 objectives NIST added; with the
+  catalog refreshed they are now the committed values.
+
+**Not ingested:** the FedRAMP 2026 documentation corpus (291 files; it could not be fetched within
+the host rules). Its drift row remains.
+
 ## [0.19.0] — 2026-11-23 (phase 54 — upstream fingerprint: drift the release check cannot see)
 
 MINOR: a new report-only check in the Monday drift run and a new `source_manifest.json` field
@@ -17,6 +56,7 @@ Record: `docs/source-inventory.md` (Phase 54).
   www.fedramp.gov 11, csrc.nist.gov 4, one Microsoft CDN), inside every host's cap.
 - **Changed — the drift report and issue carry `upstream_status` and one `upstream/<id>` row per
   source that is not `same`.** Selftest in the health workflow and the rehearsal.
+- **Corrected in phase 55:** three of those rows were not changes. The CSF 2.0 CPRT export and both community CCI files hold the same records in another order; the true figure is 15 changed rows, five distinct changes.
 - **Found by its first run: 18 of the 22 sources have changed at the issuer** (seven distinct
   changes) and nothing had reported them. None is ingested here; each is its own reviewed change.
 
@@ -37,7 +77,7 @@ Record: `docs/source-inventory.md` (Phase 54).
 **Corrections of record.**
 - **The drift report said "real drift only" since 0.17.0.** That was true of release tags and false
   of files edited in place: the dispatch of 2026-11-22 listed one row (ATT&CK) on the same day the
-  probe measured the seven changes above.
+  probe measured the seven changes above (five; see the phase-55 correction).
 - **`source_manifest.json` pins a sha256 for `fedramp-consolidated-rules` that is not the committed
   file's** (pin `135707003f0a…`, file `64915d88e723…`). Left as found; it is re-pinned by the
   FedRAMP rules ingest.

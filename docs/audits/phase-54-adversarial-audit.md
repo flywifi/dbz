@@ -1,5 +1,7 @@
 # Phase-54 closing adversarial audit — 2026-11-23
 
+> **Corrected in phase 55:** three of those rows were not changes. The CSF 2.0 CPRT export and both community CCI files hold the same records in another order; the true figure is 15 changed rows, five distinct changes. This audit's Pass 1 said each difference was examined; the CSF 2.0 export and the CCI files were not, and that is where the error was.
+
 **Scope.** `source_manifest.json` (`upstream_check` on 22 sources), `fetch_schedule.json` (the Monday
 job's measured requests), `feed_registry.json` (six dead links superseded). No framework data,
 mapping or schema changed. Written to satisfy the regulatory-phase closing gate

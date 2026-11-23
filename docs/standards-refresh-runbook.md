@@ -180,7 +180,7 @@ precedence; duplicate GitHub lookups).
 ## Upstream fingerprint — sources edited in place (Phase 54)
 
 A release tag only moves when the issuer cuts a release. Several issuers instead edit a file in
-place: phase 54 found seven such changes that no check had reported (the FedRAMP consolidated rules
+place: phase 54 reported seven such changes that no check had seen; five were real and two were the same records in another order (corrected in phase 55). The real ones (the FedRAMP consolidated rules
 and their schema, eleven FedRAMP schemas under an unchanged dated filename, the FedRAMP 2026
 documentation corpus, NIST's SP 800-53 OSCAL catalog at an unchanged release 5.2.0, NIST's CSF 2.0
 CPRT export, and the community CCI mapping).

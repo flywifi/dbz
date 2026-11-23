@@ -916,6 +916,25 @@ sources carry an `upstream_check` and are compared with the committed files. Pro
 **Also:** six dead registry links superseded; three weekly-refresh pull requests (#3, #4, #5)
 opened by hand because the workflow's pull-request step still lacks its permission.
 
+**Corrected in phase 55:** three of those rows were not changes. The CSF 2.0 CPRT export and both community CCI files hold the same records in another order; the true figure is 15 changed rows, five distinct changes.
+
 **Not done, each with its unblocking event:** the seven ingests (each a reviewed change; FedRAMP
 rules first); a version-line check for web-page-only feeds (a per-issuer pattern, each proven to
 fail); the two assessment CPRT exports (a higher csrc.nist.gov cap or a second slot).
+
+## Upstream ingests (Phase 55, 2026-11-23)
+
+**Why:** phase 54's fingerprint reported 18 changed sources; the user asked for a full-format plan
+for the ingests. Audit: `docs/audits/phase-55-adversarial-audit.md`.
+
+| Source | Outcome |
+|---|---|
+| NIST CSF 2.0 CPRT export; community CCI mapping (rev 4, rev 5) | **No change**: same records, different order. The check now compares them order-insensitively. |
+| FedRAMP consolidated rules + schema | Ingested, 2026.11.02.01. KSI edges 373 → 558 over 302 controls; rules 246 → 245. |
+| NIST SP 800-53 OSCAL catalog | Ingested verbatim, file of 2026-10-22 (release 5.2.0). Errata on SA-15(13), SA-24, SI-2(7); objectives 3,715 → 3,720; verdicts unchanged. |
+| Eleven FedRAMP reporting schemas | Refreshed; edited in place by the issuer under unchanged filenames. |
+| FedRAMP 2026 documentation corpus | **Not ingested**: 291 files cannot be fetched within the host rules. |
+
+**Gate change:** KSI carry-over is now held against FedRAMP's Rev 5 baselines (≥95%, measured
+99.0%); the Moderate-flagged share (72.2%, was 95.2%) is reported. **Also:** a 600 s run budget on
+the fingerprint, after a rehearsal stalled on an issuer's slow-down request.
