@@ -610,6 +610,14 @@
       "date": "2026-11-12",
       "known_good": true,
       "note": "CI green on ac8c3b7 (tools/ci_status.py: health 2026-11-12T01:11:28Z). Every commit of the phase (909b4f9 through ac8c3b7) passed the package-free CI rehearsal at commit time."
+    },
+    {
+      "phase": "54-pre",
+      "name": "Pre-phase-54 baseline for the upstream fingerprint check",
+      "sha": "f85dc9c",
+      "date": "2026-11-23",
+      "known_good": true,
+      "note": "CI green on f85dc9c (tools/ci_status.py: health runs green through 2026-11-21T16:58:14Z)."
     }
   ]
 }
