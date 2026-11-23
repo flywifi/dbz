@@ -16,6 +16,11 @@ registry lines that describe them. Audit: `docs/audits/phase-56-adversarial-audi
 - **Registries:** `mitre-attack` is `current` at v20.1 and its changelog entry is confirmed;
   `cisa-kev` restates the catalog version; the ATT&CK manifest entry is re-pinned.
 - **Not changed:** the 800-53 mapping for ATT&CK is still CTID's for ATT&CK 16.1.
+- **Fixed — `announcement_monitor.deduplicate` raised `KeyError` on a Federal Register entry.**
+  `fr_watcher` keys its entries by `feed_id` and writes no `entry_id`; the merged Tuesday proposal
+  carried the first such entry and the rotation tests went red on it. The function now reads
+  either key, as `build_db` already did. The red commit (`5b61e36`) was pushed before the fix:
+  the rehearsal's exit status was hidden behind a pipe in the command that pushed it.
 
 ## [0.20.0] — 2026-11-23 (phase 55 — the upstream changes ingested; the fingerprint's false alarms fixed)
 

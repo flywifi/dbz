@@ -356,9 +356,12 @@ def process_feed_entry(framework_id: str, feed_cfg: dict, window_days: int, dry_
 
 
 def deduplicate(new_entries: list[dict], existing_entries: list[dict]) -> list[dict]:
-    """Return entries from new_entries whose entry_id is not in existing_entries."""
-    seen = {e["entry_id"] for e in existing_entries}
-    return [e for e in new_entries if e["entry_id"] not in seen]
+    """Return entries from new_entries whose id is not in existing_entries. fr_watcher keys its
+    entries by feed_id and writes no entry_id (build_db reads either); the first real Federal
+    Register entry in the committed feed (merged 2026-11-23) made this function raise KeyError."""
+    key = lambda e: e.get("entry_id") or e.get("feed_id")
+    seen = {key(e) for e in existing_entries}
+    return [e for e in new_entries if key(e) not in seen]
 
 
 def merge_with_existing(new_entries: list[dict], output_path: Path) -> tuple[list[dict], int]:
