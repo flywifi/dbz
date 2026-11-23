@@ -1142,11 +1142,11 @@
       "file": "canonical-sources/source_data/fedramp/schemas/fedramp-accepted-vulnerability-info-schema-2026-06-24.json",
       "format": "json",
       "version": "2026-06-24",
-      "retrieved": "2026-07-10",
+      "retrieved": "2026-11-23",
       "source_url": "https://www.fedramp.gov/schemas/fedramp-accepted-vulnerability-info-schema-2026-06-24.json",
-      "sha256_prefix": "f3dcb0211ddb1d19",
+      "sha256_prefix": "2c17ba6e21abd195",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version. Phase 55: refreshed; FedRAMP edited this file in place under its unchanged 2026-06-24 filename.",
       "upstream_check": {
         "method": "sha256",
         "expect": "json"
@@ -1157,11 +1157,11 @@
       "file": "canonical-sources/source_data/fedramp/schemas/fedramp-advisor-information-schema-2026-06-24.json",
       "format": "json",
       "version": "2026-06-24",
-      "retrieved": "2026-07-10",
+      "retrieved": "2026-11-23",
       "source_url": "https://www.fedramp.gov/schemas/fedramp-advisor-information-schema-2026-06-24.json",
-      "sha256_prefix": "014ad6fed67d5371",
+      "sha256_prefix": "c9ba938e6d1567e9",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version. Phase 55: refreshed; FedRAMP edited this file in place under its unchanged 2026-06-24 filename.",
       "upstream_check": {
         "method": "sha256",
         "expect": "json"
@@ -1172,11 +1172,11 @@
       "file": "canonical-sources/source_data/fedramp/schemas/fedramp-assessor-information-schema-2026-06-24.json",
       "format": "json",
       "version": "2026-06-24",
-      "retrieved": "2026-07-10",
+      "retrieved": "2026-11-23",
       "source_url": "https://www.fedramp.gov/schemas/fedramp-assessor-information-schema-2026-06-24.json",
-      "sha256_prefix": "00adeff8fd76f235",
+      "sha256_prefix": "b353bddd70a83d7b",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version. Phase 55: refreshed; FedRAMP edited this file in place under its unchanged 2026-06-24 filename.",
       "upstream_check": {
         "method": "sha256",
         "expect": "json"
@@ -1187,11 +1187,11 @@
       "file": "canonical-sources/source_data/fedramp/schemas/fedramp-certification-package-overview-schema-2026-06-24.json",
       "format": "json",
       "version": "2026-06-24",
-      "retrieved": "2026-07-10",
+      "retrieved": "2026-11-23",
       "source_url": "https://www.fedramp.gov/schemas/fedramp-certification-package-overview-schema-2026-06-24.json",
-      "sha256_prefix": "14a7afcec4c9d638",
+      "sha256_prefix": "3870303570bf608d",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version. Phase 55: refreshed; FedRAMP edited this file in place under its unchanged 2026-06-24 filename.",
       "upstream_check": {
         "method": "sha256",
         "expect": "json"
@@ -1202,11 +1202,11 @@
       "file": "canonical-sources/source_data/fedramp/schemas/fedramp-common-definitions-schema-2026-06-24.json",
       "format": "json",
       "version": "2026-06-24",
-      "retrieved": "2026-07-10",
+      "retrieved": "2026-11-23",
       "source_url": "https://www.fedramp.gov/schemas/fedramp-common-definitions-schema-2026-06-24.json",
-      "sha256_prefix": "07d70d4dabf8010d",
+      "sha256_prefix": "19dd37691779171f",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version. Phase 55: refreshed; FedRAMP edited this file in place under its unchanged 2026-06-24 filename.",
       "upstream_check": {
         "method": "sha256",
         "expect": "json"
@@ -1217,11 +1217,11 @@
       "file": "canonical-sources/source_data/fedramp/schemas/fedramp-historical-ver-activity-schema-2026-06-24.json",
       "format": "json",
       "version": "2026-06-24",
-      "retrieved": "2026-07-10",
+      "retrieved": "2026-11-23",
       "source_url": "https://www.fedramp.gov/schemas/fedramp-historical-ver-activity-schema-2026-06-24.json",
-      "sha256_prefix": "497e2358cf72ccd8",
+      "sha256_prefix": "51011860138687f2",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version. Phase 55: refreshed; FedRAMP edited this file in place under its unchanged 2026-06-24 filename.",
       "upstream_check": {
         "method": "sha256",
         "expect": "json"
@@ -1232,11 +1232,11 @@
       "file": "canonical-sources/source_data/fedramp/schemas/fedramp-incident-report-schema-2026-06-24.json",
       "format": "json",
       "version": "2026-06-24",
-      "retrieved": "2026-07-10",
+      "retrieved": "2026-11-23",
       "source_url": "https://www.fedramp.gov/schemas/fedramp-incident-report-schema-2026-06-24.json",
-      "sha256_prefix": "cad5b306179142d3",
+      "sha256_prefix": "e0871781b6a99c39",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version. Phase 55: refreshed; FedRAMP edited this file in place under its unchanged 2026-06-24 filename.",
       "upstream_check": {
         "method": "sha256",
         "expect": "json"
@@ -1247,11 +1247,11 @@
       "file": "canonical-sources/source_data/fedramp/schemas/fedramp-ongoing-certification-report-schema-2026-06-24.json",
       "format": "json",
       "version": "2026-06-24",
-      "retrieved": "2026-07-10",
+      "retrieved": "2026-11-23",
       "source_url": "https://www.fedramp.gov/schemas/fedramp-ongoing-certification-report-schema-2026-06-24.json",
-      "sha256_prefix": "67fc27322930ccd7",
+      "sha256_prefix": "c67f4e79a107f106",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version. Phase 55: refreshed; FedRAMP edited this file in place under its unchanged 2026-06-24 filename.",
       "upstream_check": {
         "method": "sha256",
         "expect": "json"
@@ -1262,11 +1262,11 @@
       "file": "canonical-sources/source_data/fedramp/schemas/fedramp-security-decision-record-schema-2026-06-24.json",
       "format": "json",
       "version": "2026-06-24",
-      "retrieved": "2026-07-10",
+      "retrieved": "2026-11-23",
       "source_url": "https://www.fedramp.gov/schemas/fedramp-security-decision-record-schema-2026-06-24.json",
-      "sha256_prefix": "361f3322a4da2fd8",
+      "sha256_prefix": "6a6d7dca1a9ae003",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version. Phase 55: refreshed; FedRAMP edited this file in place under its unchanged 2026-06-24 filename.",
       "upstream_check": {
         "method": "sha256",
         "expect": "json"
@@ -1277,11 +1277,11 @@
       "file": "canonical-sources/source_data/fedramp/schemas/fedramp-significant-change-notifications-schema-2026-06-24.json",
       "format": "json",
       "version": "2026-06-24",
-      "retrieved": "2026-07-10",
+      "retrieved": "2026-11-23",
       "source_url": "https://www.fedramp.gov/schemas/fedramp-significant-change-notifications-schema-2026-06-24.json",
-      "sha256_prefix": "af492199332d608a",
+      "sha256_prefix": "e0f624b7996c2d8d",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version. Phase 55: refreshed; FedRAMP edited this file in place under its unchanged 2026-06-24 filename.",
       "upstream_check": {
         "method": "sha256",
         "expect": "json"
@@ -1292,11 +1292,11 @@
       "file": "canonical-sources/source_data/fedramp/schemas/fedramp-vulnerability-detail-report-schema-2026-06-24.json",
       "format": "json",
       "version": "2026-06-24",
-      "retrieved": "2026-07-10",
+      "retrieved": "2026-11-23",
       "source_url": "https://www.fedramp.gov/schemas/fedramp-vulnerability-detail-report-schema-2026-06-24.json",
-      "sha256_prefix": "70d53c3c8a2d63cc",
+      "sha256_prefix": "92b2918106c0117b",
       "role": "fedramp_reporting_schema",
-      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version.",
+      "notes": "Complete verbatim FedRAMP certification-data reporting schema (2026-06-24 launch set). New date-versioned filename at fedramp.gov/schemas/ = new version. Phase 55: refreshed; FedRAMP edited this file in place under its unchanged 2026-06-24 filename.",
       "upstream_check": {
         "method": "sha256",
         "expect": "json"
