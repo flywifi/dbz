@@ -1390,10 +1390,10 @@
       "id": "mitre-attack-enterprise",
       "file": "canonical-sources/mitre-attack-techniques.json",
       "format": "json",
-      "version": "ATT&CK Enterprise 20.0 (TAXII collection object x_mitre_version 20.0, modified 2026-10-12); 800-53 mappings: CTID nist_800_53 rev5 / ATT&CK 16.1 (last_update 2025-04-16)",
-      "retrieved": "2026-11-05",
+      "version": "ATT&CK Enterprise 20.1 (TAXII collection object x_mitre_version 20.1, bundle modified 2026-11-05); 800-53 mappings: CTID nist_800_53 rev5 / ATT&CK 16.1 (last_update 2025-04-16)",
+      "retrieved": "2026-11-19",
       "source_url": "https://attack-taxii.mitre.org/api/v21/collections/x-mitre-collection--1f5f1533-f617-4ca8-9ab4-6a02367fa019/objects/",
-      "sha256_prefix": "2c059586a7ab61dd",
+      "sha256_prefix": "d45281d2feb24a3a",
       "role": "attack_techniques",
       "notes": "Written by cross-mapping/engine/attack_stix_loader.py from MITRE's ATT&CK TAXII 2.1 server (attack-patterns + collection object, paged at 100) and the CTID NIST 800-53 rev5 mapping (https://ctid.mitre.org/mappings/data/nist_800_53/attack-16.1/nist_800_53-rev5/enterprise/nist_800_53-rev5_attack-16.1-enterprise_json.json). Direct 'mitigates' mappings only; a technique CTID does not map stays blank (no parent inheritance, no keyword guess). Loaded by build_db.load_attack_data into attack_techniques (parent_id from sub_technique_of)."
     },

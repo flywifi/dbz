@@ -3,6 +3,20 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.20.1] — 2026-11-23 (phase 56 — the three weekly refresh proposals merged)
+
+PATCH: data refreshes proposed by the weekly rotation, merged at the owner's request, and the
+registry lines that describe them. Audit: `docs/audits/phase-56-adversarial-audit.md`.
+
+- **Merged — Tuesday (2026-11-17):** one new Federal Register announcement (59 → 60).
+- **Merged — Wednesday (2026-11-18):** CISA KEV catalogVersion 2026.11.04 → 2026.11.18
+  (1,768 → 1,786 CVEs).
+- **Merged — Thursday (2026-11-19):** ATT&CK v20.0 → v20.1. The technique table is unchanged in
+  content (706 rows, same digest); the file's version stamps and review notes moved.
+- **Registries:** `mitre-attack` is `current` at v20.1 and its changelog entry is confirmed;
+  `cisa-kev` restates the catalog version; the ATT&CK manifest entry is re-pinned.
+- **Not changed:** the 800-53 mapping for ATT&CK is still CTID's for ATT&CK 16.1.
+
 ## [0.20.0] — 2026-11-23 (phase 55 — the upstream changes ingested; the fingerprint's false alarms fixed)
 
 MINOR: two data refreshes that feed the build (FedRAMP rules, the SP 800-53 OSCAL catalog), one
