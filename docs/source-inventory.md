@@ -889,3 +889,33 @@ implementation ran the same stages; its measurements have 0 lines differing from
 set); SCF's STRM files and Risk and Threat catalogs (a source decision); the other SCF documents on
 disk (when the issuer publishes them as release assets); re-measuring the phase-43 voter
 sensitivity table; fast-forwarding `main` (the owner's call).
+
+## Upstream fingerprint (Phase 54, 2026-11-23)
+
+**Why:** the user asked to test more update feeds and avoid drift. A read-only probe (one governed
+request per URL of the 43 feeds that back committed data) showed that the Monday check compares
+release tags for 10 feeds and reports stored status for the rest, and that several issuers edit
+files in place. Audit: `docs/audits/phase-54-adversarial-audit.md`.
+
+**What was added.** `tools/upstream_fingerprint.py`, run inside the Monday drift check: 22 manifest
+sources carry an `upstream_check` and are compared with the committed files. Procedure:
+`docs/standards-refresh-runbook.md` (Upstream fingerprint).
+
+**What its first run found** (none ingested in this phase):
+
+| Source | Committed | At the issuer on 2026-11-23 |
+|---|---|---|
+| FedRAMP consolidated rules | `info.version` 2026.09.13.02 | 2026.11.02.01 (`last_updated` 2026-11-02) |
+| FedRAMP consolidated rules schema | 27,506 B | 28,409 B, 13 differing paths |
+| Eleven FedRAMP schemas (`…-schema-2026-06-24.json`) | retrieved 2026-07-10 | every one edited under the same dated filename (4 to 29 differing paths each) |
+| FedRAMP 2026 documentation corpus | generated 2026-07-06 | generated 2026-11-03 |
+| NIST SP 800-53 OSCAL catalog | release 5.2.0, last-modified 2026-05-11, OSCAL 1.2.2, 5.1 MB | release 5.2.0, last-modified 2026-10-22, OSCAL 1.2.3, 10.4 MB; the same 1,196 control ids |
+| NIST CSF 2.0 CPRT export | sha256 `28ba53c5ea2f…` | `de36759d2f3f…`, same length (753,380 B) |
+| Community CCI mapping (rev 4, rev 5) | harvested 2026-07-04 | same row counts (2,938 / 3,815), different rows |
+
+**Also:** six dead registry links superseded; three weekly-refresh pull requests (#3, #4, #5)
+opened by hand because the workflow's pull-request step still lacks its permission.
+
+**Not done, each with its unblocking event:** the seven ingests (each a reviewed change; FedRAMP
+rules first); a version-line check for web-page-only feeds (a per-issuer pattern, each proven to
+fail); the two assessment CPRT exports (a higher csrc.nist.gov cap or a second slot).

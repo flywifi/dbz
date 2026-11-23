@@ -3,6 +3,45 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.19.0] — 2026-11-23 (phase 54 — upstream fingerprint: drift the release check cannot see)
+
+MINOR: a new report-only check in the Monday drift run and a new `source_manifest.json` field
+(`upstream_check`). No framework data changes. Audit: `docs/audits/phase-54-adversarial-audit.md`.
+Record: `docs/source-inventory.md` (Phase 54).
+
+- **Added — `tools/upstream_fingerprint.py`.** For each manifest source with an `upstream_check`
+  the issuer's file is fetched once (through fetchkit) and compared with the committed file itself
+  (`sha256`, or `json_equal` for a wrapped copy). Rows are `same`, `changed` or `check_failed`; a
+  body that is not the expected kind (an error or challenge page) is a failed check, never a
+  change. 22 sources are covered; Monday adds 22 requests (raw.githubusercontent.com 6,
+  www.fedramp.gov 11, csrc.nist.gov 4, one Microsoft CDN), inside every host's cap.
+- **Changed — the drift report and issue carry `upstream_status` and one `upstream/<id>` row per
+  source that is not `same`.** Selftest in the health workflow and the rehearsal.
+- **Found by its first run: 18 of the 22 sources have changed at the issuer** (seven distinct
+  changes) and nothing had reported them. None is ingested here; each is its own reviewed change.
+
+| Source | Committed | At the issuer on 2026-11-23 |
+|---|---|---|
+| FedRAMP consolidated rules | `info.version` 2026.09.13.02 | 2026.11.02.01 (`last_updated` 2026-11-02) |
+| FedRAMP consolidated rules schema | 27,506 B | 28,409 B, 13 differing paths |
+| Eleven FedRAMP schemas (`…-schema-2026-06-24.json`) | retrieved 2026-07-10 | every one edited under the same dated filename (4 to 29 differing paths each) |
+| FedRAMP 2026 documentation corpus | generated 2026-07-06 | generated 2026-11-03 |
+| NIST SP 800-53 OSCAL catalog | release 5.2.0, last-modified 2026-05-11, OSCAL 1.2.2, 5.1 MB | release 5.2.0, last-modified 2026-10-22, OSCAL 1.2.3, 10.4 MB; the same 1,196 control ids |
+| NIST CSF 2.0 CPRT export | sha256 `28ba53c5ea2f…` | `de36759d2f3f…`, same length (753,380 B) |
+| Community CCI mapping (rev 4, rev 5) | harvested 2026-07-04 | same row counts (2,938 / 3,815), different rows |
+
+- **Fixed — six dead registry links** (three on `nist-800-171`, one each on `nist-csf`,
+  `nist-sp-800-66`, `mitre-attack`) moved to `superseded_urls` with status, reason and the
+  replacement confirmed live.
+
+**Corrections of record.**
+- **The drift report said "real drift only" since 0.17.0.** That was true of release tags and false
+  of files edited in place: the dispatch of 2026-11-22 listed one row (ATT&CK) on the same day the
+  probe measured the seven changes above.
+- **`source_manifest.json` pins a sha256 for `fedramp-consolidated-rules` that is not the committed
+  file's** (pin `135707003f0a…`, file `64915d88e723…`). Left as found; it is re-pinned by the
+  FedRAMP rules ingest.
+
 ## [0.18.0] — 2026-11-12 (phase 53 — SCF 2026.3 ingest)
 
 MINOR: schema 3.19 → 3.20 (`scf_id_history`), a new query command (`dbz_query scf-legacy`) and a
