@@ -757,6 +757,29 @@
         "support": "WELL_SUPPORTED",
         "terminal_state": "ORIGIN"
       }
+    },
+    {
+      "entry_id": "chg-fedramp-rules-2026.09.13.02-to-2026.11.02.01",
+      "framework_id": "fedramp-20x",
+      "change_type": "minor_revision",
+      "old_version": "2026.09.13.02",
+      "new_version": "2026.11.02.01",
+      "changed_at": "2026-11-02",
+      "source_url": "https://raw.githubusercontent.com/FedRAMP/rules/main/fedramp-consolidated-rules.json",
+      "summary": "FedRAMP Consolidated Rules 2026.11.02.01 (info.last_updated 2026-11-02). Measured at ingest (phase 55): KSI->800-53 edges 373 -> 558 (+191/-6) over 209 -> 302 distinct controls, 46 indicators unchanged in id; leaf rules 246 -> 245 (removed ['FRC-CSX-MOT'], added [], changed ['FRC-CCL-UCC', 'FRC-CSF-RDY', 'FRC-CSO-JSN', 'MKT-CSO-PML', 'VER-EVA-EPA']). The rules now cite High-baseline controls: Moderate-flagged share 95.2% -> 72.2%, High 86.1%, in a FedRAMP Rev 5 baseline 98.6% -> 99.0%.",
+      "controls_added": [],
+      "controls_removed": [],
+      "controls_modified": [],
+      "human_confirmed": true,
+      "confirmation_source": "primary_document",
+      "announcement_ref": "the dataset's own info block",
+      "provenance": {
+        "primary_source_url": "https://raw.githubusercontent.com/FedRAMP/rules/main/fedramp-consolidated-rules.json",
+        "retrieved_at": "2026-11-23",
+        "verbatim": "\"version\": \"2026.11.02.01\", \"last_updated\": \"2026-11-02\"",
+        "support": "WELL_SUPPORTED",
+        "terminal_state": "ORIGIN"
+      }
     }
   ]
 }

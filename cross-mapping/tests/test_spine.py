@@ -606,15 +606,23 @@ if _DB.exists():
         _no, _ng = _c2.execute("SELECT (SELECT COUNT(*) FROM fedramp_odp_pins), "
                                "(SELECT COUNT(*) FROM fedramp_ctl_guidance)").fetchone()
         check(_no == 16 and _ng == 65, f"fedramp CTL captured completely: 16 ODP pins + 65 guidance rows (got {_no}/{_ng})")
-        # carry-over vs the FedRAMP r5 Moderate baseline — measured 95.2%, pinned >=90%
+        # carry-over — the Moderate share was 95.2% at 2026.09.13.02 and is reported, no longer pinned (see below)
         _tot = _c2.execute("SELECT COUNT(DISTINCT r5_control) FROM fedramp_ksi_controls").fetchone()[0]
         _inm = _c2.execute("""
             SELECT COUNT(DISTINCT e.r5_control) FROM fedramp_ksi_controls e
             WHERE EXISTS (SELECT 1 FROM controls c WHERE c.nist_id=e.r5_control AND c.baseline_moderate=1)
                OR EXISTS (SELECT 1 FROM enhancements h WHERE h.id=e.r5_control AND h.baseline_moderate=1)
         """).fetchone()[0]
-        check(_tot > 0 and _inm / _tot >= 0.90,
-              f"KSI carry-over: >=90% of KSI-cited controls sit in the Moderate baseline (got {_inm}/{_tot})")
+        # phase 55: rules 2026.11.02.01 cite High-baseline controls too (Moderate share 95.2% -> 72.2%), so the
+        # Moderate pin no longer describes the dataset. The carry-over that holds is against FedRAMP's own
+        # Rev 5 baselines at any level: measured 98.6% before and 99.0% after, pinned >=95%.
+        _inf = _c2.execute("""
+            SELECT COUNT(DISTINCT e.r5_control) FROM fedramp_ksi_controls e
+            WHERE EXISTS (SELECT 1 FROM framework_projection p WHERE p.framework='FedRAMP r5' AND p.r5_control=e.r5_control)
+        """).fetchone()[0]
+        check(_tot > 0 and _inf / _tot >= 0.95,
+              f"KSI carry-over: >=95% of KSI-cited controls sit in a FedRAMP Rev 5 baseline (got {_inf}/{_tot}; "
+              f"Moderate-flagged {_inm}/{_tot})")
         # containment: the KSI layer never leaks; FedRAMP r5 KEEPS its matrix seat
         _mx3 = {x[0] for x in _c2.execute("SELECT DISTINCT framework_a FROM overlap_matrix")}
         _mx3 |= {x[0] for x in _c2.execute("SELECT DISTINCT framework_b FROM overlap_matrix")}

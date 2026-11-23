@@ -472,8 +472,8 @@ v2026.07.06.01), its JSON schema, all 11 certification-data reporting schemas (2
 and the whole `FedRAMP/2026-markdown` narrative corpus (291 files) are committed verbatim under
 `canonical-sources/source_data/fedramp/` — see `docs/fedramp-modernization.md` for the model.
 This is an audit-framework revision on top of the unchanged 800-53 r5 spine (the ISO 2013→2022
-pattern): FedRAMP r5 keeps its matrix seat; the KSI confirmation layer (46 indicators, 373
-FedRAMP-published KSI→800-53 edges, 95.2% inside the Moderate baseline) is a contained
+pattern): FedRAMP r5 keeps its matrix seat; the KSI confirmation layer (46 indicators, 558
+FedRAMP-published KSI→800-53 edges, 99.0% inside FedRAMP's Rev 5 baselines; 373 edges and 95.2% Moderate until phase 55) is a contained
 query-surface tier. GSA/fedramp-automation is archived (2025-07-01); FedRAMP/docs is legacy;
 the living sources are FedRAMP/rules + fedramp.gov/2026/ + fedramp.gov/schemas/.
 

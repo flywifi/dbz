@@ -15,9 +15,10 @@ shape as ISO/IEC 27001's 2013→2022 revision (handled by this repo's version-tr
 
 FedRAMP r5 keeps its first-class seat among the 16 matrix frameworks. The new layer is contained
 (query-surface tier) and recorded as a **version transition** in `framework_changelog`
-(`chg-fedramp-cr26-transition`). Carry-over is measured, not assumed: **95.2%** of the distinct
-KSI-cited controls sit inside the FedRAMP r5 Moderate baseline (the 10 outliers are enumerated by
-the gate — largely PM/organizational controls).
+(`chg-fedramp-cr26-transition`). Carry-over is measured, not assumed: **99.0%** of the 302 distinct
+KSI-cited controls sit in a FedRAMP Rev 5 baseline (299; rules 2026.11.02.01, phase 55). The rules now cite
+High-baseline controls as well, so the Moderate share fell from 95.2% (2026.09.13.02, 209 controls) to 72.2%;
+86.1% are in the High baseline.
 
 ## The canonical source (FedRAMP's own directive)
 
@@ -43,7 +44,7 @@ attempt to parse the HTML… process the source data directly."*
 ## The DB model (schema 3.12 at introduction; current schema 3.20, contained)
 
 `spine_loader.load_fedramp_rules()` →
-`fedramp_ksi` (46) · `fedramp_ksi_controls` (373 edges, `basis='fedramp_stated'`, confidence 0.9,
+`fedramp_ksi` (46) · `fedramp_ksi_controls` (558 edges, `basis='fedramp_stated'`, confidence 0.9,
 0 unresolved) · `fedramp_rules` (246, keyed rule×pipeline×subgroup) · `fedramp_odp_pins` (16) ·
 `fedramp_ctl_guidance` (65). Never enters `framework_projection` / `overlap_matrix` /
 `master_mappings` — the matrix stays 120 pairs and FedRAMP r5's projection rows are untouched.
@@ -62,7 +63,7 @@ pipelines · 2026-08-31 Class B/C pipelines · **2027-01-01 mandatory adoption**
 
 ## Cross-mapping verdicts
 
-- **Official, ingested:** KSI→800-53 r5 (373 edges — FedRAMP's own published mapping); FedRAMP
+- **Official, ingested:** KSI→800-53 r5 (558 edges — FedRAMP's own published mapping); FedRAMP
   CTL ODP pins + guidance; Rev5 baselines⊂800-53 (already in the DB via the 53B pins).
 - **Officially absent (recorded, never fabricated):** KSI→CSF 2.0 / ISO / SOC 2. Transitive
   KSI→commercial-framework reach via the existing spine bridges is a named follow-up behind a
@@ -75,6 +76,6 @@ pipelines · 2026-08-31 Class B/C pipelines · **2027-01-01 mandatory adoption**
 ## Gates
 
 `test_spine`: 46/10 KSI counts, ≥370 edges, 0 unresolved controls, pipeline vocabulary exact,
-CTL completeness (16+65), carry-over ≥90% (measured 95.2%), containment + FedRAMP r5 seat.
+CTL completeness (16+65), carry-over ≥95% into FedRAMP's Rev 5 baselines (measured 99.0%), containment + FedRAMP r5 seat.
 `validate_spine` check 13: fedramp_stated tracing, id/status/lifecycle enums, ODP well-formedness,
 containment. Deterministic rebuild ×2; the full battery unchanged.

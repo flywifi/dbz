@@ -28,7 +28,7 @@ overlapping controls listed. It's **one unified map**, not a shelf of separate c
 | **Overlap matrix** | 120 precomputed framework pairs (the 16 canonical frameworks) with shared-work % |
 | **CCI dictionary** | 5,137 DISA control-correlation identifiers with definitions + multi-source corroboration |
 | **STIG evidence** | 407 hardening benchmarks / 20,842 rules for per-product implementation proof (DISA's October 2026 library, plus 20 STIGs DISA retired, kept and flagged) |
-| **FedRAMP 2026 (KSIs)** | FedRAMP's own 46 Key Security Indicators and their 373 published links to 800-53 |
+| **FedRAMP 2026 (KSIs)** | FedRAMP's own 46 Key Security Indicators and their 558 published links to 800-53 |
 | **Keep-current** | 162 official sources watched for changes, plus a horizon of 77 anticipated future revisions |
 
 ## How it works
