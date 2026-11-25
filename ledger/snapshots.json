@@ -650,6 +650,14 @@
       "date": "2026-11-25",
       "known_good": true,
       "note": "CI green on 93c87b8 (tools/ci_status.py: health 2026-11-23T22:04:23Z and four later runs)."
+    },
+    {
+      "phase": "57-close",
+      "name": "Phase 57 closed at 0.21.0: the 2026 HIPAA Privacy Rule final rule held as a version",
+      "sha": "0123e0e",
+      "date": "2026-11-25",
+      "known_good": true,
+      "note": "CI green on 0123e0e (tools/ci_status.py: health 2026-11-25T00:23:35Z)."
     }
   ]
 }
