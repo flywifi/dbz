@@ -642,6 +642,14 @@
       "date": "2026-11-23",
       "known_good": true,
       "note": "CI green on 911829f (tools/ci_status.py: health 2026-11-23T21:31:26Z). Dispatch 45270541150 on 911829f: the drift issue lists one upstream row (the FedRAMP documentation corpus) and mitre-attack, with no host-rule refusal."
+    },
+    {
+      "phase": "57-pre",
+      "name": "Pre-phase-57 baseline for the 2026 HIPAA Privacy Rule version",
+      "sha": "93c87b8",
+      "date": "2026-11-25",
+      "known_good": true,
+      "note": "CI green on 93c87b8 (tools/ci_status.py: health 2026-11-23T22:04:23Z and four later runs)."
     }
   ]
 }
