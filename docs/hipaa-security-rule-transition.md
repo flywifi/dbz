@@ -6,6 +6,8 @@ where the rulemaking stands, and exactly what changes in this repository IF a fi
 ever lands. Evidence rules: `protocol-layer/regulatory-provenance.md`. Precedent for the
 format: `docs/fedramp-modernization.md`.
 
+**Phase 57 (2026-11-24): a different HIPAA rule was finalized.** HHS published a *Privacy* Rule final rule on 2026-11-19 (91 FR 74848, RIN 0945-AA00; effective 2027-01-19). It does not amend Subpart C and does not finalize this proposal (RIN 0945-AA22), so nothing below changes. One of its amendments reaches the Security Rule's scope: 45 CFR 160.103 excludes providers of telecommunications relay services from the business-associate definition, so from 2027-01-19 the Security Rule reaches fewer entities (`chg-hipaa-security-160103-ba-2026`). The Privacy version itself: `docs/hipaa-privacy-rule-2026-final-rule.md`.
+
 ## Framing: nothing in the mapping data changes today
 
 The in-force Security Rule remains the **2013 Omnibus** version (45 CFR Parts 160/164).

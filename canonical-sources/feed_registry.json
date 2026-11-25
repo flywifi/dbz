@@ -6932,6 +6932,30 @@
       "last_verified": "2026-11-04",
       "notes": "The U.S. government repository of security configuration checklists (NIST SP 800-70): DISA STIGs, CIS Benchmarks, CISA SCuBA baselines, NIST macOS Security Compliance Project, USGCB. Crawled 2026-11-04 from ncp.nist.gov/checklist/953 (Microsoft Office 365 ProPlus STIG). The repository and checklist PAGES are a JavaScript app: a scripted fetch gets a 2,250-byte shell whose Last-Modified is the app build date (2026-09-16), so polling them would be a vacuous signal. Monitor the DATA FEED instead: the .meta sidecar's Last-Modified moves whenever any checklist changes (NIST updates it about every two hours and asks for under 200 requests a day). Feed at crawl: 918 entries (FINAL 512, ARCHIVED 405, CANDIDATE 1); by authority DISA 447, CIS 322, CISA 18, NIST mSCP 14, USGCB 9; 71 modified since 2026-08-01. The repository UI reports 1,049 matching records; it counts differently, so use the feed. Each entry carries ncp-checklist-id, name, Ver/Rel, authority, resource download links with sha-256, target CPEs and review status. Second STIG-currency signal: of 96 DISA FINAL checklists exactly title-matched to stig_catalog.json (trackr harvest 2026-07-04), 50 carry a newer Ver/Rel in NCP (e.g. Office 365 ProPlus V3R8 vs V3R5), 44 agree, 2 are older — see disa-stig-library. No loader (metadata_only). Phase 50 (2026-11-04): poll_exempt — the .meta sidecar is rewritten daily (NCP: 'approximately every two hours') while checklist content was unchanged for 21 days (newest last-modified 2026-10-14), so a .meta poll is noise. The live NCP signal is stig_harvest.py --check (entry digest, per-title XCCDF versions with sha-256), under NCP's published rule recorded in host_policies.json.",
       "poll_exempt": true
+    },
+    "hipaa-privacy": {
+      "label": "HIPAA Privacy Rule",
+      "authority": "primary",
+      "framework_id": "hipaa-privacy",
+      "current_version": "45 CFR 164 Subpart E as in force (eCFR 2026-11-18); amended by 91 FR 74848 (published 2026-11-19, effective 2027-01-19, compliance 2027-07-19)",
+      "check_strategy": "api_poll",
+      "version_signal": "ecfr_amendment_date",
+      "last_checked": "2026-11-24",
+      "last_changed": "2026-11-19",
+      "last_verified": "2026-11-24",
+      "auto_fetch": false,
+      "artifact_status": "current",
+      "urls": {
+        "landing": "https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-164/subpart-E",
+        "api": "https://www.ecfr.gov/api/versioner/v1/versions/title-45.json?part=164&subpart=E",
+        "final_rule": "https://www.govinfo.gov/content/pkg/FR-2026-11-19/html/2026-23429.htm"
+      },
+      "source_manifest_keys": [
+        "ecfr-45cfr164e-2026-11-18-xml",
+        "hhs-hipaa-privacy-final-rule-2026-regtext"
+      ],
+      "notes": "45 CFR 164 Subpart E. The 2026 final rule (FR doc 2026-23429, RIN 0945-AA00) is modelled as the version label 'HIPAA Privacy Rule (2026 Final Rule)' beside the in-force 'HIPAA Privacy Rule' (phase 57). Poll the eCFR amendment date for Subpart E: the codification on 2027-01-19 is the signal to run cfr_versions.py --verify-ecfr. The Security Rule's final rule (RIN 0945-AA22) is a separate rulemaking: feed 'hipaa'.",
+      "announcement_feeds": []
     }
   },
   "check_schedule": {

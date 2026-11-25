@@ -958,18 +958,20 @@ def load_changelog(path: Path) -> list[dict]:
     doc = json.loads(path.read_text(encoding="utf-8"))
     rows = []
     for entry in doc.get("entries", []):
+        # phase 57: the file's keys are entry_id / old_version / new_version / changed_at; reading only the
+        # earlier spellings collapsed every entry into one row with an empty id
         rows.append({
-            "changelog_id": entry.get("changelog_id", ""),
+            "changelog_id": entry.get("entry_id") or entry.get("changelog_id", ""),
             "framework_id": entry.get("framework_id", ""),
-            "version_from": entry.get("version_from"),
-            "version_to": entry.get("version_to"),
-            "change_date": entry.get("change_date"),
+            "version_from": entry.get("old_version", entry.get("version_from")),
+            "version_to": entry.get("new_version", entry.get("version_to")),
+            "change_date": entry.get("changed_at", entry.get("change_date")),
             "controls_added": json.dumps(entry.get("controls_added", [])),
             "controls_withdrawn": json.dumps(entry.get("controls_withdrawn", [])),
             "controls_renamed": json.dumps(entry.get("controls_renamed", [])),
             "controls_modified": json.dumps(entry.get("controls_modified", [])),
             "human_confirmed": _bool(entry.get("human_confirmed", False)),
-            "notes": entry.get("notes", ""),
+            "notes": entry.get("notes") or entry.get("summary", ""),
         })
     return rows
 

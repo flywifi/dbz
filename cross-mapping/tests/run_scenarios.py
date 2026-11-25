@@ -87,12 +87,13 @@ def main() -> int:
     n = c.execute("SELECT COUNT(*) FROM stig_catalog").fetchone()[0]
     check(n == 407, f"scenario 7: STIG catalog complete (want 407; got {n})")
 
-    # 8. Horizon registry loaded (77 records — exact until records are added;
+    # 8. Horizon registry loaded (78 records — exact until records are added;
     #    re-pinned 70→76 in phase 32 when the six CMMC suspension/RFI/task-force
-    #    records landed, 76→77 in phase 45 when the au-scf release watch landed).
+    #    records landed, 76→77 in phase 45 when the au-scf release watch landed,
+    #    77→78 in phase 57 when au-hipaa-privacy-2026, the eCFR codification watch, landed).
     recs = json.loads((ROOT / "canonical-sources" / "anticipated_updates.json")
                       .read_text(encoding="utf-8"))["records"]
-    check(len(recs) == 77, f"scenario 8: horizon registry (want 77; got {len(recs)})")
+    check(len(recs) == 78, f"scenario 8: horizon registry (want 78; got {len(recs)})")
 
     # 9. OLIR-hub composed edges (1,870 — exact; pinned composition).
     n = c.execute("SELECT COUNT(*) FROM olir_hub_edges").fetchone()[0]

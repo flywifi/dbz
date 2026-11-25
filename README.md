@@ -29,7 +29,7 @@ overlapping controls listed. It's **one unified map**, not a shelf of separate c
 | **CCI dictionary** | 5,137 DISA control-correlation identifiers with definitions + multi-source corroboration |
 | **STIG evidence** | 407 hardening benchmarks / 20,842 rules for per-product implementation proof (DISA's October 2026 library, plus 20 STIGs DISA retired, kept and flagged) |
 | **FedRAMP 2026 (KSIs)** | FedRAMP's own 46 Key Security Indicators and their 558 published links to 800-53 |
-| **Keep-current** | 162 official sources watched for changes, plus a horizon of 77 anticipated future revisions |
+| **Keep-current** | 163 official sources watched for changes, plus a horizon of 78 anticipated future revisions |
 
 ## How it works
 
@@ -74,8 +74,8 @@ python cross-mapping/engine/dbz_query.py horizon --upcoming 10          # antici
 
 ## Staying current
 
-dbz watches **162 official sources** (`canonical-sources/feed_registry.json`) for version changes
-and keeps a **horizon** of 77 anticipated future revisions (`canonical-sources/anticipated_updates.json`)
+dbz watches **163 official sources** (`canonical-sources/feed_registry.json`) for version changes
+and keeps a **horizon** of 78 anticipated future revisions (`canonical-sources/anticipated_updates.json`)
 so a scheduled change — a new FedRAMP rule, an ISO amendment — is flagged before it lands, never
 missed. See [`docs/standards-refresh-runbook.md`](docs/standards-refresh-runbook.md).
 

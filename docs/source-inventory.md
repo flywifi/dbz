@@ -938,3 +938,11 @@ for the ingests. Audit: `docs/audits/phase-55-adversarial-audit.md`.
 **Gate change:** KSI carry-over is now held against FedRAMP's Rev 5 baselines (≥95%, measured
 99.0%); the Moderate-flagged share (72.2%, was 95.2%) is reported. **Also:** a 600 s run budget on
 the fingerprint, after a rehearsal stalled on an issuer's slow-down request.
+
+## HIPAA Privacy Rule 2026 final rule as a version (Phase 57, 2026-11-24)
+
+| Source | Status |
+|---|---|
+| eCFR 45 CFR 164 Subpart E as of 2026-11-18 (`ecfr-45cfr164e-2026-11-18-xml`) | **Pinned**: the in-force text, parsed paragraph by paragraph into `regulation_paragraphs`. |
+| 91 FR 74848 amendatory text (`hhs-hipaa-privacy-final-rule-2026-regtext`) | **Pinned** as an extract of the govinfo page (sha256 of the page recorded); the amended text is computed from it. |
+| eCFR codification of the rule | **Not yet published**: due on the effective date, 2027-01-19 (horizon `au-hipaa-privacy-2026`, `cfr_versions.py --verify-ecfr`). |
