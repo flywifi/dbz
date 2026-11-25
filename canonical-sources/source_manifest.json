@@ -1466,6 +1466,28 @@
       "role": "scf_id_history",
       "authority_scope": "scf_only",
       "notes": "The issuer's own 'Legacy SCF #' column of the pinned 2026.3 workbook (cross-checked against its Change Overview and READ THIS tabs: 0 contradictions), with the Change Overview tags. Loaded as scf_id_history (dbz_query scf-legacy). SCF ids of two releases are never joined by equality: 2026.3 reused ids for different controls."
+    },
+    {
+      "id": "ecfr-45cfr164e-2026-11-18-xml",
+      "file": "canonical-sources/source_data/hhs/ecfr-45cfr164-subpartE-2026-11-18.xml",
+      "format": "xml",
+      "version": "eCFR full text of 45 CFR 164 Subpart E as of 2026-11-18, the day before 91 FR 74848 was published",
+      "retrieved": "2026-11-24",
+      "source_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-11-18/title-45.xml?part=164&subpart=E",
+      "role": "regulation_text_in_force",
+      "sha256": "68e0a1f098347fbd987f4f6433dd28a3c0986193b044b99906e86403c1c84b29",
+      "notes": "The in-force HIPAA Privacy Rule, paragraph by paragraph: the base of the version comparison with the 2026 final rule (cross-mapping/engine/cfr_versions.py). eCFR codifies 91 FR 74848 on its effective date, 2027-01-19; until then this is the text in force."
+    },
+    {
+      "id": "hhs-hipaa-privacy-final-rule-2026-regtext",
+      "file": "canonical-sources/source_data/hhs/FR-2026-11-19-2026-23429.regtext.txt",
+      "format": "txt",
+      "version": "91 FR 74848 (FR doc 2026-23429, RIN 0945-AA00), final rule as published 2026-11-19: amendatory text only",
+      "retrieved": "2026-11-24",
+      "source_url": "https://www.govinfo.gov/content/pkg/FR-2026-11-19/html/2026-23429.htm",
+      "role": "regulation_amendment_text",
+      "sha256": "7434808bb62e95133797e3e956164f184cc84dfe3980c5584cec9c786639577c",
+      "notes": "cfr_versions.extract_regtext applied to the govinfo HTML (916,740 bytes, sha256 36c11f9dcaf5e8e78167aa2fba2f0eab19b2189a2c320600910ec83cdeb8a50d): from 'For the reasons stated in the preamble' to the last '* * * * *' -- the 12 amendatory instructions and their regulatory text, without the preamble, contact block or signature. Effective 2027-01-19; compliance 2027-07-19."
     }
   ],
   "staged_reference_sources": {

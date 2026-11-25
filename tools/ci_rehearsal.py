@@ -52,6 +52,7 @@ STEPS = [
     ("count-claim selftest", "python3 tools/count_truth.py --selftest"),
     ("bump-schema selftest", "python3 tools/bump_schema.py --selftest"),
     ("upstream-fingerprint selftest", "python3 tools/upstream_fingerprint.py --selftest"),
+    ("cfr-versions selftest", "python3 cross-mapping/engine/cfr_versions.py --selftest"),
     ("fetch-layer unit tests", "python3 cross-mapping/tests/test_fetchkit.py"),
     ("governed-loader tests", "python3 cross-mapping/tests/test_governed_loaders.py"),
     ("attack loader tests", "python3 cross-mapping/tests/test_attack_loader.py"),

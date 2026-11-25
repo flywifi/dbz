@@ -67,7 +67,7 @@ FIPS_CMVP_PATH = REPO_ROOT / "canonical-sources" / "fips-cmvp-validations.json"
 
 # System versioning — bump ENGINE_VERSION on schema changes; never mix with framework versions
 ENGINE_VERSION = "1.2.0"
-SCHEMA_VERSION = "3.20"  # v3.20: scf_id_history: the issuer's SCF control-id crosswalk across the 2026.3 renumbering (dbz_query scf-legacy); v3.19: stig_catalog.lifecycle + last_library: STIGs absent from the current DISA library are kept, flagged; v3.18: scf_composed_edges (SCF fan-out witness); v3.17: w_baseline_authoritative + w_olir_composed witnesses on framework_cci_confirmation; v3.16: framework_cci_confirmation (witnessed framework->CCI verdicts); v3.15: edge_semantic on master_mappings (what an edge CLAIMS); v3.14: regulatory-provenance columns on anticipated_updates (enum-enforced); v3.13: evidence_state ladder on master_mappings; v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
+SCHEMA_VERSION = "3.21"  # v3.21: regulation_paragraphs + regulation_paragraph_diff: 45 CFR 164 Subpart E in force and as amended by 91 FR 74848, paragraph by paragraph (dbz_query cfr-version); v3.20: scf_id_history: the issuer's SCF control-id crosswalk across the 2026.3 renumbering (dbz_query scf-legacy); v3.19: stig_catalog.lifecycle + last_library: STIGs absent from the current DISA library are kept, flagged; v3.18: scf_composed_edges (SCF fan-out witness); v3.17: w_baseline_authoritative + w_olir_composed witnesses on framework_cci_confirmation; v3.16: framework_cci_confirmation (witnessed framework->CCI verdicts); v3.15: edge_semantic on master_mappings (what an edge CLAIMS); v3.14: regulatory-provenance columns on anticipated_updates (enum-enforced); v3.13: evidence_state ladder on master_mappings; v3.12: FedRAMP Consolidated Rules 2026; v3.11: olir_hub_edges; v3.10: anticipated_updates
 
 CHUNK = 500  # executemany batch size
 
@@ -369,6 +369,35 @@ CREATE TABLE IF NOT EXISTS scf_id_history (
     PRIMARY KEY (scf_id, legacy_id)
 );
 CREATE INDEX IF NOT EXISTS idx_scf_history_legacy ON scf_id_history(legacy_id);
+
+CREATE TABLE IF NOT EXISTS regulation_paragraphs (
+    framework      TEXT,     -- the version's label: 'HIPAA Privacy Rule' / 'HIPAA Privacy Rule (2026 Final Rule)'
+    version        TEXT,     -- which text: in force on a date, or as amended by a Federal Register document
+    regulation     TEXT,     -- '45 CFR 164 Subpart E'
+    paragraph_id   TEXT,     -- native citation form '164.520(c)(2)(ii)'; definitions '164.501[Term](1)'
+    parent_id      TEXT,
+    seq            INTEGER,  -- document order within the version
+    heading        TEXT,
+    text           TEXT,     -- the paragraph's own text, rendering-normalised
+    subtree_sha256 TEXT,     -- the provision as a whole: its text and every descendant's
+    implied        INTEGER,  -- 1 = a first paragraph the CFR leaves undesignated (164.502(b)(1))
+    source_id      TEXT,     -- source_manifest id
+    PRIMARY KEY (framework, paragraph_id)
+);
+
+CREATE TABLE IF NOT EXISTS regulation_paragraph_diff (
+    framework_from TEXT,
+    framework_to   TEXT,
+    regulation     TEXT,
+    old_id         TEXT,     -- '' = added by the amendment
+    new_id         TEXT,     -- '' = removed, or absent from a republished section
+    status         TEXT,     -- unchanged | unchanged_redesignated | lead_in_changed | reprint_differs | changed |
+                             -- removed | not_in_amended_text | added  (only the first two carry mappings)
+    instruction    TEXT,     -- the amendatory instruction (number + item letter) that touched it
+    detail         TEXT,
+    PRIMARY KEY (framework_from, framework_to, old_id, new_id)
+);
+CREATE INDEX IF NOT EXISTS idx_regdiff_new ON regulation_paragraph_diff(new_id);
 
 CREATE TABLE IF NOT EXISTS nist_800_63b_requirements (
     requirement_id       TEXT PRIMARY KEY,
@@ -1816,6 +1845,25 @@ def build_db(
         """, scf_hist_rows, "scf_id_history")
     else:
         print(f"  scf_id_history: 0 rows ({scf_hist_stats.get('skipped', 'empty')})")
+    conn.commit()
+
+    # 13c. Regulation versions (phase 57): the in-force HIPAA Privacy Rule and the 2026 final rule, paragraph
+    #      by paragraph, and their difference. master_surface's version carry reads the difference.
+    import cfr_versions as _cv
+    _rp_rows, _rd_rows, _rv_stats = _cv.db_rows()
+    _executemany_chunked(conn, """
+        INSERT OR REPLACE INTO regulation_paragraphs
+            (framework, version, regulation, paragraph_id, parent_id, seq, heading, text, subtree_sha256,
+             implied, source_id)
+        VALUES (:framework, :version, :regulation, :paragraph_id, :parent_id, :seq, :heading, :text,
+                :subtree_sha256, :implied, :source_id)
+    """, _rp_rows, "regulation_paragraphs")
+    _executemany_chunked(conn, """
+        INSERT OR REPLACE INTO regulation_paragraph_diff
+            (framework_from, framework_to, regulation, old_id, new_id, status, instruction, detail)
+        VALUES (:framework_from, :framework_to, :regulation, :old_id, :new_id, :status, :instruction, :detail)
+    """, _rd_rows, "regulation_paragraph_diff")
+    print(f"  regulation versions: {_rv_stats}")
     conn.commit()
 
     # 14. NIST SP 800-63B digital identity requirements

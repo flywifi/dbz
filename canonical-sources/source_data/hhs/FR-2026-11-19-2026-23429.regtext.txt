@@ -1,0 +1,862 @@
+For the reasons stated in the preamble, the Department of Health 
+and Human Services amends 45 CFR subtitle A, subchapter C, parts 160 
+and 164 as set forth below:
+
+PART 160--GENERAL ADMINISTRATIVE REQUIREMENTS
+
+0
+1. The authority citation for part 160 is revised to read as follows:
+
+    Authority: 42 U.S.C. 1302(a); 42 U.S.C. 1320d-1320d-9; sec. 264, 
+Pub. L. 104-191, 110 Stat. 2033-2034 (42 U.S.C. 1320d-2 (note)); 5 
+U.S.C. 552; secs. 13400-13424, Pub. L. 111-5, 123 Stat. 258-279 (42 
+U.S.C. 17921, 17931-17954); and sec. 1104 of Pub. L. 111-148, 124 
+Stat. 146-154.
+
+
+0
+2. Amend Sec.  160.103 by adding a new paragraph (4)(v) to the 
+definition of ``Business associate'' to read as follows:
+
+
+Sec.  160.103   Definitions.
+
+* * * * *
+    Business associate * * *
+    (4) * * *
+    (v) A provider of telecommunications relay services, as defined in 
+47 U.S.C. 225(a)(3), with respect to enabling communications through 
+services regulated under 47 CFR part 64.
+* * * * *
+
+PART 164--SECURITY AND PRIVACY
+
+0
+3. The authority citation for part 164 is revised to read as follows:
+
+    Authority: 42 U.S.C. 1302(a); 42 U.S.C. 1320d-1320d-9; sec. 264 
+of Pub. L. 104-191, 110 Stat. 2033-2034 (42 U.S.C. 1320d-2 (note)); 
+and secs. 13400-13424, Pub. L. 111-5, 123 Stat. 258-279 (42 U.S.C. 
+17921, 17931-17954).
+
+
+0
+4. Amend Sec.  164.501 by:
+0
+a. Adding in alphabetical order a definition for ``Electronic health 
+record'';
+0
+b. Revising and republishing the definition of ``Health care 
+operations''; and
+0
+c. Adding in alphabetical order a definition for ``Personal health 
+application''.
+    The additions and revision read as follows:
+
+
+Sec.  164.501  Definitions.
+
+* * * * *
+    Electronic health record means an electronic record of health-
+related information on an individual that is created, gathered, 
+managed, and consulted by authorized health care clinicians and staff. 
+Such clinicians shall include, but are not limited to, health care 
+providers that have direct or indirect treatment relationships with 
+individuals as defined at Sec.  164.501, such as physicians, nurses, 
+pharmacists, and other allied health professionals. For purposes of 
+this definition, ``health-related information on an individual'' covers 
+the same scope of information as the term individually identifiable 
+health
+
+[[Page 74963]]
+
+information as defined at Sec.  160.103 of this subchapter.
+* * * * *
+    Health care operations means any of the following activities of the 
+covered entity to the extent that the activities are related to covered 
+functions:
+    (1) Conducting quality assessment and improvement activities, 
+including outcomes evaluation and development of clinical guidelines, 
+provided that the obtaining of generalizable knowledge is not the 
+primary purpose of any studies resulting from such activities; patient 
+safety activities (as defined in 42 CFR 3.20); population-based 
+activities relating to improving health or reducing health care costs; 
+protocol development; case management and care coordination; contacting 
+of health care providers and patients with information about treatment 
+alternatives; and related functions that do not include treatment.
+    (2) Reviewing the competence or qualifications of health care 
+professionals, evaluating practitioner and provider performance, health 
+plan performance, conducting training programs in which students, 
+trainees, or practitioners in areas of health care learn under 
+supervision to practice or improve their skills as health care 
+providers, training of non-health care professionals, accreditation, 
+certification, licensing, or credentialing activities.
+    (3) Except as prohibited under Sec.  164.502(a)(5)(i), 
+underwriting, enrollment, premium rating, and other activities related 
+to the creation, renewal, or replacement of a contract of health 
+insurance or health benefits, and ceding, securing, or placing a 
+contract for reinsurance of risk relating to claims for health care 
+(including stop-loss insurance and excess of loss insurance), provided 
+that the requirements of Sec.  164.514(g) are met, if applicable.
+    (4) Conducting or arranging for medical review, legal services, and 
+auditing functions, including fraud and abuse detection and compliance 
+programs.
+    (5) Business planning and development, such as conducting cost-
+management and planning-related analyses related to managing and 
+operating the entity, including formulary development and 
+administration, development or improvement of methods of payment or 
+coverage policies.
+    (6) Business management and general administrative activities of 
+the entity, including, but not limited to, any of the following:
+    (i) Management activities relating to implementation of and 
+compliance with the requirements of this subchapter.
+    (ii) Customer service, including the provision of data analyses for 
+policy holders, plan sponsors, or other customers, provided that 
+protected health information is not disclosed to such policy holder, 
+plan sponsor, or customer.
+    (iii) Resolution of internal grievances.
+    (iv) The sale, transfer, merger, or consolidation of all or part of 
+the covered entity with another covered entity, or an entity that 
+following such activity will become a covered entity and due diligence 
+related to such activity.
+    (v) Consistent with the applicable requirements of Sec.  164.514, 
+creating de-identified health information or a limited data set, and 
+fundraising for the benefit of the covered entity.
+* * * * *
+    Personal health application means an electronic application used by 
+an individual to access health information about that individual, which 
+can be drawn from multiple sources, provided that all of the following 
+conditions apply:
+    (1) Such information is managed, shared, and controlled by or 
+primarily for the individual.
+    (2) Such information is not managed, shared, or controlled in any 
+of the following manners:
+    (i) By or primarily for a covered entity.
+    (ii) Primarily for another person.
+* * * * *
+
+0
+5. Amend Sec.  164.502 by:
+0
+a. Revising paragraph (a)(2);
+0
+b. Revising paragraph (a)(4)(ii);
+0
+c. Redesignating paragraphs (a)(5)(ii)(B)(2)(vii) and 
+(a)(5)(ii)(B)(2)(viii) as (a)(5)(ii)(B)(2)(viii) and 
+(a)(5)(ii)(B)(2)(ix), respectively; and
+0
+d. Adding paragraph (a)(5)(ii)(B)(2)(vii).
+    The revisions and addition read as follows:
+
+
+Sec.  164.502   Uses and disclosures of protected health information: 
+General Rules.
+
+    (a) * * *
+    (2) Covered entities: Required disclosures. A covered entity is 
+required to disclose protected health information in each of the 
+following circumstances:
+    (i) To an individual, when requested under, and required by, Sec.  
+164.524 or Sec.  164.528.
+    (ii) To a person designated by the individual, when requested 
+under, and required by, Sec.  164.524.
+    (iii) When required by the Secretary under subpart C of part 160 of 
+this subchapter to investigate or determine the covered entity's 
+compliance with this subchapter.
+* * * * *
+    (4) * * *
+    (ii) To the covered entity or, when specified in the written 
+contract or other written arrangement with a business associate 
+required by Sec.  164.502(e)(2), to the individual or the individual's 
+designee, as necessary to satisfy a covered entity's obligations with 
+respect to Sec.  164.524(c)(2)(ii) or Sec.  164.524(d)(1).
+    (5) * * *
+    (ii) * * *
+    (B) * * *
+    (2) * * *
+    (vii) To a person designated by an individual, when requested under 
+Sec.  164.524;
+* * * * *
+
+0
+6. Amend Sec.  164.506, by adding new paragraph (c)(6) to read as 
+follows:
+
+
+Sec.  164.506   Uses and disclosures to carry out treatment, payment, 
+or health care operations.
+
+* * * * *
+    (c) * * *
+    (6) A covered entity may disclose an individual's protected health 
+information to a social services agency, community-based organization, 
+home and community based services provider, or similar third party that 
+provides health or human services to specific individuals, for 
+individual-level care coordination and case management activities 
+(whether such activities constitute treatment or health care operations 
+as those terms are defined in Sec.  164.501) with respect to that 
+individual.
+* * * * *
+
+0
+7. Amend Sec.  164.512 by:
+0
+a. Revising paragraph (d)(3);
+0
+b. Revising the heading for paragraph (k)(1);
+0
+c. Revising and republishing paragraphs (k)(1)(i) and (ii);
+0
+d. Revising paragraph (k)(2); and
+0
+e. Adding paragraph (m).
+    The revisions and addition read as follows:
+
+
+Sec.  164.512  Uses and disclosures for which an authorization or 
+opportunity to agree or object is not required.
+
+* * * * *
+    (d) * * *
+    (3) Joint activities or investigations. Notwithstanding paragraph 
+(d)(2) of this section, if a health oversight activity or investigation 
+is conducted in conjunction with an oversight activity or investigation 
+relating to a claim for public benefits not related to health, the 
+joint activity or investigation is considered a health oversight 
+activity
+
+[[Page 74964]]
+
+for purposes of paragraph (d) of this section.
+* * * * *
+    (k) * * *
+    (1) Uniformed Services and veterans activities--(i) Uniformed 
+Services personnel. A covered entity may use and disclose the protected 
+health information of individuals who are Uniformed Services personnel 
+for activities deemed necessary by appropriate command authorities to 
+assure the proper execution of the applicable Uniformed Service's 
+mission, if the appropriate command authority has published by notice 
+in the Federal Register all of the following information:
+    (A) Appropriate command authorities.
+    (B) The purposes for which the protected health information may be 
+used or disclosed.
+    (ii) Separation or discharge from Uniformed Service. A covered 
+entity that is a component of the Departments of Defense, Homeland 
+Security, Commerce, or Health and Human Services may disclose to the 
+Department of Veterans Affairs (VA) the protected health information of 
+an individual who is a member of the Uniformed Service upon the 
+separation or discharge of the individual from Uniformed Service for 
+the purpose of a determination by the VA of the individual's 
+eligibility for or entitlement to benefits under laws administered by 
+the Secretary of Veterans Affairs.
+* * * * *
+    (2) National security and intelligence activities. A covered entity 
+may disclose protected health information to authorized federal 
+officials for the conduct of lawful intelligence, counter-intelligence, 
+and other national security activities authorized by the National 
+Security Act (50 U.S.C. 3001, et seq.) and implementing authority 
+(e.g., Executive Order 12333).
+* * * * *
+    (m) Standard: Disclosures to Telecommunications Relay Services. (1) 
+A covered entity may disclose protected health information to a 
+Telecommunications Relay Service Communications Assistant, as defined 
+at 47 CFR 64.601(a)(12), as necessary to conduct covered functions.
+    (2) Notwithstanding Sec.  164.502(a)(3), a business associate may 
+disclose protected health information to a Telecommunications Relay 
+Service Communications Assistant, as defined at 47 CFR 64.601(a)(12), 
+as necessary to conduct covered functions for or on behalf of a covered 
+entity.
+* * * * *
+
+0
+8. Amend Sec.  164.514 by adding paragraph (h)(2)(v).
+
+
+Sec.  164.514   Other requirements relating to uses and disclosures of 
+protected health information.
+
+* * * * *
+    (h) * * *
+    (2) * * *
+    (v) Exercise of individual rights. A covered entity may not impose 
+unreasonable verification measures on an individual that would impede 
+the individual from exercising a right under this part. An unreasonable 
+measure is one that causes an individual to expend unnecessary effort 
+or resources when a less burdensome verification measure is practicable 
+for the covered entity. Practicability considerations include a covered 
+entity's technical capabilities, its obligations to protect the privacy 
+of protected health information under Sec.  164.530(c) and the security 
+of electronic protected health information under Sec.  164.306, and the 
+costs of implementing measures that are more convenient for 
+individuals.
+
+0
+9. Amend Sec.  164.520 by:
+0
+a. Revising paragraph (a)(1);
+0
+b. Removing paragraph (a)(4);
+0
+c. Revising paragraphs (b)(1)(i), (b)(1)(iii)(B), (b)(1)(iv)(C), 
+(b)(1)(iv)(E), and (b)(1)(iv)(F);
+0
+d. Adding paragraph (b)(1)(iv)(G);
+0
+e. Revising paragraph (b)(1)(vii);
+0
+f. Adding paragraph (b)(2)(iii);
+0
+g. Removing paragraph (c)(2)(ii);
+0
+h. Redesignating paragraphs (c)(2)(iii) and (iv) as paragraphs 
+(c)(2)(ii) and (iii), respectively;
+0
+i. Revising paragraph (c)(3)(iii); and
+0
+j. Revising paragraph (e).
+    The revisions and additions read as follows:
+
+
+Sec.  164.520  Notice of privacy practices for protected health 
+information.
+
+    (a) Standard: Notice of privacy practices--(1) Right to notice. 
+Except as provided by paragraph (a)(3) of this section, an individual 
+has a right to adequate notice of the uses and disclosures of protected 
+health information that may be made by the covered entity, and of the 
+individual's rights and the covered entity's legal duties with respect 
+to protected health information.
+* * * * *
+    (b) * * *
+    (1) * * *
+    (i) Header. The notice must contain the following statement as a 
+header or otherwise prominently displayed:
+    NOTICE OF PRIVACY PRACTICES OF [NAME OF COVERED ENTITY, AFFILIATED 
+COVERED ENTITIES, OR ORGANIZED HEALTH CARE ARRANGEMENT, AS APPLICABLE]
+    THIS NOTICE DESCRIBES:
+     HOW HEALTH INFORMATION ABOUT YOU MAY BE USED AND 
+DISCLOSED.
+     YOUR RIGHTS WITH RESPECT TO YOUR HEALTH INFORMATION.
+     HOW TO EXERCISE YOUR RIGHT TO GET COPIES OF YOUR RECORDS 
+AT LIMITED COST OR, IN SOME CASES, FREE OF CHARGE.
+     HOW TO FILE A COMPLAINT CONCERNING A VIOLATION OF THE 
+PRIVACY OR SECURITY OF YOUR HEALTH INFORMATION, OR OF YOUR RIGHTS 
+CONCERNING YOUR INFORMATION, INCLUDING YOUR RIGHT TO INSPECT OR GET 
+COPIES OF YOUR RECORDS UNDER HIPAA.
+     YOU HAVE A RIGHT TO A COPY OF THIS NOTICE (IN PAPER OR 
+ELECTRONIC FORM) AND TO DISCUSS IT WITH [ENTER NAME, TITLE, OR OFFICE] 
+AT [PHONE AND EMAIL] IF YOU HAVE ANY QUESTIONS.
+* * * * *
+    (iii) * * *
+    (B) In accordance with Sec.  164.504(f), the group health plan, or 
+a health insurance issuer or HMO with respect to a group health plan, 
+may disclose protected health information to the plan sponsor;
+    (iv) * * *
+    (C) The right of access to inspect and obtain a copy of protected 
+health information at limited cost or, in some cases, free of charge; 
+and the right of access to direct a covered entity to transmit an 
+electronic copy of protected health information in an electronic health 
+record to a person designated by the individual, as provided by Sec.  
+164.524;
+* * * * *
+    (E) The right to receive an accounting of disclosures of protected 
+health information as provided by Sec.  164.528;
+    (F) The right of an individual, including an individual who has 
+agreed to receive the notice electronically in accordance with 
+paragraph (c)(3) of this section, to obtain a paper copy of the notice 
+from the covered entity upon request; and
+    (G) The right to discuss the notice with a designated contact 
+person or office identified by the covered entity pursuant to Sec.  
+164.520(b)(1)(vii).
+* * * * *
+    (vii) Contact. The notice must contain the name or title, telephone 
+number, and email address for a designated person or office responsible 
+for providing further information and answering questions about the 
+covered entity's privacy practices, as required by Sec.  
+164.530(a)(1)(ii).
+* * * * *
+
+[[Page 74965]]
+
+    (2) * * *
+    (iii) A covered entity may provide in its notice information about 
+how an individual who seeks to direct a copy of protected health 
+information to another person, when the request does not meet the 
+conditions of Sec.  164.524(d), can instead obtain a copy of protected 
+health information directly under Sec.  164.524(a)-(c) and (e) and send 
+the copy to the person themselves, or request the covered entity to 
+send a copy of protected health information to the person using a valid 
+authorization under Sec.  164.508.
+* * * * *
+    (c) * * *
+    (2) * * *
+    (ii) If the covered health care provider maintains a physical 
+service delivery site:
+    (A) Have the notice available at the service delivery site for 
+individuals to request to take with them; and
+    (B) Post the notice in a clear and prominent location where it is 
+reasonable to expect individuals seeking service from the covered 
+health care provider to be able to read the notice; and
+    (iii) Whenever the notice is revised, make the notice available 
+upon request on or after the effective date of the revision and 
+promptly comply with the requirements of paragraph (c)(2)(ii) of this 
+section, if applicable.
+    (3) * * *
+    (iii) For purposes of paragraph (c)(2)(i) of this section, if the 
+first service delivery to an individual is delivered electronically, 
+the covered health care provider must provide electronic notice 
+automatically and contemporaneously in response to the individual's 
+first request for service.
+* * * * *
+    (e) Implementation specifications: Documentation. A covered entity 
+must document compliance with the notice requirements, as required by 
+Sec.  164.530(j), by retaining copies of the notices issued by the 
+covered entity.
+* * * * *
+
+0
+10. Revise and republish Sec.  164.524 to read as follows:
+
+
+Sec.  164.524   Access of individuals to protected health information.
+
+    (a) Standard: Access to protected health information--(1) Right of 
+access. Except as otherwise provided in paragraphs (a)(2) or (3) of 
+this section, an individual has a right of access to inspect and obtain 
+a copy of protected health information about the individual in a 
+designated record set, for as long as the protected health information 
+is maintained in the designated record set, except for either of the 
+following:
+    (i) Psychotherapy notes.
+    (ii) Information compiled in reasonable anticipation of, or for use 
+in, a civil, criminal, or administrative action or proceeding.
+    (2) Unreviewable grounds for denial. A covered entity may deny an 
+individual access without providing the individual an opportunity for 
+review, in any of the following circumstances:
+    (i) The protected health information is excepted from the right of 
+access by paragraph (a)(1) of this section.
+    (ii) A covered entity that is a correctional institution or a 
+covered health care provider acting under the direction of the 
+correctional institution may deny, in whole or in part, an inmate's 
+request to obtain a copy of protected health information, if obtaining 
+such copy would jeopardize the health, safety, security, custody, or 
+rehabilitation of the individual or of other inmates, or the safety of 
+any officer, employee, or other person at the correctional institution 
+or responsible for the transporting of the inmate.
+    (iii) An individual's access to protected health information 
+created or obtained by a covered health care provider in the course of 
+research that includes treatment may be temporarily suspended for as 
+long as the research is in progress, provided that the individual has 
+agreed to the denial of access when consenting to participate in the 
+research that includes treatment, and the covered health care provider 
+has informed the individual that the right of access will be reinstated 
+upon completion of the research.
+    (iv) An individual's access to protected health information that is 
+contained in records that are subject to the Privacy Act, 5 U.S.C. 
+552a, may be denied, if the denial of access under the Privacy Act 
+would meet the requirements of that law.
+    (v) An individual's access may be denied if the protected health 
+information was obtained from someone other than a health care provider 
+under a promise of confidentiality and the access requested would be 
+reasonably likely to reveal the source of the information.
+    (3) Reviewable grounds for denial. A covered entity may deny an 
+individual access provided that the individual is given a right to have 
+such denials reviewed, as required by paragraph (e)(4) of this section, 
+in any of the following circumstances:
+    (i) A licensed health care professional has determined, in the 
+exercise of professional judgment, that the access requested is 
+reasonably likely to endanger the life or physical safety of the 
+individual or another person.
+    (ii) The protected health information makes reference to another 
+person (unless such other person is a health care provider) and a 
+licensed health care professional has determined, in the exercise of 
+professional judgment, that the access requested is reasonably likely 
+to cause substantial harm to such other person.
+    (iii) The request for access is made by the individual's personal 
+representative and a licensed health care professional has determined, 
+in the exercise of professional judgment, that the provision of access 
+to such personal representative is reasonably likely to cause 
+substantial harm to the individual or another person.
+    (4) Review of a denial of access. If access is denied on a ground 
+permitted under paragraph (a)(3) of this section, the individual has 
+the right to have the denial reviewed by a licensed health care 
+professional who is designated by the covered entity to act as a 
+reviewing official and who did not participate in the original decision 
+to deny. The covered entity must provide or deny access in accordance 
+with the determination of the reviewing official under paragraph (e)(4) 
+of this section.
+    (b) Implementation specifications: Requests for access and timely 
+action--
+    (1) Individual's request for access.
+    (i) The covered entity must permit an individual to request access 
+to inspect or to obtain a copy of the protected health information 
+about the individual that is maintained in a designated record set.
+    (ii) The covered entity may require individuals to make requests 
+for access in writing, provided that it informs individuals of such a 
+requirement. For purposes of this paragraph, in writing means that the 
+request itself serves as documentation of the individual's exercise of 
+the right of access, including when the request is submitted 
+electronically or on paper.
+    (iii) The covered entity may not impose measures on individuals 
+making requests for access that impede an individual from obtaining 
+access when there is a measure for making such requests that is less 
+burdensome for the individual and practicable for the entity.
+    (2) Timely action by the covered entity.
+    (i) Except as provided in paragraph (b)(2)(ii) of this section, the 
+covered entity must act on a request for access as soon as practicable, 
+but no later than 15 calendar days after receipt of the request, and 
+the following conditions must be met:
+    (A) If the covered entity grants the request, in whole or in part, 
+it must inform the individual of the acceptance
+
+[[Page 74966]]
+
+of the request and provide the access requested, in accordance with 
+paragraph (c) of this section.
+    (B) If the covered entity denies the request, in whole or in part, 
+it must provide the individual with a written denial, in accordance 
+with paragraph (e)(2) of this section.
+    (ii) If the covered entity is unable to take an action required by 
+paragraph (b)(2)(i)(A) or (B) of this section within the time required 
+by paragraph (b)(2)(i) of this section, as applicable, the covered 
+entity may extend the time for such actions by no more than 30 calendar 
+days, provided that:
+    (A) The covered entity, within the time limit set by paragraph 
+(b)(2)(i) of this section, as applicable, provides the individual with 
+a written statement of the reasons for the delay and the date by which 
+the covered entity will complete its action on the request; and
+    (B) The covered entity may have only one such extension of time for 
+action on a request for access.
+    (iii) Where another federal or state law requires a covered entity 
+to provide an individual with access to the protected health 
+information requested in less than 15 calendar days, that shorter time 
+period is deemed practicable for purposes of paragraph (b)(2)(i) of 
+this section.
+    (c) Implementation specifications: Provision of access. If the 
+covered entity provides an individual with access, in whole or in part, 
+to protected health information, the covered entity must comply with 
+the following requirements.
+    (1) Providing the access requested. The covered entity must provide 
+the access requested by an individual, including inspection or 
+obtaining a copy, or both, of the protected health information about 
+the individual in designated record sets. If the same protected health 
+information that is the subject of a request for access is maintained 
+in more than one designated record set or at more than one location, 
+the covered entity need only produce the protected health information 
+once in response to a request for access.
+    (2) Form of access requested. (i) The covered entity must provide 
+an individual with access to the protected health information in the 
+form and format requested by the individual, if it is readily 
+producible in such form and format; or, if not, in a readable hard copy 
+form or such other form and format as agreed to by the covered entity 
+and the individual.
+    (ii) Notwithstanding paragraph (c)(2)(i) of this section, if the 
+protected health information that is the subject of a request for 
+access is maintained in one or more designated record sets 
+electronically and if the individual requests an electronic copy of 
+such information, the covered entity must provide the individual with 
+access to the protected health information in the electronic form and 
+format requested by the individual, if it is readily producible in such 
+form and format; or, if not, in a readable electronic form and format 
+as agreed to by the covered entity and the individual.
+    (iii) Where another federal or state law applicable to the covered 
+entity requires the provision of access in a particular electronic form 
+and format, the protected health information is deemed readily 
+producible in such form and format for purposes of paragraphs (c)(2)(i) 
+and (ii) of this section.
+    (iv)(A) The covered entity may provide an individual with a summary 
+of the protected health information requested, in lieu of providing 
+access to the protected health information, or may provide an 
+explanation of the protected health information to which access has 
+been provided, if:
+    (1) The individual agrees in advance to such a summary or 
+explanation; and
+    (2) The individual agrees in advance to the fees imposed, if any, 
+by the covered entity for such summary or explanation.
+    (B) The covered entity must inform an individual to whom it offers 
+to provide a summary in lieu of a copy of protected health information 
+that the individual retains the right to obtain a copy of the requested 
+protected health information if the individual does not agree to 
+receive such summary. This requirement does not apply if a covered 
+entity is offering to provide a summary in lieu of a copy of protected 
+health information because the covered entity is denying an 
+individual's request for a copy; however, the covered entity still must 
+follow the denial procedures under Sec.  164.524(e).
+    (3) Time and manner of access. The covered entity must provide the 
+access as requested by an individual in a timely manner as required by 
+paragraph (b)(2) of this section, including arranging with the 
+individual for a convenient time and place to inspect or obtain a copy 
+of the protected health information, or at the individual's request, 
+mailing or electronically transmitting the copy of the protected health 
+information to the individual, including by email, or to or through the 
+individual's personal health application, if a copy is readily 
+producible to or through such application. The covered entity may 
+discuss with an individual the scope, format, and other aspects of the 
+individual's request for access as necessary to facilitate the timely 
+provision of access; however, such discussion shall not extend the time 
+allowed for the covered entity to provide access.
+    (4) Fees. (i) If an individual requests a copy of the protected 
+health information or agrees to a summary or explanation of such 
+information, the covered entity may impose a reasonable, cost-based 
+fee, provided that the fee includes only the cost of:
+    (A) Labor for copying the protected health information requested by 
+the individual, whether in non-electronic (e.g., paper, film) or 
+electronic form;
+    (B) Supplies for creating a non-electronic copy;
+    (C) Postage, when the individual has requested that a non-
+electronic copy, or the summary or explanation, be mailed; and
+    (D) Labor of preparing an explanation or summary of the protected 
+health information, if agreed to by the individual as required by 
+paragraph (c)(2)(iv) of this section.
+    (ii) A covered entity may not impose a fee in either of the 
+following circumstances:
+    (A) An individual inspects the protected health information about 
+the individual, as described at (a)(1) of this section.
+    (B) An individual accesses electronic protected health information 
+maintained by or on behalf of the covered entity using an internet-
+based method, such as a personal health application.
+    (d) Standard: Directing an electronic copy of certain protected 
+health information to a person designated by the individual--(1) Right 
+of access to direct. Subject to the limitations of paragraph (a)(1) of 
+this section, and except as otherwise provided in paragraphs (d)(2) and 
+(3) of this section, an individual has the right of access to direct a 
+covered entity to transmit an electronic copy of protected health 
+information about the individual (``right of access to direct'') in an 
+electronic health record to a person designated by the individual.
+    (2) Unreviewable grounds for denial. A covered entity may deny an 
+individual's request to exercise the right of access to direct a 
+covered entity to transmit an electronic copy of protected health 
+information in an electronic health record directly to a person 
+designated by an individual under paragraph (d)(1) of this section, 
+without providing an opportunity for review, in the following 
+circumstances:
+    (i) The protected health information is excepted from the right of 
+access to
+
+[[Page 74967]]
+
+direct by paragraph (d)(1) of this section.
+    (ii) A covered entity that is a correctional institution or a 
+covered health care provider acting under the direction of the 
+correctional institution may deny, in whole or in part, an inmate's 
+request to exercise of the right of access to direct, if transmitting 
+such copy would jeopardize the health, safety, security, custody, or 
+rehabilitation of the individual or of other inmates, or the safety of 
+any officer, employee, or other person at the correctional institution 
+or responsible for the transporting of the inmate.
+    (iii) An individual's ability to exercise of the right of access to 
+direct may be temporarily suspended by a covered entity in the course 
+of research that includes treatment for as long as the research is in 
+progress, provided that the individual has agreed to the denial of 
+access when consenting to participate in the research that includes 
+treatment, and the covered entity has informed the individual that the 
+right of access to direct will be reinstated upon completion of the 
+research.
+    (iv) An individual's request to exercise the right of access to 
+direct may be denied if the protected health information is contained 
+in records that are subject to the Privacy Act, 5 U.S.C. 552a, and if 
+the denial of access under the Privacy Act would meet the requirements 
+of that law.
+    (v) An individual's request to exercise the right of access to 
+direct may be denied if the protected health information was obtained 
+from someone other than a health care provider under a promise of 
+confidentiality and providing the copy to the person designated by the 
+individual would be reasonably likely to reveal the source of the 
+information.
+    (3) Reviewable grounds for denial of a request to exercise the 
+right of access to direct. A covered entity may deny an individual's 
+request to exercise the right of access to direct under paragraph 
+(d)(1) of this section, provided that the individual is given a right 
+to have such denials reviewed, as required by paragraph (e)(4) of this 
+section, in either of the following circumstances:
+    (i) A licensed health care professional has determined, in the 
+exercise of professional judgment, that the access is reasonably likely 
+to endanger the life or physical safety of the individual or another 
+person.
+    (ii) The protected health information makes reference to another 
+person (unless such other person is a health care provider) and a 
+licensed health care professional has determined, in the exercise of 
+professional judgment, that the access is reasonably likely to cause 
+substantial harm to such other person.
+    (4) Implementation specification: Summary or explanation prepared 
+by covered entity. (i) The covered entity may transmit, to a person 
+designated by an individual pursuant to the right of access to direct, 
+a summary of requested protected health information in an electronic 
+health record, in lieu of transmitting a copy of the protected health 
+information, or may transmit an explanation of the requested protected 
+health information in an electronic health record in addition to such 
+protected health information, if all of the following conditions apply:
+    (A) The individual agrees in advance to such a summary or 
+explanation.
+    (B) The individual agrees in advance to the fees imposed, if any, 
+by the covered entity for such summary or explanation.
+    (ii) The covered entity must inform an individual with respect to 
+whose protected health information it offers to transmit a summary to a 
+person designated by the individual in lieu of a copy of protected 
+health information that the individual retains the right of access to 
+direct an electronic copy of the requested protected health information 
+in an electronic health record if the individual does not agree to 
+direct such summary. This requirement does not apply if a covered 
+entity is offering to provide a summary in lieu of a copy of protected 
+health information because the covered entity is denying an 
+individual's request to exercise the right of access to direct; 
+however, the covered entity still must follow the denial procedures 
+under Sec.  164.524(e).
+    (5) Implementation specification: Requests for access and timely 
+action. (i) Individual's request for access. The covered entity must 
+permit an individual to exercise the right of access to direct where 
+the request is clear, conspicuous, and specific. The covered entity may 
+require individuals to make requests for such access in writing, 
+provided that it informs individuals of such a requirement. For 
+purposes of this paragraph, in writing means that the request itself 
+serves as documentation of the individual's exercise of the right of 
+access to direct, including when the request is submitted 
+electronically or on paper.
+    (ii) Timely action by the covered entity. (A) Except as provided in 
+paragraph (d)(5)(ii)(B) of this section, the covered entity is required 
+to provide an electronic copy requested under paragraph (d)(1) of this 
+section as soon as practicable, but no later than 15 calendar days 
+after receipt of an individual's request, and the following conditions 
+must be met:
+    (1) If the covered entity grants the request, in whole or in part, 
+it must inform the individual of the acceptance of the request and 
+provide the access requested, in accordance with paragraph (d) of this 
+section.
+    (2) If the covered entity denies the individual's request to 
+exercise the right of access to direct, in whole or in part, it must 
+provide the individual with a written denial, in accordance with 
+paragraph (e)(2) of this section.
+    (B) If the covered entity is unable to take an action required by 
+paragraph (d)(5)(ii)(A)(1) or (2) of this section within the time 
+required by paragraph (d)(5)(ii)(A) of this section, as applicable, the 
+covered entity may extend the time for such actions by no more than 30 
+calendar days, provided that:
+    (1) The covered entity, within the time limit set by paragraph 
+(d)(5)(ii)(A) of this section, as applicable, provides the individual 
+with a written statement of the reasons for the delay and the date by 
+which the covered entity will complete its action on the individual's 
+request to exercise the right of access to direct; and
+    (2) The covered entity may have only one such extension of time for 
+action on the individual's request to exercise the right of access to 
+direct.
+    (C) Where another federal or state law requires a covered entity to 
+provide an individual with an electronic copy of the protected health 
+information in an electronic health record in less than 15 calendar 
+days, that shorter time period is deemed practicable for purposes of 
+paragraph (d)(5)(ii)(A) of this section.
+    (e) Implementation specifications: Denial of access. If a covered 
+entity denies an individual's right of access, in whole or in part, to 
+protected health information pursuant to paragraph (a) or (d) of this 
+section, the covered entity must comply with the following 
+requirements.
+    (1) Making other information accessible. The covered entity must, 
+to the extent possible, give the individual, or a person designated by 
+the individual, access to any other protected health information 
+requested pursuant to paragraph (a) or (d) of this section, after 
+excluding the protected health information as to which the covered 
+entity has a ground to deny access.
+    (2) Denial. The covered entity must provide a timely, written 
+denial to the individual. The denial must be in plain language and 
+contain all of the following:
+    (i) The basis for the denial.
+
+[[Page 74968]]
+
+    (ii) If applicable, a statement of the individual's right of review 
+under paragraph (e)(4) of this section, including a description of how 
+the individual may exercise such right.
+    (iii) A description of how the individual may complain to the 
+covered entity pursuant to the complaint procedures in Sec.  164.530(d) 
+or to the Secretary pursuant to the procedures in Sec.  160.306 of this 
+subchapter. The description must include the name, or title, and 
+telephone number of the contact person or office designated in Sec.  
+164.530(a)(1)(ii).
+    (3) Other responsibility. If the covered entity (or its business 
+associate on the covered entity's behalf) does not maintain the 
+protected health information that is the subject of the individual's 
+request for access, and the covered entity knows where the requested 
+protected health information is maintained, the covered entity must 
+inform the individual where to direct the request for access.
+    (4) Right to review of denial. If the individual requests a review 
+of a denial on a ground permitted under paragraphs (a)(3) or (d)(3) of 
+this section, the covered entity must designate a licensed health care 
+professional who was not directly involved in the denial to review the 
+decision to deny access. The covered entity must promptly refer a 
+request for review to such designated reviewing official. The 
+designated reviewing official must determine, within a reasonable 
+period of time, whether or not to deny the access requested based on 
+the standards in paragraph (a)(3) or (d)(3) of this section. The 
+covered entity must promptly provide written notice to the individual 
+of the determination of the designated reviewing official and take 
+other action as required by this section to carry out the designated 
+reviewing official's determination.
+    (f) Implementation specification: Documentation. A covered entity 
+must document all of the following and retain the documentation as 
+required by Sec.  164.530(j):
+    (1) The designated record sets that are subject to the right of 
+access under paragraph (a) of this section.
+    (2) The electronic health records that are subject to the right of 
+access to direct under paragraph (d) of this section.
+    (3) The titles of the persons or offices responsible for receiving 
+and processing requests for access made pursuant to paragraphs (a) and 
+(d) of this section.
+* * * * *
+
+0
+11. Add Sec.  164.525 to subpart E to read as follows:
+
+
+Sec.  164.525   Notice of access and authorization fees.
+
+    If a covered entity imposes fees for copies of protected health 
+information requested under this subpart, the covered entity must post 
+a fee schedule on its website, if it has one, and make the fee schedule 
+available to individuals at the point of service and upon request. The 
+fee schedule must specify all of the following:
+    (a) All types of access to protected health information available 
+free of charge.
+    (b) Standard fees for all of the following copies, where the 
+covered entity generally charges for such copies:
+    (1) Copies of protected health information provided under Sec.  
+164.524(a) and Sec.  164.524(d), with respect to all available 
+electronic and non-electronic forms and formats for such copies.
+    (2) Copies of protected health information disclosed pursuant to 
+the individual's valid authorization under Sec.  164.508, with respect 
+to all available forms and formats for such copies.
+
+0
+12. Amend Sec.  164.532 by revising paragraph (e) to read as follows:
+
+
+Sec.  164.532  Transition provisions.
+
+* * * * *
+    (e) Implementation specification: Deemed compliance--(1) 
+Qualification. Notwithstanding other sections of this part, a covered 
+entity, or business associate with respect to a subcontractor, is 
+deemed to be in compliance with the documentation and contract 
+requirements of Sec. Sec.  164.308(b), 164.314(a), 164.502(e), and 
+164.504(e), with respect to a particular business associate 
+relationship, for the time period set forth in paragraph (e)(2) of this 
+section, if:
+    (i) Prior to November 19, 2026, such covered entity, or business 
+associate with respect to a subcontractor, has entered into and is 
+operating pursuant to a written contract or other written arrangement 
+with the business associate that complies with the applicable 
+provisions of Sec.  164.314(a) or Sec.  164.504(e) that were in effect 
+on such date; and
+    (ii) The contract or other arrangement is not renewed or modified 
+from January 19, 2027, until July 19, 2027.
+    (2) Limited deemed compliance period. A prior contract or other 
+arrangement that meets the qualification requirements in paragraph (e) 
+of this section shall be deemed compliant until the earlier of:
+    (i) The date such contract or other arrangement is renewed or 
+modified on or after July 19, 2027; or
+    (ii) January 18, 2028.
+    (3) Covered entity responsibilities. Nothing in this section shall 
+alter the requirements of a covered entity to comply with part 160, 
+subpart C of this subchapter and Sec. Sec.  164.524, 164.526, 164.528, 
+and 164.530(f) with respect to protected health information held by a 
+business associate.
+* * * * *

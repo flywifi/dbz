@@ -41,7 +41,7 @@ attempt to parse the HTML… process the source data directly."*
   **GSA/fedramp-automation was archived 2025-07-01** (Rev5 OSCAL baselines/templates frozen there;
   automate.fedramp.gov is the docs site — proxy-blocked in this environment).
 
-## The DB model (schema 3.12 at introduction; current schema 3.20, contained)
+## The DB model (schema 3.12 at introduction; current schema 3.21, contained)
 
 `spine_loader.load_fedramp_rules()` →
 `fedramp_ksi` (46) · `fedramp_ksi_controls` (558 edges, `basis='fedramp_stated'`, confidence 0.9,

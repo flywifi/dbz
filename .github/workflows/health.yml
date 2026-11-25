@@ -37,6 +37,9 @@ jobs:
       - name: Upstream-fingerprint selftest (an edited file is a change; an error page is a failed check)
         run: python3 tools/upstream_fingerprint.py --selftest
 
+      - name: CFR-versions selftest (a reused paragraph id is never carried; the pinned rule's six redesignations)
+        run: python3 cross-mapping/engine/cfr_versions.py --selftest
+
       - name: Fetch-layer unit tests (offline; host usage rules, RFC 9309 robots)
         run: python3 cross-mapping/tests/test_fetchkit.py
 
