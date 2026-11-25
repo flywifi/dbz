@@ -3,6 +3,54 @@
 Format follows Keep a Changelog conventions; one entry per shipped phase. Versioning policy:
 `CHANGE_MANAGEMENT.md`.
 
+## [0.21.0] — 2026-11-25 (phase 57 — the 2026 HIPAA Privacy Rule final rule as a version)
+
+MINOR: a new framework version (a label, two tables, a query command, a gate) and a loader fix. Audit:
+`docs/audits/phase-57-adversarial-audit.md`. Record: `docs/source-inventory.md` (Phase 57). The comparison:
+`docs/hipaa-privacy-rule-2026-final-rule.md`.
+
+- **Added — `HIPAA Privacy Rule (2026 Final Rule)`:** 45 CFR 164 Subpart E as amended by 91 FR 74848 (FR doc
+  2026-23429, RIN 0945-AA00; effective 2027-01-19, compliance 2027-07-19), beside the in-force `HIPAA Privacy
+  Rule`. The rule HHS finalized is the Privacy Rule; the Security Rule (RIN 0945-AA22) is still only the 2025
+  proposal.
+- **Added — both texts, paragraph by paragraph** (`regulation_paragraphs`: 1,040 in force, 1,094 amended; schema
+  3.21), and their difference (`regulation_paragraph_diff`):
+
+  | Status | Paragraphs |
+  |---|---:|
+  | unchanged | 913 |
+  | renumbered | 5 |
+  | changed | 98 |
+  | under a changed lead-in | 15 |
+  | held back | 1 |
+  | removed | 2 |
+  | dropped by the rewrite of 164.524 | 6 |
+  | added | 62 |
+
+  The amended text is computed from the pinned in-force eCFR text and the rule's amendatory instructions
+  (`cross-mapping/engine/cfr_versions.py`). The eCFR's codification on 2027-01-19 checks it.
+- **Added — the carry:** 5,869 of the 6,460 in-force master rows (90.9%) carry to the new label.
+  - **The rule:** a row carries only where the provision's wording, its lead-ins and any Federal Register reprint
+    are unchanged, matched by paragraph identity. Citation numbers can't be used: the rule removes
+    164.520(c)(2)(ii) and reuses that number.
+  - **Marking:** provenance `carried_transitive_unified` or `carried_consensus`; consensus votes are not copied.
+  - **Not carried:** 591 rows stay blank.
+  - **Counts:** master rows 97,704 → 103,573; frameworks 36 → 37; stored pairs 68 → 73. No existing row changes.
+- **Added — `dbz_query.py cfr-version`,** a provision in both versions (`--section`, `--status`, `--summary`).
+- **Added — `validate_spine` check 22:**
+  - every carry is re-derived from the stored text;
+  - no row pairs the two versions;
+  - the 8 in-force citations absent from the in-force text are pinned.
+- **Added — registry entries:**
+  - feed `hipaa-privacy`;
+  - horizon `au-hipaa-privacy-2026`, for the eCFR codification on 2027-01-19;
+  - changelog entries `chg-hipaa-privacy-2026-final-rule` and `chg-hipaa-security-160103-ba-2026`. The rule
+    excludes telecommunications relay providers from the business-associate definition, which narrows who the
+    Security Rule reaches; no Security text or mapping changes.
+- **Fixed — the changelog table.** `load_changelog` read key names the file does not use, so its entries loaded as
+  one row with an empty id. It now loads all 35.
+- **Changed — scenario 8** pins the horizon count at 78 (was 77).
+
 ## [0.20.1] — 2026-11-23 (phase 56 — the three weekly refresh proposals merged)
 
 PATCH: data refreshes proposed by the weekly rotation, merged at the owner's request, and the
