@@ -472,6 +472,30 @@ if _DB.exists():
     check({(r["matched_as"], r["scf_id"], r["legacy_id"]) for r in _qr} ==
           {("legacy id -> current", "GOV-02", "GOV-01"), ("new control", "GOV-01", "")},
           f"dbz_query scf-legacy GOV-01: the 2026.2 control is now GOV-02 and GOV-01 names a new control (got {_qr})")
+
+    # phase 57: the 2026 Privacy final rule as a version. The carry follows paragraph identity, not the string.
+    _NEWL = "HIPAA Privacy Rule (2026 Final Rule)"
+    _cnt = lambda fw, nat: _c2.execute("SELECT COUNT(*) FROM master_mappings WHERE fw_a=? AND native_a=?", (fw, nat)).fetchone()[0]
+    check(_cnt("HIPAA Privacy Rule", "164.520(c)(2)(ii)") > 0 and _c2.execute(
+              "SELECT COUNT(*) FROM master_mappings WHERE fw_a=? AND source_ref LIKE 'version_carry:164.520(c)(2)(ii)->%'",
+              (_NEWL,)).fetchone()[0] == 0,
+          "version carry: the removed 164.520(c)(2)(ii) carries nothing, although the amended text reuses its id")
+    check(_cnt(_NEWL, "164.520(c)(2)(ii)(A)") == _cnt("HIPAA Privacy Rule", "164.520(c)(2)(iii)(A)") > 0,
+          "version carry: the redesignated (c)(2)(iii)(A) carries at (c)(2)(ii)(A), row for row")
+    _cc = _c2.execute("SELECT COUNT(*), SUM(votes IS NULL), SUM(evidence_state='asserted_by_source') FROM master_mappings "
+                      "WHERE fw_a=? AND provenance='carried_consensus'", (_NEWL,)).fetchone()
+    check(_cc[0] > 0 and _cc[0] == _cc[1] == _cc[2],
+          f"version carry: carried consensus rows copy no votes and read asserted_by_source (got {_cc})")
+    _tot_old = _c2.execute("SELECT COUNT(*) FROM master_mappings WHERE fw_a='HIPAA Privacy Rule'").fetchone()[0]
+    _tot_new = _c2.execute("SELECT COUNT(*) FROM master_mappings WHERE fw_a=?", (_NEWL,)).fetchone()[0]
+    check(0.85 <= _tot_new / max(_tot_old, 1) < 1.0,
+          f"version carry: {_tot_new:,} of {_tot_old:,} in-force rows carry (measured 90.9% at phase 57; floor 85%)")
+    _q = _sp.run([sys.executable, str(ROOT / "cross-mapping" / "engine" / "dbz_query.py"), "cfr-version", "164.520(c)(2)(ii)",
+                  "--format", "json", "--db", str(_DB)], capture_output=True, text=True)
+    _qr = json.loads(_q.stdout) if _q.returncode == 0 else []
+    check({(r["old_id"], r["new_id"], r["status"]) for r in _qr} ==
+          {("164.520(c)(2)(ii)", "", "removed"), ("164.520(c)(2)(iii)", "164.520(c)(2)(ii)", "unchanged_redesignated")},
+          f"dbz_query cfr-version 164.520(c)(2)(ii): the removed provision and the one that now bears its id (got {_qr})")
     _ccm = _c2.execute("""SELECT COUNT(*), COUNT(DISTINCT native_id), MAX(confidence),
         MAX(needs_confirmation) FROM framework_projection WHERE framework='CSA CCM v4'""").fetchone()
     check(_ccm[0] >= 1600 and _ccm[1] >= 190 and _ccm[2] == 0.85 and _ccm[3] == 0,

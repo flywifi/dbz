@@ -451,8 +451,9 @@ def _sibling_note(conn: sqlite3.Connection, labels: list[str]) -> tuple[str, lis
         return {n for n in nums if not _re.fullmatch(r"(19|20)\d\d", n)}
 
     # Non-numeric families that are genuinely related, declared rather than guessed.
-    RELATED = {"hipaa security": {"HIPAA Privacy Rule"},
-               "hipaa privacy rule": {"HIPAA Security"}}
+    RELATED = {"hipaa security": {"HIPAA Privacy Rule", "HIPAA Privacy Rule (2026 Final Rule)"},
+               "hipaa privacy rule": {"HIPAA Security", "HIPAA Privacy Rule (2026 Final Rule)"},
+               "hipaa privacy rule (2026 final rule)": {"HIPAA Privacy Rule", "HIPAA Security"}}
 
     want_nums = set().union(*(std_numbers(l) for l in labels)) if labels else set()
     want_related = set().union(*(RELATED.get(l.lower(), set()) for l in labels))
@@ -1706,6 +1707,47 @@ def cmd_scf_legacy(args, conn: sqlite3.Connection) -> int:
     return 0
 
 
+def cmd_cfr_version(args, conn: sqlite3.Connection) -> int:
+    """One provision in both versions of a regulation, or a section's changes (regulation_paragraph_diff).
+    Matched by paragraph identity: an id the amendment reuses (164.520(c)(2)(ii)) shows both provisions."""
+    try:
+        if args.paragraph:
+            p = args.paragraph.strip()
+            rows = conn.execute(
+                """SELECT d.old_id, d.new_id, d.status, d.instruction, d.detail,
+                          o.heading || ' ' || o.text AS in_force_text, n.heading || ' ' || n.text AS amended_text
+                   FROM regulation_paragraph_diff d
+                   LEFT JOIN regulation_paragraphs o ON o.framework = d.framework_from AND o.paragraph_id = d.old_id
+                   LEFT JOIN regulation_paragraphs n ON n.framework = d.framework_to AND n.paragraph_id = d.new_id
+                   WHERE d.old_id = :p OR d.new_id = :p ORDER BY d.old_id = :p DESC""", {"p": p}).fetchall()
+            cols = ["old_id", "new_id", "status", "instruction", "detail", "in_force_text", "amended_text"]
+        else:
+            where, params = "WHERE 1=1", {}
+            if args.section:
+                where += " AND (old_id LIKE :s OR new_id LIKE :s)"
+                params["s"] = args.section.strip() + "%"
+            if args.status:
+                where += " AND status = :st"
+                params["st"] = args.status
+            if args.summary:
+                rows = conn.execute(f"""SELECT substr(COALESCE(NULLIF(old_id, ''), new_id), 1, 7) AS section, status,
+                                               COUNT(*) AS paragraphs
+                                        FROM regulation_paragraph_diff {where} GROUP BY 1, 2 ORDER BY 1, 2""", params).fetchall()
+                cols = ["section", "status", "paragraphs"]
+            else:
+                rows = conn.execute(f"""SELECT old_id, new_id, status, instruction, detail FROM regulation_paragraph_diff
+                                        {where} ORDER BY rowid""", params).fetchall()
+                cols = ["old_id", "new_id", "status", "instruction", "detail"]
+    except sqlite3.OperationalError:
+        print("[note] this grc.db has no regulation_paragraph_diff table (schema < 3.21): rebuild with build_db.py.", file=sys.stderr)
+        return 1
+    if not rows:
+        print("[note] no matching paragraph in either version (ids are matched exactly, e.g. 164.520(c)(2)(ii)).", file=sys.stderr)
+        return 1
+    _output(rows, args.format, cols)
+    return 0
+
+
 def cmd_eurlex(args, conn: sqlite3.Connection) -> int:
     """Query EUR-Lex regulatory articles by regulation, article number, or NIST family."""
     _family_note(conn, "eurlex_articles", args)
@@ -1991,6 +2033,13 @@ def build_parser() -> argparse.ArgumentParser:
     scl = subs.add_parser("scf-legacy", help="Translate an SCF control id across the 2026.3 renumbering (issuer's legacy-id map)")
     scl.add_argument("scf_id", metavar="ID", help="A current or legacy SCF control id, e.g. GOV-01")
     _add_format(scl); _add_db(scl)
+    cfv = subs.add_parser("cfr-version", help="A regulation paragraph in both versions (HIPAA Privacy Rule in force vs the 2026 final rule)")
+    cfv.add_argument("paragraph", nargs="?", metavar="ID", help="A paragraph id in either version, e.g. 164.520(c)(2)(ii)")
+    cfv.add_argument("--section", help="Limit to a section, e.g. 164.524")
+    cfv.add_argument("--status", choices=["unchanged", "unchanged_redesignated", "lead_in_changed", "reprint_differs",
+                                          "changed", "removed", "not_in_amended_text", "added"])
+    cfv.add_argument("--summary", action="store_true", help="Counts by section and status")
+    _add_format(cfv); _add_db(cfv)
 
     return ap
 
@@ -2032,6 +2081,7 @@ def main(argv=None) -> int:
         "fedramp": cmd_fedramp,
         "eurlex": cmd_eurlex,
         "scf-legacy": cmd_scf_legacy,
+        "cfr-version": cmd_cfr_version,
         "800-63b": cmd_800_63b,
         "fips": cmd_fips,
     }

@@ -1,6 +1,6 @@
 {
   "_purpose": "Controlled vocabularies the health auditor validates against, so a typo or a fabricated identifier is caught before it corrupts a query. Deterministic allow-lists only — never fabricate an entry to make a check pass; add the real canonical name.",
-  "_version": "1.12.0",
+  "_version": "1.13.0",
   "_generated": "2026-07-02",
   "framework_names": {
     "_note": "Canonical framework names as they must appear in crosswalk/catalog data. A name not on this list (e.g. 'ISO 27001' missing the '/IEC') is flagged so overlap queries don't silently miss it Phase 44 reconciled this list against the labels the build actually emits: 25 live labels were undeclared (including 'HIPAA Security' itself) and 'HIPAA Security Rule' was declared but used by nothing. validate_spine check 21 now fails on any emitted-but-undeclared label; declared-but-unused is allowed, so a framework may be declared before its loader lands.",
@@ -25,6 +25,7 @@
       "GDPR",
       "HIPAA Breach Notification",
       "HIPAA Privacy Rule",
+      "HIPAA Privacy Rule (2026 Final Rule)",
       "HIPAA Security",
       "HITRUST CSF",
       "ISO 27001/2 (2022)",
@@ -232,12 +233,13 @@
       }
     },
     "deliberately_distinct": {
-      "_note": "Labels that LOOK like aliases but are different frameworks or unpinned versions — resolved to themselves, never merged. Phase 44: 45 CFR Part 164 has three subparts and each is its own rule — Security (C), Breach Notification (D), Privacy (E). A citation names its subpart, so the label must too; before phase 44 all three were labelled 'HIPAA Security'.",
+      "_note": "Labels that LOOK like aliases but are different frameworks or unpinned versions — resolved to themselves, never merged. Phase 44: 45 CFR Part 164 has three subparts and each is its own rule — Security (C), Breach Notification (D), Privacy (E). A citation names its subpart, so the label must too; before phase 44 all three were labelled 'HIPAA Security'. Phase 57: 'HIPAA Privacy Rule (2026 Final Rule)' is Subpart E as amended by 91 FR 74848 (effective 2027-01-19), a second version beside the in-force 'HIPAA Privacy Rule', never merged; its rows are carried only where the provision's text is unchanged (cross-mapping/engine/cfr_versions.py).",
       "labels": [
         "ISO/IEC 27001",
         "ISO/IEC 27002",
         "NIST CSF",
         "HIPAA Privacy Rule",
+        "HIPAA Privacy Rule (2026 Final Rule)",
         "NIST 800-172",
         "NIST SP 800-53 Rev 4 (Appendix J)",
         "HIPAA Breach Notification"

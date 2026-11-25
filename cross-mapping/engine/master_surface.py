@@ -72,8 +72,10 @@ TIER_MAP: Dict[str, Tuple[str, int, Optional[float]]] = {
     "hitrust_hub":        ("hub", 4, 0.65),
     "transitive_unified": ("hub", 4, 0.65),
     "aicpa_tsp_hub":      ("hub", 4, 0.65),
+    "carried_transitive_unified": ("hub", 4, 0.65),   # phase 57 version carry (same tier as its source)
     "master_crosswalk":   ("bundled", 5, 0.60),
     "consensus":          ("consensus", 6, None),
+    "carried_consensus":  ("consensus", 6, None),     # phase 57 version carry; votes are not copied
     "production_aggregate": ("production_aggregate", 7, None),
 }
 
@@ -425,6 +427,33 @@ def assemble(conn, csf2_pairs: Optional[List[dict]] = None,
                     source_ref="er_mappings:aggregate",
                     anchors=shared_anchors(fw_a, id_a, fw_b, id_b))
         stats["er_aggregate_pairs"] += 1
+
+    # 6. Version carry (phase 57). 'HIPAA Privacy Rule (2026 Final Rule)' is the rule as amended by 91 FR 74848,
+    #    a label of its own beside the in-force 'HIPAA Privacy Rule'. A pair carries to it only where
+    #    cfr_versions found the cited provision's text unchanged (regulation_paragraph_diff status unchanged or
+    #    unchanged_redesignated), at the amended id: by paragraph identity, never by citation string (the rule
+    #    removes 164.520(c)(2)(ii) and reuses that id). Votes and production support are not copied: nobody voted
+    #    on the new label. Changed, removed and new paragraphs stay blank until a source maps them.
+    import cfr_versions as _cv
+    _carry = _cv.carry_map(conn)
+    stats["version_carry"] = {"carried": 0, "not_carried": 0}
+    for key, claims in list(col.claims.items()):
+        fa, ia, fb, ib = key
+        if _cv.OLD_LABEL not in (fa, fb):
+            continue
+        native = ia if fa == _cv.OLD_LABEL else ib
+        new_id = _carry.get(native)
+        if new_id is None:
+            stats["version_carry"]["not_carried"] += len(claims)
+            continue
+        ends = (_cv.NEW_LABEL, new_id, fb, ib) if fa == _cv.OLD_LABEL else (fa, ia, _cv.NEW_LABEL, new_id)
+        for c in claims:
+            col.add(*ends, provenance="carried_" + c["provenance"], relationship=c["relationship"],
+                    relationship_basis=c["relationship_basis"], confidence=c["confidence"],
+                    hop_count=c["hop_count"], needs_confirmation=1,
+                    source_ref=f"version_carry:{native}->{new_id}|{c['source']}",
+                    anchors=set(col.anchors.get(key, ())))
+            stats["version_carry"]["carried"] += 1
 
     rows = col.rows()
     stats["rows"] = len(rows)

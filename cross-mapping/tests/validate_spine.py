@@ -949,6 +949,59 @@ def main() -> int:
         note(f"framework-name vocabulary: all {len(_live)} emitted labels are declared "
              f"({len(_allowed)} allowed)")
 
+    # 22. Regulation versions (phase 57). 'HIPAA Privacy Rule (2026 Final Rule)' rows exist only as carries of
+    #     in-force rows whose provision text is unchanged. Re-derived here from the stored paragraph text, not
+    #     from the build's status column; and the in-force Privacy citations must exist in the in-force text.
+    import cfr_versions as _cv
+    _vbad, _vt = [], {}
+    try:
+        for fw, pid, head, text in conn.execute(
+                "SELECT framework, paragraph_id, heading, text FROM regulation_paragraphs"):
+            _vt.setdefault(fw, {})[pid] = {"head": head, "text": text}
+        _vd = list(conn.execute("SELECT old_id, new_id, status FROM regulation_paragraph_diff "
+                                "WHERE framework_from=? AND framework_to=?", (_cv.OLD_LABEL, _cv.NEW_LABEL)))
+    except sqlite3.OperationalError:
+        _vd = []
+    _ot, _nt = _vt.get(_cv.OLD_LABEL, {}), _vt.get(_cv.NEW_LABEL, {})
+    _idmap = {o: n for o, n, _s in _vd if o and n}
+    _carry = {o: n for o, n, s in _vd if s in _cv.CARRY}
+    if not _ot or not _nt or not _carry:
+        _vbad.append("regulation_paragraphs / regulation_paragraph_diff missing or empty")
+    for o, n in _carry.items():
+        if _cv.subtree(_ot, o) != _cv.subtree(_nt, n):
+            _vbad.append(f"carried {o} -> {n}: provision text differs")
+        for a in _cv.ancestors(o):
+            if a in _ot and (_idmap.get(a) not in _nt or _cv.own(_ot[a]) != _cv.own(_nt[_idmap[a]])):
+                _vbad.append(f"carried {o} -> {n}: lead-in {a} differs")
+    _back = {n: o for o, n in _carry.items()}
+    _old_rows = {(r[0], r[1], r[2], r[3]) for r in conn.execute(
+        "SELECT native_a, fw_b, native_b, provenance FROM master_mappings WHERE fw_a=?", (_cv.OLD_LABEL,))}
+    _new_rows = list(conn.execute(
+        "SELECT native_a, fw_b, native_b, provenance FROM master_mappings WHERE fw_a=? OR fw_b=?",
+        (_cv.NEW_LABEL, _cv.NEW_LABEL)))
+    for na, fb, nb, prov in _new_rows:
+        src = _back.get(na)
+        if src is None or not prov.startswith("carried_") or (src, fb, nb, prov[len("carried_"):]) not in _old_rows:
+            _vbad.append(f"{_cv.NEW_LABEL} row {na} x {fb} {nb} ({prov}) is not a carry of an in-force row")
+    _cross = conn.execute("SELECT COUNT(*) FROM master_mappings WHERE (fw_a=? AND fw_b=?) OR (fw_a=? AND fw_b=?)",
+                          (_cv.OLD_LABEL, _cv.NEW_LABEL, _cv.NEW_LABEL, _cv.OLD_LABEL)).fetchone()[0]
+    if _cross:
+        _vbad.append(f"{_cross} master rows pair the two versions of the Privacy Rule")
+    # in-force citations absent from the in-force text: HITRUST v11.4's numbering, cause not established
+    _known_absent = {"164.504(f)(3)(iv)", "164.508(a)(4)(ii)", "164.520(a)(2)(i)(A)", "164.520(a)(2)(i)(B)",
+                     "164.520(a)(2)(ii)(B)", "164.520(a)(2)(iii)", "164.524(a)(1)(iii)(A)", "164.524(a)(1)(iii)(B)"}
+    _cited = {r[0] for r in conn.execute("SELECT DISTINCT native_a FROM master_mappings WHERE fw_a=?", (_cv.OLD_LABEL,))}
+    _absent = _cited - set(_ot)
+    if _absent - _known_absent:
+        _vbad.append(f"in-force Privacy citations not in the in-force text: {sorted(_absent - _known_absent)[:6]}")
+    if _vbad:
+        fail("regulation versions: " + "; ".join(_vbad[:6]) + (f" (+{len(_vbad) - 6})" if len(_vbad) > 6 else ""))
+    else:
+        note(f"regulation versions: {len(_new_rows):,} '{_cv.NEW_LABEL}' rows, each a carry of an in-force row over "
+             f"{len(set(r[0] for r in _new_rows))} provisions whose text and lead-ins re-derive identical; "
+             f"0 rows pair the two versions; {len(_cited) - len(_absent)} of {len(_cited)} in-force citations "
+             f"resolve ({len(_absent)} pinned absent)")
+
     if cbad:
         fail("framework->CCI confirmation malformed: " + "; ".join(cbad[:6]))
     else:
